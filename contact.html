@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Contact Support - Tournyx</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-bg: #050511;
+            --card-bg: rgba(20, 20, 35, 0.6);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --accent-cyan: #00f2ff;
+            --accent-purple: #bd00ff;
+            --accent-gradient: linear-gradient(90deg, #bd00ff, #00f2ff);
+            --font-head: 'Orbitron', sans-serif;
+            --font-body: 'Rajdhani', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--primary-bg); color: white; font-family: var(--font-body); padding-bottom: 120px; overflow-x: hidden; }
+
+        /* Particles */
+        #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at 50% 10%, #1a0b2e 0%, #050511 100%); }
+
+        /* Header */
+        .contact-header {
+            padding: 30px 20px; text-align: center;
+            background: linear-gradient(180deg, rgba(20,20,35,0.9) 0%, rgba(5,5,17,0) 100%);
+        }
+        .page-title { font-family: var(--font-head); font-size: 1.8rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; }
+        .page-subtitle { color: #888; font-size: 0.9rem; }
+
+        /* Quick Actions Grid */
+        .quick-actions {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
+            padding: 20px; margin-bottom: 10px;
+        }
+        .action-card {
+            background: rgba(255,255,255,0.05); border: 1px solid var(--card-border);
+            padding: 20px; border-radius: 15px; text-align: center; cursor: pointer; transition: 0.3s;
+            text-decoration: none; display: block;
+        }
+        .action-card:active { transform: scale(0.95); background: rgba(255,255,255,0.08); }
+        .act-icon { font-size: 1.8rem; margin-bottom: 10px; display: block; }
+        .act-name { font-family: var(--font-head); font-size: 0.9rem; color: white; }
+        .act-desc { font-size: 0.7rem; color: #aaa; margin-top: 5px; }
+
+        /* Contact Form */
+        .form-container {
+            margin: 0 20px 20px; padding: 25px;
+            background: var(--card-bg); border: 1px solid var(--accent-purple);
+            border-radius: 20px; box-shadow: 0 0 20px rgba(189, 0, 255, 0.1);
+            animation: slideUp 0.6s ease-out;
+        }
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .form-label { display: block; color: var(--accent-cyan); font-size: 0.8rem; margin-bottom: 8px; font-weight: bold; letter-spacing: 1px; }
+        .form-input {
+            width: 100%; background: #0a0a14; border: 1px solid var(--card-border);
+            padding: 12px; border-radius: 8px; color: white; font-family: var(--font-body); font-size: 1rem;
+            margin-bottom: 20px; transition: 0.3s;
+        }
+        .form-input:focus { border-color: var(--accent-cyan); outline: none; box-shadow: 0 0 10px rgba(0, 242, 255, 0.2); }
+        textarea.form-input { min-height: 100px; resize: none; }
+
+        .submit-btn {
+            width: 100%; padding: 15px; background: var(--accent-gradient);
+            border: none; border-radius: 10px; color: white; font-family: var(--font-head);
+            font-size: 1rem; font-weight: bold; cursor: pointer; letter-spacing: 1px;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .submit-btn:active { opacity: 0.9; transform: scale(0.98); }
+
+        /* Footer Credits */
+        .app-footer {
+            text-align: center; padding: 20px 20px 100px 20px;
+            color: #555; font-size: 0.7rem; font-family: var(--font-body);
+            letter-spacing: 1px; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px;
+        }
+
+        /* Overlay */
+        #overlay {
+            position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9);
+            z-index: 2000; display: none; align-items: center; justify-content: center; flex-direction: column;
+        }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%; background: #0a0a14;
+            display: flex; justify-content: space-around; padding: 15px 0 20px;
+            border-top: 1px solid #1f1f35; z-index: 1000;
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; color: #666; text-decoration: none; font-size: 0.7rem; }
+        .nav-item.active { color: var(--accent-cyan); }
+        .nav-item i { font-size: 1.2rem; }
+    </style>
+</head>
+<body>
+
+    <canvas id="particles-canvas"></canvas>
+
+    <div class="contact-header">
+        <div class="page-title">Contact Us</div>
+        <div class="page-subtitle">We are here to help 24/7</div>
+    </div>
+
+    <div class="quick-actions">
+        <a href="https://wa.me/919876543210" target="_blank" class="action-card">
+            <i class="fa-brands fa-whatsapp act-icon" style="color:#00ff7f"></i>
+            <div class="act-name">WhatsApp</div>
+            <div class="act-desc">Instant Chat</div>
+        </a>
+        <a href="mailto:support@tournyx.com" class="action-card">
+            <i class="fa-solid fa-envelope act-icon" style="color:#00f2ff"></i>
+            <div class="act-name">Email Us</div>
+            <div class="act-desc">Official Support</div>
+        </a>
+    </div>
+
+    <div class="form-container">
+        <h3 style="margin-bottom:20px; font-family:var(--font-head); text-align:center">Send a Ticket</h3>
+        
+        <label class="form-label">YOUR NAME</label>
+        <input type="text" id="cName" class="form-input" placeholder="Enter your name">
+
+        <label class="form-label">CONTACT INFO</label>
+        <input type="text" id="cContact" class="form-input" placeholder="Email or Phone">
+
+        <label class="form-label">SUBJECT</label>
+        <select id="cSubject" class="form-input">
+            <option>General Inquiry</option>
+            <option>Tournament Issue</option>
+            <option>Payment/Prize Issue</option>
+            <option>Report a Player</option>
+            <option>Sponsorship</option>
+        </select>
+
+        <label class="form-label">MESSAGE</label>
+        <textarea id="cMessage" class="form-input" placeholder="Describe your issue..."></textarea>
+
+        <button class="submit-btn" onclick="sendEmail()">
+            SEND TICKET <i class="fa-solid fa-paper-plane"></i>
+        </button>
+
+        <div style="text-align: center; margin-top: 15px; font-size: 0.8rem; color: #666;">
+            Or send directly via 
+            <span onclick="sendViaWhatsapp()" style="color:#00ff7f; cursor:pointer; text-decoration:underline">WhatsApp</span>
+        </div>
+    </div>
+
+    <div class="app-footer">
+        &copy; 2026 TOURNYX. ALL RIGHTS RESERVED.<br>
+        <span style="color:var(--accent-cyan); font-size:0.6rem; opacity:0.8; font-weight:bold;">DESIGNED BY JacksolutioTj</span>
+    </div>
+
+    <div id="overlay">
+        <i class="fa-solid fa-spinner fa-spin" style="font-size:3rem; color:var(--accent-cyan)"></i>
+        <p style="margin-top:15px; color:white; font-family:var(--font-head)">Sending...</p>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="https://tournyx.blogspot.com/p/tournyx-ultimate-esports-platform_95.html?m=1" class="nav-item"><i class="fa-solid fa-house"></i><span>Home</span></a>
+        <a href="https://tournyx.blogspot.com/p/explore-tournyx-root-primary-bg-050511_25.html?m=1" class="nav-item"><i class="fa-solid fa-compass"></i><span>Explore</span></a>
+        <a href="https://tournyx.blogspot.com/p/create-tournament-tournyx-root-primary_16.html?m=1" class="nav-item"><i class="fa-solid fa-plus-circle" style="font-size: 1.8rem; color: var(--accent-cyan);"></i><span style="color:white">Create</span></a>
+        <a href="https://tournyx.blogspot.com/p/my-matches-tournyx-root-primary-bg.html?m=1" class="nav-item"><i class="fa-solid fa-trophy"></i><span>Matches</span></a>
+        <a href="https://tournyx.blogspot.com/p/my-profile-tournyx-root-primary-bg_83.html?m=1" class="nav-item"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+    </nav>
+
+    <script>
+        // --- VISUALS ---
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let pArray = [];
+        class P { constructor(){ this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.s=Math.random()*2; } u(){ this.y-=0.5; if(this.y<0)this.y=canvas.height; } d(){ ctx.fillStyle='rgba(0,242,255,0.1)'; ctx.beginPath(); ctx.arc(this.x,this.y,this.s,0,Math.PI*2); ctx.fill(); } }
+        for(let i=0; i<40; i++) pArray.push(new P());
+        function anim(){ ctx.clearRect(0,0,canvas.width,canvas.height); pArray.forEach(p=>{p.u();p.d()}); requestAnimationFrame(anim); }
+        anim();
+
+        // --- CONFIGURATION ---
+        // 1. Enter your EmailJS Keys here (Get from emailjs.com)
+        const EMAILJS_PUBLIC_KEY = "RqIYHLW-7qpM6zPUC"; 
+        const EMAILJS_SERVICE_ID = "service_3ozh6go"; 
+        const EMAILJS_TEMPLATE_ID = "template_hchljbe"; 
+
+        // 2. Enter Admin WhatsApp Number (for fallback method)
+        const ADMIN_WHATSAPP = "918608159825"; 
+
+        // Initialize EmailJS
+        (function(){
+            emailjs.init(EMAILJS_PUBLIC_KEY);
+        })();
+
+        // --- METHOD 1: SEND VIA EMAIL (Primary) ---
+        function sendEmail() {
+            const name = document.getElementById('cName').value;
+            const contact = document.getElementById('cContact').value;
+            const subject = document.getElementById('cSubject').value;
+            const message = document.getElementById('cMessage').value;
+
+            if(!name || !contact || !message) { alert("Please fill all fields."); return; }
+
+            // Show Loader
+            document.getElementById('overlay').style.display = 'flex';
+
+            const params = {
+                from_name: name,
+                from_contact: contact,
+                subject: subject,
+                message: message
+            };
+
+            emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params)
+                .then(function(res) {
+                    alert("Ticket Sent! We will email you shortly.");
+                    clearForm();
+                    document.getElementById('overlay').style.display = 'none';
+                }, function(error) {
+                    alert("Failed to send. Trying WhatsApp instead...");
+                    document.getElementById('overlay').style.display = 'none';
+                    sendViaWhatsapp(); // Fallback
+                });
+        }
+
+        // --- METHOD 2: SEND VIA WHATSAPP (No backend needed) ---
+        function sendViaWhatsapp() {
+            const name = document.getElementById('cName').value;
+            const subject = document.getElementById('cSubject').value;
+            const message = document.getElementById('cMessage').value;
+
+            if(!name || !message) { alert("Please enter Name and Message."); return; }
+
+            // Format the message
+            const text = `*New Support Ticket*%0A%0A*Name:* ${name}%0A*Subject:* ${subject}%0A*Message:* ${message}`;
+            
+            // Open WhatsApp
+            const url = `https://wa.me/${ADMIN_WHATSAPP}?text=${text}`;
+            window.open(url, '_blank');
+        }
+
+        function clearForm() {
+            document.getElementById('cName').value = '';
+            document.getElementById('cContact').value = '';
+            document.getElementById('cMessage').value = '';
+        }
+    </script>
+</body>
+</html>
