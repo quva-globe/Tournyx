@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Withdraw Funds - Tournyx</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-bg: #050511;
+            --card-bg: rgba(20, 20, 35, 0.6);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --accent-cyan: #00f2ff;
+            --accent-purple: #bd00ff;
+            --accent-gradient: linear-gradient(90deg, #bd00ff, #00f2ff);
+            --text-main: #ffffff;
+            --text-muted: #a0a0b0;
+            --font-display: 'Orbitron', sans-serif;
+            --font-body: 'Rajdhani', sans-serif;
+            --error-red: #ff3366;
+            --success-green: #00ff7f;
+            --pending-orange: #ff9900;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            padding-bottom: 90px;
+            overflow-x: hidden;
+            width: 100vw;
+        }
+
+        #particles-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background: radial-gradient(circle at 50% 20%, #1a0b2e 0%, #050511 100%);
+        }
+
+        /* Top Bar */
+        .top-bar {
+            padding: 20px;
+            display: flex; align-items: center; gap: 15px;
+            background: linear-gradient(180deg, rgba(20,20,35,0.9) 0%, rgba(5,5,17,0) 100%);
+        }
+        .back-btn { color: var(--text-main); font-size: 1.2rem; text-decoration: none; }
+        .page-title { font-family: var(--font-display); font-size: 1.2rem; letter-spacing: 1px; }
+
+        /* Container */
+        .container { padding: 0 20px; animation: fadeIn 0.4s ease-out; max-width: 600px; margin: 0 auto; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Balance Card */
+        .balance-card {
+            background: linear-gradient(135deg, rgba(0, 242, 255, 0.1), rgba(0, 0, 0, 0));
+            border: 1px solid rgba(0, 242, 255, 0.3); border-radius: 15px;
+            padding: 25px; text-align: center; margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0, 242, 255, 0.05);
+        }
+        .balance-label { font-size: 0.85rem; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        .balance-amount { font-family: var(--font-display); font-size: 2.5rem; color: white; text-shadow: 0 0 10px rgba(0, 242, 255, 0.3); }
+
+        /* Form Elements */
+        .form-group { margin-bottom: 20px; width: 100%; }
+        .form-label { display: block; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .input-wrapper { position: relative; width: 100%; }
+        .input-prefix { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-family: var(--font-display); font-size: 0.9rem; }
+        .form-control {
+            width: 100%; background: var(--card-bg); border: 1px solid var(--card-border);
+            padding: 15px 15px 15px 45px; color: white; border-radius: 12px; font-family: var(--font-body); font-size: 1rem; transition: 0.3s;
+        }
+        .form-control:focus { outline: none; border-color: var(--accent-cyan); box-shadow: 0 0 10px rgba(0, 242, 255, 0.1); }
+        .form-control.no-prefix { padding-left: 15px; }
+
+        /* Quick Chips */
+        .quick-chips { display: flex; gap: 10px; margin-top: 10px; width: 100%; }
+        .chip {
+            flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--card-border);
+            color: var(--text-muted); padding: 8px 0; border-radius: 8px; text-align: center;
+            font-family: var(--font-display); font-size: 0.8rem; cursor: pointer; transition: 0.2s;
+        }
+        .chip:hover, .chip:active { background: rgba(0, 242, 255, 0.1); color: var(--accent-cyan); border-color: var(--accent-cyan); }
+        .chip.max { background: rgba(189, 0, 255, 0.1); color: var(--accent-purple); border-color: rgba(189, 0, 255, 0.3); }
+
+        /* Info Box */
+        .info-box {
+            background: rgba(255,255,255,0.03); border-left: 3px solid var(--accent-purple);
+            padding: 12px; border-radius: 0 8px 8px 0; font-size: 0.75rem; color: #aaa; margin-bottom: 25px; line-height: 1.4;
+        }
+        .info-box i { color: var(--accent-purple); margin-right: 5px; }
+
+        /* Action Button */
+        .withdraw-btn {
+            width: 100%; padding: 15px; background: var(--accent-gradient); border: none; color: white;
+            font-family: var(--font-display); font-size: 1rem; font-weight: bold; border-radius: 12px; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(189, 0, 255, 0.3); transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px;
+        }
+        .withdraw-btn:disabled { background: #333; color: #888; box-shadow: none; cursor: not-allowed; }
+
+        /* --- WITHDRAWAL STATUS SECTION --- */
+        .history-section { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--card-border); }
+        .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .history-title { font-family: var(--font-display); font-size: 1.1rem; color: white; }
+        .contact-support { font-size: 0.75rem; color: var(--accent-cyan); text-decoration: none; display: flex; align-items: center; gap: 5px; background: rgba(0, 242, 255, 0.1); padding: 5px 10px; border-radius: 20px; }
+        .history-card { background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); border-radius: 12px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .hist-info { display: flex; flex-direction: column; gap: 4px; }
+        .hist-amount { font-family: var(--font-display); font-size: 1.1rem; color: white; }
+        .hist-date { font-size: 0.7rem; color: var(--text-muted); }
+        .hist-status { font-size: 0.7rem; font-weight: bold; padding: 4px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .status-Pending { background: rgba(255, 153, 0, 0.15); color: var(--pending-orange); border: 1px solid rgba(255, 153, 0, 0.3); }
+        .status-Completed { background: rgba(0, 255, 127, 0.15); color: var(--success-green); border: 1px solid rgba(0, 255, 127, 0.3); }
+        .status-Failed { background: rgba(255, 51, 102, 0.15); color: var(--error-red); border: 1px solid rgba(255, 51, 102, 0.3); }
+        .empty-history { text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 20px; border: 1px dashed var(--card-border); border-radius: 12px; }
+
+        /* Footer */
+        .app-footer { text-align: center; padding: 40px 20px 60px 20px; color: #666; font-size: 0.7rem; font-family: var(--font-body); letter-spacing: 1px; }
+
+        /* Bottom Nav */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #0a0a14; display: flex; justify-content: space-around; padding: 15px 0 20px; border-top: 1px solid #1f1f35; z-index: 1000; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; color: #666; text-decoration: none; font-size: 0.7rem; }
+        .nav-item i { font-size: 1.2rem; }
+        .nav-item.active { color: var(--accent-cyan); }
+    </style>
+</head>
+<body>
+
+    <canvas id="particles-canvas"></canvas>
+
+    <div class="top-bar">
+        <a href="https://tournyx.blogspot.com/p/my-profile-tournyx-root-primary-bg_83.html?m=1" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+        <h1 class="page-title">Withdraw Funds</h1>
+    </div>
+
+    <div class="container">
+        
+        <div class="balance-card">
+            <div class="balance-label">Available to Withdraw</div>
+            <div class="balance-amount">Rs. <span id="displayBalance">...</span></div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Withdrawal Amount</label>
+            <div class="input-wrapper">
+                <span class="input-prefix">Rs.</span>
+                <input type="number" id="withdrawAmount" class="form-control" placeholder="Minimum 100" oninput="validateAmount()">
+            </div>
+            <div class="quick-chips">
+                <div class="chip" onclick="setAmount(100)">100</div>
+                <div class="chip" onclick="setAmount(250)">250</div>
+                <div class="chip" onclick="setAmount(500)">500</div>
+                <div class="chip max" onclick="setMaxAmount()">MAX</div>
+            </div>
+            <div id="amountError" style="color: var(--error-red); font-size: 0.75rem; margin-top: 8px; display: none;"></div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Payment Method</label>
+            <select id="paymentMethod" class="form-control no-prefix" onchange="updatePaymentPlaceholder()">
+                <option value="upi">UPI ID</option>
+                <option value="bank">Bank Transfer (IMPS/NEFT)</option>
+                <option value="wallet">Paytm Wallet Number</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" id="paymentDetailsLabel">UPI ID</label>
+            <input type="text" id="paymentDetails" class="form-control no-prefix" placeholder="e.g. yourname@oksbi">
+        </div>
+
+        <div class="info-box">
+            <i class="fa-solid fa-circle-info"></i> Minimum withdrawal is Rs. 100. Maximum is Rs. 20,000. Withdrawals are processed safely and usually credited within 24 hours.
+        </div>
+
+        <button class="withdraw-btn" id="withdrawBtn" onclick="processWithdrawal()">
+            <span>Withdraw Now</span>
+            <i class="fa-solid fa-arrow-right"></i>
+        </button>
+
+        <div class="history-section">
+            <div class="history-header">
+                <h3 class="history-title">Withdrawal Status</h3>
+                <a href="mailto:support@tournyx.com" class="contact-support"><i class="fa-solid fa-headset"></i> Support</a>
+            </div>
+            <div id="historyList">
+                <div style="text-align: center; color: var(--text-muted); padding: 20px;"><i class="fa-solid fa-spinner fa-spin"></i> Fetching records...</div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="app-footer">
+        &copy; 2026 TOURNYX. ALL RIGHTS RESERVED.<br>
+        <span style="color:var(--accent-cyan); font-size:0.6rem; opacity:0.8; font-weight:bold;">DESIGNED BY JacksolutioTj</span>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="https://tournyx.blogspot.com/p/tournyx-ultimate-esports-platform_95.html?m=1" class="nav-item"><i class="fa-solid fa-house"></i><span>Home</span></a>
+        <a href="https://tournyx.blogspot.com/p/explore-tournyx-root-primary-bg-050511_25.html?m=1" class="nav-item"><i class="fa-solid fa-compass"></i><span>Explore</span></a>
+        <a href="https://tournyx.blogspot.com/p/create-tournament-tournyx-root-primary_16.html?m=1" class="nav-item"><i class="fa-solid fa-plus-circle" style="font-size: 1.8rem; color: var(--accent-cyan);"></i><span style="color:white">Create</span></a>
+        <a href="https://tournyx.blogspot.com/p/my-matches-tournyx-root-primary-bg.html?m=1" class="nav-item"><i class="fa-solid fa-trophy"></i><span>Matches</span></a>
+        <a href="https://tournyx.blogspot.com/p/profile.html?m=1" class="nav-item active"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+    </nav>
+
+    <script>
+        // --- Particle Animation ---
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let pArray = [];
+        class P { constructor(){ this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.s=Math.random()*2; this.c=Math.random()>0.5?'#bd00ff':'#00f2ff'; } u(){ this.y-=0.5; if(this.y<0)this.y=canvas.height; } d(){ ctx.fillStyle=this.c; ctx.globalAlpha=0.3; ctx.beginPath(); ctx.arc(this.x,this.y,this.s,0,Math.PI*2); ctx.fill(); } }
+        for(let i=0; i<50; i++) pArray.push(new P());
+        function anim(){ ctx.clearRect(0,0,canvas.width,canvas.height); pArray.forEach(p=>{p.u();p.d()}); requestAnimationFrame(anim); }
+        anim();
+
+        // --- GOOGLE APPS SCRIPT CONFIG ---
+        const API_URL = 'https://script.google.com/macros/s/AKfycbynNLDDXS1wMrU6RGnk4nKb1jfQkQGuqrNIKWAt8wf46MaKP6y1rwGmSJg5fmm4KYU/exec';
+        const LOGIN_PAGE_URL = 'https://tournyx.blogspot.com/p/login-tournyx-root-primary-bg-050511_8.html?m=1';
+
+        // --- AUTH & DATA CHECK ---
+        let userData = JSON.parse(localStorage.getItem('tournyx_user'));
+        let currentBalance = 0;
+
+        if(!userData) {
+            window.location.href = LOGIN_PAGE_URL; 
+        } else {
+            initPageData();
+        }
+
+        // --- FETCH LIVE DATA FROM SERVER ---
+        async function initPageData() {
+            // 1. Immediately show cached balance so it doesn't look empty
+            currentBalance = parseFloat(userData.earnings) || 0;
+            document.getElementById('displayBalance').innerText = currentBalance;
+
+            // 2. Fetch fresh balance from server to ensure perfect accuracy
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'sync_user', email: userData.email, role: userData.role || 'player' })
+                });
+                const result = await res.json();
+                
+                if(result.status === 'success') {
+                    userData = result.data;
+                    localStorage.setItem('tournyx_user', JSON.stringify(userData)); // Update local cache
+                    currentBalance = parseFloat(userData.earnings) || 0;
+                    document.getElementById('displayBalance').innerText = currentBalance; // Update UI
+                }
+            } catch(e) { console.log("Sync error - using cached balance"); }
+
+            // 3. Fetch transaction history
+            fetchWithdrawalHistory();
+        }
+
+        // --- UI FUNCTIONS ---
+        function setAmount(val) {
+            document.getElementById('withdrawAmount').value = val;
+            validateAmount();
+        }
+
+        function setMaxAmount() {
+            let maxWithdraw = currentBalance > 20000 ? 20000 : currentBalance;
+            document.getElementById('withdrawAmount').value = maxWithdraw;
+            validateAmount();
+        }
+
+        function updatePaymentPlaceholder() {
+            const method = document.getElementById('paymentMethod').value;
+            const label = document.getElementById('paymentDetailsLabel');
+            const input = document.getElementById('paymentDetails');
+
+            if(method === 'upi') { label.innerText = 'UPI ID'; input.placeholder = 'e.g. yourname@oksbi'; }
+            else if(method === 'bank') { label.innerText = 'Account Number & IFSC'; input.placeholder = 'e.g. 123456789, SBIN0001234'; }
+            else { label.innerText = 'Wallet Number'; input.placeholder = 'e.g. 9876543210'; }
+        }
+
+        function validateAmount() {
+            const amountInput = document.getElementById('withdrawAmount').value;
+            const amount = parseFloat(amountInput);
+            const errorDiv = document.getElementById('amountError');
+            const btn = document.getElementById('withdrawBtn');
+
+            if (!amountInput) { errorDiv.style.display = 'none'; btn.disabled = false; return true; }
+
+            if (amount < 100) { errorDiv.innerText = "Minimum withdrawal amount is Rs. 100"; errorDiv.style.display = 'block'; btn.disabled = true; return false; }
+            else if (amount > 20000) { errorDiv.innerText = "Maximum withdrawal amount is Rs. 20,000 per request."; errorDiv.style.display = 'block'; btn.disabled = true; return false; }
+            else if (amount > currentBalance) { errorDiv.innerText = "Insufficient balance!"; errorDiv.style.display = 'block'; btn.disabled = true; return false; }
+            else { errorDiv.style.display = 'none'; btn.disabled = false; return true; }
+        }
+
+        // --- FETCH STATUS HISTORY ---
+        async function fetchWithdrawalHistory() {
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'get_withdrawals', email: userData.email })
+                });
+                const result = await res.json();
+                
+                const historyList = document.getElementById('historyList');
+                historyList.innerHTML = ""; // Clear loader
+
+                if (result.status === 'success' && result.data.length > 0) {
+                    result.data.forEach(item => {
+                        let d = new Date(item.date);
+                        let dateStr = d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+                        
+                        let card = document.createElement('div');
+                        card.className = 'history-card';
+                        card.innerHTML = `
+                            <div class="hist-info">
+                                <span class="hist-amount">Rs. ${item.amount}</span>
+                                <span class="hist-date">${dateStr} &bull; ${item.method.toUpperCase()}</span>
+                            </div>
+                            <div class="hist-status status-${item.status}">${item.status}</div>
+                        `;
+                        historyList.appendChild(card);
+                    });
+                } else {
+                    historyList.innerHTML = `<div class="empty-history">No withdrawal records found.</div>`;
+                }
+            } catch (e) {
+                console.error("Error fetching history:", e);
+                document.getElementById('historyList').innerHTML = `<div class="empty-history" style="color:var(--error-red)">Failed to load history. Check internet.</div>`;
+            }
+        }
+
+        // --- PROCESS WITHDRAWAL ---
+        async function processWithdrawal() {
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
+            const method = document.getElementById('paymentMethod').value;
+            const details = document.getElementById('paymentDetails').value.trim();
+
+            if (!validateAmount() || isNaN(amount)) { alert("Please enter a valid amount."); return; }
+            if (details === "") { alert("Please enter your payment details."); return; }
+
+            const btn = document.getElementById('withdrawBtn');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'withdraw_request',
+                        email: userData.email,
+                        username: userData.username,
+                        amount: amount,
+                        method: method,
+                        details: details
+                    })
+                });
+
+                const result = await res.json();
+
+                if (result.status === 'success') { 
+                    // Deduct balance locally
+                    currentBalance -= amount;
+                    userData.earnings = currentBalance.toString();
+                    localStorage.setItem('tournyx_user', JSON.stringify(userData));
+                    
+                    // Update UI
+                    document.getElementById('displayBalance').innerText = currentBalance;
+                    document.getElementById('withdrawAmount').value = '';
+                    document.getElementById('paymentDetails').value = '';
+                    
+                    alert(`Success! Rs. ${amount} withdrawal requested successfully.`);
+                    
+                    // Reset Button and Refresh History
+                    btn.innerHTML = '<span>Withdraw Now</span><i class="fa-solid fa-arrow-right"></i>';
+                    btn.disabled = false;
+                    document.getElementById('historyList').innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 20px;"><i class="fa-solid fa-spinner fa-spin"></i> Updating records...</div>`;
+                    fetchWithdrawalHistory();
+
+                } else {
+                    alert("Error: " + result.data);
+                    btn.innerHTML = '<span>Withdraw Now</span><i class="fa-solid fa-arrow-right"></i>';
+                    btn.disabled = false;
+                }
+            } catch (e) {
+                console.error(e);
+                alert("Network error. Please try again.");
+                btn.innerHTML = '<span>Withdraw Now</span><i class="fa-solid fa-arrow-right"></i>';
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
