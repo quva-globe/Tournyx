@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tournyx - Terms & Privacy</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        /* --- GLOBAL VARIABLES --- */
+        :root {
+            --primary-bg: #050511;
+            --card-bg: rgba(20, 20, 35, 0.65);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --accent-cyan: #00f2ff;
+            --accent-purple: #bd00ff;
+            --accent-orange: #ff9900;
+            --accent-green: #00ff7f;
+            --accent-red: #ff0055;
+            --accent-gradient: linear-gradient(90deg, #bd00ff, #00f2ff);
+            --text-main: #ffffff;
+            --text-muted: #a0a0b0;
+            --font-head: 'Orbitron', sans-serif;
+            --font-body: 'Rajdhani', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            padding-bottom: 90px; 
+            padding-top: 70px;
+        }
+
+        /* --- BACKGROUND --- */
+        #particles-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background: radial-gradient(circle at 50% 50%, #1a0b2e 0%, #050511 100%);
+        }
+
+        /* --- HEADER --- */
+        .top-header {
+            position: fixed; top: 0; left: 0; width: 100%; padding: 15px 20px;
+            background: rgba(5, 5, 17, 0.95); backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex; align-items: center; justify-content: space-between; z-index: 2000;
+        }
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .back-btn { color: white; font-size: 1.2rem; text-decoration: none; }
+        .app-title {
+            font-family: var(--font-head); font-size: 1.2rem; font-weight: 700;
+            background: linear-gradient(90deg, #fff, #a0a0b0);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero { text-align: center; padding: 20px 20px 10px; }
+        .hero-icon { font-size: 2.5rem; color: var(--accent-cyan); margin-bottom: 10px; text-shadow: 0 0 20px rgba(0, 242, 255, 0.5); }
+        .hero h1 { font-family: var(--font-head); font-size: 1.6rem; line-height: 1.4; margin-bottom: 5px; }
+        .hero p { color: var(--text-muted); font-size: 0.95rem; max-width: 400px; margin: 0 auto; }
+        .last-updated {
+            display: inline-block; margin-top: 10px; padding: 4px 12px; border-radius: 20px;
+            background: rgba(255,255,255,0.05); border: 1px solid var(--card-border);
+            font-size: 0.75rem; color: var(--accent-orange); font-family: var(--font-head);
+        }
+
+        /* --- CONTENT CARDS --- */
+        .content-container { padding: 10px 20px 20px; max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+        
+        .policy-card {
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            border-radius: 16px; padding: 20px; backdrop-filter: blur(10px);
+            position: relative; overflow: hidden;
+        }
+
+        /* Card Accents */
+        .pc-rules { border-left: 4px solid var(--accent-red); }
+        .pc-privacy { border-left: 4px solid var(--accent-cyan); }
+        .pc-prizes { border-left: 4px solid var(--accent-green); }
+        .pc-general { border-left: 4px solid var(--accent-purple); }
+
+        .policy-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
+        .policy-icon { font-size: 1.2rem; }
+        .pc-rules .policy-icon { color: var(--accent-red); }
+        .pc-privacy .policy-icon { color: var(--accent-cyan); }
+        .pc-prizes .policy-icon { color: var(--accent-green); }
+        .pc-general .policy-icon { color: var(--accent-purple); }
+        
+        .policy-title { font-family: var(--font-head); font-size: 1.1rem; color: white; letter-spacing: 1px; }
+        
+        .policy-text { font-size: 0.9rem; color: #ccc; line-height: 1.6; margin-bottom: 10px; }
+        .policy-text:last-child { margin-bottom: 0; }
+        
+        .policy-list { list-style: none; margin-left: 5px; margin-top: 10px; }
+        .policy-list li { position: relative; padding-left: 20px; font-size: 0.85rem; color: #bbb; margin-bottom: 8px; line-height: 1.4; }
+        
+        /* THE FIX IS HERE: using \2022 instead of the physical dot */
+        .policy-list li::before {
+            content: "\2022"; position: absolute; left: 0; color: var(--accent-cyan); font-weight: bold; font-size: 1.2rem; top: -4px;
+        }
+
+        .highlight { color: white; font-weight: 600; }
+
+        /* --- CONTACT SECTION --- */
+        .contact-box {
+            text-align: center; padding: 20px; margin-top: 10px;
+            background: rgba(0,0,0,0.3); border-radius: 16px; border: 1px dashed rgba(255,255,255,0.15);
+        }
+        .contact-box p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px; }
+        .contact-email { font-family: var(--font-head); font-size: 1rem; color: var(--accent-cyan); letter-spacing: 1px; }
+
+        /* --- FOOTER CREDITS --- */
+        .footer {
+            text-align: center; padding: 20px; margin-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        .footer-logo {
+            font-family: var(--font-head); font-size: 1.2rem; letter-spacing: 2px;
+            color: white; margin-bottom: 5px; display: inline-flex; align-items: center; gap: 8px;
+        }
+        .footer-text { font-size: 0.8rem; color: #666; }
+
+        /* --- BOTTOM NAV --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: #0a0a14; display: flex; justify-content: space-around;
+            padding: 15px 0 20px; border-top: 1px solid #1f1f35; z-index: 1000;
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; color: #666; text-decoration: none; font-size: 0.7rem; }
+        .nav-item.active { color: var(--accent-cyan); }
+        .nav-item i { font-size: 1.2rem; }
+    </style>
+</head>
+<body>
+
+    <canvas id="particles-canvas"></canvas>
+
+    <header class="top-header">
+        <div class="header-left">
+            <a href="https://tournyx.blogspot.com/p/tournyx-ultimate-esports-platform_95.html?m=1" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+            <div class="app-title">LEGAL</div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+        <h1>Terms & <span style="color:var(--accent-cyan)">Privacy</span></h1>
+        <p>The rules of the arena. Play fair, stay secure.</p>
+        <div class="last-updated">Last Updated: Feb 2026</div>
+    </section>
+
+    <div class="content-container">
+        
+        <div class="policy-card pc-rules">
+            <div class="policy-header">
+                <i class="fa-solid fa-user-shield policy-icon"></i>
+                <div class="policy-title">1. Fair Play & Conduct</div>
+            </div>
+            <p class="policy-text">Tournyx is dedicated to providing a highly competitive, yet totally fair gaming environment. By using this platform, you agree to abide by the following:</p>
+            <ul class="policy-list">
+                <li><span class="highlight">Zero Tolerance for Cheating:</span> The use of aimbots, wallhacks, third-party scripts, or exploit bugs will result in an immediate, permanent ban.</li>
+                <li><span class="highlight">No Toxic Behavior:</span> Harassment, hate speech, or threatening other players in tournament lobbies will not be tolerated.</li>
+                <li><span class="highlight">Account Sharing:</span> Players must use their own registered In-Game Name (IGN) and UID. Playing on someone else's account is prohibited.</li>
+            </ul>
+        </div>
+
+        <div class="policy-card pc-prizes">
+            <div class="policy-header">
+                <i class="fa-solid fa-trophy policy-icon"></i>
+                <div class="policy-title">2. Prizes & Wallet Points</div>
+            </div>
+            <p class="policy-text">Winning tournaments and completing offers rewards you with Tournyx Points (PTS).</p>
+            <ul class="policy-list">
+                <li>Points are non-transferable between accounts.</li>
+                <li>Withdrawal requests are typically processed within <span class="highlight">24-48 hours</span>.</li>
+                <li>Tournyx reserves the right to withhold prizes if a player is found guilty of violating Fair Play rules during a match.</li>
+            </ul>
+        </div>
+
+        <div class="policy-card pc-privacy">
+            <div class="policy-header">
+                <i class="fa-solid fa-fingerprint policy-icon"></i>
+                <div class="policy-title">3. Privacy & Data Security</div>
+            </div>
+            <p class="policy-text">We value your privacy as much as your gameplay. Here is how we handle your data:</p>
+            <ul class="policy-list">
+                <li><span class="highlight">What we collect:</span> Email addresses, In-Game Names (IGNs), encrypted passwords, and match history.</li>
+                <li><span class="highlight">How we use it:</span> To verify your identity in tournaments, process payouts, and secure your account.</li>
+                <li><span class="highlight">Data Sharing:</span> We will <span class="highlight" style="color:var(--accent-red)">never</span> sell your personal data to third-party marketing companies.</li>
+            </ul>
+        </div>
+
+        <div class="policy-card pc-general">
+            <div class="policy-header">
+                <i class="fa-solid fa-file-contract policy-icon"></i>
+                <div class="policy-title">4. General Agreements</div>
+            </div>
+            <p class="policy-text">By creating an account on Tournyx, you acknowledge that you are at least 13 years of age (or the minimum legal age in your region). Tournyx is an independent platform and is not directly affiliated with Garena (Free Fire) or Krafton (BGMI).</p>
+        </div>
+
+        <div class="contact-box">
+            <p>Have questions about our policies or need to report a player?</p>
+            <div class="contact-email"><i class="fa-solid fa-envelope" style="margin-right:5px;"></i> support@tournyx.com</div>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        <div class="footer-logo"><i class="fa-solid fa-bolt" style="color:var(--accent-cyan)"></i> TOURNYX</div>
+        <div class="footer-text">Built for Gamers, By Gamers.</div>
+        <div class="footer-text" style="margin-top: 10px; font-size: 0.7rem;">&copy; 2026 Tournyx eSports. All Rights Reserved.</div>
+    </footer>
+
+    <nav class="bottom-nav">
+        <a class="nav-item" href="https://tournyx.blogspot.com/p/tournyx-ultimate-esports-platform_95.html?m=1"><i class="fa-solid fa-house"></i><span>Home</span></a>
+        <a class="nav-item" href="https://tournyx.blogspot.com/p/explore-tournyx-root-primary-bg-050511_25.html"><i class="fa-solid fa-compass"></i><span>Explore</span></a>
+        <a class="nav-item" href="https://tournyx.blogspot.com/p/create-tournament-tournyx-root-primary_16.html?m=1"><i class="fa-solid fa-plus-circle" style="color:var(--accent-cyan); font-size:1.8rem;"></i><span>Create</span></a>
+        <a class="nav-item" href="https://tournyx.blogspot.com/p/my-matches-tournyx-root-primary-bg.html"><i class="fa-solid fa-trophy"></i><span>Matches</span></a>
+        <a class="nav-item" href="https://tournyx.blogspot.com/p/my-profile-tournyx-root-primary-bg_83.html"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+    </nav>
+
+    <script>
+        // --- Particles Animation (Same as other pages for consistency) ---
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particles = [];
+        class P {
+            constructor(){ this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.s=Math.random()*2; this.vx=Math.random()*0.5-0.25; this.vy=Math.random()*0.5-0.25; }
+            u(){ this.x+=this.vx; this.y+=this.vy; if(this.x<0||this.x>canvas.width)this.vx*=-1; if(this.y<0||this.y>canvas.height)this.vy*=-1; }
+            d(){ ctx.fillStyle='rgba(0,242,255,0.3)'; ctx.beginPath(); ctx.arc(this.x,this.y,this.s,0,Math.PI*2); ctx.fill(); }
+        }
+        for(let i=0;i<50;i++) particles.push(new P());
+        function anim(){ ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.u();p.d()}); requestAnimationFrame(anim); }
+        anim();
+    </script>
+</body>
+</html>
