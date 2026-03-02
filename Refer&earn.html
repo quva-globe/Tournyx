@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tournyx - Refer & Earn</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        /* --- GLOBAL VARIABLES (Matching your theme) --- */
+        :root {
+            --primary-bg: #050511;
+            --card-bg: rgba(20, 20, 35, 0.6);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --accent-cyan: #00f2ff;
+            --accent-purple: #bd00ff;
+            --accent-orange: #ff9900;
+            --accent-green: #00ff7f;
+            --accent-gradient: linear-gradient(90deg, #bd00ff, #00f2ff);
+            --text-main: #ffffff;
+            --text-muted: #a0a0b0;
+            --font-head: 'Orbitron', sans-serif;
+            --font-body: 'Rajdhani', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            padding-bottom: 90px; 
+            padding-top: 70px;
+        }
+
+        /* --- BACKGROUND --- */
+        #particles-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background: radial-gradient(circle at 50% 50%, #1a0b2e 0%, #050511 100%);
+        }
+
+        /* --- HEADER --- */
+        .top-header {
+            position: fixed; top: 0; left: 0; width: 100%; padding: 15px 20px;
+            background: rgba(5, 5, 17, 0.95); backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex; align-items: center; justify-content: space-between; z-index: 2000;
+        }
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .back-btn { color: white; font-size: 1.2rem; text-decoration: none; }
+        .app-title {
+            font-family: var(--font-head); font-size: 1.2rem; font-weight: 700;
+            background: linear-gradient(90deg, #fff, #00f2ff);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero { text-align: center; padding: 30px 20px 20px; }
+        .hero-icon { font-size: 3rem; color: var(--accent-orange); margin-bottom: 15px; text-shadow: 0 0 20px rgba(255, 153, 0, 0.5); }
+        .hero h1 { font-family: var(--font-head); font-size: 1.8rem; line-height: 1.4; margin-bottom: 10px; }
+        .gradient-text { background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; }
+        .hero p { color: var(--text-muted); font-size: 1rem; max-width: 400px; margin: 0 auto; }
+
+        /* --- STATS GRID --- */
+        .stats-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px 25px;
+        }
+        .stat-card {
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            border-radius: 15px; padding: 20px 10px; text-align: center;
+            backdrop-filter: blur(5px); position: relative; overflow: hidden;
+        }
+        .stat-card.purple { border-bottom: 3px solid var(--accent-purple); }
+        .stat-card.cyan { border-bottom: 3px solid var(--accent-cyan); }
+        .stat-val { font-family: var(--font-head); font-size: 2rem; color: white; display: block; margin-bottom: 5px; font-weight: 700; }
+        .stat-label { font-size: 0.85rem; color: #888; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+
+        /* --- REFERRAL BOX --- */
+        .referral-section { padding: 0 20px 30px; }
+        .referral-box {
+            background: linear-gradient(135deg, rgba(0, 242, 255, 0.05), rgba(189, 0, 255, 0.05));
+            border: 1px solid var(--accent-cyan);
+            border-radius: 16px; padding: 25px; text-align: center;
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.1);
+        }
+        .rb-title { font-family: var(--font-head); font-size: 1.1rem; margin-bottom: 10px; }
+        .rb-subtitle { font-size: 0.9rem; color: #aaa; margin-bottom: 20px; }
+        
+        .code-display-wrap {
+            background: #000; border: 1px dashed rgba(255,255,255,0.3);
+            border-radius: 10px; padding: 15px; display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .code-text { font-family: var(--font-head); font-size: 1.3rem; color: var(--accent-green); letter-spacing: 2px; }
+        .copy-btn {
+            background: rgba(255,255,255,0.1); border: none; color: white;
+            width: 40px; height: 40px; border-radius: 8px; font-size: 1.2rem;
+            cursor: pointer; transition: 0.2s;
+        }
+        .copy-btn:hover, .copy-btn:active { background: var(--accent-cyan); color: #000; }
+
+        .share-buttons { display: flex; gap: 10px; }
+        .share-btn {
+            flex: 1; padding: 12px; border-radius: 10px; font-family: var(--font-head);
+            font-size: 0.9rem; font-weight: 600; text-decoration: none; color: white;
+            display: flex; align-items: center; justify-content: center; gap: 8px; border: none;
+        }
+        .btn-wa { background: #25D366; color: #000; }
+        .btn-sys { background: var(--accent-purple); }
+
+        /* --- HOW IT WORKS --- */
+        .how-it-works { padding: 0 20px 30px; }
+        .section-title { font-family: var(--font-head); font-size: 1.3rem; margin-bottom: 20px; text-align: center; }
+        
+        .step-row {
+            display: flex; align-items: flex-start; gap: 15px; margin-bottom: 20px;
+            background: rgba(255,255,255,0.02); padding: 15px; border-radius: 12px; border: 1px solid #1f1f35;
+        }
+        .step-icon {
+            width: 45px; height: 45px; border-radius: 50%; background: rgba(0, 242, 255, 0.1);
+            color: var(--accent-cyan); display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; flex-shrink: 0; border: 1px solid rgba(0, 242, 255, 0.3);
+        }
+        .step-content h4 { font-family: var(--font-head); font-size: 1.05rem; margin-bottom: 5px; color: white; }
+        .step-content p { font-size: 0.85rem; color: #888; line-height: 1.4; }
+
+        /* --- TOAST NOTIFICATION --- */
+        #toast {
+            visibility: hidden; min-width: 250px; background-color: var(--accent-green);
+            color: #000; text-align: center; border-radius: 30px; padding: 12px;
+            position: fixed; z-index: 3000; left: 50%; bottom: 100px; transform: translateX(-50%);
+            font-family: var(--font-head); font-weight: 600; font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(0, 255, 127, 0.4);
+        }
+        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+        @keyframes fadein { from { bottom: 80px; opacity: 0; } to { bottom: 100px; opacity: 1; } }
+        @keyframes fadeout { from { bottom: 100px; opacity: 1; } to { bottom: 80px; opacity: 0; } }
+
+        /* --- BOTTOM NAV --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: #0a0a14; display: flex; justify-content: space-around;
+            padding: 15px 0 20px; border-top: 1px solid #1f1f35; z-index: 1000;
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; color: #666; text-decoration: none; font-size: 0.7rem; }
+        .nav-item.active { color: var(--accent-cyan); }
+        .nav-item i { font-size: 1.2rem; }
+    </style>
+</head>
+<body>
+
+    <canvas id="particles-canvas"></canvas>
+
+    <header class="top-header">
+        <div class="header-left">
+            <a href="javascript:history.back()" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+            <div class="app-title">REFER & EARN</div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-icon"><i class="fa-solid fa-gift"></i></div>
+        <h1>Build Your Squad.<br><span class="gradient-text">Earn Huge Rewards.</span></h1>
+        <p>Invite your friends to Tournyx. You both get rewarded when they play their first match!</p>
+    </section>
+
+    <section class="stats-grid">
+        <div class="stat-card purple">
+            <span class="stat-val" id="totalReferrals">0</span>
+            <span class="stat-label">Friends Invited</span>
+        </div>
+        <div class="stat-card cyan">
+            <span class="stat-val" style="color:var(--accent-cyan);" id="totalPoints">0</span>
+            <span class="stat-label">Points Earned</span>
+        </div>
+    </section>
+
+    <section class="referral-section">
+        <div class="referral-box">
+            <div class="rb-title">Your Unique Invite Code</div>
+            <div class="rb-subtitle">Share this code to get <span style="color:var(--accent-orange); font-weight:bold;">200 PTS</span> per referral</div>
+            
+            <div class="code-display-wrap">
+                <div class="code-text" id="inviteCode">LOADING...</div>
+                <button class="copy-btn" onclick="copyCode()"><i class="fa-regular fa-copy"></i></button>
+            </div>
+
+            <div class="share-buttons">
+                <button class="share-btn btn-wa" onclick="shareWhatsApp()">
+                    <i class="fa-brands fa-whatsapp" style="font-size:1.2rem;"></i> WhatsApp
+                </button>
+                <button class="share-btn btn-sys" onclick="shareSystem()">
+                    <i class="fa-solid fa-share-nodes"></i> Share Link
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section class="how-it-works">
+        <h2 class="section-title">How It <span style="color:var(--accent-purple)">Works</span></h2>
+        
+        <div class="step-row">
+            <div class="step-icon"><i class="fa-solid fa-paper-plane"></i></div>
+            <div class="step-content">
+                <h4>1. Share Your Link</h4>
+                <p>Send your unique invite code or referral link to your gaming buddies.</p>
+            </div>
+        </div>
+
+        <div class="step-row">
+            <div class="step-icon" style="color:var(--accent-purple); border-color:rgba(189,0,255,0.3); background:rgba(189,0,255,0.1);"><i class="fa-solid fa-user-plus"></i></div>
+            <div class="step-content">
+                <h4>2. Friend Registers</h4>
+                <p>Your friend creates a Tournyx account using your invite code.</p>
+            </div>
+        </div>
+
+        <div class="step-row">
+            <div class="step-icon" style="color:var(--accent-green); border-color:rgba(0,255,127,0.3); background:rgba(0,255,127,0.1);"><i class="fa-solid fa-coins"></i></div>
+            <div class="step-content">
+                <h4>3. Earn 200 Points</h4>
+                <p>Once they join their first tournament, 200 Points are instantly added to your wallet.</p>
+            </div>
+        </div>
+    </section>
+
+    <div id="toast"><i class="fa-solid fa-circle-check"></i> Code Copied to Clipboard!</div>
+
+    <nav class="bottom-nav">
+        <a class="nav-item" href="https://tournyx.blogspot.com/p/tournyx-ultimate-esports-platform_95.html?m=1"><i class="fa-solid fa-house"></i><span>Home</span></a>
+        <a class="nav-item" href="https://tournyx.blogspot.com/p/explore-tournyx-root-primary-bg-050511_25.html"><i class="fa-solid fa-compass"></i><span>Explore</span></a>
+        <a class="nav-item" href="https://tournyx.blogspot.com/p/create-tournament-tournyx-root-primary_16.html?m=1"><i class="fa-solid fa-plus-circle" style="color:var(--accent-cyan); font-size:1.8rem;"></i><span>Create</span></a>
+        <a class="nav-item" href="https://tournyx.blogspot.com/p/my-matches-tournyx-root-primary-bg.html"><i class="fa-solid fa-trophy"></i><span>Matches</span></a>
+        <a class="nav-item" href="https://tournyx.blogspot.com/p/my-profile-tournyx-root-primary-bg_83.html"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+    </nav>
+
+    <script>
+        // --- REAL USER DATA LOGIC ---
+        let shareMessage = ""; // We will build this dynamically now
+
+        window.addEventListener('load', () => {
+            // 1. Grab the REAL user from local storage
+            let user = JSON.parse(localStorage.getItem('tournyx_user'));
+            
+            if (!user) {
+                // If they aren't logged in, send them to login
+                window.location.href = "https://tournyx.blogspot.com/p/login-tournyx-root-primary-bg-050511_8.html?m=1";
+                return;
+            }
+
+            // 2. Extract their real points and code
+            let userPoints = parseInt(user.points) || 0;
+            let userCode = user.inviteCode || "TRNX-GUEST";
+            
+            // Calculate approximate referrals based on points 
+            // Since new users start with 50 points, we divide their total appropriately
+            let calculatedReferrals = 0;
+            if (userPoints >= 50) {
+                // Divide total points by 200 (floor value)
+                calculatedReferrals = Math.floor(userPoints / 200); 
+            }
+
+            // 3. Animate the numbers on the screen
+            animateValue("totalReferrals", 0, calculatedReferrals, 1000);
+            animateValue("totalPoints", 0, userPoints, 1500);
+
+            // 4. Set their actual Invite Code on the screen
+            document.getElementById('inviteCode').innerText = userCode;
+
+            // 5. Update the Share Message so it uses THEIR real code
+            shareMessage = `Hey! Join me on Tournyx to play esports tournaments and win cash. Use my code ${userCode} to get 50 Bonus Points to start! https://tournyx.blogspot.com/p/download-tournyx-esports-app-global.html`;
+        });
+
+        // Copy Code Functionality
+        function copyCode() {
+            const code = document.getElementById('inviteCode').innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                showToast();
+            });
+        }
+
+        // Show Toast Function
+        function showToast() {
+            var x = document.getElementById("toast");
+            x.className = "show";
+            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+        }
+
+        // Share Options using dynamic variable
+        function shareWhatsApp() {
+            const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareMessage)}`;
+            window.open(waUrl, '_blank');
+        }
+
+        function shareSystem() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Join Tournyx Esports',
+                    text: shareMessage,
+                    url: 'https://tournyx.blogspot.com/p/download-tournyx-esports-app-global.html'
+                }).catch(console.error);
+            } else {
+                // Fallback if system share isn't supported (just copy text)
+                navigator.clipboard.writeText(shareMessage);
+                document.getElementById("toast").innerHTML = '<i class="fa-solid fa-circle-check"></i> Invite message copied!';
+                showToast();
+            }
+        }
+
+        // Number Counter Animation Function
+        function animateValue(id, start, end, duration) {
+            if (start === end) {
+                document.getElementById(id).innerHTML = end.toLocaleString();
+                return;
+            }
+            let range = end - start;
+            let current = start;
+            let increment = end > start ? 1 : -1;
+            let stepTime = Math.abs(Math.floor(duration / range));
+            let obj = document.getElementById(id);
+            let timer = setInterval(function() {
+                current += increment;
+                // Add comma formatting for points (e.g. 1,400)
+                obj.innerHTML = current.toLocaleString();
+                if (current == end) {
+                    clearInterval(timer);
+                }
+            }, stepTime);
+        }
+
+        // Particles Animation
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particles = [];
+        class P {
+            constructor(){ this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.s=Math.random()*2; this.vx=Math.random()*0.5-0.25; this.vy=Math.random()*0.5-0.25; }
+            u(){ this.x+=this.vx; this.y+=this.vy; if(this.x<0||this.x>canvas.width)this.vx*=-1; if(this.y<0||this.y>canvas.height)this.vy*=-1; }
+            d(){ ctx.fillStyle='rgba(0,242,255,0.3)'; ctx.beginPath(); ctx.arc(this.x,this.y,this.s,0,Math.PI*2); ctx.fill(); }
+        }
+        for(let i=0;i<50;i++) particles.push(new P());
+        function anim(){ ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.u();p.d()}); requestAnimationFrame(anim); }
+        anim();
+    </script>
+</body>
+</html>
