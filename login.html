@@ -6,25 +6,26 @@
     <title>Login - Tournyx</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
+        /* --- GLOBAL VARIABLES --- */
         :root {
-            --primary-bg: #050511;
-            --card-bg: rgba(20, 20, 35, 0.85);
-            --input-bg: rgba(10, 10, 20, 0.6);
-            --card-border: rgba(255, 255, 255, 0.1);
+            --primary-bg: #070311;
+            --card-bg: rgba(20, 10, 35, 0.7);
+            --input-bg: rgba(10, 5, 20, 0.8);
+            --card-border: rgba(189, 0, 255, 0.3);
             --accent-cyan: #00f2ff;
             --accent-purple: #bd00ff;
             --accent-gradient: linear-gradient(90deg, #bd00ff, #00f2ff);
             --text-main: #ffffff;
             --text-muted: #a0a0b0;
-            --font-display: 'Orbitron', sans-serif;
+            --font-head: 'Orbitron', sans-serif;
             --font-body: 'Rajdhani', sans-serif;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
             background-color: var(--primary-bg);
@@ -38,128 +39,166 @@
             position: relative;
         }
 
+        /* --- BACKGROUND --- */
         #particles-canvas {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1;
-            background: radial-gradient(circle at 50% 50%, #1a0b2e 0%, #050511 100%);
+            background: radial-gradient(circle at 50% 50%, #15062e 0%, #070311 100%);
         }
 
-        /* --- Auth Card --- */
-        .auth-container { width: 100%; max-width: 420px; padding: 20px; z-index: 10; }
+        /* --- AUTH CARD --- */
+        .auth-container { width: 100%; max-width: 420px; padding: 20px; z-index: 10; animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+
+        @keyframes popIn {
+            0% { transform: scale(0.9) translateY(20px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
 
         .auth-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: 20px;
             padding: 30px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 0 30px rgba(0,0,0,0.6);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.8), inset 0 0 20px rgba(189,0,255,0.1);
             position: relative;
             overflow: hidden;
         }
 
         .auth-card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px;
             background: var(--accent-gradient);
+            box-shadow: 0 0 15px var(--accent-purple);
         }
 
+        /* --- LOGO AREA --- */
         .logo-area { text-align: center; margin-bottom: 25px; }
-        .logo-icon {
-            width: 50px; height: 50px;
-            background: var(--accent-gradient);
-            border-radius: 50%;
-            display: inline-flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; color: white;
-            clip-path: polygon(15% 0, 100% 0, 85% 100%, 0% 100%);
-            margin-bottom: 10px;
+        
+        .brand-logo {
+            width: 100px; height: 100px;
+            object-fit: contain;
+            margin-bottom: 5px;
+            animation: floatLogo 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 15px rgba(189, 0, 255, 0.6));
         }
-        .app-name { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 2px; }
 
-        /* --- Tabs --- */
+        @keyframes floatLogo {
+            0%, 100% { transform: translateY(0); filter: drop-shadow(0 0 15px rgba(189, 0, 255, 0.6)); }
+            50% { transform: translateY(-8px); filter: drop-shadow(0 0 25px rgba(189, 0, 255, 0.9)); }
+        }
+
+        .app-name { 
+            font-family: var(--font-head); font-size: 1.6rem; letter-spacing: 3px; font-weight: 900;
+            background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(255,255,255,0.1);
+        }
+
+        /* --- TABS --- */
         .role-tabs { display: flex; gap: 10px; margin-bottom: 25px; }
         
         .role-tab-btn {
             flex: 1; padding: 12px; text-align: center; cursor: pointer;
-            font-family: var(--font-display); font-size: 0.9rem;
-            color: var(--text-muted); border: 1px solid var(--card-border);
-            border-radius: 10px; transition: all 0.3s; background: rgba(0,0,0,0.2);
+            font-family: var(--font-head); font-size: 0.95rem; font-weight: bold;
+            color: #888; border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px; transition: 0.3s; background: rgba(0,0,0,0.4);
         }
 
         .role-tab-btn.active {
             background: rgba(189, 0, 255, 0.15);
             border-color: var(--accent-purple); color: white;
-            box-shadow: 0 0 15px rgba(189, 0, 255, 0.2);
+            box-shadow: 0 0 15px rgba(189, 0, 255, 0.3); text-shadow: 0 0 5px rgba(255,255,255,0.5);
         }
         
         .role-tab-btn.active.org-btn {
             background: rgba(0, 242, 255, 0.15);
             border-color: var(--accent-cyan);
-            box-shadow: 0 0 15px rgba(0, 242, 255, 0.2);
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
         }
 
-        /* --- Sub Tabs --- */
+        /* --- SUB TABS --- */
         .sub-tabs { display: flex; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .sub-tab {
             flex: 1; text-align: center; padding-bottom: 10px;
-            font-size: 0.9rem; color: #666; cursor: pointer; position: relative;
+            font-size: 0.95rem; color: #666; cursor: pointer; position: relative; font-family: var(--font-head); font-weight: bold; transition: 0.3s;
         }
-        .sub-tab.active { color: white; font-weight: bold; }
+        .sub-tab.active { color: white; text-shadow: 0 0 5px rgba(255,255,255,0.3); }
         .sub-tab.active::after {
-            content: ''; position: absolute; bottom: -1px; left: 0; width: 100%; height: 2px;
-            background: var(--accent-purple);
+            content: ''; position: absolute; bottom: -1px; left: 0; width: 100%; height: 3px;
+            background: var(--accent-purple); box-shadow: 0 -2px 10px var(--accent-purple); border-radius: 2px 2px 0 0;
         }
 
-        /* --- Forms --- */
-        .form-section { display: none; animation: fadeIn 0.4s ease-out; }
+        /* --- FORMS & INPUTS --- */
+        .form-section { display: none; animation: fadeSlideUp 0.4s ease-out forwards; }
         .form-section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .input-group { position: relative; margin-bottom: 20px; }
-        .input-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+        @keyframes fadeSlideUp { 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+
+        .input-group { position: relative; margin-bottom: 15px; }
+        .input-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #666; transition: 0.3s; }
         
         .form-control {
             width: 100%; background: var(--input-bg);
-            border: 1px solid var(--card-border); border-radius: 10px;
-            padding: 12px 15px 12px 45px; color: white;
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;
+            padding: 14px 15px 14px 45px; color: white;
             font-family: var(--font-body); font-size: 1rem; outline: none; transition: 0.3s;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
         }
-        .form-control:focus { border-color: var(--accent-cyan); box-shadow: 0 0 10px rgba(0, 242, 255, 0.2); }
+        .form-control:focus { 
+            border-color: var(--accent-purple); 
+            box-shadow: 0 0 15px rgba(189, 0, 255, 0.2), inset 0 0 10px rgba(0,0,0,0.5); 
+        }
+        .form-control:focus + .input-icon, .form-control:not(:placeholder-shown) + .input-icon { color: var(--accent-cyan); }
+        
+        /* Auto-fill style fix */
+        input:-webkit-autofill { -webkit-box-shadow: 0 0 0 30px var(--input-bg) inset !important; -webkit-text-fill-color: white !important; }
 
         .submit-btn {
-            width: 100%; padding: 12px; background: var(--accent-gradient);
-            border: none; border-radius: 10px; color: white;
-            font-family: var(--font-display); font-size: 1rem; font-weight: 700;
-            cursor: pointer; transition: transform 0.2s; margin-top: 5px;
+            width: 100%; padding: 15px; background: var(--accent-gradient);
+            border: none; border-radius: 12px; color: white;
+            font-family: var(--font-head); font-size: 1.05rem; font-weight: 700; letter-spacing: 1px;
+            cursor: pointer; transition: 0.3s; margin-top: 10px;
+            box-shadow: 0 5px 20px rgba(189,0,255,0.4); position: relative; overflow: hidden;
         }
-        .submit-btn:active { transform: scale(0.98); }
+        .submit-btn::after {
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmerBtn 2.5s infinite;
+        }
+        @keyframes shimmerBtn { 100% { left: 200%; } }
+        .submit-btn:active { transform: scale(0.96); box-shadow: 0 2px 10px rgba(189,0,255,0.4); }
 
         /* Organizer Apply Link */
-        .org-apply-box {
-            margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);
-            text-align: center;
-        }
+        .org-apply-box { margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; }
         .org-apply-btn {
-            display: inline-block; padding: 10px 20px;
-            border: 1px solid var(--accent-cyan); border-radius: 20px;
-            color: var(--accent-cyan); text-decoration: none; font-size: 0.8rem;
-            transition: 0.3s;
+            display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px;
+            border: 1px solid var(--accent-cyan); border-radius: 20px; background: rgba(0,242,255,0.05);
+            color: var(--accent-cyan); text-decoration: none; font-size: 0.85rem; font-family: var(--font-head); font-weight: bold; transition: 0.3s;
         }
-        .org-apply-btn:hover { background: var(--accent-cyan); color: black; }
+        .org-apply-btn:hover { background: var(--accent-cyan); color: #000; box-shadow: 0 0 15px rgba(0,242,255,0.4); }
 
-        /* Loading */
+        /* Loading & Errors */
         .loading-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5,5,17,0.95); z-index: 20; display: none;
-            flex-direction: column; align-items: center; justify-content: center;
+            background: rgba(5,3,15,0.95); z-index: 20; display: none;
+            flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(5px);
         }
-        .loading-overlay.active { display: flex; }
+        .loading-overlay.active { display: flex; animation: fadeIn 0.3s; }
         .spinner {
-            width: 40px; height: 40px; border: 4px solid #333;
+            width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.1);
             border-top: 4px solid var(--accent-cyan); border-radius: 50%;
-            animation: spin 1s linear infinite; margin-bottom: 15px;
+            animation: spin 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite; margin-bottom: 15px; box-shadow: 0 0 15px rgba(0,242,255,0.5);
         }
         @keyframes spin { 100% { transform: rotate(360deg); } }
-        .error-msg { color: #ff0055; text-align: center; margin-bottom: 15px; font-size: 0.9rem; display: none; }
+        
+        .error-msg { 
+            background: rgba(255, 77, 77, 0.1); border: 1px solid rgba(255, 77, 77, 0.3);
+            color: #ff4d4d; text-align: center; padding: 10px; border-radius: 10px;
+            margin-bottom: 15px; font-size: 0.85rem; display: none; font-family: var(--font-body); font-weight: bold;
+            animation: fadeSlideUp 0.3s;
+        }
 
     </style>
 </head>
@@ -171,7 +210,7 @@
         <div class="auth-card">
             
             <div class="logo-area">
-                <div class="logo-icon"><i class="fa-solid fa-bolt"></i></div>
+                <img src="1000093705.png" alt="Tournyx Logo" class="brand-logo">
                 <div class="app-name">TOURNYX</div>
             </div>
 
@@ -184,7 +223,7 @@
                 </div>
             </div>
 
-            <div class="error-msg" id="errorMsg">Invalid Credentials</div>
+            <div class="error-msg" id="errorMsg"><i class="fa-solid fa-triangle-exclamation"></i> Invalid Credentials</div>
 
             <div id="playerSection" class="form-section active">
                 <div class="sub-tabs">
@@ -194,59 +233,59 @@
 
                 <form id="playerLoginForm" style="display:block;">
                     <div class="input-group">
-                        <i class="fa-solid fa-envelope input-icon"></i>
                         <input type="email" name="email" class="form-control" placeholder="Player Email" required>
+                        <i class="fa-solid fa-envelope input-icon"></i>
                     </div>
                     <div class="input-group">
-                        <i class="fa-solid fa-lock input-icon"></i>
                         <input type="password" name="password" class="form-control" placeholder="Password" required>
+                        <i class="fa-solid fa-lock input-icon"></i>
                     </div>
-                    <button type="submit" class="submit-btn">PLAYER LOGIN</button>
+                    <button type="submit" class="submit-btn">ENTER BATTLEGROUND</button>
                 </form>
 
                 <form id="playerSignupForm" style="display:none;">
                     <div class="input-group">
-                        <i class="fa-solid fa-user input-icon"></i>
                         <input type="text" name="username" class="form-control" placeholder="Username" required>
+                        <i class="fa-solid fa-user input-icon"></i>
                     </div>
                     <div class="input-group">
-                        <i class="fa-solid fa-gamepad input-icon"></i>
                         <input type="text" name="ign" class="form-control" placeholder="In-Game Name (IGN)" required>
+                        <i class="fa-solid fa-gamepad input-icon"></i>
                     </div>
                     <div class="input-group">
-                        <i class="fa-solid fa-envelope input-icon"></i>
                         <input type="email" name="email" class="form-control" placeholder="Email Address" required>
+                        <i class="fa-solid fa-envelope input-icon"></i>
                     </div>
                     <div class="input-group">
-                        <i class="fa-solid fa-lock input-icon"></i>
                         <input type="password" name="password" class="form-control" placeholder="Create Password" required>
+                        <i class="fa-solid fa-lock input-icon"></i>
                     </div>
                     <div class="input-group">
+                        <input type="text" name="referral" id="refInput" class="form-control" placeholder="Referral Code (Optional)">
                         <i class="fa-solid fa-gift input-icon"></i>
-                        <input type="text" name="referral" class="form-control" placeholder="Referral Code (Optional)">
                     </div>
                     <button type="submit" class="submit-btn">CREATE ACCOUNT</button>
                 </form>
             </div>
 
             <div id="organizerSection" class="form-section">
-                <p style="text-align:center; color:#aaa; font-size:0.85rem; margin-bottom:15px;">
-                    Restricted Access. Admin Approval Required.
+                <p style="text-align:center; color:#aaa; font-size:0.85rem; margin-bottom:20px; line-height: 1.4;">
+                    <i class="fa-solid fa-shield-halved" style="color:var(--accent-cyan);"></i> Restricted Access.<br>Admin Approval Required.
                 </p>
                 <form id="organizerLoginForm">
                     <div class="input-group">
-                        <i class="fa-solid fa-shield-halved input-icon" style="color:var(--accent-cyan)"></i>
                         <input type="email" name="email" class="form-control" placeholder="Organizer Email" required>
+                        <i class="fa-solid fa-envelope input-icon" style="color:var(--accent-cyan)"></i>
                     </div>
                     <div class="input-group">
-                        <i class="fa-solid fa-key input-icon" style="color:var(--accent-cyan)"></i>
                         <input type="password" name="password" class="form-control" placeholder="Access Key" required>
+                        <i class="fa-solid fa-key input-icon" style="color:var(--accent-cyan)"></i>
                     </div>
-                    <button type="submit" class="submit-btn" style="background:var(--accent-cyan); color:black;">ORGANIZER LOGIN</button>
+                    <button type="submit" class="submit-btn" style="background:var(--accent-cyan); color:black; box-shadow: 0 5px 20px rgba(0,242,255,0.4);">ORGANIZER LOGIN</button>
                 </form>
 
                 <div class="org-apply-box">
-                    <p style="font-size:0.8rem; color:#888; margin-bottom:10px;">Want to host tournaments?</p>
+                    <p style="font-size:0.8rem; color:#888; margin-bottom:12px;">Want to host tournaments & monetize?</p>
                     <a href="https://docs.google.com/forms/d/e/1FAIpQLSe6k-ejzzvmEdYU6ynHlMIyr_PgQibH5ViBV5_v3HBpCdIbjw/viewform?usp=dialog" target="_blank" class="org-apply-btn">
                         Apply for Access <i class="fa-solid fa-arrow-up-right-from-square"></i>
                     </a>
@@ -255,32 +294,49 @@
 
             <div class="loading-overlay" id="loader">
                 <div class="spinner"></div>
-                <div style="font-family: var(--font-display); color:white" id="loadingText">AUTHENTICATING...</div>
+                <div style="font-family: var(--font-head); font-weight: bold; color:white; letter-spacing: 1px;" id="loadingText">AUTHENTICATING...</div>
             </div>
 
         </div>
     </div>
 
     <script>
-        // --- Particles ---
+        // --- PARTICLES ENGINE ---
         const canvas = document.getElementById('particles-canvas');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
         let particles = [];
         class P {
-            constructor(){ this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.vx=Math.random()*0.5-0.25; this.vy=Math.random()*0.5-0.25; this.size=Math.random()*2; }
+            constructor(){ this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.vx=Math.random()*0.5-0.25; this.vy=Math.random()*0.5-0.25; this.size=Math.random()*2+0.5; }
             u(){ this.x+=this.vx; this.y+=this.vy; if(this.x<0||this.x>canvas.width)this.vx=-this.vx; if(this.y<0||this.y>canvas.height)this.vy=-this.vy; }
-            d(){ ctx.fillStyle='rgba(0,242,255,0.3)'; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); }
+            d(){ ctx.fillStyle='rgba(189,0,255,0.4)'; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); }
         }
-        for(let i=0;i<60;i++) particles.push(new P());
+        for(let i=0;i<50;i++) particles.push(new P());
         function anim(){ ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.u();p.d()}); requestAnimationFrame(anim); }
         anim();
+        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
 
         // --- GOOGLE APPS SCRIPT CONFIG ---
-        // 👇 PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE 👇
         const API_URL = 'https://script.google.com/macros/s/AKfycbynNLDDXS1wMrU6RGnk4nKb1jfQkQGuqrNIKWAt8wf46MaKP6y1rwGmSJg5fmm4KYU/exec';
         
-        // --- Tabs Logic ---
+        // --- SMART URL PARAMETER CATCHER (For Referrals) ---
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const refCode = urlParams.get('ref');
+            const tabParam = urlParams.get('tab');
+
+            if (refCode) {
+                // Auto-switch to signup and fill code
+                switchPlayerSub('signup');
+                document.getElementById('refInput').value = refCode;
+            }
+
+            if (tabParam === 'organizer') {
+                switchRole('organizer');
+            }
+        });
+
+        // --- TABS LOGIC ---
         const playerSec = document.getElementById('playerSection');
         const orgSec = document.getElementById('organizerSection');
         const btnPlayer = document.getElementById('btnRolePlayer');
@@ -325,14 +381,13 @@
             const formData = new FormData(e.target);
             const rawData = Object.fromEntries(formData);
             
-            // Payload for Apps Script (UPDATED WITH REFERRAL DATA)
             const payload = {
                 action: 'signup',
                 username: rawData.username,
                 ign: rawData.ign,
                 email: rawData.email,
                 password: rawData.password,
-                referral: rawData.referral || "", // Added referral to the backend payload
+                referral: rawData.referral || "", 
                 role: 'player'
             };
 
@@ -344,8 +399,7 @@
                 const result = await res.json();
                 
                 if(result.status === 'success') {
-                    // Auto login on success or redirect
-                    alert("Account Created! Please Login.");
+                    alert("Account Created Successfully! Please Login to continue.");
                     switchPlayerSub('login');
                     loader.classList.remove('active');
                 } else {
@@ -357,7 +411,7 @@
         // PLAYER LOGIN
         document.getElementById('playerLoginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            startLoad("VERIFYING PLAYER...");
+            startLoad("VERIFYING CREDENTIALS...");
             const email = e.target.email.value;
             const password = e.target.password.value;
             
@@ -369,11 +423,11 @@
                 const result = await res.json();
                 
                 if (result.status === 'success') {
-                    loginSuccess(result.data, 'https://tournyx.blogspot.com/p/tournyx-ultimate-esports-platform_95.html?m=1');
+                    loginSuccess(result.data, 'index.html');
                 } else { 
                     showError("Invalid Credentials"); 
                 }
-            } catch (err) { showError("Network Error."); console.error(err); }
+            } catch (err) { showError("Network Error. Check your connection."); console.error(err); }
         });
 
         // ORGANIZER LOGIN
@@ -391,11 +445,10 @@
                 const result = await res.json();
                 
                 if (result.status === 'success') {
-                    // Verify Role
                     if(result.data.role === 'organizer') {
-                        loginSuccess(result.data, 'https://tournyx.blogspot.com/p/my-profile-tournyx-root-primary-bg_83.html');
+                        loginSuccess(result.data, 'profile.html');
                     } else {
-                        showError("Access Denied. Not an Organizer.");
+                        showError("Access Denied. Not an Authorized Organizer.");
                     }
                 } else { 
                     showError("Invalid Organizer Credentials"); 
@@ -403,18 +456,20 @@
             } catch (err) { showError("System Error."); console.error(err); }
         });
 
-        function startLoad(msg) { loader.classList.add('active'); loadingText.innerText = msg; errorMsg.style.display = 'none'; }
-        function showError(msg) { loader.classList.remove('active'); errorMsg.innerText = msg; errorMsg.style.display = 'block'; }
-        
+        // Helpers
+        function startLoad(msg) { 
+            loader.classList.add('active'); 
+            loadingText.innerText = msg; 
+            errorMsg.style.display = 'none'; 
+        }
+        function showError(msg) { 
+            loader.classList.remove('active'); 
+            errorMsg.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${msg}`; 
+            errorMsg.style.display = 'block'; 
+        }
         function loginSuccess(user, redirectUrl) {
             localStorage.setItem('tournyx_user', JSON.stringify(user));
             window.location.href = redirectUrl;
-        }
-
-        // --- AUTO-SWITCH TO ORG TAB ---
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('tab') === 'organizer') {
-            switchRole('organizer');
         }
     </script>
 </body>
