@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Redeem Rewards - Tournyx</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        /* --- GLOBAL VARIABLES --- */
+        :root {
+            --primary-bg: #070311;
+            --secondary-bg: #0d061e;
+            --card-bg: rgba(20, 10, 35, 0.7);
+            --card-border: rgba(189, 0, 255, 0.2);
+            --accent-cyan: #00f2ff;
+            --accent-purple: #bd00ff;
+            --accent-orange: #ff9900;
+            --accent-green: #00ff7f;
+            --accent-red: #ff4d4d;
+            --accent-gradient: linear-gradient(90deg, #7b2cbf, #bd00ff, #00f2ff);
+            --text-main: #ffffff;
+            --font-head: 'Orbitron', sans-serif;
+            --font-body: 'Rajdhani', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            overflow-x: hidden; padding-bottom: 90px; padding-top: 65px;
+        }
+
+        /* --- BACKGROUND --- */
+        #particles-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background: radial-gradient(circle at 50% 0%, #15062e 0%, #070311 100%);
+        }
+
+        /* --- HEADER & WALLET --- */
+        .top-header {
+            position: fixed; top: 0; left: 0; width: 100%; padding: 10px 15px; height: 65px;
+            background: rgba(7, 3, 17, 0.85); backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--card-border);
+            display: flex; align-items: center; justify-content: space-between; z-index: 2000;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+        }
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .back-btn { color: white; font-size: 1.3rem; text-decoration: none; transition: 0.3s; cursor: pointer; padding: 5px; }
+        .back-btn:active { color: var(--accent-cyan); transform: scale(0.9); }
+        .app-title {
+            font-family: var(--font-head); font-size: 1.2rem; font-weight: 700;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            letter-spacing: 1px; text-transform: uppercase;
+        }
+        .wallet-badge {
+            background: rgba(0, 242, 255, 0.1); border: 1px solid var(--accent-cyan);
+            padding: 6px 12px; border-radius: 12px; display: flex; align-items: center; gap: 6px;
+            font-family: var(--font-head); font-size: 0.95rem; color: var(--accent-cyan); font-weight: bold;
+            box-shadow: 0 0 10px rgba(0,242,255,0.3); transition: 0.3s;
+        }
+
+        /* --- HERO --- */
+        .hero { text-align: center; padding: 20px 20px 10px; animation: fadeIn 0.4s ease; }
+        .hero h1 { font-family: var(--font-head); font-size: 1.6rem; margin-bottom: 5px; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
+        .hero p { color: #a0a0b0; font-size: 0.95rem; }
+
+        @keyframes fadeIn { from{opacity:0; transform:translateY(15px);} to{opacity:1; transform:translateY(0);} }
+
+        /* --- CATEGORY FILTERS --- */
+        .filter-container {
+            padding: 10px 15px; display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none;
+            margin-bottom: 10px;
+        }
+        .filter-container::-webkit-scrollbar { display: none; }
+        .filter-btn {
+            background: rgba(255,255,255,0.05); border: 1px solid var(--card-border);
+            color: #a0a0b0; font-family: var(--font-head); font-size: 0.85rem; font-weight: bold;
+            padding: 8px 16px; border-radius: 20px; cursor: pointer; white-space: nowrap; transition: 0.3s;
+        }
+        .filter-btn.active { background: rgba(189,0,255,0.2); color: white; border-color: var(--accent-purple); box-shadow: 0 0 15px rgba(189,0,255,0.4); }
+
+        /* --- REWARD GRID --- */
+        .rewards-wrapper { padding: 0 15px 20px; max-width: 600px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+        .reward-card {
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; 
+            transition: 0.3s; box-shadow: 0 10px 25px rgba(0,0,0,0.5); animation: fadeIn 0.5s ease backwards;
+        }
+        .reward-card:active { transform: scale(0.96); border-color: var(--accent-cyan); }
+
+        .r-image-box {
+            height: 100px; display: flex; align-items: center; justify-content: center; font-size: 3.5rem; position: relative;
+        }
+        
+        /* Specific Card Gradients */
+        .bg-upi { background: linear-gradient(135deg, rgba(0,255,127,0.2), rgba(0,0,0,0.8)); color: var(--accent-green); }
+        .bg-play { background: linear-gradient(135deg, rgba(189,0,255,0.2), rgba(0,0,0,0.8)); color: #fff; }
+        .bg-ff { background: linear-gradient(135deg, rgba(255,153,0,0.2), rgba(0,0,0,0.8)); color: var(--accent-orange); }
+        .bg-bgmi { background: linear-gradient(135deg, rgba(0,242,255,0.2), rgba(0,0,0,0.8)); color: var(--accent-cyan); }
+        .bg-cod { background: linear-gradient(135deg, rgba(160,160,176,0.3), rgba(0,0,0,0.8)); color: #d0d0d0; }
+
+        .r-content { padding: 15px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .r-title { font-family: var(--font-head); font-size: 1rem; color: white; margin-bottom: 2px; font-weight: bold; }
+        .r-sub { font-size: 0.8rem; color: #a0a0b0; margin-bottom: 15px; font-weight: bold; }
+        
+        .r-btn {
+            width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--accent-purple);
+            background: rgba(189,0,255,0.1); color: var(--accent-cyan); font-family: var(--font-head); font-size: 0.95rem;
+            font-weight: bold; cursor: pointer; transition: 0.3s;
+            display: flex; justify-content: center; align-items: center; gap: 6px;
+        }
+        .r-btn:hover { background: var(--accent-purple); color: white; box-shadow: 0 0 15px rgba(189,0,255,0.4); }
+        
+        /* Locked State */
+        .r-btn.locked { background: rgba(255,255,255,0.05); border-color: #444; color: #666; cursor: not-allowed; box-shadow: none; }
+        .r-btn.locked:hover { background: rgba(255,255,255,0.05); color: #666; }
+
+        /* --- REDEEM BOTTOM SHEET MODAL --- */
+        .bottom-sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 5000; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(5px); opacity: 0; transition: 0.3s; }
+        .bottom-sheet-overlay.active { display: flex; opacity: 1; }
+        .bottom-sheet { width: 100%; background: var(--secondary-bg); border-radius: 20px 20px 0 0; border-top: 1px solid var(--card-border); padding: 25px 20px; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 90vh; overflow-y: auto; box-shadow: 0 -10px 40px rgba(0,0,0,0.8); }
+        .bottom-sheet-overlay.active .bottom-sheet { transform: translateY(0); }
+        
+        .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .sheet-title { font-family: var(--font-head); font-size: 1.2rem; color: white; display: flex; align-items: center; gap: 8px; }
+        .close-sheet { color: #888; font-size: 1.5rem; cursor: pointer; padding: 5px; transition: 0.3s; }
+
+        .sheet-reward-info { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; padding: 15px; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
+        .sri-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; }
+        .sri-details h4 { font-family: var(--font-head); font-size: 1.1rem; color: white; margin-bottom: 2px; }
+        .sri-details p { font-size: 0.85rem; color: var(--accent-cyan); font-weight: bold; font-family: var(--font-head); }
+
+        .form-label { display: block; font-size: 0.85rem; color: #a0a0b0; margin-bottom: 8px; font-family: var(--font-head); font-weight: bold; }
+        .form-input { width: 100%; background: #070311; border: 1px solid var(--card-border); padding: 14px 15px; border-radius: 10px; color: white; font-family: var(--font-body); font-size: 1rem; outline: none; transition: 0.3s; margin-bottom: 20px; box-shadow: inset 0 0 5px rgba(0,0,0,0.3); }
+        .form-input:focus { border-color: var(--accent-cyan); box-shadow: 0 0 10px rgba(0,242,255,0.2), inset 0 0 5px rgba(0,0,0,0.5); }
+
+        .btn-confirm { width: 100%; padding: 16px; background: var(--accent-gradient); border: none; border-radius: 12px; color: white; font-family: var(--font-head); font-size: 1.1rem; font-weight: bold; text-transform: uppercase; cursor: pointer; box-shadow: 0 5px 20px rgba(189,0,255,0.4); transition: 0.3s; }
+        .btn-confirm:active { transform: scale(0.98); }
+
+        /* --- ANIMATED OVERLAYS (Status) --- */
+        .full-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(7,3,17,0.98); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.4s; }
+        .full-overlay.active { opacity: 1; pointer-events: all; }
+        
+        .anim-circle { width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin-bottom: 20px; }
+        .anim-loading { border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--accent-cyan); animation: spin 1s linear infinite; box-shadow: 0 0 20px rgba(0,242,255,0.5); }
+        .anim-success { background: var(--accent-green); color: black; box-shadow: 0 0 30px rgba(0,255,127,0.6); animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .anim-error { background: var(--accent-red); color: white; box-shadow: 0 0 30px rgba(255,77,77,0.6); animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        
+        .overlay-title { font-family: var(--font-head); font-size: 1.5rem; color: white; margin-bottom: 10px; }
+        .overlay-desc { color: #aaa; font-size: 0.9rem; text-align: center; max-width: 80%; }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+        /* --- FOOTER & NAV --- */
+        .app-footer { text-align: center; padding: 20px; margin-bottom: 20px; border-top: 1px solid rgba(255,255,255,0.05); }
+        .footer-logo { font-family: var(--font-head); font-size: 1.1rem; letter-spacing: 1px; color: white; margin-bottom: 5px; display: inline-flex; align-items: center; gap: 8px; }
+        .footer-text { font-size: 0.75rem; color: #666; font-style: italic; }
+
+        /* PERFECTLY ALIGNED 7-TAB BOTTOM NAVIGATION */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(15px); border-top: 1px solid var(--card-border); z-index: 1000; display: flex; align-items: stretch; justify-content: space-between; padding: 0 5px; padding-bottom: env(safe-area-inset-bottom); box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
+        .nav-item { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; color: #666; text-decoration: none; font-size: 0.6rem; font-family: var(--font-head); font-weight: bold; transition: 0.3s; }
+        .nav-item.active { color: var(--accent-cyan); text-shadow: 0 0 10px rgba(0,242,255,0.5); }
+        .nav-item i { font-size: 1.2rem; transition: 0.3s; }
+        .nav-item:hover { color: white; }
+        .nav-item span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; text-transform: capitalize; }
+        
+        .fab-slot { flex: 1; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
+        .floating-plus { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 48px; height: 48px; background: var(--accent-cyan); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid var(--primary-bg); box-shadow: 0 0 0 2px var(--accent-purple), 0 -3px 10px rgba(0,0,0,0.5); color: #000; font-size: 1.5rem; cursor: pointer; transition: 0.3s; z-index: 10; }
+        .floating-plus:active { transform: translateX(-50%) scale(0.95); box-shadow: 0 0 0 2px var(--accent-purple), 0 -1px 5px rgba(0,0,0,0.5); }
+    </style>
+</head>
+<body>
+
+    <canvas id="particles-canvas"></canvas>
+
+    <header class="top-header">
+        <div class="header-left">
+            <a href="wallet.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+            <div class="app-title">STORE</div>
+        </div>
+        <div class="wallet-badge" id="walletBadge" onclick="window.location.href='wallet.html'">
+            <i class="fa-solid fa-coins"></i> <span id="userPointsDisplay"><i class="fa-solid fa-spinner fa-spin" style="font-size:0.8rem;"></i></span>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1>Redeem Rewards</h1>
+        <p>Turn your hard-earned points into real loot.</p>
+    </section>
+
+    <div class="filter-container">
+        <div class="filter-btn active" onclick="filterRewards('all', this)">All Rewards</div>
+        <div class="filter-btn" onclick="filterRewards('cash', this)">Cash</div>
+        <div class="filter-btn" onclick="filterRewards('games', this)">Game Top-Ups</div>
+        <div class="filter-btn" onclick="filterRewards('cards', this)">Gift Cards</div>
+    </div>
+
+    <div class="rewards-wrapper">
+        
+        <div class="reward-card cat-cash" style="animation-delay: 0.1s;">
+            <div class="r-image-box bg-upi"><i class="fa-solid fa-building-columns"></i></div>
+            <div class="r-content">
+                <div>
+                    <div class="r-title">UPI Transfer</div>
+                    <div class="r-sub">Rs. 50 Cash to Bank</div>
+                </div>
+                <button class="r-btn" id="btn-upi50" onclick="openRedeemModal('UPI Rs. 50', 2500, 'UPI ID / VPA', 'fa-building-columns', 'bg-upi')">2,500 PTS</button>
+            </div>
+        </div>
+
+        <div class="reward-card cat-cash" style="animation-delay: 0.2s;">
+            <div class="r-image-box bg-upi"><i class="fa-solid fa-money-bill-wave"></i></div>
+            <div class="r-content">
+                <div>
+                    <div class="r-title">UPI Transfer</div>
+                    <div class="r-sub">Rs. 100 Cash to Bank</div>
+                </div>
+                <button class="r-btn" id="btn-upi100" onclick="openRedeemModal('UPI Rs. 100', 5000, 'UPI ID / VPA', 'fa-money-bill-wave', 'bg-upi')">5,000 PTS</button>
+            </div>
+        </div>
+
+        <div class="reward-card cat-games" style="animation-delay: 0.3s;">
+            <div class="r-image-box bg-ff"><i class="fa-solid fa-fire"></i></div>
+            <div class="r-content">
+                <div>
+                    <div class="r-title">Free Fire</div>
+                    <div class="r-sub">110 Diamonds</div>
+                </div>
+                <button class="r-btn" id="btn-ff110" onclick="openRedeemModal('Free Fire 110 Diamonds', 4500, 'Free Fire Player UID', 'fa-fire', 'bg-ff')">4,500 PTS</button>
+            </div>
+        </div>
+
+        <div class="reward-card cat-games" style="animation-delay: 0.4s;">
+            <div class="r-image-box bg-bgmi"><i class="fa-solid fa-crosshairs"></i></div>
+            <div class="r-content">
+                <div>
+                    <div class="r-title">BGMI</div>
+                    <div class="r-sub">60 UC Top-Up</div>
+                </div>
+                <button class="r-btn" id="btn-bgmi60" onclick="openRedeemModal('BGMI 60 UC', 4000, 'BGMI Character ID', 'fa-crosshairs', 'bg-bgmi')">4,000 PTS</button>
+            </div>
+        </div>
+
+        <div class="reward-card cat-cards" style="animation-delay: 0.5s;">
+            <div class="r-image-box bg-play"><i class="fa-brands fa-google-play"></i></div>
+            <div class="r-content">
+                <div>
+                    <div class="r-title">Google Play Code</div>
+                    <div class="r-sub">Rs. 50 Redeem Code</div>
+                </div>
+                <button class="r-btn" id="btn-play50" onclick="openRedeemModal('Google Play Rs. 50', 2500, 'Delivery Email Address', 'fa-google-play', 'bg-play')">2,500 PTS</button>
+            </div>
+        </div>
+
+        <div class="reward-card cat-games" style="animation-delay: 0.6s;">
+            <div class="r-image-box bg-cod"><i class="fa-solid fa-gun"></i></div>
+            <div class="r-content">
+                <div>
+                    <div class="r-title">Call of Duty</div>
+                    <div class="r-sub">80 CP Top-Up</div>
+                </div>
+                <button class="r-btn" id="btn-cod80" onclick="openRedeemModal('CODM 80 CP', 4000, 'CODM Player UID', 'fa-gun', 'bg-cod')">4,000 PTS</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="bottom-sheet-overlay" id="redeemModal">
+        <div class="bottom-sheet">
+            <div class="sheet-header">
+                <div class="sheet-title">Claim Reward</div>
+                <i class="fa-solid fa-xmark close-sheet" onclick="closeRedeemModal()"></i>
+            </div>
+            
+            <div class="sheet-reward-info">
+                <div class="sri-icon" id="modalIcon"></div>
+                <div class="sri-details">
+                    <h4 id="modalRewardName">Reward Name</h4>
+                    <p id="modalRewardCost">0 PTS</p>
+                </div>
+            </div>
+
+            <label class="form-label" id="modalInputLabel">Enter Details</label>
+            <input type="text" id="modalInput" class="form-input" placeholder="Required for processing...">
+            
+            <div style="font-size:0.75rem; color:#888; text-align:center; margin-bottom: 15px;">
+                <i class="fa-solid fa-shield-halved"></i> Please double-check your input. Errors may delay processing up to 24 hours.
+            </div>
+
+            <button class="btn-confirm" id="confirmRedeemBtn" onclick="confirmRedeem()">Confirm & Deduct Points</button>
+        </div>
+    </div>
+
+    <div class="full-overlay" id="statusOverlay">
+        <div class="anim-circle" id="statusCircle"></div>
+        <h2 class="overlay-title" id="statusTitle">Processing...</h2>
+        <p class="overlay-desc" id="statusDesc">Please wait.</p>
+    </div>
+
+    <footer class="app-footer">
+        <div class="footer-logo"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_20wCR-WBMpQmw3vxcYUf-vxIO1PYDJoQN_Sid3UDjA9tf0cuX0eH40jbzHoJad4cxbnjhPjqfCw1Z5V1LhgN9zFuIQC0fJjecTy3D9PFu5WjR2H1wHwTD1bUGnXY_NiApWn5gMs6velcQngSzKoP1yHzX0cVsFSUFM8zIefcbiPayY7680Kz0V0ZAAE/s1264/1000093706.png" style="width:20px;"> TOURNYX</div>
+        <div class="footer-text">Built for Gamers, By Gamers.</div>
+    </footer>
+
+    <nav class="bottom-nav">
+        <a class="nav-item" href="index.html">
+            <i class="fa-solid fa-house"></i><span>Home</span>
+        </a>
+        <a class="nav-item" href="explore.html">
+            <i class="fa-solid fa-compass"></i><span>Explore</span>
+        </a>
+        <a class="nav-item" href="matches.html">
+            <i class="fa-solid fa-trophy"></i><span>Matches</span>
+        </a>
+        <div class="fab-slot">
+            <div class="floating-plus" onclick="window.location.href='tournament.html'">
+                <i class="fa-solid fa-plus"></i>
+            </div>
+        </div>
+        <a class="nav-item" href="clans.html">
+            <i class="fa-solid fa-shield-halved"></i><span>Clan</span>
+        </a>
+        <a class="nav-item active" href="wallet.html">
+            <i class="fa-solid fa-wallet"></i><span>Wallet</span>
+        </a>
+        <a class="nav-item" href="profile.html">
+            <i class="fa-solid fa-user"></i><span>Profile</span>
+        </a>
+    </nav>
+
+    <script>
+        // ==========================================
+        // 1. BACKEND & AUTH SETUP
+        // ==========================================
+        const API_URL = "https://script.google.com/macros/s/AKfycbynNLDDXS1wMrU6RGnk4nKb1jfQkQGuqrNIKWAt8wf46MaKP6y1rwGmSJg5fmm4KYU/exec"; 
+        let currentUser = JSON.parse(localStorage.getItem('tournyx_user'));
+
+        document.addEventListener("DOMContentLoaded", function() {
+            if (!currentUser) {
+                alert("Please log in to access the Store.");
+                window.location.href = "login.html";
+                return;
+            }
+            // Display cached points immediately
+            updateUIState();
+            // Silently fetch accurate points from cloud
+            syncLivePoints();
+        });
+
+        // Helper: Format Numbers
+        function formatNum(num) { return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+
+        function syncLivePoints() {
+            fetch(API_URL, {
+                method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'sync_user', email: currentUser.email })
+            }).then(() => {
+                // To actually read the response securely we would need standard cors. 
+                // We assume optimistic local management for the UI, relying on Google Sheets as truth.
+            }).catch(e => console.log("Offline mode"));
+        }
+
+        // ==========================================
+        // 2. DYNAMIC UI UPDATES (LOCK/UNLOCK LOGIC)
+        // ==========================================
+        function updateUIState() {
+            let pts = parseInt(currentUser.points) || 0;
+            document.getElementById('userPointsDisplay').innerText = formatNum(pts);
+
+            // Check each button to see if user can afford it
+            document.querySelectorAll('.r-btn').forEach(btn => {
+                // Extract cost from button text (e.g., "2,500 PTS" -> 2500)
+                let costText = btn.innerText.replace(/,/g, '').replace(' PTS', '').replace(' Locked', '');
+                let cost = parseInt(costText);
+                
+                if (pts < cost) {
+                    btn.classList.add('locked');
+                    btn.innerHTML = `<i class="fa-solid fa-lock"></i> Locked (${formatNum(cost)})`;
+                } else {
+                    btn.classList.remove('locked');
+                    btn.innerHTML = `${formatNum(cost)} PTS`;
+                }
+            });
+        }
+
+        // ==========================================
+        // 3. FILTER LOGIC
+        // ==========================================
+        function filterRewards(category, btnElement) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+
+            document.querySelectorAll('.reward-card').forEach(card => {
+                if (category === 'all' || card.classList.contains('cat-' + category)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // ==========================================
+        // 4. OVERLAY & MODAL CONTROLLERS
+        // ==========================================
+        let activeReward = {};
+
+        function openRedeemModal(name, cost, inputLabel, iconClass, bgClass) {
+            let pts = parseInt(currentUser.points) || 0;
+            if (pts < cost) return; // Prevent clicking locked items
+
+            activeReward = { name: name, cost: cost };
+            
+            // Populate Modal
+            let iconEl = document.getElementById('modalIcon');
+            iconEl.className = `sri-icon ${bgClass}`;
+            if(iconClass === 'fa-google-play') {
+                iconEl.innerHTML = `<i class="fa-brands ${iconClass}"></i>`;
+            } else {
+                iconEl.innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
+            }
+
+            document.getElementById('modalRewardName').innerText = name;
+            document.getElementById('modalRewardCost').innerText = formatNum(cost) + " PTS";
+            document.getElementById('modalInputLabel').innerText = inputLabel + " *";
+            document.getElementById('modalInput').value = "";
+            document.getElementById('modalInput').placeholder = inputLabel;
+
+            document.getElementById('redeemModal').classList.add('active');
+        }
+
+        function closeRedeemModal() { document.getElementById('redeemModal').classList.remove('active'); }
+
+        function showOverlay(state, title, desc) {
+            const overlay = document.getElementById('statusOverlay');
+            const circle = document.getElementById('statusCircle');
+            
+            overlay.classList.add('active');
+            document.getElementById('statusTitle').innerText = title;
+            document.getElementById('statusDesc').innerText = desc;
+
+            circle.className = 'anim-circle'; 
+            if (state === 'loading') { circle.classList.add('anim-loading'); circle.innerHTML = ''; }
+            else if (state === 'success') { circle.classList.add('anim-success'); circle.innerHTML = '<i class="fa-solid fa-check"></i>'; }
+            else if (state === 'error') { circle.classList.add('anim-error'); circle.innerHTML = '<i class="fa-solid fa-xmark"></i>'; }
+        }
+        function hideOverlay() { document.getElementById('statusOverlay').classList.remove('active'); }
+
+        // ==========================================
+        // 5. SECURE REDEMPTION SUBMISSION
+        // ==========================================
+        function confirmRedeem() {
+            let payoutDetails = document.getElementById('modalInput').value.trim();
+            if (!payoutDetails) {
+                alert("Please enter the required details to process your reward.");
+                return;
+            }
+
+            closeRedeemModal();
+            showOverlay('loading', 'Processing Claim', 'Verifying points and connecting to secure server...');
+
+            // Payload matches the updated Code.gs
+            const payload = {
+                action: 'redeem_points',
+                email: currentUser.email,
+                player_id: payoutDetails, 
+                reward_name: activeReward.name,
+                cost: activeReward.cost
+            };
+
+            fetch(API_URL, {
+                method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(() => {
+                // Optimistic Local Deductions
+                currentUser.points = parseInt(currentUser.points) - activeReward.cost;
+                localStorage.setItem('tournyx_user', JSON.stringify(currentUser));
+                
+                // Optimistic Local Ledger Update
+                let localTxns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
+                localTxns.unshift({ 
+                    id: "RD" + Date.now().toString().slice(-6), 
+                    date: new Date().toLocaleString('en-US', { month: 'short', day: '2-digit', hour: 'numeric', minute: '2-digit', hour12: true }), 
+                    amount: activeReward.cost, type: "Debit", title: "Redeemed: " + activeReward.name 
+                });
+                localStorage.setItem('tournyx_txns', JSON.stringify(localTxns));
+
+                updateUIState();
+
+                showOverlay('success', 'Reward Claimed!', 'Your request has been sent to the admins. Allow up to 24 hours.');
+                setTimeout(hideOverlay, 4000);
+            }).catch(() => {
+                showOverlay('error', 'Connection Error', 'Failed to reach server. Please try again.');
+                setTimeout(hideOverlay, 3000);
+            });
+        }
+    </script>
+</body>
+</html>
