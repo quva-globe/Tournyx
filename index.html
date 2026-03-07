@@ -777,7 +777,7 @@
         // CONFIG
         const API_URL = "https://script.google.com/macros/s/AKfycbynNLDDXS1wMrU6RGnk4nKb1jfQkQGuqrNIKWAt8wf46MaKP6y1rwGmSJg5fmm4KYU/exec";
 
-        // STARTUP
+                // STARTUP
         window.addEventListener('load', () => {
             let user = JSON.parse(localStorage.getItem('tournyx_user'));
             if (!user) {
@@ -785,19 +785,21 @@
                 return; 
             }
 
+            // FIX: Reduced delay from 2000ms to 200ms for a snappy, premium feel
             setTimeout(() => {
                 const loader = document.getElementById('tournyx-loader');
                 loader.style.opacity = '0';
-                setTimeout(() => { loader.style.display = 'none'; }, 500);
-            }, 2000);
+                setTimeout(() => { loader.style.display = 'none'; }, 400); // Fade out faster
+            }, 200);
 
             checkLoginStatus();
             checkNextMatch();
             loadFeaturedTournaments();
             syncLiveWalletPoints(user); 
-            renderQuests(); // Verify & setup quests
+            renderQuests(); 
             initScrollAnimations(); 
         });
+
 
         // LIVE WALLET SYNC
         function syncLiveWalletPoints(user) {
