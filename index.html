@@ -11,16 +11,18 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
     <style>
-        /* --- GLOBAL VARIABLES --- */
+        /* --- GLOBAL VARIABLES (UPGRADED VIOLET THEME) --- */
         :root {
-            --primary-bg: #050511;
-            --card-bg: rgba(20, 20, 35, 0.6);
-            --card-border: rgba(255, 255, 255, 0.1);
+            --primary-bg: #070311;
+            --secondary-bg: #0d061e;
+            --card-bg: rgba(20, 10, 35, 0.6);
+            --card-border: rgba(189, 0, 255, 0.2);
             --accent-cyan: #00f2ff;
             --accent-purple: #bd00ff;
+            --accent-violet: #7b2cbf;
             --accent-orange: #ff9900;
             --accent-green: #00ff7f;
-            --accent-gradient: linear-gradient(90deg, #bd00ff, #00f2ff);
+            --accent-gradient: linear-gradient(90deg, #7b2cbf, #bd00ff, #00f2ff);
             --text-main: #ffffff;
             --text-muted: #a0a0b0;
             --font-head: 'Orbitron', sans-serif;
@@ -35,19 +37,19 @@
             font-family: var(--font-body);
             overflow-x: hidden;
             padding-bottom: 90px; 
-            padding-top: 65px; /* Adjusted slightly for slimmer top */
+            padding-top: 65px; 
         }
 
         /* --- BACKGROUND --- */
         #particles-canvas {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-            background: radial-gradient(circle at 50% 50%, #1a0b2e 0%, #050511 100%);
+            background: radial-gradient(circle at 50% 50%, #15062e 0%, #070311 100%);
         }
 
         /* --- LOADER --- */
         #tournyx-loader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #050511; z-index: 99999;
+            background-color: var(--primary-bg); z-index: 99999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             transition: opacity 0.5s ease-out; overflow: hidden;
         }
@@ -58,256 +60,241 @@
         }
         .loader-logo::after {
             content: 'T'; position: absolute; top: 0; left: 0; color: #fff;
-            text-shadow: 0 0 20px #bd00ff, 0 0 40px #00f2ff; opacity: 0;
+            text-shadow: 0 0 30px var(--accent-purple), 0 0 50px var(--accent-cyan); opacity: 0;
             animation: flashHit 1s infinite;
         }
         .bullet {
-            position: absolute; height: 4px; width: 100px; background: linear-gradient(90deg, transparent, #00f2ff);
-            border-radius: 4px; box-shadow: 0 0 10px #00f2ff; opacity: 0;
+            position: absolute; height: 4px; width: 100px; background: linear-gradient(90deg, transparent, var(--accent-cyan));
+            border-radius: 4px; box-shadow: 0 0 10px var(--accent-cyan); opacity: 0;
         }
         .b1 { top: 40%; left: -150px; animation: shootRight 1s infinite; }
-        .b2 { top: 60%; right: -150px; background: linear-gradient(-90deg, transparent, #bd00ff); box-shadow: 0 0 10px #bd00ff; animation: shootLeft 1s 0.5s infinite; }
+        .b2 { top: 60%; right: -150px; background: linear-gradient(-90deg, transparent, var(--accent-purple)); box-shadow: 0 0 10px var(--accent-purple); animation: shootLeft 1s 0.5s infinite; }
         .b3 { animation-delay: 1.3s; left: 80px; } 
         .b4 { top: 40%; bottom: -100px; animation:shootup 1s infinite; animation-delay: 1.4s; left: 90px; }
         .b5 { top: 40%; margin-top: -90px; animation:shootdown 1s infinite; animation-delay: 1.5s; left: 120px; }
         
         @keyframes shootRight { 0% { left: -150px; opacity: 1; } 50% { left: 50%; opacity: 0; } 100% { left: 50%; opacity: 0; } }
         @keyframes shootLeft { 0% { right: -150px; opacity: 1; } 50% { right: 50%; opacity: 0; } 100% { right: 50%; opacity: 0; } }
-        @keyframes flashHit { 0%, 48% { opacity: 0; } 50% { opacity: 1; text-shadow: 0 0 30px white; } 52%, 100% { opacity: 0; } }
+        @keyframes flashHit { 0%, 48% { opacity: 0; } 50% { opacity: 1; text-shadow: 0 0 40px white; } 52%, 100% { opacity: 0; } }
 
         .loader-text {
             margin-top: 30px; font-family: var(--font-body); font-size: 1rem; 
-            letter-spacing: 3px; color: #888; text-transform: uppercase;
-            animation: blink 1s infinite alternate;
+            letter-spacing: 3px; color: var(--accent-purple); text-transform: uppercase;
+            animation: blink 1s infinite alternate; text-shadow: 0 0 10px rgba(189,0,255,0.5);
         }
         @keyframes blink { from { opacity: 0.5; } to { opacity: 1; } }
 
-        /* --- HEADER --- */
-        .top-header {
-            position: fixed; top: 0; left: 0; width: 100%; padding: 10px 20px;
-            background: rgba(5, 5, 17, 0.95); backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex; align-items: center; justify-content: space-between; z-index: 2000;
+        /* --- GLOBAL GLOW ANIMATIONS --- */
+        @keyframes glowPulse {
+            0% { box-shadow: inset 0 0 20px rgba(0, 242, 255, 0.02), 0 0 15px rgba(189, 0, 255, 0.05); border-color: rgba(189, 0, 255, 0.1); }
+            100% { box-shadow: inset 0 0 40px rgba(189, 0, 255, 0.08), 0 0 25px rgba(0, 242, 255, 0.15); border-color: rgba(0, 242, 255, 0.3); }
         }
-        .header-left { display: flex; align-items: center; gap: 12px; }
-        .app-logo { width: 32px; height: 32px; border-radius: 50%; object-fit: contain; }
+        .glow-section { animation: glowPulse 3s infinite alternate; border-radius: 16px; }
+
+        /* --- HEADER & DESKTOP NAV --- */
+        .top-header {
+            position: fixed; top: 0; left: 0; width: 100%; padding: 10px 15px;
+            background: rgba(7, 3, 17, 0.85); backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(189, 0, 255, 0.2);
+            display: flex; align-items: center; justify-content: space-between; z-index: 2000;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+        .header-left { display: flex; align-items: center; gap: 10px; }
+        .app-logo { width: 30px; height: 30px; border-radius: 50%; object-fit: contain; box-shadow: 0 0 10px var(--accent-purple); }
         .app-title {
             font-family: var(--font-head); font-size: 1.1rem; font-weight: 700;
-            background: linear-gradient(90deg, #fff, #00f2ff);
+            background: var(--accent-gradient);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
         
-        /* HEADER RIGHT SIDE (Wallet / Menu) */
-        .header-right { display: flex; align-items: center; gap: 15px; }
+        .header-right { display: flex; align-items: center; gap: 12px; }
         
         .header-balance {
             background: linear-gradient(90deg, #ff9900, #ff5e00); 
-            padding: 4px 12px; 
+            padding: 5px 12px; 
             border-radius: 20px; 
-            display: flex; 
-            align-items: center; 
-            gap: 6px;
-            font-family: var(--font-head); 
-            font-size: 0.8rem; 
-            font-weight: bold;
-            color: #ffffff;
-            text-decoration: none;
-            transition: 0.3s;
-            box-shadow: 0 2px 10px rgba(255, 153, 0, 0.3);
+            display: flex; align-items: center; gap: 6px;
+            font-family: var(--font-head); font-size: 0.9rem; font-weight: bold;
+            color: #ffffff; text-decoration: none; transition: 0.3s;
+            box-shadow: 0 2px 15px rgba(255, 153, 0, 0.4);
         }
-        .header-balance:hover {
-            box-shadow: 0 4px 15px rgba(255, 153, 0, 0.6);
-            transform: scale(1.02);
-        }
+        .header-balance:hover { box-shadow: 0 4px 20px rgba(255, 153, 0, 0.7); transform: scale(1.05); }
 
-        .menu-btn { font-size: 1.3rem; color: white; cursor: pointer; }
+        .desktop-nav { display: none; }
+        .menu-btn { font-size: 1.3rem; color: white; cursor: pointer; transition: 0.3s; }
+        .menu-btn:hover { color: var(--accent-cyan); text-shadow: 0 0 10px var(--accent-cyan); }
 
-        /* --- NOTIFICATION SLIDER (MINIMAL) --- */
+        /* --- NOTIFICATION SLIDER --- */
         .notification-bar {
-            width: 100%;
-            background: rgba(5, 5, 17, 0.85);
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            padding: 4px 0; /* Minimal height */
-            overflow: hidden;
-            display: flex;
-            align-items: center;
+            width: 100%; background: rgba(13, 6, 30, 0.85);
+            border-bottom: 1px solid rgba(189,0,255,0.15);
+            padding: 5px 0; overflow: hidden; display: flex; align-items: center;
             backdrop-filter: blur(5px);
         }
-        .noti-track {
-            display: flex;
-            width: max-content;
-            animation: slideRight 25s linear infinite;
-        }
+        .noti-track { display: flex; width: max-content; animation: slideRight 30s linear infinite; }
         .noti-item {
-            font-size: 0.7rem; /* Sleek text */
-            color: #ccc;
-            margin-right: 40px;
-            font-family: var(--font-head);
-            letter-spacing: 0.5px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            text-transform: uppercase;
-            white-space: nowrap; /* Forces one line */
+            font-size: 0.75rem; color: #d4d4ff; margin-right: 40px; font-family: var(--font-head);
+            letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; white-space: nowrap;
         }
-        @keyframes slideRight {
-            from { transform: translateX(-50%); }
-            to { transform: translateX(0); }
-        }
+        @keyframes slideRight { from { transform: translateX(-50%); } to { transform: translateX(0); } }
 
         /* --- MENU --- */
         .overlay-menu {
             position: fixed; top: 0; right: 0; width: 100%; max-width: 300px; height: 100vh;
-            background: #050511; border-left: 1px solid var(--card-border);
-            z-index: 3000; transform: translateX(100%); transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 20px; display: flex; flex-direction: column;
+            background: #090314; border-left: 1px solid var(--accent-purple);
+            z-index: 3000; transform: translateX(100%); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            padding: 20px; display: flex; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.8);
         }
         .overlay-menu.active { transform: translateX(0); }
         
-        .menu-header-top { display: flex; justify-content: flex-end; margin-bottom: 20px; }
-        
-        .menu-user-info-link { text-decoration: none; display: block; margin-bottom: 30px; }
+        .menu-user-info-link { text-decoration: none; display: block; margin-bottom: 30px; background: rgba(189,0,255,0.05); padding: 15px; border-radius: 15px; border: 1px solid rgba(189,0,255,0.2); }
         .menu-user-info { display: flex; align-items: center; gap: 15px; }
-        .menu-user-img { width: 60px; height: 60px; border-radius: 50%; border: 2px solid #5d5dff; object-fit: cover; }
+        .menu-user-img { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--accent-cyan); object-fit: cover; box-shadow: 0 0 15px rgba(0,242,255,0.3); }
         .menu-user-details { display: flex; flex-direction: column; justify-content: center; }
-        .menu-user-name { font-family: var(--font-head); font-size: 1.2rem; color: white; margin-bottom: 2px; }
-        .menu-user-sub { font-size: 0.85rem; color: #888; font-style: italic; }
+        .menu-user-name { font-family: var(--font-head); font-size: 1.2rem; color: white; margin-bottom: 2px; text-shadow: 0 0 5px rgba(255,255,255,0.5); }
+        .menu-user-sub { font-size: 0.85rem; color: var(--accent-cyan); }
 
         .menu-links { flex-grow: 1; overflow-y: auto; }
         .menu-links a {
-            display: flex; align-items: center; 
-            font-family: var(--font-head); font-size: 1rem; color: white;
-            text-decoration: none; margin-bottom: 22px; 
-            transition: 0.2s;
+            display: flex; align-items: center; font-family: var(--font-head); font-size: 1rem; color: #e0e0e0;
+            text-decoration: none; margin-bottom: 22px; transition: 0.3s;
         }
-        .menu-links a i { width: 30px; font-size: 1.1rem; color: #fff; margin-right: 15px; text-align: center; }
-        .menu-links a:hover { color: var(--accent-cyan); }
-        .menu-links a:hover i { color: var(--accent-cyan); }
+        .menu-links a i { width: 30px; font-size: 1.2rem; color: var(--accent-purple); margin-right: 15px; text-align: center; transition: 0.3s; }
+        .menu-links a:hover { color: var(--accent-cyan); transform: translateX(10px); }
+        .menu-links a:hover i { color: var(--accent-cyan); text-shadow: 0 0 10px var(--accent-cyan); }
+        .logout-link { margin-top: 10px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); color: #ff4d4d !important; }
 
-        .logout-link { margin-top: 10px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
-        .menu-version { text-align: right; color: #555; font-size: 0.8rem; font-family: var(--font-body); margin-top: 10px; font-style: italic; }
+        .menu-version { color: #555; font-size: 0.7rem; text-align: center; margin-top: 20px; font-family: var(--font-head); letter-spacing: 2px; }
 
         /* --- NEXT MATCH WIDGET --- */
         .next-match-card {
-            margin: 15px 20px 0 20px;
-            background: linear-gradient(135deg, rgba(0, 242, 255, 0.1), rgba(189, 0, 255, 0.1));
-            border: 1px solid var(--accent-cyan); border-radius: 16px; padding: 20px;
-            position: relative; overflow: hidden; display: none; 
+            margin: 15px 15px 0 15px; background: linear-gradient(135deg, rgba(0, 242, 255, 0.1), rgba(189, 0, 255, 0.15));
+            border: 1px solid var(--accent-purple); border-radius: 16px; padding: 15px;
+            position: relative; overflow: hidden; display: none; box-shadow: 0 5px 20px rgba(189,0,255,0.2);
         }
-        .nm-label { font-size: 0.7rem; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
-        .nm-title { font-family: var(--font-head); font-size: 1.2rem; margin-bottom: 5px; }
-        .nm-time { font-size: 0.9rem; color: #ccc; }
-        .nm-btn { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); background: white; color: black; padding: 8px 15px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-decoration: none; }
+        .nm-label { font-size: 0.75rem; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; font-weight: bold; }
+        .nm-title { font-family: var(--font-head); font-size: 1.1rem; margin-bottom: 5px; color: white; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
+        .nm-time { font-size: 0.85rem; color: #d4d4ff; }
+        .nm-btn { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: var(--accent-gradient); color: white; padding: 8px 15px; border-radius: 20px; font-weight: bold; font-family: var(--font-head); font-size: 0.8rem; text-decoration: none; box-shadow: 0 0 15px rgba(189,0,255,0.5); transition: 0.3s; border: none; }
+        .nm-btn:hover { box-shadow: 0 0 25px rgba(0,242,255,0.7); transform: translateY(-50%) scale(1.05); }
 
         /* --- HERO --- */
-        .hero { text-align: center; padding: 20px 20px 10px; }
-        .hero h1 { font-family: var(--font-head); font-size: 1.8rem; line-height: 1.4; margin-bottom: 10px; }
-        .gradient-text { background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; }
-        .hero p { color: var(--text-muted); font-size: 0.9rem; max-width: 400px; margin: 0 auto; }
+        .hero { text-align: center; padding: 25px 15px 10px; }
+        .hero h1 { font-family: var(--font-head); font-size: 1.8rem; line-height: 1.3; margin-bottom: 10px; }
+        .gradient-text { background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; filter: drop-shadow(0 0 10px rgba(189,0,255,0.4)); }
+        .hero p { color: var(--text-muted); font-size: 0.95rem; max-width: 500px; margin: 0 auto; line-height: 1.4; }
 
         /* --- ROLE CARDS --- */
-        .role-cards { padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+        .role-cards { padding: 15px; display: flex; flex-direction: column; gap: 15px; }
         .role-card {
-            border-radius: 20px; padding: 25px; text-align: center; position: relative; overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px);
+            border-radius: 15px; padding: 20px 15px; text-align: center; position: relative; overflow: hidden;
+            border: 1px solid var(--card-border); backdrop-filter: blur(10px); transition: 0.4s;
         }
-        .role-card.player {
-            background: linear-gradient(160deg, rgba(138, 43, 226, 0.15) 0%, rgba(138, 43, 226, 0.05) 100%);
-            border-top: 3px solid var(--accent-purple);
-        }
-        .role-card.organizer {
-            background: linear-gradient(160deg, rgba(0, 242, 255, 0.15) 0%, rgba(0, 242, 255, 0.05) 100%);
-            border-top: 3px solid var(--accent-cyan);
-        }
+        .role-card:hover { transform: translateY(-5px); }
+        .role-card.player { background: linear-gradient(160deg, rgba(138, 43, 226, 0.2) 0%, rgba(138, 43, 226, 0.02) 100%); border-top: 3px solid var(--accent-purple); box-shadow: 0 10px 30px rgba(189,0,255,0.1); }
+        .role-card.organizer { background: linear-gradient(160deg, rgba(0, 242, 255, 0.2) 0%, rgba(0, 242, 255, 0.02) 100%); border-top: 3px solid var(--accent-cyan); box-shadow: 0 10px 30px rgba(0,242,255,0.1); }
         .role-icon {
-            width: 50px; height: 50px; margin: 0 auto 15px; border-radius: 12px;
+            width: 50px; height: 50px; margin: 0 auto 12px; border-radius: 12px;
             display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); box-shadow: inset 0 0 15px rgba(255,255,255,0.05);
         }
-        .role-card h3 { font-family: var(--font-head); margin-bottom: 8px; letter-spacing: 1px; }
-        .role-card p { font-size: 0.85rem; color: #aaa; margin-bottom: 20px; line-height: 1.4; }
+        .role-card h3 { font-family: var(--font-head); margin-bottom: 8px; font-size: 1.2rem; }
+        .role-card p { font-size: 0.85rem; color: #b0b0cc; margin-bottom: 15px; }
         .role-btn {
             display: block; width: 100%; padding: 12px; border-radius: 10px;
-            font-family: var(--font-head); font-weight: 600; text-transform: uppercase;
-            text-decoration: none; color: white; text-align: center; letter-spacing: 1px;
-            transition: 0.2s;
+            font-family: var(--font-head); font-weight: 700; text-transform: uppercase;
+            text-decoration: none; color: white; text-align: center; font-size: 0.9rem; transition: 0.3s;
         }
-        .btn-purple { background: var(--accent-purple); box-shadow: 0 4px 15px rgba(138, 43, 226, 0.4); }
-        .btn-cyan { background: var(--accent-cyan); color: #000; box-shadow: 0 4px 15px rgba(0, 242, 255, 0.4); }
-        .role-btn:active { transform: scale(0.98); }
+        .btn-purple { background: linear-gradient(45deg, #7b2cbf, #bd00ff); box-shadow: 0 5px 20px rgba(138, 43, 226, 0.5); }
+        .btn-purple:hover { box-shadow: 0 8px 25px rgba(138, 43, 226, 0.8); }
+        .btn-cyan { background: linear-gradient(45deg, #00b4d8, #00f2ff); color: #000; box-shadow: 0 5px 20px rgba(0, 242, 255, 0.5); }
+        .btn-cyan:hover { box-shadow: 0 8px 25px rgba(0, 242, 255, 0.8); }
 
         /* --- STATS & MARQUEE --- */
-        .stats-area { padding: 30px 20px; background: rgba(255,255,255,0.02); border-top: 1px solid #222; border-bottom: 1px solid #222; margin-bottom: 30px; }
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
-        .stat-box { text-align: center; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 12px; border: 1px solid #1f1f35; }
-        .stat-val { font-family: var(--font-head); font-size: 1.3rem; display: block; color: white; margin-bottom: 5px; }
-        .stat-label { font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+        .stats-area { padding: 30px 15px; background: rgba(189,0,255,0.03); border-top: 1px solid rgba(189,0,255,0.2); border-bottom: 1px solid rgba(189,0,255,0.2); margin-bottom: 30px; box-shadow: inset 0 0 50px rgba(0,0,0,0.5); }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+        .stat-box { text-align: center; padding: 15px; background: rgba(10,5,25,0.6); border-radius: 12px; border: 1px solid rgba(189,0,255,0.15); transition: 0.3s; }
+        .stat-box:hover { transform: scale(1.05); border-color: var(--accent-cyan); box-shadow: 0 0 20px rgba(0,242,255,0.2); }
+        .stat-val { font-family: var(--font-head); font-size: 1.4rem; display: block; color: white; margin-bottom: 3px; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
+        .stat-label { font-size: 0.75rem; color: #a0a0b0; font-weight: bold; }
 
         .marquee-container { width: 100%; overflow: hidden; padding-bottom: 5px; }
-        .marquee-track { display: flex; gap: 20px; width: fit-content; animation: scroll 20s linear infinite; }
+        .marquee-track { display: flex; gap: 15px; width: fit-content; animation: scroll 20s linear infinite; }
         @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         .game-pill {
-            padding: 8px 20px; background: #111; border: 1px solid #333; border-radius: 50px;
-            font-family: var(--font-head); font-size: 0.8rem; color: #ccc; white-space: nowrap;
-            display: flex; align-items: center; gap: 8px;
+            padding: 8px 20px; background: linear-gradient(90deg, #110822, #1a0a3a); border: 1px solid rgba(189,0,255,0.3); border-radius: 50px;
+            font-family: var(--font-head); font-size: 0.85rem; color: #d4d4ff; white-space: nowrap; display: flex; align-items: center; gap: 8px; box-shadow: 0 0 15px rgba(0,0,0,0.5);
         }
 
-        /* --- LEADERBOARD --- */
-        .section-pad { padding: 0 20px 30px; }
-        .section-title { text-align: center; font-family: var(--font-head); font-size: 1.4rem; margin-bottom: 25px; letter-spacing: 1px; }
-        .section-title span { color: var(--accent-orange); }
+        /* --- 15 FEATURES GRID --- */
+        .features-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px; margin-top: 15px;
+        }
+        .f-card {
+            background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05);
+            padding: 15px 10px; border-radius: 12px; text-align: center;
+            transition: 0.3s; cursor: pointer;
+        }
+        .f-card:hover { background: rgba(189,0,255,0.1); border-color: var(--accent-purple); transform: translateY(-5px); box-shadow: 0 5px 15px rgba(189,0,255,0.2); }
+        .f-icon { font-size: 1.5rem; margin-bottom: 8px; color: var(--accent-cyan); text-shadow: 0 0 10px rgba(0,242,255,0.4); }
+        .f-title { font-family: var(--font-head); font-size: 0.75rem; font-weight: bold; color: white; }
 
-        .lb-tabs { display: flex; gap: 10px; margin-bottom: 20px; background: rgba(255,255,255,0.05); padding: 5px; border-radius: 12px; }
-        .lb-tab { flex: 1; text-align: center; padding: 10px; font-size: 0.8rem; color: #888; border-radius: 8px; cursor: pointer; transition: 0.3s; font-family: var(--font-body); font-weight: bold; }
-        .lb-tab.active { background: var(--accent-cyan); color: #000; }
+        /* --- SECTIONS PADDING --- */
+        .section-pad { padding: 0 15px 35px; }
+        .section-title { text-align: center; font-family: var(--font-head); font-size: 1.5rem; margin-bottom: 25px; text-shadow: 0 0 15px rgba(255,255,255,0.2); }
+        .section-title span { color: var(--accent-purple); text-shadow: 0 0 15px rgba(189,0,255,0.5); }
+
+        .lb-tabs { display: flex; gap: 8px; margin-bottom: 20px; background: rgba(0,0,0,0.3); padding: 6px; border-radius: 12px; border: 1px solid rgba(189,0,255,0.2); }
+        .lb-tab { flex: 1; text-align: center; padding: 10px; font-size: 0.8rem; color: #a0a0b0; border-radius: 8px; cursor: pointer; transition: 0.3s; font-family: var(--font-body); font-weight: bold; text-transform: uppercase; }
+        .lb-tab.active { background: var(--accent-gradient); color: #fff; box-shadow: 0 0 15px rgba(189,0,255,0.4); }
 
         .people-list { display: flex; flex-direction: column; gap: 10px; }
-        .person-row { display: flex; align-items: center; gap: 15px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); padding: 12px; border-radius: 12px; }
-        .person-img-small { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #333; }
+        .person-row { display: flex; align-items: center; gap: 12px; background: rgba(20,10,35,0.5); border: 1px solid rgba(189,0,255,0.1); padding: 12px; border-radius: 12px; transition: 0.3s; }
+        .person-row:hover { border-color: var(--accent-cyan); background: rgba(20,10,35,0.8); transform: translateX(5px); }
+        .person-img-small { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-cyan); box-shadow: 0 0 10px rgba(0,242,255,0.3); }
         .person-info { flex: 1; }
-        .person-name { font-size: 0.9rem; font-weight: bold; color: white; }
-        .person-role { font-size: 0.75rem; color: var(--accent-cyan); }
+        .person-name { font-family: var(--font-head); font-size: 0.95rem; font-weight: bold; color: white; margin-bottom: 2px; }
+        .person-role { font-size: 0.75rem; color: var(--accent-cyan); font-weight: 600; }
         .lb-content { display: none; animation: fadeIn 0.4s; }
         .lb-content.active { display: flex; }
-        @keyframes fadeIn { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
 
         /* --- WORKFLOW --- */
         .toggle-container {
-            display: flex; background: #111; border-radius: 30px; padding: 5px;
-            position: relative; margin-bottom: 30px; border: 1px solid #333;
+            display: flex; background: rgba(10,5,20,0.8); border-radius: 30px; padding: 5px;
+            position: relative; margin-bottom: 25px; border: 1px solid rgba(189,0,255,0.3); box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
         }
         .toggle-bg {
-            position: absolute; top: 5px; left: 5px; width: 50%; height: calc(100% - 10px);
-            background: var(--accent-purple); border-radius: 25px; transition: 0.3s ease;
-            box-shadow: 0 0 15px rgba(189,0,255,0.4);
+            position: absolute; top: 5px; left: 5px; width: calc(50% - 5px); height: calc(100% - 10px);
+            background: var(--accent-gradient); border-radius: 25px; transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 0 20px rgba(189,0,255,0.5);
         }
         .toggle-option {
             flex: 1; text-align: center; padding: 12px; z-index: 2; cursor: pointer;
-            font-family: var(--font-head); font-size: 0.85rem; color: #888; transition: 0.3s;
+            font-family: var(--font-head); font-size: 0.85rem; color: #a0a0b0; transition: 0.3s; font-weight: bold; text-transform: uppercase;
         }
-        .toggle-option.active { color: white; }
+        .toggle-option.active { color: white; text-shadow: 0 0 5px rgba(255,255,255,0.5); }
+        .theme-cyan .toggle-bg { left: 50%; box-shadow: 0 0 20px rgba(0,242,255,0.5); }
 
-        .steps-wrapper { display: flex; flex-direction: column; gap: 15px; }
+        .steps-wrapper { display: flex; flex-direction: column; gap: 12px; }
         .step-card {
-            background: #0f0f1a; border: 1px solid #222; border-radius: 15px; padding: 20px;
-            display: flex; align-items: center; gap: 20px; transition: 0.3s; text-decoration: none; color: inherit;
+            background: rgba(15,8,30,0.7); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 15px;
+            display: flex; align-items: center; gap: 15px; transition: 0.3s; text-decoration: none; color: inherit;
         }
-        a.step-card:hover { border-color: var(--accent-cyan); transform: translateX(5px); }
+        a.step-card:hover { border-color: var(--accent-purple); transform: translateX(8px); background: rgba(25,10,45,0.9); box-shadow: 0 5px 20px rgba(189,0,255,0.15); }
         
         .step-badge {
-            width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.1);
+            width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, rgba(189,0,255,0.2), rgba(0,242,255,0.2));
             display: flex; align-items: center; justify-content: center; font-family: var(--font-head);
-            font-weight: bold; font-size: 1.1rem; color: white; flex-shrink: 0;
+            font-weight: 900; font-size: 1.1rem; color: var(--accent-cyan); flex-shrink: 0; border: 1px solid rgba(0,242,255,0.3); text-shadow: 0 0 10px rgba(0,242,255,0.5);
         }
-        .step-info h3 { font-family: var(--font-head); font-size: 1rem; margin-bottom: 5px; }
-        .step-info p { font-size: 0.85rem; color: #888; margin: 0; line-height: 1.4; }
-
-        .theme-cyan .toggle-bg { background: var(--accent-cyan); box-shadow: 0 0 15px rgba(0,242,255,0.4); left: calc(50% - 5px); }
-        .theme-cyan .step-badge { background: var(--accent-cyan); color: black; }
+        .theme-cyan .step-badge { color: var(--accent-purple); border-color: rgba(189,0,255,0.3); text-shadow: 0 0 10px rgba(189,0,255,0.5); }
+        .step-info h3 { font-family: var(--font-head); font-size: 1rem; margin-bottom: 4px; color: white; }
+        .step-info p { font-size: 0.8rem; color: #a0a0b0; margin: 0; }
 
         /* --- FEATURED SLIDER --- */
         .slider-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .view-all { font-size: 0.8rem; color: var(--accent-cyan); text-decoration: none; border-bottom: 1px solid var(--accent-cyan); }
+        .view-all { font-size: 0.85rem; color: var(--accent-cyan); text-decoration: none; border-bottom: 1px solid var(--accent-cyan); font-family: var(--font-head); font-weight: bold; transition: 0.3s; }
+        .view-all:hover { color: white; border-color: white; text-shadow: 0 0 10px white; }
 
         .tourney-slider {
             display: flex; gap: 15px; overflow-x: auto; padding: 10px 5px 20px;
@@ -316,99 +303,141 @@
         .tourney-slider::-webkit-scrollbar { display: none; }
 
         .tourney-card {
-            flex: 0 0 88%; scroll-snap-align: center; background: var(--card-bg);
-            border-radius: 15px; overflow: hidden; border: 1px solid var(--card-border);
-            transition: 0.3s; position: relative;
+            flex: 0 0 88%; scroll-snap-align: center; background: var(--secondary-bg);
+            border-radius: 15px; overflow: hidden; border: 1px solid rgba(189,0,255,0.2);
+            transition: 0.4s; position: relative; box-shadow: 0 10px 20px rgba(0,0,0,0.5);
         }
-        .tourney-card:hover { border-color: var(--accent-cyan); box-shadow: 0 0 20px rgba(0, 242, 255, 0.2); }
+        .tourney-card:hover { border-color: var(--accent-cyan); transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0, 242, 255, 0.2); }
 
-        .t-img-box { height: 130px; background: #222; position: relative; }
-        .t-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
+        .t-img-box { height: 140px; background: #111; position: relative; overflow: hidden; }
+        .t-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.85; transition: 0.5s; }
+        .tourney-card:hover .t-img { transform: scale(1.1); opacity: 1; }
         .t-tag {
-            position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.8);
-            padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; display: flex; align-items: center; gap: 5px;
+            position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.8); border: 1px solid var(--accent-cyan);
+            padding: 5px 10px; border-radius: 15px; font-size: 0.7rem; font-family: var(--font-head); font-weight: bold; color: white; box-shadow: 0 0 10px rgba(0,242,255,0.5);
         }
         .t-content { padding: 15px; }
-        .t-title { font-family: var(--font-head); font-size: 1.1rem; margin-bottom: 10px; }
-        .t-meta { display: flex; justify-content: space-between; font-size: 0.85rem; color: #aaa; margin-bottom: 15px; }
-        .t-prize { color: var(--accent-orange); font-weight: bold; }
+        .t-title { font-family: var(--font-head); font-size: 1.1rem; margin-bottom: 8px; color: white; }
+        .t-meta { display: flex; justify-content: space-between; font-size: 0.85rem; color: #b0b0cc; margin-bottom: 15px; font-weight: 600; }
+        .t-prize { color: var(--accent-orange); font-weight: 900; font-size: 0.95rem; text-shadow: 0 0 10px rgba(255,153,0,0.4); }
         
         .t-btn {
-            display: block; width: 100%; padding: 10px; background: var(--accent-gradient);
-            border: none; border-radius: 8px; color: white; font-family: var(--font-head);
-            font-size: 0.9rem; cursor: pointer; text-decoration: none; text-align: center;
+            display: block; width: 100%; padding: 12px; background: var(--accent-gradient);
+            border: none; border-radius: 10px; color: white; font-family: var(--font-head); font-weight: bold;
+            font-size: 0.9rem; cursor: pointer; text-decoration: none; text-align: center; transition: 0.3s; box-shadow: 0 5px 15px rgba(189,0,255,0.4);
         }
-        .t-btn.disabled { background: #333; color: #777; cursor: default; }
+        .t-btn:hover { box-shadow: 0 8px 25px rgba(0,242,255,0.6); transform: scale(1.02); }
+        .t-btn.disabled { background: #2a2a3a; color: #666; cursor: default; box-shadow: none; border: 1px solid #444; }
+
+        /* --- FUNCTIONAL DAILY QUESTS --- */
+        .quests-wrapper { display: flex; flex-direction: column; gap: 12px; }
+        .quest-card {
+            background: rgba(15,8,30,0.8); padding: 15px; border-radius: 12px;
+            border: 1px solid rgba(0,242,255,0.2); display: flex; justify-content: space-between; align-items: center;
+            transition: 0.3s;
+        }
+        .quest-card:hover { border-color: var(--accent-cyan); transform: translateX(5px); box-shadow: 0 0 15px rgba(0,242,255,0.1); }
+        .quest-info-title { color: white; font-family: var(--font-head); font-size: 0.95rem; margin-bottom: 3px; font-weight:bold; }
+        .quest-info-sub { color: var(--accent-orange); font-size: 0.75rem; font-family: var(--font-head); font-weight: bold; }
+        .quest-btn {
+            background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan);
+            padding: 6px 15px; border-radius: 8px; font-family: var(--font-head); font-size: 0.75rem; font-weight: bold; cursor: pointer; transition: 0.3s;
+        }
+        .quest-btn:hover { background: var(--accent-cyan); color: #000; box-shadow: 0 0 10px rgba(0,242,255,0.5); }
+        .quest-btn.claimed { background: #222; border-color: #444; color: var(--accent-green); box-shadow: none; cursor: default; }
 
         /* --- PAYMENTS --- */
-        .pay-section { background: linear-gradient(to bottom, var(--primary-bg), #0d0d15); text-align: center; padding: 40px 20px; }
+        .pay-section { background: linear-gradient(to bottom, transparent, #090314); text-align: center; padding: 40px 15px; border-top: 1px solid rgba(255,255,255,0.05); }
         .pay-card {
-            background: #0d0d18; border: 1px solid #1f1f30; border-radius: 15px;
-            padding: 20px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; text-align: left;
-            position: relative; overflow: hidden;
+            background: rgba(15,8,30,0.8); border: 1px solid rgba(255,153,0,0.2); border-radius: 12px;
+            padding: 20px 15px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; text-align: left;
+            position: relative; overflow: hidden; transition: 0.3s;
         }
-        .pay-card::before { content: ''; position: absolute; left: 0; top: 15%; height: 70%; width: 3px; background: var(--accent-orange); border-radius: 2px; }
+        .pay-card:hover { border-color: var(--accent-orange); transform: translateY(-3px); box-shadow: 0 5px 20px rgba(255,153,0,0.15); }
+        .pay-card::before { content: ''; position: absolute; left: 0; top: 15%; height: 70%; width: 4px; background: var(--accent-orange); border-radius: 2px; box-shadow: 0 0 10px var(--accent-orange); }
         .pay-icon {
-            width: 45px; height: 45px; background: rgba(255, 153, 0, 0.1); border-radius: 10px;
-            display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: var(--accent-orange);
-            flex-shrink: 0;
+            width: 45px; height: 45px; background: rgba(255, 153, 0, 0.1); border-radius: 10px; border: 1px solid rgba(255,153,0,0.2);
+            display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: var(--accent-orange); flex-shrink: 0;
         }
-        .pay-head { font-family: var(--font-head); font-size: 1rem; margin-bottom: 3px; }
-        .pay-desc { font-size: 0.8rem; color: #888; line-height: 1.3; }
+        .pay-head { font-family: var(--font-head); font-size: 1rem; margin-bottom: 4px; color: white; }
+        .pay-desc { font-size: 0.8rem; color: #a0a0b0; line-height: 1.3; }
 
         /* --- FOOTER --- */
-        .app-footer { background: #020205; padding: 40px 20px 30px; border-top: 1px solid #222; text-align: center; }
-        .social-row { display: flex; justify-content: center; gap: 15px; margin: 20px 0; }
-        .social-btn {
-            width: 40px; height: 40px; border-radius: 50%; background: #111; border: 1px solid #333;
-            display: flex; align-items: center; justify-content: center; color: white; transition: 0.3s;
-        }
-        .social-btn:hover { background: var(--accent-purple); border-color: var(--accent-purple); }
-        .footer-links a { color: #666; font-size: 0.8rem; margin: 0 10px; text-decoration: none; }
-        .footer-copy { color: #444; font-size: 0.7rem; margin-top: 20px; }
+        .app-footer { background: #05020a; padding: 40px 15px; border-top: 1px solid rgba(189,0,255,0.2); font-family: var(--font-body); }
+        .footer-logo-area { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .footer-logo-area img { width: 35px; }
+        .footer-logo-area h2 { font-family: var(--font-head); font-size: 1.3rem; color: white; margin: 0; }
+        .footer-desc { color: #888; font-size: 0.85rem; line-height: 1.5; margin-bottom: 25px; max-width: 600px; }
+        .footer-socials { display: flex; gap: 12px; margin-bottom: 30px; }
+        .footer-social-btn { width: 40px; height: 40px; background: #110822; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.1rem; transition: 0.3s; border: 1px solid rgba(255,255,255,0.05); text-decoration: none; }
+        .footer-social-btn:hover { background: var(--accent-purple); border-color: var(--accent-purple); box-shadow: 0 0 15px rgba(189,0,255,0.5); transform: translateY(-3px); }
+        .footer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px 15px; margin-bottom: 30px; }
+        @media(min-width: 768px) { .footer-grid { grid-template-columns: repeat(4, 1fr); } }
+        .footer-col h4 { font-family: var(--font-head); color: white; font-size: 1rem; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
+        .footer-col a { display: block; color: #888; text-decoration: none; margin-bottom: 10px; font-size: 0.85rem; transition: 0.3s; }
+        .footer-col a:hover { color: var(--accent-cyan); padding-left: 5px; }
+        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; text-align: center; color: #555; font-size: 0.8rem; }
+        .footer-made-with { margin-top: 8px; font-style: italic; color: #777; }
 
         /* --- FAB & MODAL --- */
-        .fab {
-            position: fixed; bottom: 100px; left: 20px; width: 55px; height: 55px;
-            background: #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 1.5rem; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.5);
-            z-index: 1001; cursor: pointer; animation: pulse 2s infinite;
-        }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); } 100% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); } }
-
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); z-index: 4000; display: flex;
-            align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.3s;
-            backdrop-filter: blur(5px);
-        }
+        .fab { position: fixed; bottom: 100px; right: 15px; width: 55px; height: 55px; background: var(--accent-purple); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; box-shadow: 0 5px 20px rgba(189, 0, 255, 0.6); z-index: 1001; cursor: pointer; transition: 0.3s; }
+        .fab:hover { transform: scale(1.1); background: #d000ff; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 4000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.4s; backdrop-filter: blur(10px); }
         .modal-overlay.active { opacity: 1; pointer-events: all; }
-        .modal-box {
-            background: #151525; padding: 25px; border-radius: 20px; width: 85%; max-width: 320px;
-            text-align: center; border: 1px solid var(--accent-purple); transform: scale(0.8); transition: 0.3s;
-        }
-        .modal-overlay.active .modal-box { transform: scale(1); }
-        .support-btn {
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 10px;
-            text-decoration: none; font-weight: bold; color: white;
-        }
-        .btn-discord { background: #5865F2; } .btn-telegram { background: #0088cc; }
-        .close-modal-text { color: #888; cursor: pointer; font-size: 0.9rem; margin-top: 15px; display: inline-block; }
+        .modal-box { background: #0d061e; padding: 30px 20px; border-radius: 15px; width: 90%; max-width: 320px; text-align: center; border: 1px solid var(--accent-purple); transform: scale(0.8) translateY(20px); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 10px 40px rgba(189,0,255,0.3); }
+        .modal-overlay.active .modal-box { transform: scale(1) translateY(0); }
+        .support-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 10px; text-decoration: none; font-family: var(--font-head); font-weight: bold; color: white; font-size: 0.9rem; transition: 0.3s; }
+        .btn-discord { background: #5865F2; } .btn-discord:hover { background: #4752C4; box-shadow: 0 5px 15px rgba(88,101,242,0.4); }
+        .btn-telegram { background: #0088cc; } .btn-telegram:hover { background: #0077b5; box-shadow: 0 5px 15px rgba(0,136,204,0.4); }
+        .close-modal-text { color: #888; cursor: pointer; font-size: 0.85rem; margin-top: 15px; display: inline-block; font-weight: bold; text-transform: uppercase; }
 
-        /* --- BOTTOM NAV --- */
+        /* --- UPGRADED BOTTOM NAV (PERFECT FIT & CENTER PLUS) --- */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%;
-            background: #0a0a14; display: flex; justify-content: space-around;
-            padding: 15px 0 20px; border-top: 1px solid #1f1f35; z-index: 1000;
+            background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(15px);
+            display: flex; justify-content: space-around; align-items: center;
+            padding: 10px 5px 15px; border-top: 1px solid rgba(189,0,255,0.2); z-index: 1000;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
         }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; color: #666; text-decoration: none; font-size: 0.7rem; }
-        .nav-item.active { color: var(--accent-cyan); }
-        .nav-item i { font-size: 1.2rem; }
+        .nav-item { 
+            display: flex; flex-direction: column; align-items: center; gap: 4px; 
+            color: #666; text-decoration: none; font-size: 0.6rem; font-family: var(--font-head); 
+            font-weight: bold; flex: 1; transition: 0.3s; position: relative;
+        }
+        .nav-item.active { color: var(--accent-cyan); text-shadow: 0 0 10px rgba(0,242,255,0.5); }
+        .nav-item i { font-size: 1.2rem; transition: 0.3s; }
+        .nav-item:hover { color: white; }
+        
+        .nav-item.create-btn i { 
+            color: var(--accent-cyan); 
+            font-size: 2.5rem; 
+            margin-top: -25px; 
+            background: var(--primary-bg); 
+            border-radius: 50%; 
+            padding: 4px;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.4); 
+            border: 2px solid var(--accent-purple);
+            text-shadow: 0 0 10px rgba(0,242,255,0.6);
+        }
+        .nav-item.create-btn:hover i { transform: scale(1.1); color: white; border-color: var(--accent-cyan); }
+        .nav-item.create-btn span { display: none; } 
 
-        .fade-up { opacity: 0; transform: translateY(20px); animation: fadeUpAnim 0.6s forwards; }
-        @keyframes fadeUpAnim { to { opacity: 1; transform: translateY(0); } }
-        .delay-1 { animation-delay: 0.1s; } .delay-2 { animation-delay: 0.2s; } .hidden { display: none; }
+        /* --- RESPONSIVE DESKTOP HEADER --- */
+        @media (min-width: 850px) {
+            .bottom-nav { display: none !important; }
+            .desktop-nav { display: flex; gap: 20px; align-items: center; }
+            .desk-nav-item { color: #a0a0b0; text-decoration: none; font-family: var(--font-head); font-size: 0.9rem; font-weight: bold; transition: 0.3s; text-transform: uppercase; padding: 8px 12px; border-radius: 8px; }
+            .desk-nav-item:hover, .desk-nav-item.active { color: var(--accent-cyan); background: rgba(0,242,255,0.1); }
+            .header-right { gap: 25px; }
+            body { padding-bottom: 0; } 
+            .fab { bottom: 30px; }
+            .section-pad { padding: 0 30px 40px; }
+        }
+
+        /* --- SCROLL ANIMATIONS --- */
+        .fade-up { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .fade-up.visible { opacity: 1; transform: translateY(0); }
+        .delay-1 { transition-delay: 0.1s; } .hidden { display: none; }
     </style>
 </head>
 <body>
@@ -426,15 +455,24 @@
             <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_20wCR-WBMpQmw3vxcYUf-vxIO1PYDJoQN_Sid3UDjA9tf0cuX0eH40jbzHoJad4cxbnjhPjqfCw1Z5V1LhgN9zFuIQC0fJjecTy3D9PFu5WjR2H1wHwTD1bUGnXY_NiApWn5gMs6velcQngSzKoP1yHzX0cVsFSUFM8zIefcbiPayY7680Kz0V0ZAAE/s1264/1000093706.png" alt="Logo" class="app-logo">
             <div class="app-title" id="welcomeText">TOURNYX</div>
         </div>
+        
+        <nav class="desktop-nav">
+            <a class="desk-nav-item active" href="index.html">Home</a>
+            <a class="desk-nav-item" href="explore.html">Explore</a>
+            <a class="desk-nav-item" href="tournament.html" style="color:var(--accent-purple);">Create</a>
+            <a class="desk-nav-item" href="matches.html">Matches</a>
+            <a class="desk-nav-item" href="clans.html">Clans</a>
+        </nav>
+
         <div class="header-right">
-            <a href="https://tournyx.blogspot.com/p/tournyx-redeem-rewards-global-variables_20.html" class="header-balance">
-                <i class="fa-solid fa-wallet"></i> <span id="homeWalletBalance">0</span> PTS
+            <a href="wallet.html" class="header-balance">
+                <i class="fa-solid fa-wallet"></i> <span id="homeWalletBalance">0</span>
             </a>
             <i class="fa-solid fa-bars menu-btn" onclick="toggleMenu()"></i>
         </div>
     </header>
 
-    <div class="notification-bar fade-up">
+    <div class="notification-bar fade-up visible">
         <div class="noti-track">
             <div class="noti-item"><i class="fa-solid fa-bell" style="color:var(--accent-orange)"></i> Free Fire Showdown Live! Prize Pool ₹5,000</div>
             <div class="noti-item"><i class="fa-solid fa-gift" style="color:var(--accent-purple)"></i> Claim 500 Bonus PTS in the Offer Wall today!</div>
@@ -446,7 +484,7 @@
     </div>
 
     <div class="overlay-menu" id="overlayMenu">
-        <a href="https://tournyx.blogspot.com/p/my-profile-tournyx-root-primary-bg_83.html?m=1" class="menu-user-info-link">
+        <a href="profile.html" class="menu-user-info-link">
             <div class="menu-user-info" id="menuUserInfo">
                 <img src="https://via.placeholder.com/60" class="menu-user-img" id="menuUserImg">
                 <div class="menu-user-details">
@@ -458,18 +496,19 @@
 
         <div class="menu-links">
             <a href="premium.html"><i class="fa-solid fa-crown"></i> Premium Plans</a>
-            <a href="#"><i class="fa-solid fa-headset"></i> Game Profiles</a>
-            <a href="#"><i class="fa-solid fa-users-gear"></i> Manage Teams</a>
+            <a href="settings.html"><i class="fa-solid fa-headset"></i> Game Profiles</a>
+            <a href="clans.html"><i class="fa-solid fa-users-gear"></i> Manage Teams</a>
             <a href="matches.html"><i class="fa-solid fa-users"></i> My Joined Matches</a>
             <a href="giveaway.html"><i class="fa-solid fa-gift"></i> Giveaways</a>
-            <a href="offerwall.html"><i class="fa-solid fa-envelope-open-text"></i> Offers Wall</a>
-            <a href="browse.html"><i class="fa-solid fa-gamepad"></i> All Tournaments</a>
-            <a href="refer&earn.html"><i class="fa-solid fa-share-nodes"></i> Refer & Earn</a>
-            <a href="contact.html"><i class="fa-solid fa-comments"></i> Help & Support</a>
+            <a href="offer.html"><i class="fa-solid fa-envelope-open-text"></i> Offers Wall</a>
+            <a href="explore.html"><i class="fa-solid fa-gamepad"></i> All Tournaments</a>
+            <a href="refer.html"><i class="fa-solid fa-share-nodes"></i> Refer & Earn</a>
+            <a href="mailto:support@tournyx.com"><i class="fa-solid fa-comments"></i> Help & Support</a>
             <a href="settings.html"><i class="fa-solid fa-gear"></i> Settings</a>
             <a href="#" onclick="logoutUser()" class="logout-link"><i class="fa-solid fa-power-off"></i> Logout</a>
+            
+            <div style="margin-top: 30px; text-align: center; color: #555; font-size: 0.75rem; font-family: var(--font-head); letter-spacing: 2px;">APP VERSION 2.1.0</div>
         </div>
-        <div class="menu-version">Version 2.0.1</div>
     </div>
 
     <div class="next-match-card fade-up" id="nextMatchWidget">
@@ -480,48 +519,69 @@
     </div>
 
     <section class="hero fade-up">
-        <h1 id="heroTitle">Esports Journey Starts here<br><span class="gradient-text">Power ur play own the arena🏆</span></h1>
-        <p>Whether you're here to <span style="color:#bd00ff">compete</span>, organize, or <span style="color:springgreen">earn</span> - Tournyx is your platform.</p>
+        <h1 id="heroTitle">Own the Arena<br><span class="gradient-text">Power Your Play 🏆</span></h1>
+        <p>Compete. Organize. Earn real rewards securely.</p>
     </section>
 
-    <section class="role-cards fade-up delay-1">
+    <section class="role-cards glow-section fade-up delay-1">
         <div class="role-card player">
-            <div class="role-icon" style="color:#bd00ff; background:rgba(189,0,255,0.1); border-color:rgba(189,0,255,0.2);">
+            <div class="role-icon" style="color:var(--accent-purple); background:rgba(189,0,255,0.1); border-color:rgba(189,0,255,0.3);">
                 <i class="fa-solid fa-gamepad"></i>
             </div>
-            <h3 style="color:#bd00ff">For Players</h3>
-            <p>Discover tournaments, compete with the best, and win real rewards.</p>
-            <a href="browse.html" class="role-btn btn-purple">View Tournaments</a>
+            <h3 style="color:var(--accent-purple)">Players</h3>
+            <p>Compete globally, win real rewards securely.</p>
+            <a href="explore.html" class="role-btn btn-purple">Tournaments</a>
         </div>
 
         <div class="role-card organizer">
-            <div class="role-icon" style="color:#00f2ff; background:rgba(0,242,255,0.1); border-color:rgba(0,242,255,0.2);">
+            <div class="role-icon" style="color:var(--accent-cyan); background:rgba(0,242,255,0.1); border-color:rgba(0,242,255,0.3);">
                 <i class="fa-solid fa-crown"></i>
             </div>
-            <h3 style="color:#00f2ff">For Organizers</h3>
-            <p>Create tournaments, manage participants, and monetize your events.</p>
-            <a href="tournament.html" class="role-btn btn-cyan">Create Tournament</a>
+            <h3 style="color:var(--accent-cyan)">Organizers</h3>
+            <p>Host tournaments, manage teams, monetize events.</p>
+            <a href="tournament.html" class="role-btn btn-cyan">Create Event</a>
         </div>
     </section>
 
-    <section class="stats-area fade-up delay-1">
+    <section class="stats-area glow-section fade-up delay-1">
         <div class="stats-grid">
-            <div class="stat-box"><span class="stat-val">56K+</span><span class="stat-label">Active Players</span></div>
-            <div class="stat-box"><span class="stat-val" style="color:var(--accent-green)">₹93K+</span><span class="stat-label">Prizes Distributed</span></div>
-            <div class="stat-box"><span class="stat-val" style="color:var(--accent-orange)">150+</span><span class="stat-label">Tournaments</span></div>
+            <div class="stat-box"><span class="stat-val">56K+</span><span class="stat-label">Players</span></div>
+            <div class="stat-box"><span class="stat-val" style="color:var(--accent-green)">₹93K+</span><span class="stat-label">Prizes</span></div>
+            <div class="stat-box"><span class="stat-val" style="color:var(--accent-orange)">150+</span><span class="stat-label">Events</span></div>
             <div class="stat-box"><span class="stat-val" style="color:var(--accent-cyan)">4+</span><span class="stat-label">States</span></div>
         </div>
 
-        <p style="text-align:center; margin-bottom:15px; font-family:var(--font-head); font-size:0.9rem;">GAMES WE SUPPORT</p>
+        <p style="text-align:center; margin-bottom:15px; font-family:var(--font-head); font-size:0.9rem; color:var(--accent-purple); letter-spacing:2px; text-shadow:0 0 10px rgba(189,0,255,0.5);">SUPPORTED TITLES</p>
         <div class="marquee-container">
             <div class="marquee-track">
                 <div class="game-pill"><i class="fa-solid fa-fire" style="color:orange"></i> FREE FIRE</div>
                 <div class="game-pill"><i class="fa-solid fa-crosshairs" style="color:yellow"></i> BGMI</div>
-                <div class="game-pill"><i class="fa-solid fa-v" style="color:red"></i> Mobile: Legends</div>
+                <div class="game-pill"><i class="fa-solid fa-v" style="color:red"></i> Valorant Mobile</div>
                 <div class="game-pill"><i class="fa-solid fa-skull" style="color:green"></i> COD: MOBILE</div>
                 <div class="game-pill"><i class="fa-solid fa-fire" style="color:orange"></i> FREE FIRE</div>
                 <div class="game-pill"><i class="fa-solid fa-crosshairs" style="color:yellow"></i> BGMI</div>
             </div>
+        </div>
+    </section>
+
+    <section class="section-pad fade-up">
+        <h2 class="section-title">Platform <span style="color:var(--accent-cyan); text-shadow:0 0 15px rgba(0,242,255,0.5);">Arsenal</span></h2>
+        <div class="features-grid">
+            <div class="f-card"><i class="fa-solid fa-shield-halved f-icon"></i><div class="f-title">Clan Wars</div></div>
+            <div class="f-card"><i class="fa-solid fa-robot f-icon"></i><div class="f-title">AI Anti-Cheat</div></div>
+            <div class="f-card"><i class="fa-solid fa-wallet f-icon"></i><div class="f-title">Crypto Wallet</div></div>
+            <div class="f-card"><i class="fa-solid fa-bolt f-icon"></i><div class="f-title">Instant Payouts</div></div>
+            <div class="f-card"><i class="fa-solid fa-sitemap f-icon"></i><div class="f-title">Live Brackets</div></div>
+            <div class="f-card"><i class="fa-solid fa-chart-pie f-icon"></i><div class="f-title">Player Stats</div></div>
+            <div class="f-card"><i class="fa-solid fa-calendar-check f-icon"></i><div class="f-title">Daily Quests</div></div>
+            <div class="f-card"><i class="fa-solid fa-users-rays f-icon"></i><div class="f-title">Guild Tourneys</div></div>
+            <div class="f-card"><i class="fa-solid fa-crosshairs f-icon"></i><div class="f-title">Scrims Maker</div></div>
+            <div class="f-card"><i class="fa-solid fa-video f-icon"></i><div class="f-title">Streaming Hub</div></div>
+            <div class="f-card"><i class="fa-solid fa-key f-icon"></i><div class="f-title">Custom Lobbies</div></div>
+            <div class="f-card"><i class="fa-solid fa-handshake-angle f-icon"></i><div class="f-title">Sponsor Bounties</div></div>
+            <div class="f-card"><i class="fa-solid fa-gem f-icon"></i><div class="f-title">VIP Premium</div></div>
+            <div class="f-card"><i class="fa-solid fa-user-ninja f-icon"></i><div class="f-title">1v1 Duels</div></div>
+            <div class="f-card"><i class="fa-solid fa-store f-icon"></i><div class="f-title">Esports Store</div></div>
         </div>
     </section>
   
@@ -534,47 +594,58 @@
         </div>
 
         <div id="organizers" class="lb-content people-list active">
-            <div class="person-row">
-                <img src="https://via.placeholder.com/100" class="person-img-small">
-                <div class="person-info"><div class="person-name">Eagle Esports</div><div class="person-role">1 Tournament Hosted</div></div>
-            </div>
-            <div class="person-row">
-                <img src="https://via.placeholder.com/100" class="person-img-small">
-                <div class="person-info"><div class="person-name">Wolves Org</div><div class="person-role">4 Tournaments Hosted</div></div>
-            </div>
-            <div class="person-row">
-                <img src="https://via.placeholder.com/100" class="person-img-small">
-                <div class="person-info"><div class="person-name">MGM Esports</div><div class="person-role">65 Tournaments Hosted</div></div>
-            </div>
+            <div class="person-row"><img src="https://via.placeholder.com/100" class="person-img-small"><div class="person-info"><div class="person-name">Eagle Esports</div><div class="person-role">120 Tournaments Hosted</div></div></div>
+            <div class="person-row"><img src="https://via.placeholder.com/100" class="person-img-small"><div class="person-info"><div class="person-name">Wolves Org</div><div class="person-role">85 Tournaments Hosted</div></div></div>
+            <div class="person-row"><img src="https://via.placeholder.com/100" class="person-img-small"><div class="person-info"><div class="person-name">MGM Esports</div><div class="person-role">65 Tournaments Hosted</div></div></div>
+            <div class="person-row"><img src="https://via.placeholder.com/100" class="person-img-small"><div class="person-info"><div class="person-name">Titan Gaming</div><div class="person-role">42 Tournaments Hosted</div></div></div>
+            <div class="person-row"><img src="https://via.placeholder.com/100" class="person-img-small"><div class="person-info"><div class="person-name">Apex Predators</div><div class="person-role">30 Tournaments Hosted</div></div></div>
+            <div class="person-row"><img src="https://via.placeholder.com/100" class="person-img-small"><div class="person-info"><div class="person-name">Phoenix Core</div><div class="person-role">18 Tournaments Hosted</div></div></div>
         </div>
 
         <div id="teams" class="lb-content people-list">
-            <div class="person-row">
-                <img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:#bd00ff">
-                <div class="person-info"><div class="person-name">K9 Esports</div><div class="person-role" style="color:#bd00ff">₹ 8,840 Won</div></div>
-            </div>
-            <div class="person-row">
-                <img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:#bd00ff">
-                <div class="person-info"><div class="person-name">BooWrath</div><div class="person-role" style="color:#bd00ff">₹ 6,735 Won</div></div>
-            </div>
-            <div class="person-row">
-                <img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:#bd00ff">
-                <div class="person-info"><div class="person-name">True Impact</div><div class="person-role" style="color:#bd00ff">₹ 6,630 Won</div></div>
-            </div>
+            <div class="person-row"><img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:var(--accent-purple)"><div class="person-info"><div class="person-name">K9 Esports</div><div class="person-role" style="color:var(--accent-purple)">₹ 8,840 Won</div></div></div>
+            <div class="person-row"><img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:var(--accent-purple)"><div class="person-info"><div class="person-name">BooWrath</div><div class="person-role" style="color:var(--accent-purple)">₹ 6,735 Won</div></div></div>
+            <div class="person-row"><img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:var(--accent-purple)"><div class="person-info"><div class="person-name">True Impact</div><div class="person-role" style="color:var(--accent-purple)">₹ 5,200 Won</div></div></div>
+            <div class="person-row"><img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:var(--accent-purple)"><div class="person-info"><div class="person-name">Godlike</div><div class="person-role" style="color:var(--accent-purple)">₹ 4,150 Won</div></div></div>
+            <div class="person-row"><img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:var(--accent-purple)"><div class="person-info"><div class="person-name">Soul Esports</div><div class="person-role" style="color:var(--accent-purple)">₹ 3,900 Won</div></div></div>
+            <div class="person-row"><img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:var(--accent-purple)"><div class="person-info"><div class="person-name">XSpark Hub</div><div class="person-role" style="color:var(--accent-purple)">₹ 2,100 Won</div></div></div>
         </div>
 
         <div id="contributors" class="lb-content people-list">
-            <div class="person-row">
-                <img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:#ffd700">
-                <div class="person-info"><div class="person-name">Serpent</div><div class="person-role" style="color:#ffd700">32 Contributions</div></div>
+            <div class="person-row"><img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:#ffd700"><div class="person-info"><div class="person-name">Serpent</div><div class="person-role" style="color:#ffd700">32 Contributions</div></div></div>
+            <div class="person-row"><img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:#ffd700"><div class="person-info"><div class="person-name">SATAN</div><div class="person-role" style="color:#ffd700">28 Contributions</div></div></div>
+            <div class="person-row"><img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:#ffd700"><div class="person-info"><div class="person-name">Lucifer</div><div class="person-role" style="color:#ffd700">21 Contributions</div></div></div>
+            <div class="person-row"><img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:#ffd700"><div class="person-info"><div class="person-name">Venom</div><div class="person-role" style="color:#ffd700">18 Contributions</div></div></div>
+            <div class="person-row"><img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:#ffd700"><div class="person-info"><div class="person-name">Ghost Protocol</div><div class="person-role" style="color:#ffd700">14 Contributions</div></div></div>
+            <div class="person-row"><img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:#ffd700"><div class="person-info"><div class="person-name">Shadow Strike</div><div class="person-role" style="color:#ffd700">9 Contributions</div></div></div>
+        </div>
+    </section>
+
+    <section class="section-pad glow-section fade-up">
+        <div class="slider-header">
+            <h2 class="section-title" style="margin:0; text-align:left; font-size:1.4rem;">Daily <span>Quests</span></h2>
+        </div>
+        <div class="quests-wrapper">
+            <div class="quest-card" id="quest_play">
+                <div>
+                    <div class="quest-info-title">Play 3 Tournaments</div>
+                    <div class="quest-info-sub"><i class="fa-solid fa-coins"></i> Reward: 50 PTS</div>
+                </div>
+                <button class="quest-btn" onclick="claimQuest('quest_play', 50, 'matches', 3, 'explore.html')">CLAIM</button>
             </div>
-            <div class="person-row">
-                <img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:#ffd700">
-                <div class="person-info"><div class="person-name">SATAN</div><div class="person-role" style="color:#ffd700">28 Contributions</div></div>
+            <div class="quest-card" id="quest_host">
+                <div>
+                    <div class="quest-info-title">Host a Free Fire Event</div>
+                    <div class="quest-info-sub"><i class="fa-solid fa-coins"></i> Reward: 100 PTS</div>
+                </div>
+                <button class="quest-btn" onclick="claimQuest('quest_host', 100, 'hosted', 1, 'tournament.html')">CLAIM</button>
             </div>
-            <div class="person-row">
-                <img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:#ffd700">
-                <div class="person-info"><div class="person-name">Lucifer</div><div class="person-role" style="color:#ffd700">10 Contributions</div></div>
+            <div class="quest-card" id="quest_clan">
+                <div>
+                    <div class="quest-info-title">Join or Create a Clan</div>
+                    <div class="quest-info-sub"><i class="fa-solid fa-coins"></i> Reward: 150 PTS</div>
+                </div>
+                <button class="quest-btn" onclick="claimQuest('quest_clan', 150, 'clan', 1, 'clans.html')">CLAIM</button>
             </div>
         </div>
     </section>
@@ -582,45 +653,33 @@
     <section class="section-pad fade-up" id="workflowSection">
         <div class="toggle-container theme-purple" id="workflowToggle">
             <div class="toggle-bg"></div>
-            <div class="toggle-option active" onclick="switchWorkflow('player')">I'm a Player</div>
-            <div class="toggle-option" onclick="switchWorkflow('organizer')">I'm an Organizer</div>
+            <div class="toggle-option active" onclick="switchWorkflow('player')">Player</div>
+            <div class="toggle-option" onclick="switchWorkflow('organizer')">Organizer</div>
         </div>
         <div class="steps-wrapper" id="playerSteps">
-             <a href="https://tournyx.blogspot.com/p/browse-tournyx-root-primary-bg-050511_16.html?m=1" class="step-card">
+             <a href="explore.html" class="step-card">
                 <div class="step-badge">1</div>
-                <div class="step-info"><h3>Browse Tournaments</h3><p>Explore events by game, region, or prize pool.</p></div>
+                <div class="step-info"><h3>Find Events</h3><p>Explore by game, region, or prize.</p></div>
                 <i class="fa-solid fa-chevron-right" style="color:#666; margin-left:auto;"></i>
             </a>
-            <div class="step-card">
-                <div class="step-badge">2</div>
-                <div class="step-info"><h3>Register & Check-in</h3><p>Sign up solo or with your squad seamlessly.</p></div>
-            </div>
-            <div class="step-card">
-                <div class="step-badge">3</div>
-                <div class="step-info"><h3>Play & Win</h3><p>Compete in matches and claim your rewards.</p></div>
-            </div>
+            <div class="step-card"><div class="step-badge">2</div><div class="step-info"><h3>Register</h3><p>Sign up seamlessly with your squad.</p></div></div>
+            <div class="step-card"><div class="step-badge">3</div><div class="step-info"><h3>Play & Win</h3><p>Compete and claim your rewards.</p></div></div>
         </div>
         <div class="steps-wrapper hidden" id="organizerSteps">
-             <a href="https://tournyx.blogspot.com/p/create-tournament-tournyx-root-primary_16.html?m=1" class="step-card">
+             <a href="tournament.html" class="step-card">
                 <div class="step-badge">1</div>
-                <div class="step-info"><h3>Create Your Event</h3><p>Set up brackets, rules, schedules, and prizes.</p></div>
+                <div class="step-info"><h3>Create Setup</h3><p>Set brackets, rules, and prizes.</p></div>
                 <i class="fa-solid fa-chevron-right" style="color:#666; margin-left:auto;"></i>
             </a>
-            <div class="step-card">
-                <div class="step-badge">2</div>
-                <div class="step-info"><h3>Manage Participants</h3><p>Handle registrations, seeding, and results.</p></div>
-            </div>
-            <div class="step-card">
-                <div class="step-badge">3</div>
-                <div class="step-info"><h3>Earn & Grow</h3><p>Collect entry fees and build your brand.</p></div>
-            </div>
+            <div class="step-card"><div class="step-badge">2</div><div class="step-info"><h3>Manage</h3><p>Handle registrations and seeding.</p></div></div>
+            <div class="step-card"><div class="step-badge">3</div><div class="step-info"><h3>Monetize</h3><p>Collect fees and grow your brand.</p></div></div>
         </div>
     </section>
 
     <section class="section-pad fade-up">
         <div class="slider-header">
-            <h2 class="section-title" style="margin:0; text-align:left; font-size:1.3rem;">Featured <span>Events</span></h2>
-            <a href="browse.html" class="view-all">View All</a>
+            <h2 class="section-title" style="margin:0; text-align:left; font-size:1.4rem;">Featured <span>Events</span></h2>
+            <a href="explore.html" class="view-all">View All</a>
         </div>
         <div class="tourney-slider" id="featuredSlider">
             <div style="text-align:center; width:100%; color:#666;"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>
@@ -628,54 +687,89 @@
     </section>
 
     <section class="pay-section fade-up delay-1">
-        <h2 class="section-title">Secure & <span style="color:#ff9900">Reliable</span> Payments</h2>
-        <p style="color:#888; font-size:0.9rem; margin-bottom:30px;">Powered by trusted wallet and payment solutions.</p>
+        <h2 class="section-title">Secure & <span style="color:#ff9900">Reliable</span></h2>
+        <p style="color:#888; font-size:0.9rem; margin-bottom:30px;">Powered by trusted payment solutions.</p>
         <div class="pay-card">
             <div class="pay-icon"><i class="fa-solid fa-shield-halved"></i></div>
-            <div><div class="pay-head">Secure Transactions</div><div class="pay-desc">End-to-end encrypted payments with industry-leading security.</div></div>
+            <div><div class="pay-head">Secure Vault</div><div class="pay-desc">End-to-end encrypted transactions.</div></div>
         </div>
         <div class="pay-card">
             <div class="pay-icon"><i class="fa-solid fa-wallet"></i></div>
-            <div><div class="pay-head">Multi-Wallet Support</div><div class="pay-desc">Connect with your preferred wallet seamlessly.</div></div>
+            <div><div class="pay-head">Multi-Wallet</div><div class="pay-desc">Connect with your preferred wallet.</div></div>
         </div>
         <div class="pay-card">
             <div class="pay-icon"><i class="fa-solid fa-bolt"></i></div>
-            <div><div class="pay-head">Instant Payouts</div><div class="pay-desc">Winners receive rewards immediately after match completion.</div></div>
+            <div><div class="pay-head">Instant Payouts</div><div class="pay-desc">Winners receive rewards immediately.</div></div>
         </div>
     </section>
 
-    <footer class="app-footer">
-        <div style="font-family:var(--font-head); font-size:1.3rem; color:white; margin-bottom:10px;">
-            <i class="fa-solid fa-bolt" style="color:var(--accent-cyan)"></i> TOURNYX
+    <footer class="app-footer fade-up">
+        <div class="footer-logo-area">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_20wCR-WBMpQmw3vxcYUf-vxIO1PYDJoQN_Sid3UDjA9tf0cuX0eH40jbzHoJad4cxbnjhPjqfCw1Z5V1LhgN9zFuIQC0fJjecTy3D9PFu5WjR2H1wHwTD1bUGnXY_NiApWn5gMs6velcQngSzKoP1yHzX0cVsFSUFM8zIefcbiPayY7680Kz0V0ZAAE/s1264/1000093706.png" alt="Tournyx Icon">
+            <h2>TOURNYX</h2>
         </div>
-        <p style="color:#666; font-size:0.85rem; margin-bottom:20px;">The ultimate esports platform for gamers and organizers.</p>
-        <div class="social-row">
-            <a href="#" class="social-btn"><i class="fa-brands fa-instagram"></i></a>
-            <a href="#" class="social-btn"><i class="fa-brands fa-twitter"></i></a>
-            <a href="#" class="social-btn"><i class="fa-brands fa-discord"></i></a>
+        
+        <p class="footer-desc">
+            Tournyx is building monetization infrastructure for Esports industry at an intersection of tournaments, streaming & gamified social media. Unlocking opportunities for competitive players globally.
+        </p>
+
+        <div class="footer-socials">
+            <a href="#" class="footer-social-btn"><i class="fa-brands fa-youtube"></i></a>
+            <a href="#" class="footer-social-btn"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" class="footer-social-btn"><i class="fa-brands fa-discord"></i></a>
         </div>
-        <div class="footer-links">
-            <a href="REPLACE_WITH_PRIVACY_LINK">Privacy Policy</a> | <a href="REPLACE_WITH_TERMS_LINK">Terms of Service</a>
+
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>PLATFORM</h4>
+                <a href="#">Organizations</a>
+                <a href="#">Clans</a>
+            </div>
+            <div class="footer-col">
+                <h4>COMMUNITY</h4>
+                <a href="#">Discord</a>
+                <a href="#">Instagram</a>
+                <a href="#">Blogs</a>
+            </div>
+            <div class="footer-col">
+                <h4>SUPPORT</h4>
+                <a href="#">Contact</a>
+                <a href="#">Feedback</a>
+            </div>
+            <div class="footer-col">
+                <h4>LEGAL</h4>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
         </div>
-        <p class="footer-copy">© 2026 Tournyx. All rights reserved.</p>
+
+        <div class="footer-bottom">
+            © 2026 TOURNYX. All rights reserved.<br>
+            <div class="footer-made-with">Made with ⚡ for gamers worldwide</div>
+        </div>
     </footer>
 
-    <div class="fab" onclick="toggleModal()"><i class="fa-solid fa-headset"></i></div>
+    <div class="fab fade-up" onclick="toggleModal()"><i class="fa-solid fa-headset"></i></div>
+    
     <div class="modal-overlay" id="supportModal">
         <div class="modal-box">
-            <h3 style="font-family:var(--font-head); margin-bottom:15px; color:white;">Need Help?</h3>
-            <p style="color:#aaa; font-size:0.9rem; margin-bottom:20px;">Join our community channels.</p>
+            <h3 style="font-family:var(--font-head); margin-bottom:15px; color:white; font-size:1.3rem;">Need Help?</h3>
+            <p style="color:#aaa; font-size:0.9rem; margin-bottom:25px;">Join our community channels.</p>
             <a href="REPLACE_WITH_DISCORD_LINK" class="support-btn btn-discord"><i class="fa-brands fa-discord"></i> Join Discord</a>
             <a href="REPLACE_WITH_TELEGRAM_LINK" class="support-btn btn-telegram"><i class="fa-brands fa-telegram"></i> Join Telegram</a>
-            <p style="color:#666; font-size:0.8rem; margin-top:15px; cursor:pointer;" onclick="toggleModal()">Close Window</p>
+            <p class="close-modal-text" onclick="toggleModal()">Close Window</p>
         </div>
     </div>
 
     <nav class="bottom-nav">
         <a class="nav-item active" href="index.html"><i class="fa-solid fa-house"></i><span>Home</span></a>
         <a class="nav-item" href="explore.html"><i class="fa-solid fa-compass"></i><span>Explore</span></a>
-        <a class="nav-item" href="tournament.html"><i class="fa-solid fa-plus-circle" style="color:var(--accent-cyan); font-size:1.8rem;"></i><span>Create</span></a>
         <a class="nav-item" href="matches.html"><i class="fa-solid fa-trophy"></i><span>Matches</span></a>
+        
+        <a class="nav-item create-btn" href="tournament.html"><i class="fa-solid fa-circle-plus"></i><span></span></a>
+        
+        <a class="nav-item" href="clans.html"><i class="fa-solid fa-shield-halved"></i><span>Clan</span></a>
+        <a class="nav-item" href="wallet.html"><i class="fa-solid fa-wallet"></i><span>Wallet</span></a>
         <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i><span>Profile</span></a>
     </nav>
 
@@ -685,14 +779,11 @@
 
         // STARTUP
         window.addEventListener('load', () => {
-            // --- SECURITY: CHECK LOGIN STATUS ---
             let user = JSON.parse(localStorage.getItem('tournyx_user'));
-            
             if (!user) {
-                window.location.href = "https://tournyx.blogspot.com/p/login-tournyx-root-primary-bg-050511_8.html?m=1";
+                window.location.href = "login.html";
                 return; 
             }
-            // ------------------------------------
 
             setTimeout(() => {
                 const loader = document.getElementById('tournyx-loader');
@@ -700,45 +791,35 @@
                 setTimeout(() => { loader.style.display = 'none'; }, 500);
             }, 2000);
 
-            // Run Standard Page Functions
             checkLoginStatus();
             checkNextMatch();
             loadFeaturedTournaments();
-            syncLiveWalletPoints(user); // Added to sync live points
+            syncLiveWalletPoints(user); 
+            renderQuests(); // Verify & setup quests
+            initScrollAnimations(); 
         });
 
-        // LIVE WALLET SYNC LOGIC
+        // LIVE WALLET SYNC
         function syncLiveWalletPoints(user) {
             const balanceDisplay = document.getElementById('homeWalletBalance');
-            
-            // Show immediate local balance
-            if (user.points !== undefined) {
-                balanceDisplay.innerText = user.points;
-            }
-
-            // Silently fetch real approved balance
+            if (user.points !== undefined) { balanceDisplay.innerText = user.points; }
             if (user.email) {
-                fetch(API_URL + "?email=" + encodeURIComponent(user.email))
+                fetch(API_URL + "?action=sync_user&email=" + encodeURIComponent(user.email))
                 .then(res => res.json())
                 .then(data => {
                     if (data.status === 'success') {
-                        user.points = data.balance; 
+                        user.points = data.data.points || user.points; 
                         localStorage.setItem('tournyx_user', JSON.stringify(user));
                         balanceDisplay.innerText = user.points;
                     }
-                }).catch(err => console.log("Failed to sync live points.", err));
+                }).catch(err => console.log("Offline or sync failed.", err));
             }
         }
 
-        // 1. CHECK LOGIN STATUS (UI UPDATES)
         function checkLoginStatus() {
             let user = JSON.parse(localStorage.getItem('tournyx_user'));
-            
             if (user) {
-                // A. Update Welcome Message
                 document.getElementById('welcomeText').innerText = "Hi, " + (user.username || user.ign || "Player");
-
-                // B. Show User Info in Side Menu
                 document.getElementById('menuUserName').innerText = user.username || "Player";
                 document.getElementById('menuUserImg').src = user.avatar || "https://via.placeholder.com/60";
             }
@@ -752,15 +833,12 @@
             }
         }
 
-        // 2. TOGGLES
-        function toggleMenu() { 
-            document.getElementById('overlayMenu').classList.toggle('active'); 
-        }
+        // TOGGLES
+        function toggleMenu() { document.getElementById('overlayMenu').classList.toggle('active'); }
         
         document.addEventListener('click', function(event) {
             const menu = document.getElementById('overlayMenu');
             const menuBtn = document.querySelector('.menu-btn');
-            
             if (!menu.contains(event.target) && !menuBtn.contains(event.target) && menu.classList.contains('active')) {
                 menu.classList.remove('active');
             }
@@ -768,7 +846,64 @@
 
         function toggleModal() { document.getElementById('supportModal').classList.toggle('active'); }
 
-        // 3. WORKFLOW SWITCHER
+        // --- DYNAMIC QUEST VERIFICATION ENGINE ---
+        function renderQuests() {
+            let claimed = JSON.parse(localStorage.getItem('tournyx_quests')) || [];
+            claimed.forEach(id => {
+                let btn = document.querySelector(`#${id} .quest-btn`);
+                if (btn) {
+                    btn.innerText = "CLAIMED";
+                    btn.classList.add("claimed");
+                    btn.onclick = null;
+                }
+            });
+        }
+
+        function claimQuest(questId, rewardPts, reqType, reqVal, redirectUrl) {
+            let user = JSON.parse(localStorage.getItem('tournyx_user'));
+            if(!user) return;
+
+            let claimed = JSON.parse(localStorage.getItem('tournyx_quests')) || [];
+            if(claimed.includes(questId)) {
+                alert("Already claimed this quest!"); 
+                return;
+            }
+
+            // Verify live data
+            let currentVal = 0;
+            if(reqType === 'matches') currentVal = parseInt(user.matches) || 0;
+            if(reqType === 'hosted') currentVal = parseInt(user.hosted) || 0;
+            if(reqType === 'clan') currentVal = (user.clan && user.clan.trim() !== "") ? 1 : 0;
+
+            if(currentVal >= reqVal) {
+                // Task successful
+                user.points = (parseInt(user.points) || 0) + rewardPts;
+                localStorage.setItem('tournyx_user', JSON.stringify(user));
+                
+                claimed.push(questId);
+                localStorage.setItem('tournyx_quests', JSON.stringify(claimed));
+
+                // Update UI visually
+                document.getElementById('homeWalletBalance').innerText = user.points;
+                let btn = document.querySelector(`#${questId} .quest-btn`);
+                btn.innerText = "CLAIMED";
+                btn.classList.add("claimed");
+                btn.onclick = null;
+
+                // Sync the new point balance to the cloud silently
+                fetch(API_URL, {
+                    method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: "update_wallet", email: user.email, points: user.points })
+                });
+
+                alert(`Task Verified! ${rewardPts} PTS added to your wallet.`);
+            } else {
+                alert(`Task Incomplete!\nYou need to finish this task first. Redirecting...`);
+                window.location.href = redirectUrl;
+            }
+        }
+
+        // WORKFLOW SWITCHER
         function switchWorkflow(role) {
             const container = document.getElementById('workflowToggle');
             const pSteps = document.getElementById('playerSteps');
@@ -786,7 +921,6 @@
             }
         }
 
-        // 4. LEADERBOARD TABS
         function switchTab(tabId, tabElement) {
             document.querySelectorAll('.lb-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.lb-tab').forEach(el => el.classList.remove('active'));
@@ -794,11 +928,9 @@
             tabElement.classList.add('active');
         }
 
-        // 5. NEXT MATCH WIDGET
         function checkNextMatch() {
             let matches = JSON.parse(localStorage.getItem('myMatches')) || [];
             let activeMatches = matches.filter(m => m.status !== 'Completed');
-            
             if (activeMatches.length > 0) {
                 let next = activeMatches[activeMatches.length - 1]; 
                 document.getElementById('nextMatchWidget').style.display = 'block';
@@ -807,7 +939,7 @@
             }
         }
 
-        // 6. LOAD FEATURED TOURNAMENTS (From Sheet)
+        // --- DYNAMIC FEATURED TOURNAMENTS & REGISTRATION ROUTING ---
         function loadFeaturedTournaments() {
             fetch(API_URL + "?action=get_tournaments")
             .then(response => response.json())
@@ -815,7 +947,6 @@
                 if (data.status === "success") {
                     const slider = document.getElementById('featuredSlider');
                     slider.innerHTML = "";
-                    
                     let featured = data.data.slice(0, 5);
                     
                     featured.forEach(t => {
@@ -824,7 +955,9 @@
                         
                         let matches = JSON.parse(localStorage.getItem('myMatches')) || [];
                         let isJoined = matches.some(m => m.name === t.title);
-                        let btnState = isJoined ? 'disabled style="background:#333; color:#666;"' : '';
+                        
+                        // Modified Register routing to redirect to details page securely
+                        let btnState = isJoined ? 'disabled style="background:#2a2a3a; color:#666;"' : `onclick="window.location.href='explore.html?id=${t.id}'"`;
                         let btnText = isJoined ? 'JOINED' : 'Register Now';
 
                         slider.innerHTML += `
@@ -836,10 +969,7 @@
                                 <div class="t-content">
                                     <div class="t-title">${t.title}</div>
                                     <div class="t-meta"><span>${t.date}</span><span class="t-prize">${prize}</span></div>
-                                    <button class="t-btn" ${btnState} 
-                                        onclick="joinTournament(this, '${t.title}', '${t.date}', '${t.prize}', '${bg}', '${t.game}', '${t.id}')">
-                                        ${btnText}
-                                    </button>
+                                    <button class="t-btn" ${btnState}>${btnText}</button>
                                 </div>
                             </div>
                         `;
@@ -847,98 +977,39 @@
                 }
             })
             .catch(err => {
-                // FIXED OFFLINE MODE: Now displays beautiful fallback cards instead of an error message
                 const slider = document.getElementById('featuredSlider');
                 slider.innerHTML = `
                     <div class="tourney-card">
                         <div class="t-img-box">
-                            <img src="https://via.placeholder.com/400x200/1a0b2e/00f2ff?text=Free+Fire+Clash" class="t-img">
+                            <img src="https://via.placeholder.com/400x200/15062e/00f2ff?text=Free+Fire+Clash" class="t-img">
                             <div class="t-tag">FREE FIRE</div>
                         </div>
                         <div class="t-content">
                             <div class="t-title">Free Fire Friday Clash</div>
                             <div class="t-meta"><span>Friday, 8:00 PM</span><span class="t-prize">₹2,000</span></div>
-                            <button class="t-btn" onclick="alert('Join via Tournyx App')">Register Now</button>
-                        </div>
-                    </div>
-                    <div class="tourney-card">
-                        <div class="t-img-box">
-                            <img src="https://via.placeholder.com/400x200/050511/bd00ff?text=BGMI+Showdown" class="t-img">
-                            <div class="t-tag">BGMI</div>
-                        </div>
-                        <div class="t-content">
-                            <div class="t-title">BGMI Weekend Showdown</div>
-                            <div class="t-meta"><span>Saturday, 5:00 PM</span><span class="t-prize">₹5,000</span></div>
-                            <button class="t-btn" onclick="alert('Join via Tournyx App')">Register Now</button>
+                            <button class="t-btn" onclick="window.location.href='explore.html'">Register Now</button>
                         </div>
                     </div>
                 `;
             });
         }
 
-        // 7. UNIFIED JOIN FUNCTION
-        function joinTournament(btnElement, name, date, prize, imgUrl, gameName, tID) {
-            
-            let user = JSON.parse(localStorage.getItem('tournyx_user'));
-            let userEmail = user ? user.email : "";
-            let userName = user ? (user.ign || user.username) : "Guest";
+        // SCROLL ANIMATION ENGINE
+        function initScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
 
-            let phone = prompt("Please enter your WhatsApp Number for Room ID:");
-            if (!phone || phone.trim() === "") {
-                alert("Join Cancelled. Phone number is required.");
-                return;
-            }
-
-            btnElement.innerText = "...";
-            btnElement.disabled = true;
-
-            let newMatch = {
-                name: name,
-                date: date,
-                prize: prize,
-                img: imgUrl,
-                status: "Upcoming",
-                roomID: "WAITING",
-                roomPass: "WAITING",
-                phone: phone,
-                email: userEmail,
-                joinedAt: new Date().getTime()
-            };
-
-            let existingMatches = JSON.parse(localStorage.getItem('myMatches')) || [];
-            existingMatches.push(newMatch);
-            localStorage.setItem('myMatches', JSON.stringify(existingMatches));
-
-            let matchIDToUse = tID || ("M-" + Math.floor(Math.random() * 100000));
-
-            fetch(API_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    action: "join",      
-                    match_id: matchIDToUse,
-                    game: gameName || "Esports",
-                    title: name,
-                    date: date,
-                    time: "20:00 PM",
-                    prize: prize,
-                    email: userEmail,
-                    phone: phone,
-                    username: userName
-                })
-            }).then(() => {
-                alert("Joined Successfully! Check Matches tab.");
-                btnElement.innerText = "JOINED";
-                checkNextMatch(); 
-            }).catch(error => {
-                alert("Joined locally! (Check Matches tab)");
-                btnElement.innerText = "JOINED";
-                checkNextMatch();
+            document.querySelectorAll('.fade-up').forEach((el) => {
+                observer.observe(el);
             });
         }
-        
-        // Particles
+
+        // PARTICLES ENGINE
         const canvas = document.getElementById('particles-canvas');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
@@ -946,11 +1017,12 @@
         class P {
             constructor(){ this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.s=Math.random()*2; this.vx=Math.random()*0.5-0.25; this.vy=Math.random()*0.5-0.25; }
             u(){ this.x+=this.vx; this.y+=this.vy; if(this.x<0||this.x>canvas.width)this.vx*=-1; if(this.y<0||this.y>canvas.height)this.vy*=-1; }
-            d(){ ctx.fillStyle='rgba(0,242,255,0.3)'; ctx.beginPath(); ctx.arc(this.x,this.y,this.s,0,Math.PI*2); ctx.fill(); }
+            d(){ ctx.fillStyle='rgba(189,0,255,0.4)'; ctx.beginPath(); ctx.arc(this.x,this.y,this.s,0,Math.PI*2); ctx.fill(); }
         }
-        for(let i=0;i<50;i++) particles.push(new P());
+        for(let i=0;i<60;i++) particles.push(new P());
         function anim(){ ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.u();p.d()}); requestAnimationFrame(anim); }
         anim();
+        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
     </script>
 </body>
 </html>
