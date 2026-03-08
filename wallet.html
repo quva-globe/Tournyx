@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Wallet - Tournyx</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -26,196 +26,220 @@
             --font-head: 'Orbitron', sans-serif;
             --font-body: 'Rajdhani', sans-serif;
         }
-                /* --- HIDE NATIVE SCROLLBAR --- */
-        ::-webkit-scrollbar {
-            width: 0px;
-            background: transparent;
-            display: none;
-        }
-        body {
-            -ms-overflow-style: none;  /* Hides scrollbar for IE and Edge */
-            scrollbar-width: none;  /* Hides scrollbar for Firefox */
-        }
+        
+        /* --- ULTIMATE SCROLLBAR KILLER --- */
+        * { -ms-overflow-style: none !important; scrollbar-width: none !important; margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        *::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; background: transparent !important; }
 
+        body { background-color: var(--primary-bg); color: white; font-family: var(--font-body); padding-bottom: calc(90px + env(safe-area-inset-bottom)); padding-top: calc(75px + env(safe-area-inset-top)); overflow-x: hidden; }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--primary-bg); color: white; font-family: var(--font-body); padding-bottom: 90px; padding-top: 65px; overflow-x: hidden; }
+        /* --- RESPONSIVE WRAPPERS --- */
+        .content-container, .app-footer, .top-header .header-wrapper { max-width: 1000px; margin-left: auto !important; margin-right: auto !important; width: 100%; }
 
-        #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at 50% 0%, #15062e 0%, #070311 100%); }
+        /* --- HARDWARE ACCELERATED BACKGROUND --- */
+        #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; transform: translateZ(0); }
+        .bg-gradient { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; background: radial-gradient(circle at 50% 0%, #15062e 0%, #070311 100%); pointer-events: none;}
 
-        /* --- HEADER --- */
-        .top-header { position: fixed; top: 0; left: 0; width: 100%; padding: 10px 15px; height: 65px; background: rgba(7, 3, 17, 0.85); backdrop-filter: blur(15px); border-bottom: 1px solid var(--card-border); display: flex; align-items: center; justify-content: space-between; z-index: 2000; box-shadow: 0 4px 30px rgba(0,0,0,0.5); transition: 0.3s; }
-        .header-left { display: flex; align-items: center; gap: 10px; }
-        .app-title { font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px; }
-        .header-greeting { font-size: 0.75rem; color: #aaa; margin-top: -2px; }
-        .header-action-icon { font-size: 1.2rem; color: white; cursor: pointer; padding: 5px; transition: 0.3s; }
+        /* --- HEADER (MEDIAN FORCED VISIBLE) --- */
+        .top-header { position: fixed; top: 0; left: 0; width: 100%; padding: calc(15px + env(safe-area-inset-top)) 15px 15px; background: rgba(7, 3, 17, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-bottom: 1px solid var(--card-border); display: flex; align-items: center; justify-content: space-between; z-index: 2000; box-shadow: 0 4px 30px rgba(0,0,0,0.5); transform: translateZ(0); }
+        .header-wrapper { display: flex; align-items: center; justify-content: space-between; }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .app-title { font-family: var(--font-head); font-size: 1.2rem; font-weight: 700; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px; }
+        .header-greeting { font-size: 0.8rem; color: #aaa; margin-bottom: 2px; }
+        .header-action-icon { font-size: 1.3rem; color: white; cursor: pointer; transition: 0.3s; }
         .header-action-icon:active { color: var(--accent-cyan); transform: scale(0.9); }
-        .header-profile-img { width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--accent-cyan); object-fit: cover; cursor: pointer; box-shadow: 0 0 10px rgba(0,242,255,0.4); transition: 0.3s; }
+        .header-profile-img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--accent-cyan); object-fit: cover; cursor: pointer; box-shadow: 0 0 10px rgba(0,242,255,0.4); transition: 0.3s; flex-shrink: 0; }
 
         /* --- MAIN CONTENT --- */
-        .content-container { padding: 15px; animation: fadeIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes fadeIn { from{opacity:0; transform:translateY(15px);} to{opacity:1; transform:translateY(0);} }
+        .content-container { padding: 15px; animation: fadeIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes fadeIn { from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);} }
 
         /* --- WALLET CARD --- */
-        .wallet-card { background: linear-gradient(135deg, rgba(189,0,255,0.2) 0%, rgba(0,242,255,0.1) 100%); border: 1px solid var(--card-border); border-radius: 20px; padding: 25px 20px; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 20px; }
-        .wallet-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%); transform: rotate(45deg); pointer-events: none; }
+        .wallet-card { background: linear-gradient(135deg, rgba(189,0,255,0.2) 0%, rgba(0,242,255,0.1) 100%); border: 1px solid var(--card-border); border-radius: 20px; padding: 25px 20px; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 20px; animation: borderGlow 4s infinite alternate; }
+        @keyframes borderGlow { from{border-color: rgba(189,0,255,0.3); box-shadow: 0 10px 30px rgba(189,0,255,0.1);} to{border-color: rgba(0,242,255,0.4); box-shadow: 0 10px 30px rgba(0,242,255,0.2);} }
+        .wallet-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 60%); transform: rotate(45deg); pointer-events: none; }
         
         .balance-label { font-size: 0.85rem; color: #ccc; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
-        .balance-amount { font-family: var(--font-head); font-size: 2.5rem; font-weight: bold; color: white; display: flex; align-items: center; gap: 10px; text-shadow: 0 0 15px rgba(255,255,255,0.4); margin-bottom: 15px; transition: 0.3s; }
+        .balance-amount { font-family: var(--font-head); font-size: 2.5rem; font-weight: bold; color: white; display: flex; align-items: center; gap: 10px; text-shadow: 0 0 15px rgba(255,255,255,0.4); margin-bottom: 15px; transition: 0.4s; }
         
-        /* Privacy Blur Class */
         .blur-balance { filter: blur(8px); user-select: none; opacity: 0.8; }
 
-        .pts-balance { display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.4); padding: 8px 15px; border-radius: 12px; border: 1px solid rgba(0,242,255,0.3); width: fit-content; transition: 0.3s; }
+        .pts-balance { display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.5); padding: 8px 15px; border-radius: 12px; border: 1px solid rgba(0,242,255,0.3); width: fit-content; transition: 0.3s; box-shadow: inset 0 0 10px rgba(0,242,255,0.1); }
         .pts-balance i { color: var(--accent-cyan); }
         .pts-balance span { font-family: var(--font-head); font-size: 1rem; font-weight: bold; color: var(--accent-cyan); }
 
         /* --- QUICK ACTIONS --- */
-        .quick-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 25px; }
-        .action-btn { background: var(--secondary-bg); border: 1px solid var(--card-border); border-radius: 15px; padding: 15px 5px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.3); text-decoration: none; color: white; }
+        .quick-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 25px; }
+        .action-btn { background: var(--secondary-bg); border: 1px solid var(--card-border); border-radius: 15px; padding: 18px 5px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.4); text-decoration: none; color: white; }
         .action-btn:active { transform: scale(0.95); }
-        .action-btn i { font-size: 1.5rem; }
-        .action-btn span { font-family: var(--font-head); font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
+        .action-btn i { font-size: 1.6rem; }
+        .action-btn span { font-family: var(--font-head); font-size: 0.8rem; font-weight: bold; text-transform: uppercase; }
         
-        .btn-add { border-color: var(--accent-purple); } .btn-add i { color: var(--accent-purple); text-shadow: 0 0 10px rgba(189,0,255,0.5); }
-        .btn-withdraw { border-color: var(--accent-orange); } .btn-withdraw i { color: var(--accent-orange); text-shadow: 0 0 10px rgba(255,153,0,0.5); }
-        .btn-redeem { border-color: var(--accent-cyan); } .btn-redeem i { color: var(--accent-cyan); text-shadow: 0 0 10px rgba(0,242,255,0.5); }
+        .btn-add { border-color: var(--accent-purple); } .btn-add i { color: var(--accent-purple); text-shadow: 0 0 15px rgba(189,0,255,0.5); } .btn-add:hover { background: rgba(189,0,255,0.1); }
+        .btn-withdraw { border-color: var(--accent-orange); } .btn-withdraw i { color: var(--accent-orange); text-shadow: 0 0 15px rgba(255,153,0,0.5); } .btn-withdraw:hover { background: rgba(255,153,0,0.1); }
+        .btn-redeem { border-color: var(--accent-cyan); } .btn-redeem i { color: var(--accent-cyan); text-shadow: 0 0 15px rgba(0,242,255,0.5); } .btn-redeem:hover { background: rgba(0,242,255,0.1); }
 
         /* --- SUPPORT SECTION --- */
-        .support-card { background: linear-gradient(90deg, rgba(0,242,255,0.1), rgba(0,0,0,0)); border: 1px solid var(--accent-cyan); border-radius: 15px; padding: 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; cursor: pointer; transition: 0.3s; }
+        .support-card { background: linear-gradient(90deg, rgba(0,242,255,0.1), rgba(0,0,0,0)); border: 1px solid var(--accent-cyan); border-radius: 15px; padding: 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; cursor: pointer; transition: 0.3s; box-shadow: inset 0 0 15px rgba(0,242,255,0.05); }
         .support-card:active { transform: scale(0.98); border-color: var(--accent-purple); }
-        .sc-left h4 { font-family: var(--font-head); font-size: 1rem; color: white; margin-bottom: 5px; }
-        .sc-left p { font-size: 0.8rem; color: #ccc; max-width: 200px; }
-        .sc-icon { width: 50px; height: 50px; background: var(--accent-cyan); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 0 15px rgba(0,242,255,0.5); }
+        .sc-left h4 { font-family: var(--font-head); font-size: 1.05rem; color: white; margin-bottom: 5px; }
+        .sc-left p { font-size: 0.85rem; color: #ccc; max-width: 220px; line-height:1.4;}
+        .sc-icon { width: 55px; height: 55px; background: var(--accent-cyan); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; box-shadow: 0 0 20px rgba(0,242,255,0.5); flex-shrink:0; }
 
-        /* --- TRANSACTION HISTORY (Main Page) --- */
-        .section-title { font-family: var(--font-head); font-size: 1.1rem; color: white; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .section-title span { font-size: 0.8rem; color: var(--accent-cyan); cursor: pointer; text-transform: uppercase; padding: 5px; border-radius: 5px; transition: 0.3s; }
-        .section-title span:active { background: rgba(0,242,255,0.1); }
+        /* --- TRANSACTION HISTORY --- */
+        .section-title { font-family: var(--font-head); font-size: 1.15rem; color: white; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
+        .section-title span { font-size: 0.8rem; color: var(--accent-cyan); cursor: pointer; text-transform: uppercase; padding: 5px 10px; border-radius: 8px; transition: 0.3s; border: 1px solid transparent;}
+        .section-title span:active { background: rgba(0,242,255,0.1); border-color:var(--accent-cyan);}
         
-        .txn-list { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 15px; padding: 10px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px; }
-        .txn-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(255,255,255,0.02); border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.3s; }
-        .txn-item:active { background: rgba(255,255,255,0.05); border-color: var(--accent-cyan); }
+        .txn-list { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 15px; padding: 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .txn-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.3s; animation: slideInUp 0.4s ease both;}
+        .txn-item:active { background: rgba(255,255,255,0.05); border-color: var(--accent-cyan); transform: scale(0.98); }
         
-        .txn-left { display: flex; align-items: center; gap: 12px; }
-        .txn-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
-        .icon-credit { background: rgba(0,255,127,0.1); color: var(--accent-green); border: 1px solid rgba(0,255,127,0.3); }
-        .icon-debit { background: rgba(255,77,77,0.1); color: var(--accent-red); border: 1px solid rgba(255,77,77,0.3); }
-        .txn-info h4 { font-family: var(--font-head); font-size: 0.95rem; color: white; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 130px; }
-        .txn-info p { font-size: 0.7rem; color: #888; }
+        .txn-left { display: flex; align-items: center; gap: 15px; min-width:0; }
+        .txn-icon { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink:0;}
+        .icon-credit { background: rgba(0,255,127,0.1); color: var(--accent-green); border: 1px solid rgba(0,255,127,0.3); box-shadow: 0 0 15px rgba(0,255,127,0.1);}
+        .icon-debit { background: rgba(255,77,77,0.1); color: var(--accent-red); border: 1px solid rgba(255,77,77,0.3); box-shadow: 0 0 15px rgba(255,77,77,0.1);}
+        .txn-info h4 { font-family: var(--font-head); font-size: 1rem; color: white; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
+        .txn-info p { font-size: 0.75rem; color: #888; }
         
-        .txn-right { text-align: right; }
-        .txn-amt { font-family: var(--font-head); font-size: 1.1rem; font-weight: bold; }
-        .amt-credit { color: var(--accent-green); }
-        .amt-debit { color: var(--accent-red); }
-        .txn-status { font-size: 0.65rem; color: #aaa; text-transform: uppercase; margin-top: 2px; background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; display: inline-block; }
+        .txn-right { text-align: right; flex-shrink:0;}
+        .txn-amt { font-family: var(--font-head); font-size: 1.15rem; font-weight: bold; }
+        .amt-credit { color: var(--accent-green); text-shadow: 0 0 10px rgba(0,255,127,0.3); }
+        .amt-debit { color: var(--accent-red); text-shadow: 0 0 10px rgba(255,77,77,0.3); }
+        .txn-status { font-size: 0.7rem; color: #aaa; text-transform: uppercase; margin-top: 3px; background: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 6px; display: inline-block; font-weight:bold;}
 
-        /* --- FULL LEDGER MODAL (Advanced Feature) --- */
+        /* --- SKELETON LOADER --- */
+        .skeleton { background: linear-gradient(90deg, #110822 25%, #1a0a3a 50%, #110822 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite linear; border-radius: 10px;}
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+
+        /* --- FULL LEDGER MODAL --- */
         .ledger-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary-bg); z-index: 4000; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; overflow: hidden; }
         .ledger-modal.active { transform: translateX(0); }
         
-        .lm-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); background: rgba(7,3,17,0.95); backdrop-filter: blur(10px); z-index: 10; height: 65px; }
+        .lm-header { padding: calc(15px + env(safe-area-inset-top)) 15px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); background: rgba(7,3,17,0.95); backdrop-filter: blur(10px); z-index: 10; }
         .lm-title { font-family: var(--font-head); font-size: 1.2rem; color: white; font-weight: bold; flex: 1; text-align: center; }
         
         .lm-search-bar { margin: 15px; position: relative; }
-        .lm-search-input { width: 100%; background: var(--input-bg); border: 1px solid var(--card-border); padding: 12px 15px 12px 40px; border-radius: 12px; color: white; font-family: var(--font-body); outline: none; transition: 0.3s; }
-        .lm-search-input:focus { border-color: var(--accent-cyan); }
-        .lm-search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #888; }
+        .lm-search-input { width: 100%; background: var(--input-bg); border: 1px solid var(--card-border); padding: 14px 15px 14px 45px; border-radius: 12px; color: white; font-family: var(--font-body); outline: none; transition: 0.3s; font-size:1rem;}
+        .lm-search-input:focus { border-color: var(--accent-cyan); box-shadow: 0 0 15px rgba(0,242,255,0.2);}
+        .lm-search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #888; font-size:1.1rem;}
 
         .lm-filters { display: flex; gap: 10px; padding: 0 15px 10px; overflow-x: auto; scrollbar-width: none; }
-        .lm-filter-chip { background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); padding: 6px 15px; border-radius: 20px; font-family: var(--font-head); font-size: 0.8rem; font-weight: bold; color: #888; cursor: pointer; transition: 0.3s; white-space: nowrap; }
-        .lm-filter-chip.active { background: rgba(0,242,255,0.1); border-color: var(--accent-cyan); color: var(--accent-cyan); }
+        .lm-filter-chip { background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); padding: 8px 18px; border-radius: 20px; font-family: var(--font-head); font-size: 0.85rem; font-weight: bold; color: #888; cursor: pointer; transition: 0.3s; white-space: nowrap; }
+        .lm-filter-chip.active { background: rgba(0,242,255,0.15); border-color: var(--accent-cyan); color: var(--accent-cyan); box-shadow: 0 0 15px rgba(0,242,255,0.2);}
 
         .lm-scroll-area { flex: 1; overflow-y: auto; padding: 0 15px 20px; }
-        .empty-ledger { text-align: center; padding: 40px 20px; color: #666; }
+        .empty-ledger { text-align: center; padding: 60px 20px; color: #666; animation: fadeIn 0.5s; }
 
         /* --- BOTTOM SHEETS --- */
-        .bottom-sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 5000; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(5px); opacity: 0; transition: 0.3s; }
+        .bottom-sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 5000; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(5px); opacity: 0; transition: 0.4s; }
         .bottom-sheet-overlay.active { display: flex; opacity: 1; }
-        .bottom-sheet { width: 100%; background: var(--secondary-bg); border-radius: 20px 20px 0 0; border-top: 1px solid var(--card-border); padding: 25px 20px; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 90vh; overflow-y: auto; box-shadow: 0 -10px 40px rgba(0,0,0,0.8); }
+        .bottom-sheet { width: 100%; max-width: 800px; background: var(--secondary-bg); border-radius: 25px 25px 0 0; border-top: 1px solid var(--card-border); padding: 30px 20px calc(20px + env(safe-area-inset-bottom)); transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 90vh; overflow-y: auto; box-shadow: 0 -10px 40px rgba(0,0,0,0.8); }
         .bottom-sheet-overlay.active .bottom-sheet { transform: translateY(0); }
         
         .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .sheet-title { font-family: var(--font-head); font-size: 1.2rem; color: white; display: flex; align-items: center; gap: 8px; }
-        .close-sheet { color: #888; font-size: 1.5rem; cursor: pointer; padding: 5px; transition: 0.3s; }
+        .sheet-title { font-family: var(--font-head); font-size: 1.3rem; color: white; display: flex; align-items: center; gap: 10px; }
+        .close-sheet { color: #888; font-size: 1.8rem; cursor: pointer; padding: 5px; transition: 0.3s; }
+        .close-sheet:hover { color:white; transform:rotate(90deg);}
 
-        /* Add Money Input */
+        /* Add Money UI */
         .amt-input-wrapper { position: relative; margin-bottom: 20px; }
         .amt-currency { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); font-family: var(--font-head); font-size: 1.5rem; color: white; font-weight: bold; }
         .amt-input { width: 100%; background: #070311; border: 2px solid var(--card-border); padding: 20px 20px 20px 60px; border-radius: 15px; color: white; font-family: var(--font-head); font-size: 1.8rem; font-weight: bold; outline: none; transition: 0.3s; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
         .amt-input:focus { border-color: var(--accent-purple); box-shadow: 0 0 15px rgba(189,0,255,0.3), inset 0 0 10px rgba(0,0,0,0.5); }
 
         .quick-amt-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 25px; }
-        .quick-amt-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); color: #ccc; padding: 12px 0; text-align: center; border-radius: 10px; font-family: var(--font-head); font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 0.95rem; }
-        .quick-amt-btn:active { background: rgba(189,0,255,0.2); border-color: var(--accent-purple); color: white; }
+        .quick-amt-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); color: #ccc; padding: 12px 0; text-align: center; border-radius: 10px; font-family: var(--font-head); font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 1rem; }
+        .quick-amt-btn:active { background: rgba(189,0,255,0.2); border-color: var(--accent-purple); color: white; transform:scale(0.95);}
 
-        .pay-btn { width: 100%; padding: 18px; background: var(--accent-gradient); border: none; border-radius: 15px; color: white; font-family: var(--font-head); font-size: 1.1rem; font-weight: bold; text-transform: uppercase; cursor: pointer; box-shadow: 0 5px 20px rgba(189,0,255,0.4); transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        /* SMART WARNING BANNER */
+        .warning-banner { display: none; background: rgba(255,153,0,0.1); border-left: 4px solid var(--accent-orange); padding: 15px; border-radius: 0 10px 10px 0; margin-bottom: 20px; font-size: 0.85rem; color: #ccc; line-height: 1.5; animation: slideInUp 0.3s; }
+        .warning-banner.active { display: block; }
+        .warning-title { font-family: var(--font-head); color: var(--accent-orange); font-weight: bold; margin-bottom: 5px; display: flex; align-items: center; gap: 6px; }
+
+        .pay-btn { width: 100%; padding: 18px; background: var(--accent-gradient); border: none; border-radius: 15px; color: white; font-family: var(--font-head); font-size: 1.1rem; font-weight: bold; text-transform: uppercase; cursor: pointer; box-shadow: 0 5px 20px rgba(189,0,255,0.4); transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; letter-spacing:1px;}
         .pay-btn:active { transform: scale(0.98); }
         .secure-badge { text-align: center; font-size: 0.75rem; color: #888; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 6px; }
 
         /* Receipt UI */
-        .rcpt-icon { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 15px; }
-        .rcpt-amt { text-align: center; font-family: var(--font-head); font-size: 2.2rem; font-weight: bold; margin-bottom: 5px; }
-        .rcpt-title { text-align: center; color: #888; font-size: 0.9rem; margin-bottom: 25px; }
-        .rcpt-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px dashed rgba(255,255,255,0.1); font-size: 0.9rem; }
-        .rcpt-row:last-child { border-bottom: none; margin-bottom: 20px; }
+        .rcpt-icon { width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin: 0 auto 15px; }
+        .rcpt-amt { text-align: center; font-family: var(--font-head); font-size: 2.5rem; font-weight: bold; margin-bottom: 5px; }
+        .rcpt-title { text-align: center; color: #888; font-size: 1rem; margin-bottom: 30px; }
+        .rcpt-row { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px dashed rgba(255,255,255,0.1); font-size: 0.95rem; }
+        .rcpt-row:last-child { border-bottom: none; margin-bottom: 25px; }
         .rcpt-lbl { color: #888; }
         .rcpt-val { color: white; font-weight: bold; font-family: var(--font-head); display: flex; align-items: center; gap: 8px; }
         
         /* Support Selection Items */
         .sup-txn-item { background: #070311; border: 1px solid var(--card-border); padding: 15px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.3s; }
-        .sup-txn-item:active { border-color: var(--accent-cyan); background: rgba(0,242,255,0.1); }
-        .sup-txn-item h5 { font-family: var(--font-head); font-size: 1rem; color: white; margin-bottom: 3px; }
-        .sup-txn-item p { font-size: 0.75rem; color: #888; }
+        .sup-txn-item:active { border-color: var(--accent-cyan); background: rgba(0,242,255,0.1); transform:scale(0.98);}
+        .sup-txn-item h5 { font-family: var(--font-head); font-size: 1rem; color: white; margin-bottom: 5px; }
+        .sup-txn-item p { font-size: 0.8rem; color: #888; }
 
         /* --- ANIMATED OVERLAYS --- */
-        .full-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(7,3,17,0.98); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.4s; }
+        .full-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(7,3,17,0.98); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.4s; backdrop-filter: blur(10px); }
         .full-overlay.active { opacity: 1; pointer-events: all; }
         
         .anim-circle { width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin-bottom: 20px; }
-        .anim-loading { border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--accent-cyan); animation: spin 1s linear infinite; box-shadow: 0 0 20px rgba(0,242,255,0.5); }
+        .anim-loading { border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--accent-cyan); animation: spin 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite; box-shadow: 0 0 20px rgba(0,242,255,0.5); }
         .anim-success { background: var(--accent-green); color: black; box-shadow: 0 0 30px rgba(0,255,127,0.6); animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .anim-error { background: var(--accent-red); color: white; box-shadow: 0 0 30px rgba(255,77,77,0.6); animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         
-        .overlay-title { font-family: var(--font-head); font-size: 1.5rem; color: white; margin-bottom: 10px; }
-        .overlay-desc { color: #aaa; font-size: 0.9rem; text-align: center; max-width: 80%; }
+        .overlay-title { font-family: var(--font-head); font-size: 1.6rem; color: white; margin-bottom: 10px; text-shadow: 0 0 10px rgba(255,255,255,0.3);}
+        .overlay-desc { color: #aaa; font-size: 0.95rem; text-align: center; max-width: 80%; line-height:1.5;}
 
+        @keyframes slideInUp { from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);} }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 80% {transform: scale(1.2);} 100% { transform: scale(1); opacity: 1; } }
 
         /* --- Custom Toast --- */
-        #customToast { visibility: hidden; min-width: 250px; background-color: var(--accent-green); color: #000; text-align: center; border-radius: 10px; padding: 14px; position: fixed; z-index: 9999; left: 50%; bottom: -50px; transform: translateX(-50%); font-family: var(--font-head); font-weight: bold; box-shadow: 0 5px 20px rgba(0,255,127,0.6); opacity: 0; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        #customToast { visibility: hidden; min-width: 250px; background-color: var(--accent-green); color: #000; text-align: center; border-radius: 12px; padding: 16px; position: fixed; z-index: 9999; left: 50%; bottom: -50px; transform: translateX(-50%); font-family: var(--font-head); font-weight: bold; box-shadow: 0 8px 25px rgba(0,255,127,0.6); opacity: 0; transition: opacity 0.4s, bottom 0.4s; }
         #customToast.show { visibility: visible; opacity: 1; bottom: 100px; }
 
         /* --- FOOTER & NAV --- */
-        .app-footer { text-align: center; padding: 20px 20px 100px 20px; color: #555; font-size: 0.75rem; font-family: var(--font-body); letter-spacing: 1px; border-top: 1px solid var(--card-border); margin-top: 10px; }
+        .app-footer { text-align: center; padding: 40px 20px 110px 20px; color: #555; font-size: 0.75rem; font-family: var(--font-body); letter-spacing: 1px; border-top: 1px solid var(--card-border); margin-top: 20px; }
 
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(15px); border-top: 1px solid var(--card-border); z-index: 1000; display: flex; align-items: stretch; justify-content: space-between; padding: 0 5px; padding-bottom: env(safe-area-inset-bottom); box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
-        .nav-item { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; color: #666; text-decoration: none; font-size: 0.6rem; font-family: var(--font-head); font-weight: bold; transition: 0.3s; }
-        .nav-item.active { color: var(--accent-cyan); text-shadow: 0 0 10px rgba(0,242,255,0.5); }
-        .nav-item i { font-size: 1.2rem; transition: 0.3s; }
-        .nav-item:hover { color: white; }
-        .nav-item span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; text-transform: capitalize; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 5px env(safe-area-inset-bottom); border-top: 1px solid var(--card-border); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.8); transform: translateZ(0);}
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; color: #666; text-decoration: none; font-size: 0.65rem; font-family: var(--font-head); font-weight: bold; flex: 1; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; will-change: transform, color;}
+        .nav-item span { margin-top: 4px; transition: 0.3s; }
+        .nav-item i { font-size: 1.3rem; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .nav-item.active { color: var(--accent-cyan); }
+        .nav-item.active i { transform: translateY(-4px); color: var(--accent-cyan); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
+        .nav-item.active span { transform: translateY(2px); color: white; }
+        .fab-slot { flex: 1.2; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
+        .floating-plus { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); width: 58px; height: 58px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 4px solid var(--primary-bg); box-shadow: 0 10px 25px rgba(189,0,255,0.5); color: #fff; font-size: 1.8rem; cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 10; will-change: transform;}
+        .floating-plus:hover { transform: translateX(-50%) scale(1.1) rotate(90deg); box-shadow: 0 15px 35px rgba(0,242,255,0.6); }
+
+        @media (min-width: 850px) { .bottom-nav { display: none !important; } }
         
-        .fab-slot { flex: 1; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
-        .floating-plus { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 48px; height: 48px; background: var(--accent-cyan); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid var(--primary-bg); box-shadow: 0 0 0 2px var(--accent-purple), 0 -3px 10px rgba(0,0,0,0.5); color: #000; font-size: 1.5rem; cursor: pointer; transition: 0.3s; z-index: 10; }
-        .floating-plus:active { transform: translateX(-50%) scale(0.95); box-shadow: 0 0 0 2px var(--accent-purple), 0 -1px 5px rgba(0,0,0,0.5); }
-
+        /* OVERRIDE MEDIAN HIDING (Ensures header is always visible) */
+        .median-active .top-header { display: flex !important; visibility: visible !important; }
     </style>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            if (navigator.userAgent.indexOf('gonative') > -1 || navigator.userAgent.indexOf('median') > -1) {
+                document.body.classList.add('median-active');
+            }
+        });
+    </script>
 </head>
 <body>
+    <div class="bg-gradient"></div>
     <canvas id="particles-canvas"></canvas>
 
     <header class="top-header">
-        <div class="header-left">
-            <a href="index.html" style="color:white;"><i class="fa-solid fa-arrow-left header-action-icon"></i></a>
-            <div>
-                <div class="header-greeting" id="dynamicGreeting">Welcome,</div>
-                <div class="app-title">WALLET</div>
+        <div class="header-wrapper">
+            <div class="header-left">
+                <a href="index.html" style="color:white;"><i class="fa-solid fa-arrow-left header-action-icon"></i></a>
+                <div>
+                    <div class="header-greeting" id="dynamicGreeting">Welcome,</div>
+                    <div class="app-title">WALLET</div>
+                </div>
             </div>
-        </div>
-        <div class="header-right">
-            <img src="https://via.placeholder.com/40" class="header-profile-img" id="headerProfilePic" onclick="window.location.href='profile.html'">
+            <div class="header-right">
+                <img src="https://via.placeholder.com/40" class="header-profile-img" id="headerProfilePic" onclick="window.location.href='profile.html'">
+            </div>
         </div>
     </header>
 
@@ -224,7 +248,7 @@
         <div class="wallet-card">
             <div class="balance-label">
                 Total Balance 
-                <i class="fa-solid fa-eye" id="eyeIcon" onclick="togglePrivacy()" style="font-size: 1.1rem; color: #888; cursor: pointer; padding: 5px;"></i>
+                <i class="fa-solid fa-eye" id="eyeIcon" onclick="togglePrivacy(); triggerHaptic();" style="font-size: 1.2rem; color: #888; cursor: pointer; padding: 5px; transition:0.3s;"></i>
             </div>
             <div class="balance-amount" id="balanceWrapper">
                 Rs. <span id="displayRupees">0</span>
@@ -237,24 +261,24 @@
         </div>
 
         <div class="quick-actions">
-            <div class="action-btn btn-add" onclick="openAddMoney()">
+            <div class="action-btn btn-add" onclick="openAddMoney(); triggerHaptic();">
                 <i class="fa-solid fa-circle-plus"></i>
                 <span>Add Cash</span>
             </div>
-            <a href="withdraw.html" class="action-btn btn-withdraw">
+            <a href="withdraw.html" class="action-btn btn-withdraw" onclick="triggerHaptic();">
                 <i class="fa-solid fa-money-bill-transfer"></i>
                 <span>Withdraw</span>
             </a>
-            <a href="redeem.html" class="action-btn btn-redeem">
+            <a href="redeem.html" class="action-btn btn-redeem" onclick="triggerHaptic();">
                 <i class="fa-solid fa-gift"></i>
                 <span>Redeem</span>
             </a>
         </div>
 
-        <div class="support-card" onclick="openSupportModal()">
+        <div class="support-card" onclick="openSupportModal(); triggerHaptic();">
             <div class="sc-left">
                 <h4>Need Transaction Help?</h4>
-                <p>Contact Support via WhatsApp.</p>
+                <p>Contact 24/7 Support via WhatsApp instantly.</p>
             </div>
             <div class="sc-icon">
                 <i class="fa-brands fa-whatsapp"></i>
@@ -262,12 +286,12 @@
         </div>
 
         <div class="section-title">
-            Recent Transactions <span onclick="openAllTxns()">View All</span>
+            Recent Transactions <span onclick="openAllTxns(); triggerHaptic();">View All <i class="fa-solid fa-chevron-right" style="font-size:0.7rem; margin-left:3px;"></i></span>
         </div>
         
         <div class="txn-list" id="txnListContainer">
-            <div style="text-align:center; padding: 20px; color: #888; font-size: 0.9rem;">
-                <i class="fa-solid fa-spinner fa-spin"></i> Fetching ledger...
+            <div style="text-align:center; padding: 30px 20px; color: #888; font-size: 0.95rem;">
+                <i class="fa-solid fa-spinner fa-spin" style="color:var(--accent-cyan); font-size:1.5rem; margin-bottom:10px; display:block;"></i> Fetching secure ledger...
             </div>
         </div>
 
@@ -275,9 +299,9 @@
 
     <div class="ledger-modal" id="ledgerModal">
         <div class="lm-header">
-            <i class="fa-solid fa-arrow-left header-action-icon" onclick="closeAllTxns()"></i>
+            <i class="fa-solid fa-arrow-left header-action-icon" onclick="closeAllTxns(); triggerHaptic();"></i>
             <div class="lm-title">All Transactions</div>
-            <i class="fa-solid fa-rotate-right header-action-icon" onclick="syncLiveTransactions(true)" id="ledgerRefreshIcon"></i>
+            <i class="fa-solid fa-rotate-right header-action-icon" onclick="syncLiveTransactions(true); triggerHaptic();" id="ledgerRefreshIcon"></i>
         </div>
         
         <div class="lm-search-bar">
@@ -286,13 +310,13 @@
         </div>
 
         <div class="lm-filters">
-            <div class="lm-filter-chip active" onclick="setLedgerFilter('All', this)">All</div>
-            <div class="lm-filter-chip" onclick="setLedgerFilter('Credit', this)">Money In (+)</div>
-            <div class="lm-filter-chip" onclick="setLedgerFilter('Debit', this)">Money Out (-)</div>
+            <div class="lm-filter-chip active" onclick="setLedgerFilter('All', this); triggerHaptic();">All History</div>
+            <div class="lm-filter-chip" onclick="setLedgerFilter('Credit', this); triggerHaptic();">Money In (+)</div>
+            <div class="lm-filter-chip" onclick="setLedgerFilter('Debit', this); triggerHaptic();">Money Out (-)</div>
         </div>
 
         <div class="lm-scroll-area">
-            <div class="txn-list" id="fullTxnListContainer" style="border:none; padding:0; background:transparent;"></div>
+            <div class="txn-list" id="fullTxnListContainer" style="border:none; padding:0; background:transparent; box-shadow:none;"></div>
         </div>
     </div>
 
@@ -319,10 +343,10 @@
                 <span class="rcpt-lbl">Transaction ID</span>
                 <span class="rcpt-val">
                     <span id="rcptId" style="font-size:0.85rem; color:#ccc;">TXN...</span>
-                    <i class="fa-regular fa-copy" style="color:var(--accent-cyan); cursor:pointer; padding:5px;" onclick="copyTxnId()"></i>
+                    <i class="fa-regular fa-copy" style="color:var(--accent-cyan); cursor:pointer; padding:5px; transition:0.3s;" onclick="copyTxnId(this); triggerHaptic();"></i>
                 </span>
             </div>
-            <button class="btn-secondary" style="width:100%; border-color:#444; color:white; margin-top:10px;" onclick="contactSupportSpecificReceipt()">Need Help with this?</button>
+            <button class="btn-secondary" style="width:100%; background:transparent; border:1px solid #444; color:white; padding:16px; border-radius:12px; font-family:var(--font-head); font-weight:bold; margin-top:15px; cursor:pointer;" onclick="contactSupportSpecificReceipt()">Need Help with this?</button>
         </div>
     </div>
 
@@ -339,13 +363,18 @@
             </div>
 
             <div class="quick-amt-grid">
-                <div class="quick-amt-btn" onclick="setAmt(100)">+100</div>
-                <div class="quick-amt-btn" onclick="setAmt(250)">+250</div>
-                <div class="quick-amt-btn" onclick="setAmt(500)">+500</div>
-                <div class="quick-amt-btn" onclick="setAmt(1000)">+1000</div>
+                <div class="quick-amt-btn" onclick="setAmt(100); triggerHaptic();">+100</div>
+                <div class="quick-amt-btn" onclick="setAmt(250); triggerHaptic();">+250</div>
+                <div class="quick-amt-btn" onclick="setAmt(500); triggerHaptic();">+500</div>
+                <div class="quick-amt-btn" onclick="setAmt(1000); triggerHaptic();">+1000</div>
+            </div>
+            
+            <div class="warning-banner" id="payWarningBanner">
+                <div class="warning-title"><i class="fa-solid fa-circle-exclamation"></i> Important Notice</div>
+                If the amount is debited from your bank but fails to add to the wallet, it will be automatically refunded within 3-5 working days. Do not panic.
             </div>
 
-            <button class="pay-btn" id="razorpayBtn" onclick="initiateRazorpay()">
+            <button class="pay-btn" id="razorpayBtn" onclick="initiateRazorpay(); triggerHaptic();">
                 Proceed to Pay <i class="fa-solid fa-arrow-right"></i>
             </button>
             
@@ -361,12 +390,12 @@
                 <div class="sheet-title"><i class="fa-solid fa-headset" style="color:var(--accent-cyan);"></i> Select Transaction</div>
                 <i class="fa-solid fa-xmark close-sheet" onclick="closeSupportModal()"></i>
             </div>
-            <p style="font-size:0.85rem; color:#aaa; margin-bottom:15px;">Select a recent transaction to attach to your support ticket:</p>
+            <p style="font-size:0.9rem; color:#aaa; margin-bottom:15px; line-height:1.5;">Select a recent transaction to attach to your support ticket for faster resolution:</p>
             
-            <div id="supportTxnList" style="max-height: 40vh; overflow-y:auto; margin-bottom:15px;">
+            <div id="supportTxnList" style="max-height: 40vh; overflow-y:auto; margin-bottom:15px; padding-right:5px;">
                 </div>
 
-            <button class="btn-secondary" style="width:100%; border-color:#444; color:white;" onclick="contactSupportGeneral()">I have a general inquiry instead</button>
+            <button style="width:100%; background:transparent; border:1px solid #444; color:white; padding:16px; border-radius:12px; font-family:var(--font-head); font-weight:bold; cursor:pointer;" onclick="contactSupportGeneral()">I have a general inquiry instead</button>
         </div>
     </div>
 
@@ -378,7 +407,7 @@
 
     <div class="app-footer">
         © 2026 TOURNYX. All rights reserved.<br>
-        <div class="footer-made-with">made with ⚡ for gamers worldwide</div>
+        <div style="margin-top: 10px; font-style: italic; color: #777; font-size: 0.8rem;">made with ⚡ for gamers worldwide</div>
     </div>
 
     <nav class="bottom-nav">
@@ -423,17 +452,41 @@
             
             setDynamicGreeting();
             updateWalletDisplay();
-            fetchTransactions();
-            syncLiveTransactions(false); // Background sync
+            
+            // Check for Cached Txns instantly to prevent empty flash
+            let cached = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
+            if(cached.length > 0) renderTransactions();
+            
+            // Auto Sync
+            syncLiveTransactions(false); 
         });
+
+        // Haptic Feedback Engine
+        function triggerHaptic() {
+            if(navigator.vibrate) navigator.vibrate(40);
+        }
 
         function showToast(msg, isError = false) {
             var x = document.getElementById("customToast");
             x.innerText = msg;
             x.style.backgroundColor = isError ? "#ff4d4d" : "var(--accent-green)";
             x.style.color = isError ? "white" : "#000";
+            x.style.boxShadow = isError ? "0 8px 25px rgba(255,77,77,0.6)" : "0 8px 25px rgba(0,255,127,0.6)";
             x.className = "show";
+            triggerHaptic();
             setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3500);
+        }
+
+        // --- ANIMATED NUMBER COUNTER ---
+        function animateValue(obj, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = formatNum(Math.floor(progress * (end - start) + start));
+                if (progress < 1) { window.requestAnimationFrame(step); }
+            };
+            window.requestAnimationFrame(step);
         }
 
         function formatNum(num) {
@@ -463,9 +516,11 @@
             if(isPrivacyOn) {
                 rs.classList.add('blur-balance'); pts.classList.add('blur-balance');
                 icon.classList.replace('fa-eye', 'fa-eye-slash');
+                icon.style.color = "var(--accent-cyan)";
             } else {
                 rs.classList.remove('blur-balance'); pts.classList.remove('blur-balance');
                 icon.classList.replace('fa-eye-slash', 'fa-eye');
+                icon.style.color = "#888";
             }
         }
 
@@ -474,12 +529,17 @@
             let uRupees = parseInt(currentUser.rupees) || 0;
             let uPoints = parseInt(currentUser.points) || 0;
             
-            document.getElementById('displayRupees').innerText = formatNum(uRupees);
+            let rsEl = document.getElementById('displayRupees');
+            animateValue(rsEl, 0, uRupees, 1000);
+            
             document.getElementById('displayPoints').innerText = formatNum(uPoints) + " PTS";
         }
 
         // --- ADD MONEY LOGIC ---
-        function openAddMoney() { document.getElementById('addMoneyOverlay').classList.add('active'); }
+        function openAddMoney() { 
+            document.getElementById('payWarningBanner').classList.remove('active'); // Reset warning
+            document.getElementById('addMoneyOverlay').classList.add('active'); 
+        }
         function closeAddMoney() { document.getElementById('addMoneyOverlay').classList.remove('active'); document.getElementById('addAmtInput').value = ""; }
         function setAmt(val) { document.getElementById('addAmtInput').value = val; }
 
@@ -494,8 +554,8 @@
 
             circle.className = 'anim-circle'; 
             if (state === 'loading') { circle.classList.add('anim-loading'); circle.innerHTML = ''; }
-            else if (state === 'success') { circle.classList.add('anim-success'); circle.innerHTML = '<i class="fa-solid fa-check"></i>'; }
-            else if (state === 'error') { circle.classList.add('anim-error'); circle.innerHTML = '<i class="fa-solid fa-xmark"></i>'; }
+            else if (state === 'success') { circle.classList.add('anim-success'); circle.innerHTML = '<i class="fa-solid fa-check"></i>'; triggerHaptic(); }
+            else if (state === 'error') { circle.classList.add('anim-error'); circle.innerHTML = '<i class="fa-solid fa-xmark"></i>'; triggerHaptic(); }
         }
         function hideOverlay() { document.getElementById('statusOverlay').classList.remove('active'); }
 
@@ -532,7 +592,12 @@
                 "modal": {
                     "ondismiss": function(){
                         showOverlay('error', 'Transaction Stopped', 'Payment was cancelled or stopped by the user.');
-                        setTimeout(hideOverlay, 3000);
+                        setTimeout(() => {
+                            hideOverlay();
+                            // Trigger the warning banner if they open it again
+                            document.getElementById('payWarningBanner').classList.add('active');
+                            openAddMoney();
+                        }, 3000);
                     }
                 }
             };
@@ -543,14 +608,25 @@
                     hideOverlay();
                     let simConfirm = confirm("DEVELOPER MODE: Simulate successful payment of Rs. " + amount + "?");
                     if(simConfirm) { verifyAndSavePayment("SIM_PAY_" + Date.now(), amount); }
-                    else { showOverlay('error', 'Transaction Stopped', 'Payment aborted.'); setTimeout(hideOverlay, 3000); }
+                    else { 
+                        showOverlay('error', 'Transaction Stopped', 'Payment aborted.'); 
+                        setTimeout(() => {
+                            hideOverlay();
+                            document.getElementById('payWarningBanner').classList.add('active');
+                            openAddMoney();
+                        }, 3000); 
+                    }
                 }, 1000);
             } else {
                 hideOverlay();
                 var rzp1 = new Razorpay(options);
                 rzp1.on('payment.failed', function (response){
                     showOverlay('error', 'Transaction Failed', response.error.description);
-                    setTimeout(hideOverlay, 4000);
+                    setTimeout(() => {
+                        hideOverlay();
+                        document.getElementById('payWarningBanner').classList.add('active');
+                        openAddMoney();
+                    }, 4000);
                 });
                 rzp1.open();
             }
@@ -565,14 +641,14 @@
 
             const payload = {
                 action: "add_transaction", email: currentUser.email, txn_id: txnId, rzp_id: paymentId,
-                amount: amount, currency: "INR", type: "Credit", status: "Success"
+                amount: amount, currency: "INR", type: "Credit", title: "Wallet Top-up", status: "Success"
             };
 
             fetch(API_URL, {
                 method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             }).then(() => {
-                // Lively update
+                
                 currentUser.rupees = (parseInt(currentUser.rupees) || 0) + amount;
                 localStorage.setItem('tournyx_user', JSON.stringify(currentUser));
                 updateWalletDisplay();
@@ -587,7 +663,8 @@
                 showOverlay('success', 'Payment Successful!', `Rs. ${amount} added to your wallet.`);
                 setTimeout(hideOverlay, 3000);
 
-                fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "update_wallet", email: currentUser.email, rupees: currentUser.rupees }) });
+                // Silently sync the absolute wallet balance to the User Sheet
+                fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: "update_wallet", email: currentUser.email, rupees: currentUser.rupees }) });
 
             }).catch(e => {
                 showOverlay('error', 'Verification Failed', 'Transaction recorded, but sync failed.');
@@ -595,38 +672,29 @@
             });
         }
 
-        // --- TRANSACTION LEDGER RENDERING (Main Page) ---
-        function fetchTransactions() {
-            let localTxns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
-            if (localTxns.length === 0) {
-                localTxns.push({ id: "TXN10019284", date: formatDateTime(new Date(Date.now() - 86400000)), amount: 50, type: "Debit", title: "Tournament Entry" });
-                localTxns.push({ id: "TXN10002811", date: formatDateTime(new Date(Date.now() - 172800000)), amount: 200, type: "Credit", title: "Wallet Top-up" });
-                localStorage.setItem('tournyx_txns', JSON.stringify(localTxns));
-            }
-            renderTransactions();
-        }
-
+        // --- TRANSACTION LEDGER RENDERING ---
         function renderTransactions() {
             const container = document.getElementById('txnListContainer');
             let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
 
             container.innerHTML = "";
             if (txns.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding:20px; color:#666;">No transactions found.</div>`;
+                container.innerHTML = `<div style="text-align:center; padding:30px 20px; color:#666;"><i class="fa-solid fa-ghost" style="font-size:2rem; margin-bottom:10px; opacity:0.5;"></i><br>No transactions found.</div>`;
                 return;
             }
 
-            txns.slice(0, 4).forEach(t => { container.innerHTML += buildTxnHtml(t); });
+            // Only show latest 4 on main page
+            txns.slice(0, 4).forEach((t, i) => { container.innerHTML += buildTxnHtml(t, i); });
         }
 
-        function buildTxnHtml(t) {
+        function buildTxnHtml(t, delayIndex) {
             let isCredit = t.type === "Credit";
             let iconClass = isCredit ? "fa-arrow-down icon-credit" : "fa-arrow-up icon-debit";
             let amtClass = isCredit ? "amt-credit" : "amt-debit";
             let prefix = isCredit ? "+" : "-";
 
             return `
-                <div class="txn-item" onclick="openReceipt('${t.id}')">
+                <div class="txn-item" style="animation-delay:${delayIndex * 0.1}s" onclick="openReceipt('${t.id}')">
                     <div class="txn-left">
                         <div class="txn-icon ${iconClass.split(' ')[1]}"><i class="fa-solid ${iconClass.split(' ')[0]}"></i></div>
                         <div class="txn-info">
@@ -644,6 +712,32 @@
         function formatDateTime(dateObj) {
             const options = { month: 'short', day: '2-digit', hour: 'numeric', minute: '2-digit', hour12: true };
             return dateObj.toLocaleString('en-US', options);
+        }
+
+        // --- LIVE SYNC ENGINE ---
+        function syncLiveTransactions(manual = false) {
+            if(manual) {
+                let icon = document.getElementById('ledgerRefreshIcon');
+                if(icon) icon.classList.add('fa-spin');
+            }
+            
+            fetch(API_URL + "?action=get_transactions&email=" + encodeURIComponent(currentUser.email))
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === "success" && data.data) {
+                    localStorage.setItem('tournyx_txns', JSON.stringify(data.data));
+                    renderTransactions();
+                    if(document.getElementById('ledgerModal').classList.contains('active')) applyLedgerFilters();
+                    if(manual) showToast("Ledger synced successfully.");
+                }
+            }).catch(e => {
+                if(manual) showToast("Offline: Showing cached transactions.", true);
+            }).finally(() => {
+                if(manual) {
+                    let icon = document.getElementById('ledgerRefreshIcon');
+                    if(icon) setTimeout(() => icon.classList.remove('fa-spin'), 500);
+                }
+            });
         }
 
         // --- FULL LEDGER MODAL (View All) ---
@@ -682,35 +776,14 @@
             if (filtered.length === 0) {
                 container.innerHTML = `
                     <div class="empty-ledger">
-                        <i class="fa-solid fa-file-invoice-dollar" style="font-size:3rem; opacity:0.3; margin-bottom:15px;"></i>
+                        <i class="fa-solid fa-file-invoice-dollar" style="font-size:3rem; opacity:0.3; margin-bottom:15px; color:var(--accent-purple);"></i>
                         <h3 style="color:white; font-family:var(--font-head);">No Transactions Found</h3>
                         <p style="font-size:0.85rem; margin-top:5px;">Try adjusting your search or filters.</p>
                     </div>`;
                 return;
             }
 
-            filtered.forEach(t => { container.innerHTML += buildTxnHtml(t); });
-        }
-
-        function syncLiveTransactions(manual = false) {
-            if(manual) {
-                let icon = document.getElementById('ledgerRefreshIcon');
-                icon.classList.add('fa-spin');
-                setTimeout(() => icon.classList.remove('fa-spin'), 1000);
-            }
-            
-            fetch(API_URL + "?action=get_transactions&email=" + encodeURIComponent(currentUser.email))
-            .then(res => res.json())
-            .then(data => {
-                if(data.status === "success" && data.data) {
-                    localStorage.setItem('tournyx_txns', JSON.stringify(data.data));
-                    renderTransactions();
-                    if(document.getElementById('ledgerModal').classList.contains('active')) applyLedgerFilters();
-                    if(manual) showToast("Ledger synced successfully.");
-                }
-            }).catch(e => {
-                if(manual) showToast("Offline: Showing cached transactions.", true);
-            });
+            filtered.forEach((t, i) => { container.innerHTML += buildTxnHtml(t, i); });
         }
 
         // --- RECEIPT MODAL ---
@@ -726,6 +799,7 @@
             let iconEl = document.getElementById('rcptIcon');
             iconEl.innerHTML = `<i class="fa-solid ${isCredit ? 'fa-arrow-down' : 'fa-arrow-up'}"></i>`;
             iconEl.className = `rcpt-icon ${isCredit ? 'icon-credit' : 'icon-debit'}`;
+            iconEl.style.boxShadow = isCredit ? "0 0 20px rgba(0,255,127,0.4)" : "0 0 20px rgba(255,77,77,0.4)";
 
             let prefix = isCredit ? "+" : "-";
             document.getElementById('rcptAmt').innerText = `${prefix} Rs. ${formatNum(t.amount)}`;
@@ -739,8 +813,14 @@
         }
 
         function closeReceipt() { document.getElementById('receiptOverlay').classList.remove('active'); activeReceiptId = ""; }
-        function copyTxnId() {
-            navigator.clipboard.writeText(activeReceiptId).then(() => showToast("Transaction ID Copied!"));
+        function copyTxnId(iconEl) {
+            navigator.clipboard.writeText(activeReceiptId).then(() => {
+                showToast("Transaction ID Copied!");
+                if(iconEl) {
+                    iconEl.classList.replace('fa-copy', 'fa-check');
+                    setTimeout(()=>iconEl.classList.replace('fa-check', 'fa-copy'), 2000);
+                }
+            });
         }
 
         // --- SUPPORT ROUTER LOGIC ---
@@ -754,13 +834,14 @@
             } else {
                 txns.slice(0, 5).forEach(t => {
                     let color = t.type === "Credit" ? "var(--accent-green)" : "var(--accent-red)";
+                    let prefix = t.type === "Credit" ? "+" : "-";
                     container.innerHTML += `
                         <div class="sup-txn-item" onclick="contactSupportSpecific('${t.id}', '${t.amount}', '${t.type}', '${t.date}')">
-                            <div>
-                                <h5>${t.title}</h5>
-                                <p>ID: ${t.id} • ${t.date}</p>
+                            <div style="min-width:0; padding-right:10px;">
+                                <h5 style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${t.title}</h5>
+                                <p>${t.date}</p>
                             </div>
-                            <div style="color:${color}; font-family:var(--font-head); font-weight:bold;">Rs. ${t.amount}</div>
+                            <div style="color:${color}; font-family:var(--font-head); font-weight:bold; flex-shrink:0;">${prefix}Rs. ${t.amount}</div>
                         </div>
                     `;
                 });
@@ -788,6 +869,18 @@
             window.open(`https://wa.me/919876543210?text=${msg}`, '_blank');
             closeSupportModal();
         }
+
+        // --- PARTICLES ---
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particles = [];
+        class P { constructor(){ this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.s=Math.random()*2; this.vx=Math.random()*0.5-0.25; this.vy=Math.random()*0.5-0.25; } u(){ this.x+=this.vx; this.y+=this.vy; if(this.x<0||this.x>canvas.width)this.vx*=-1; if(this.y<0||this.y>canvas.height)this.vy*=-1; } d(){ ctx.fillStyle='rgba(189,0,255,0.4)'; ctx.beginPath(); ctx.arc(Math.floor(this.x),Math.floor(this.y),this.s,0,Math.PI*2); ctx.fill(); } }
+        for(let i=0;i<25;i++) particles.push(new P());
+        function anim(){ ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.u();p.d()}); requestAnimationFrame(anim); }
+        anim();
+        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+
     </script>
 </body>
 </html>
