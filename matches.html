@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>My Matches - Tournyx</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -21,29 +21,37 @@
             --font-head: 'Orbitron', sans-serif;
             --font-body: 'Rajdhani', sans-serif;
         }
-                        /* --- ULTIMATE SCROLLBAR KILLER --- */
-        * {
-            -ms-overflow-style: none !important;  /* IE and Edge */
-            scrollbar-width: none !important;  /* Firefox */
-        }
-        *::-webkit-scrollbar {
-            display: none !important; /* Chrome, Safari, Android Webview, iOS */
-            width: 0 !important;
-            height: 0 !important;
-            background: transparent !important;
-            -webkit-appearance: none !important;
-        }
 
+        /* --- ULTIMATE SCROLLBAR KILLER --- */
+        * { -ms-overflow-style: none !important; scrollbar-width: none !important; }
+        *::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; background: transparent !important; -webkit-appearance: none !important; }
 
-        
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--primary-bg); color: white; font-family: var(--font-body); padding-bottom: 90px; padding-top: 60px; overflow-x: hidden; }
+        
+        body { 
+            background-color: var(--primary-bg); color: white; font-family: var(--font-body); 
+            padding-bottom: calc(90px + env(safe-area-inset-bottom)); 
+            padding-top: calc(60px + env(safe-area-inset-top)); 
+            overflow-x: hidden; 
+        }
+
+        /* --- RESPONSIVE WRAPPER --- */
+        .stats-row, .tabs, .search-box, .match-list, .app-footer {
+            max-width: 1000px; margin-left: auto !important; margin-right: auto !important;
+        }
 
         /* --- BACKGROUND --- */
         #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at 50% 20%, #15062e 0%, #070311 100%); }
 
         /* --- HEADER --- */
-        .top-header { position: fixed; top: 0; left: 0; width: 100%; padding: 10px 15px; height: 60px; background: rgba(7, 3, 17, 0.85); backdrop-filter: blur(15px); border-bottom: 1px solid var(--card-border); display: flex; align-items: center; justify-content: space-between; z-index: 2000; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); }
+        .top-header { 
+            position: fixed; top: 0; left: 0; width: 100%; 
+            padding: env(safe-area-inset-top) 15px 10px 15px; 
+            background: rgba(7, 3, 17, 0.85); backdrop-filter: blur(20px); 
+            border-bottom: 1px solid var(--card-border); 
+            z-index: 2000; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); 
+        }
+        .header-wrapper { max-width: 1000px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; width: 100%; }
         .header-left { display: flex; align-items: center; gap: 10px; }
         .app-logo { width: 30px; height: 30px; border-radius: 50%; object-fit: contain; box-shadow: 0 0 10px var(--accent-purple); }
         .app-title { font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px; text-transform: uppercase; }
@@ -79,7 +87,7 @@
         
         .real-content-wrapper { display: flex; flex-direction: column; gap: 20px; width: 100%; animation: fadeIn 0.4s ease; }
 
-        /* --- MATCH CARD (PREMIUM UI) --- */
+        /* --- MATCH CARD --- */
         .match-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; overflow: hidden; position: relative; display: flex; flex-direction: column; box-shadow: 0 10px 25px rgba(0,0,0,0.5); transition: 0.3s; cursor: pointer; }
         .match-card:active { transform: scale(0.98); border-color: var(--accent-cyan); }
         @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
@@ -88,7 +96,6 @@
         .m-banner { width: 100%; height: 100%; object-fit: cover; opacity: 0.85; transition: 0.5s; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .match-card:hover .m-banner { opacity: 1; transform: scale(1.05); }
 
-        .m-join-id { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.8); color: white; font-family: var(--font-head); font-size: 0.7rem; font-weight: bold; padding: 4px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(5px); }
         .m-share-btn { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.8); color: var(--accent-cyan); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid var(--accent-cyan); backdrop-filter: blur(5px); z-index: 5; transition: 0.3s; }
         .m-share-btn:hover { background: var(--accent-cyan); color: #000; }
 
@@ -135,36 +142,50 @@
         .footer-made-with { margin-top: 10px; font-style: italic; color: #777; font-size: 0.8rem; }
 
         /* PERFECTLY ALIGNED 7-TAB BOTTOM NAVIGATION */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(15px); border-top: 1px solid var(--card-border); z-index: 1000; display: flex; align-items: stretch; justify-content: space-between; padding: 0 5px; padding-bottom: env(safe-area-inset-bottom); box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
-        .nav-item { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; color: #666; text-decoration: none; font-size: 0.6rem; font-family: var(--font-head); font-weight: bold; transition: 0.3s; }
-        .nav-item.active { color: var(--accent-cyan); text-shadow: 0 0 10px rgba(0,242,255,0.5); }
-        .nav-item i { font-size: 1.2rem; transition: 0.3s; }
-        .nav-item:hover { color: white; }
-        .nav-item span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; text-transform: capitalize; }
-        
-        /* Smaller, more proportional Floating Center Plus Button */
-        .fab-slot { flex: 1; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
-        .floating-plus { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 48px; height: 48px; background: var(--accent-cyan); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid var(--primary-bg); box-shadow: 0 0 0 2px var(--accent-purple), 0 -3px 10px rgba(0,0,0,0.5); color: #000; font-size: 1.5rem; cursor: pointer; transition: 0.3s; z-index: 10; }
-        .floating-plus:active { transform: translateX(-50%) scale(0.95); box-shadow: 0 0 0 2px var(--accent-purple), 0 -1px 5px rgba(0,0,0,0.5); }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(7, 3, 17, 0.92); backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 5px env(safe-area-inset-bottom); border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.6); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; color: #666; text-decoration: none; font-size: 0.65rem; font-family: var(--font-head); font-weight: bold; flex: 1; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; }
+        .nav-item span { margin-top: 4px; transition: 0.3s; }
+        .nav-item i { font-size: 1.3rem; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .nav-item.active { color: var(--accent-cyan); }
+        .nav-item.active i { transform: translateY(-4px); color: var(--accent-cyan); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
+        .nav-item.active span { transform: translateY(2px); color: white; }
+        .fab-slot { flex: 1.2; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
+        .floating-plus { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); width: 58px; height: 58px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 4px solid var(--primary-bg); box-shadow: 0 10px 25px rgba(189,0,255,0.5); color: #fff; font-size: 1.8rem; cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 10; }
+        .floating-plus:hover { transform: translateX(-50%) scale(1.1) rotate(90deg); box-shadow: 0 15px 35px rgba(0,242,255,0.6); }
 
         @media (min-width: 850px) {
             .match-list { flex-direction: row; flex-wrap: wrap; gap: 20px; }
             .match-card { flex: 0 0 calc(50% - 10px); }
-            .bottom-nav { display: none; }
+            .bottom-nav { display: none !important; }
+            body { padding-bottom: 0; }
         }
+
+        /* --- MEDIAN DETECTOR --- */
+        .median-active .top-header { display: none !important; }
+        .median-active { padding-top: 15px !important; }
     </style>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            if (navigator.userAgent.indexOf('gonative') > -1 || navigator.userAgent.indexOf('median') > -1) {
+                document.body.classList.add('median-active');
+            }
+        });
+    </script>
 </head>
 <body>
     <canvas id="particles-canvas"></canvas>
 
     <header class="top-header">
-        <div class="header-left">
-            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_20wCR-WBMpQmw3vxcYUf-vxIO1PYDJoQN_Sid3UDjA9tf0cuX0eH40jbzHoJad4cxbnjhPjqfCw1Z5V1LhgN9zFuIQC0fJjecTy3D9PFu5WjR2H1wHwTD1bUGnXY_NiApWn5gMs6velcQngSzKoP1yHzX0cVsFSUFM8zIefcbiPayY7680Kz0V0ZAAE/s1264/1000093706.png" class="app-logo">
-            <div class="app-title">MY MATCHES</div>
-        </div>
-        <div class="header-right">
-            <div class="refresh-btn" onclick="syncLiveStatus(true)">
-                <i class="fa-solid fa-rotate-right"></i>
+        <div class="header-wrapper">
+            <div class="header-left">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_20wCR-WBMpQmw3vxcYUf-vxIO1PYDJoQN_Sid3UDjA9tf0cuX0eH40jbzHoJad4cxbnjhPjqfCw1Z5V1LhgN9zFuIQC0fJjecTy3D9PFu5WjR2H1wHwTD1bUGnXY_NiApWn5gMs6velcQngSzKoP1yHzX0cVsFSUFM8zIefcbiPayY7680Kz0V0ZAAE/s1264/1000093706.png" class="app-logo" alt="Logo">
+                <div class="app-title">MY MATCHES</div>
+            </div>
+            <div class="header-right">
+                <div class="refresh-btn" onclick="fetchLiveMatches(true)">
+                    <i class="fa-solid fa-rotate-right" id="refreshIcon"></i>
+                </div>
             </div>
         </div>
     </header>
@@ -187,11 +208,10 @@
 
     <div class="search-box">
         <i class="fa-solid fa-magnifying-glass search-icon"></i>
-        <input class="search-input" id="matchSearch" onkeyup="renderMatches(false)" placeholder="Search your matches..." type="text" />
+        <input class="search-input" id="matchSearch" onkeyup="renderMatches()" placeholder="Search your matches..." type="text" />
     </div>
 
     <div class="match-list" id="matchList">
-        
         <div id="skeletonLoader" class="skeleton-wrapper">
             <div class="s-card skeleton">
                 <div style="height: 140px; background: rgba(255,255,255,0.05);"></div>
@@ -201,16 +221,7 @@
                     <div style="height: 40px; width: 100%; background: rgba(255,255,255,0.05); border-radius:8px; margin-top:10px;"></div>
                 </div>
             </div>
-            <div class="s-card skeleton">
-                <div style="height: 140px; background: rgba(255,255,255,0.05);"></div>
-                <div style="padding: 15px; display:flex; flex-direction:column; gap:10px;">
-                    <div style="height: 15px; width: 60%; background: rgba(255,255,255,0.05); border-radius:5px;"></div>
-                    <div style="height: 10px; width: 40%; background: rgba(255,255,255,0.05); border-radius:5px;"></div>
-                    <div style="height: 40px; width: 100%; background: rgba(255,255,255,0.05); border-radius:8px; margin-top:10px;"></div>
-                </div>
-            </div>
         </div>
-
         <div id="realContent" class="real-content-wrapper"></div>
     </div>
 
@@ -265,11 +276,11 @@
         for(let i=0; i<40; i++) pArray.push(new P());
         function anim(){ ctx.clearRect(0,0,canvas.width,canvas.height); pArray.forEach(p=>{p.u();p.d()}); requestAnimationFrame(anim); }
         anim();
-        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
 
         // --- 2. CONFIGURATION & HELPERS ---
         const API_URL = "https://script.google.com/macros/s/AKfycbynNLDDXS1wMrU6RGnk4nKb1jfQkQGuqrNIKWAt8wf46MaKP6y1rwGmSJg5fmm4KYU/exec";
         let currentTab = 'Upcoming'; 
+        let globalLiveMatches = []; // Holds the unified live data
 
         function showToast(msg, isError = false) {
             var x = document.getElementById("customToast");
@@ -283,104 +294,128 @@
         function copyText(event, text, type) {
             event.stopPropagation();
             if(text === 'WAITING' || !text) return;
-            navigator.clipboard.writeText(text).then(() => {
-                showToast(`${type} Copied!`);
-            }).catch(err => {
-                console.error("Failed to copy", err);
-            });
+            navigator.clipboard.writeText(text).then(() => { showToast(`${type} Copied!`); });
         }
 
-        // Feature: Share Match directly
         function shareMatch(event, title) {
             event.stopPropagation();
             const id = title.replace(/\s+/g, '');
-            const link = window.location.origin + "/explore.html?tournament=" + encodeURIComponent(id);
-            navigator.clipboard.writeText(link).then(() => {
-                showToast("Invite Link Copied!");
-            });
+            const link = window.location.origin + window.location.pathname.replace('matches.html', '') + "explore.html?tournament=" + encodeURIComponent(id);
+            navigator.clipboard.writeText(link).then(() => { showToast("Invite Link Copied!"); });
         }
 
-        // Navigate to specific tournament in Explore
         function viewDetails(name) {
             let id = name.replace(/\s+/g, '');
             window.location.href = `explore.html?tournament=${encodeURIComponent(id)}`;
         }
 
-        function updateStats(matches) {
-            let active = matches.filter(m => {
-                let s = (m.status || "").toLowerCase();
-                return !s.includes('completed') && !s.includes('past') && s !== 'leaved' && s !== 'cancelled';
-            }).length;
-            
-            let history = matches.filter(m => {
-                let s = (m.status || "").toLowerCase();
-                return s.includes('completed') || s.includes('past') || s === 'leaved' || s === 'cancelled';
-            }).length;
-
-            document.getElementById('statActive').innerText = active;
-            document.getElementById('statHistory').innerText = history;
+        function formatImageUrl(url) {
+            if (!url) return 'https://via.placeholder.com/600x300';
+            if (url.includes('drive.google.com/file/d/')) {
+                let id = url.split('/d/')[1].split('/')[0];
+                return `https://drive.google.com/uc?export=view&id=${id}`;
+            }
+            return url;
         }
 
-        // --- 3. STARTUP ---
+        // --- 3. 100% LIVE DATA FETCH ENGINE ---
         document.addEventListener("DOMContentLoaded", function() {
-            // Check dummy matches for testing if empty
-            let matches = JSON.parse(localStorage.getItem('myMatches'));
-            if (!matches) {
-                matches = [];
-                localStorage.setItem('myMatches', JSON.stringify(matches));
-            }
-            
-            updateStats(matches);
-            renderMatches(true); // true = Use Skeleton
-            setTimeout(syncLiveStatus, 1000);
+            // Completely wipe old local storage logic for matches to prevent "ghost" joins!
+            localStorage.removeItem('myMatches'); 
+            fetchLiveMatches();
         });
 
-        // --- 4. TAB SWITCHER ---
+        async function fetchLiveMatches(isManual = false) {
+            const user = JSON.parse(localStorage.getItem('tournyx_user'));
+            if (!user || !user.email) {
+                window.location.href = "login.html";
+                return;
+            }
+
+            document.getElementById('skeletonLoader').classList.add('active');
+            document.getElementById('realContent').style.display = 'none';
+            if(isManual) document.getElementById('refreshIcon').classList.add('fa-spin');
+
+            try {
+                // Fetch All Tournaments & User's Specific Entries simultaneously
+                const [tournamentsRes, myMatchesRes] = await Promise.all([
+                    fetch(API_URL + "?action=get_tournaments").then(r => r.json()),
+                    fetch(API_URL + "?action=get_matches&email=" + encodeURIComponent(user.email)).then(r => r.json())
+                ]);
+
+                let allTournaments = tournamentsRes.data || [];
+                let myEntries = myMatchesRes.data || [];
+
+                globalLiveMatches = [];
+
+                // Merge the user's entry with the main tournament visual data
+                myEntries.forEach(entry => {
+                    let tDetails = allTournaments.find(t => t.title === entry.tournament_title || t.id === entry.match_id);
+                    
+                    if (tDetails) {
+                        globalLiveMatches.push({
+                            match_id: tDetails.id || entry.match_id,
+                            name: tDetails.title || entry.tournament_title,
+                            date: tDetails.date,
+                            img: formatImageUrl(tDetails.banner),
+                            status: tDetails.status || "Upcoming",
+                            roomID: entry.room_id || "WAITING",
+                            roomPass: entry.room_pass || "WAITING",
+                            clan: entry.clan || "Solo Player"
+                        });
+                    }
+                });
+
+                // Clear the loader and render!
+                document.getElementById('skeletonLoader').classList.remove('active');
+                document.getElementById('realContent').style.display = 'flex';
+                if(isManual) {
+                    document.getElementById('refreshIcon').classList.remove('fa-spin');
+                    showToast("Live Server Synced!");
+                }
+
+                renderMatches();
+
+            } catch (error) {
+                console.error("Live Fetch Error:", error);
+                document.getElementById('skeletonLoader').classList.remove('active');
+                document.getElementById('realContent').style.display = 'flex';
+                document.getElementById('realContent').innerHTML = `<div class="empty-box"><h3 style="color:#ff4d4d;">Network Error</h3><p>Could not reach the server.</p></div>`;
+                if(isManual) document.getElementById('refreshIcon').classList.remove('fa-spin');
+            }
+        }
+
+        // --- 4. RENDER ENGINE ---
         function switchTab(tabName, element) {
             currentTab = tabName;
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             if(element) element.classList.add('active');
-            renderMatches(true); // show skeleton on switch
+            renderMatches(); 
         }
 
-        // --- 5. RENDER ENGINE WITH SKELETON ---
-        function renderMatches(useSkeleton = false) {
-            const skeleton = document.getElementById('skeletonLoader');
-            const realContent = document.getElementById('realContent');
-            
-            if (useSkeleton) {
-                skeleton.classList.add('active');
-                realContent.style.display = 'none';
-                setTimeout(() => { buildMatchList(realContent); skeleton.classList.remove('active'); realContent.style.display = 'flex'; }, 400);
-            } else {
-                buildMatchList(realContent);
-            }
+        function updateStats(matches) {
+            let active = matches.filter(m => !m.status.toLowerCase().includes('completed')).length;
+            let history = matches.filter(m => m.status.toLowerCase().includes('completed')).length;
+            document.getElementById('statActive').innerText = active;
+            document.getElementById('statHistory').innerText = history;
         }
 
-        function buildMatchList(container) {
-            let matches = JSON.parse(localStorage.getItem('myMatches')) || [];
-            updateStats(matches);
+        function renderMatches() {
+            const container = document.getElementById('realContent');
+            updateStats(globalLiveMatches);
 
             let search = document.getElementById('matchSearch').value.toLowerCase();
-
             let displayMatches = [];
+
             if (currentTab === 'Upcoming') {
-                displayMatches = matches.filter(m => {
-                    let s = (m.status || "").toLowerCase();
-                    return !s.includes('completed') && !s.includes('past') && s !== 'leaved' && s !== 'cancelled';
-                });
+                displayMatches = globalLiveMatches.filter(m => !m.status.toLowerCase().includes('completed'));
             } else {
-                displayMatches = matches.filter(m => {
-                    let s = (m.status || "").toLowerCase();
-                    return s.includes('completed') || s.includes('past') || s === 'leaved' || s === 'cancelled';
-                });
+                displayMatches = globalLiveMatches.filter(m => m.status.toLowerCase().includes('completed'));
             }
 
-            // Apply Search Filter
             if (search) {
                 displayMatches = displayMatches.filter(m => 
-                    (m.name || "").toLowerCase().includes(search) || 
-                    (m.clan || "").toLowerCase().includes(search)
+                    (m.name || "").toLowerCase().includes(search) || (m.clan || "").toLowerCase().includes(search)
                 );
             }
 
@@ -399,47 +434,27 @@
                 return;
             }
 
-            displayMatches.reverse().forEach((match) => {
-                let rID = (match.roomID && match.roomID !== "") ? match.roomID : "WAITING";
-                let rPass = (match.roomPass && match.roomPass !== "") ? match.roomPass : "WAITING";
+            let sortedMatches = [...displayMatches].reverse();
+
+            sortedMatches.forEach((match) => {
+                let rID = match.roomID !== "" ? match.roomID : "WAITING";
+                let rPass = match.roomPass !== "" ? match.roomPass : "WAITING";
                 
                 let sLower = (match.status || "Upcoming").toLowerCase();
                 let rStatus = "UPCOMING";
                 let sColor = "var(--accent-cyan)";
                 
-                let isLeaved = sLower === 'leaved' || sLower === 'cancelled';
-
-                if (isLeaved) { rStatus = "CANCELLED"; sColor = "#ff4d4d"; }
-                else if (sLower.includes("live")) { rStatus = "LIVE NOW"; sColor = "var(--accent-green)"; }
+                if (sLower.includes("live")) { rStatus = "LIVE NOW"; sColor = "var(--accent-green)"; }
                 else if (sLower.includes("wait") || sLower.includes("pending")) { rStatus = "WAITING ID"; sColor = "var(--accent-orange)"; }
                 else if (sLower.includes("completed")) { rStatus = "COMPLETED"; sColor = "#888"; }
 
                 let idClass = rID === 'WAITING' ? 'val-waiting' : 'val-active';
                 let passClass = rPass === 'WAITING' ? 'val-waiting' : 'val-active';
                 
-                let paidText = match.paid ? `<span style="color:var(--accent-orange)">Paid: ${match.amountRs} ${match.payMethod === 'points' ? 'PTS' : 'Rs.'}</span>` : `<span style="color:var(--accent-green)">Free Entry</span>`;
-
-                // Advanced Feature: Visual styling for cancelled matches
-                let cardStyle = isLeaved ? `opacity: 0.6; filter: grayscale(0.6);` : '';
-                let roomBoxHtml = isLeaved ? 
-                    `<div style="text-align:center; color:#ff4d4d; font-size:0.8rem; font-weight:bold; padding:10px 0; background:rgba(255,0,0,0.1); border-radius:10px; margin-top:10px;">You left this match.</div>` 
-                    : 
-                    `<div class="room-box-container">
-                        <div class="room-item" onclick="copyText(event, '${rID}', 'Room ID')">
-                            <span class="room-label">Room ID <i class="fa-regular fa-copy" style="opacity:0.5;"></i></span>
-                            <span class="room-val ${idClass}">${rID}</span>
-                        </div>
-                        <div class="room-item" onclick="copyText(event, '${rPass}', 'Password')">
-                            <span class="room-label">Password <i class="fa-regular fa-copy" style="opacity:0.5;"></i></span>
-                            <span class="room-val ${passClass}">${rPass}</span>
-                        </div>
-                    </div>`;
-
                 let html = `
-                    <div class="match-card" style="${cardStyle}">
+                    <div class="match-card">
                         <div class="m-banner-wrapper" onclick="viewDetails('${match.name}')">
-                            <img src="${match.img || 'https://via.placeholder.com/600x300'}" class="m-banner">
-                            ${match.joinId ? `<div class="m-join-id">#${match.joinId}</div>` : ''}
+                            <img src="${match.img}" class="m-banner">
                             <div class="m-share-btn" onclick="shareMatch(event, '${match.name}')"><i class="fa-solid fa-share-nodes"></i></div>
                         </div>
                         
@@ -452,19 +467,26 @@
                                     </div>
                                 </div>
                                 <div class="m-actions-box">
-                                    <span class="status-badge" style="background:${sColor}; color:${(sLower.includes('completed') || isLeaved) ? 'white' : 'black'}">${rStatus}</span>
-                                    ${(currentTab === 'Upcoming' && !isLeaved) ? 
-                                    `<button onclick="unjoinMatch(event, '${match.name}')" class="leave-btn">LEAVE</button>` : 
-                                    `<span style="font-size:0.7rem; color:#666; font-weight:bold;">${isLeaved ? 'LEFT' : 'ENDED'}</span>`}
+                                    <span class="status-badge" style="background:${sColor}; color:${(sLower.includes('completed')) ? 'white' : 'black'}">${rStatus}</span>
+                                    ${(currentTab === 'Upcoming') ? `<button id="btn-${match.match_id}" onclick="unjoinMatch(event, '${match.name}', '${match.match_id}')" class="leave-btn">LEAVE</button>` : ''}
                                 </div>
                             </div>
                             
                             <div class="m-details-row" onclick="viewDetails('${match.name}')">
-                                <div class="m-detail-item"><i class="fa-solid fa-users"></i> Clan: <span style="color:white;">${match.clan || 'Solo'}</span></div>
-                                <div class="m-detail-item">${paidText}</div>
+                                <div class="m-detail-item"><i class="fa-solid fa-users"></i> Clan: <span style="color:white;">${match.clan}</span></div>
+                                <div class="m-detail-item"><span style="color:var(--accent-green)">Registered</span></div>
                             </div>
                             
-                            ${roomBoxHtml}
+                            <div class="room-box-container">
+                                <div class="room-item" onclick="copyText(event, '${rID}', 'Room ID')">
+                                    <span class="room-label">Room ID <i class="fa-regular fa-copy" style="opacity:0.5;"></i></span>
+                                    <span class="room-val ${idClass}">${rID}</span>
+                                </div>
+                                <div class="room-item" onclick="copyText(event, '${rPass}', 'Password')">
+                                    <span class="room-label">Password <i class="fa-regular fa-copy" style="opacity:0.5;"></i></span>
+                                    <span class="room-val ${passClass}">${rPass}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -472,80 +494,31 @@
             });
         }
 
-        // --- 6. LIVE SYNC WITH CLOUD ---
-        function syncLiveStatus(manual = false) {
-            let matches = JSON.parse(localStorage.getItem('myMatches')) || [];
-            if (matches.length === 0) return;
-
-            let user = JSON.parse(localStorage.getItem('tournyx_user'));
-            if (!user) return;
-            let userEmail = user.email || "";
-            let userPhone = user.phone || ""; 
-            
-            if(!userEmail && !userPhone) return;
-
-            let icon = document.querySelector('.refresh-btn i');
-            if(icon) icon.classList.add('fa-spin');
-
-            fetch(API_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    action: "get_matches",
-                    email: userEmail,
-                    phone: userPhone
-                })
-            })
-            .then(() => {
-                // Secondary GET request to fetch response
-                fetch(API_URL + "?action=get_matches&email=" + userEmail + "&phone=" + userPhone)
-                .then(res => res.json())
-                .then(data => {
-                    if(data.status === "success" && data.data) {
-                        let updatedMatches = matches.map(localMatch => {
-                            let cloudMatch = data.data.find(c => (c.match_id === localMatch.match_id) || (c.tournament_title === localMatch.name));
-                            
-                            if(cloudMatch) {
-                                localMatch.roomID = (cloudMatch.room_id && cloudMatch.room_id.trim() !== "") ? cloudMatch.room_id : "WAITING";
-                                localMatch.roomPass = (cloudMatch.room_pass && cloudMatch.room_pass.trim() !== "") ? cloudMatch.room_pass : "WAITING";
-                                // Don't override if user locally cancelled it
-                                if(localMatch.status !== "Leaved" && localMatch.status !== "Cancelled") {
-                                    localMatch.status = cloudMatch.status || localMatch.status;
-                                }
-                            }
-                            return localMatch;
-                        });
-
-                        localStorage.setItem('myMatches', JSON.stringify(updatedMatches));
-                        renderMatches(false); 
-                        if(manual) showToast("Live data synced!");
-                    }
-                })
-                .catch(e => console.log("Sync error:", e))
-                .finally(() => {
-                    if(icon) icon.classList.remove('fa-spin');
-                });
-            });
-        }
-
-        // --- 7. UNJOIN FUNCTION (ADVANCED: MOVES TO HISTORY) ---
-        function unjoinMatch(event, tournamentName) {
+        // --- 5. TRUE UNJOIN LOGIC (Directly strikes the Server) ---
+        function unjoinMatch(event, tournamentName, matchId) {
             event.stopPropagation(); 
-            if(confirm("Are you sure you want to cancel your registration for " + tournamentName + "? Paid entry fees are non-refundable.")) {
-                let matches = JSON.parse(localStorage.getItem('myMatches')) || [];
+            
+            if(confirm("Are you sure you want to leave " + tournamentName + "? Paid entry fees are non-refundable.")) {
                 
-                // Mark as cancelled instead of deleting
-                matches = matches.map(m => {
-                    if (m.name === tournamentName) {
-                        m.status = "Cancelled";
-                    }
-                    return m;
-                });
+                let user = JSON.parse(localStorage.getItem('tournyx_user')) || {};
+                if(!user.email) return;
 
-                localStorage.setItem('myMatches', JSON.stringify(matches));
-                renderMatches(true); // Re-render to clear it from upcoming
-                showToast("Match cancelled. Moved to History.");
+                // Visual Feedback
+                const btn = document.getElementById(`btn-${matchId}`);
+                if(btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; }
+
+                // Hit the server to permanently delete the row
+                fetch(API_URL, {
+                    method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: "unjoin", title: tournamentName, email: user.email })
+                }).then(() => {
+                    showToast("Successfully left the match!");
+                    // Instantly re-fetch from the server to get the clean list
+                    setTimeout(() => { fetchLiveMatches(); }, 1000);
+                }).catch(e => {
+                    showToast("Failed to process request.", true);
+                    if(btn) { btn.disabled = false; btn.innerText = "LEAVE"; }
+                });
             }
         }
     </script>
