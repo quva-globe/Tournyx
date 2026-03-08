@@ -24,43 +24,29 @@
         }
 
         /* --- ULTIMATE SCROLLBAR KILLER --- */
-        * { -ms-overflow-style: none !important; scrollbar-width: none !important; }
+        * { -ms-overflow-style: none !important; scrollbar-width: none !important; box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
         *::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; background: transparent !important; -webkit-appearance: none !important; }
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
-        body { 
-            background-color: var(--primary-bg); color: white; font-family: var(--font-body); 
-            padding-bottom: calc(90px + env(safe-area-inset-bottom)); 
-            padding-top: calc(60px + env(safe-area-inset-top)); 
-            overflow-x: hidden; 
-        }
+        body { background-color: var(--primary-bg); color: white; font-family: var(--font-body); padding-bottom: calc(90px + env(safe-area-inset-bottom)); padding-top: calc(60px + env(safe-area-inset-top)); overflow-x: hidden; }
 
         /* --- RESPONSIVE WRAPPER --- */
-        .search-row, .game-scroll, .tourney-list, .app-footer {
-            max-width: 1000px; margin-left: auto !important; margin-right: auto !important;
-        }
+        .search-row, .game-scroll, .tourney-list, .app-footer, .top-header .header-wrapper { max-width: 1000px; margin-left: auto !important; margin-right: auto !important; width: 100%; }
 
         /* --- BACKGROUND --- */
         #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at 50% 0%, #15062e 0%, #070311 100%); }
 
         /* --- HEADER --- */
-        .top-header { 
-            position: fixed; top: 0; left: 0; width: 100%; 
-            padding: env(safe-area-inset-top) 15px 10px 15px; 
-            background: rgba(7, 3, 17, 0.85); backdrop-filter: blur(20px); 
-            border-bottom: 1px solid var(--card-border); 
-            z-index: 2000; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); 
-        }
-        .header-wrapper { max-width: 1000px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; width: 100%; }
+        .top-header { position: fixed; top: 0; left: 0; width: 100%; padding: env(safe-area-inset-top) 15px 15px; background: rgba(7, 3, 17, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--card-border); z-index: 2000; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); }
+        .header-wrapper { display: flex; align-items: center; justify-content: space-between; }
         .header-left { display: flex; align-items: center; gap: 10px; }
-        .app-logo { width: 30px; height: 30px; border-radius: 50%; object-fit: contain; box-shadow: 0 0 10px var(--accent-purple); }
+        .app-logo { width: 30px; height: 30px; border-radius: 50%; object-fit: contain; box-shadow: 0 0 10px var(--accent-purple); flex-shrink: 0;}
         .app-title { font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px; }
         .header-right { display: flex; align-items: center; gap: 12px; }
-        .header-profile-img { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--accent-cyan); object-fit: cover; cursor: pointer; box-shadow: 0 0 10px rgba(0,242,255,0.4); transition: 0.3s; }
+        .header-profile-img { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--accent-cyan); object-fit: cover; cursor: pointer; box-shadow: 0 0 10px rgba(0,242,255,0.4); transition: 0.3s; flex-shrink: 0;}
 
         /* --- SEARCH & ACTIONS --- */
         .search-row { display: flex; gap: 10px; padding: 15px; align-items: center; }
-        .search-box { position: relative; flex: 1; display: flex; }
+        .search-box { position: relative; flex: 1; display: flex; min-width: 0; }
         .search-input { width: 100%; background: #110822; border: 1px solid var(--card-border); padding: 12px 15px 12px 40px; border-radius: 12px; color: white; transition: 0.3s; font-size: 0.95rem; font-family: var(--font-body); }
         .search-input:focus { border-color: var(--accent-cyan); outline: none; box-shadow: 0 0 15px rgba(0,242,255,0.2); }
         .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #888; font-size: 1rem; }
@@ -75,19 +61,21 @@
         .game-name { font-size: 0.8rem; font-family: var(--font-head); font-weight: bold; white-space: nowrap; }
 
         /* --- TOURNAMENT CARDS --- */
-        .tourney-list { padding: 0 15px; display: flex; flex-direction: column; gap: 20px; min-height: 400px; width: 100%; }
+        .tourney-list { padding: 0 15px; display: flex; flex-direction: column; gap: 20px; min-height: 400px; }
         .tourney-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 15px; overflow: hidden; animation: slideUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; transition: 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.5); cursor: pointer; }
         .tourney-card:active { transform: scale(0.98); border-color: var(--accent-cyan); }
         @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
         .t-banner-wrapper { position: relative; height: 160px; width: 100%; background: #000; overflow: hidden; }
         .t-banner-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.85; transition: 0.5s; }
-        .t-status-badge { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.8); color: var(--accent-cyan); font-family: var(--font-head); font-size: 0.7rem; font-weight: bold; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--accent-cyan); display: flex; align-items: center; gap: 6px; }
+        .t-status-badge { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.8); color: var(--accent-cyan); font-family: var(--font-head); font-size: 0.7rem; font-weight: bold; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--accent-cyan); display: flex; align-items: center; gap: 6px; backdrop-filter: blur(5px);}
+        .pulse-dot { width: 6px; height: 6px; background: var(--accent-green); border-radius: 50%; box-shadow: 0 0 8px var(--accent-green); animation: pulse 1s infinite alternate; }
+        @keyframes pulse { from { opacity: 0.3; transform: scale(0.8); } to { opacity: 1; transform: scale(1.2); } }
         .t-timer-badge { position: absolute; top: 12px; right: 12px; background: linear-gradient(90deg, #ff5e00, #ff9900); color: white; font-family: var(--font-head); font-size: 0.75rem; font-weight: bold; padding: 6px 12px; border-radius: 20px; box-shadow: 0 0 10px rgba(255,153,0,0.4); }
 
         .t-info-box { padding: 15px; }
-        .t-title { font-family: var(--font-head); font-size: 1.2rem; color: white; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; text-shadow: 0 0 5px rgba(255,255,255,0.3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .verified-badge { color: #1da1f2; font-size: 0.9rem; }
+        .t-title { font-family: var(--font-head); font-size: 1.2rem; color: white; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; text-shadow: 0 0 5px rgba(255,255,255,0.3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+        .verified-badge { color: #1da1f2; font-size: 0.9rem; flex-shrink:0; }
         
         .t-details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
         .t-detail-item { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #b0b0cc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -130,7 +118,7 @@
         .detail-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary-bg); z-index: 3000; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; overflow: hidden; }
         .detail-modal.active { transform: translateX(0); }
         
-        .dm-header { background: rgba(7,3,17,0.95); padding: env(safe-area-inset-top) 15px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); flex-shrink: 0; z-index: 10; }
+        .dm-header { background: rgba(7,3,17,0.95); padding: env(safe-area-inset-top) 15px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); flex-shrink: 0; z-index: 10; backdrop-filter: blur(10px);}
         .dm-back { font-size: 1.3rem; cursor: pointer; color: white; padding: 5px; }
         .dm-title { font-family: var(--font-head); font-weight: bold; flex: 1; text-align: center; font-size: 1.1rem; text-shadow: 0 0 5px rgba(255,255,255,0.5); }
         .dm-share { font-size: 1.3rem; color: var(--accent-cyan); cursor: pointer; padding: 5px; }
@@ -145,7 +133,7 @@
 
         .dm-tab-content { display: none; padding: 20px 15px; animation: fadeIn 0.4s; }
         .dm-tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform:translateY(10px);} to { opacity: 1; transform:translateY(0);} }
 
         .dm-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
         .stat-box { background: var(--secondary-bg); border: 1px solid var(--card-border); padding: 15px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; text-align: center; }
@@ -156,7 +144,7 @@
         .dm-section { background: rgba(255,255,255,0.02); border: 1px solid var(--card-border); border-radius: 15px; padding: 20px; margin-bottom: 20px; }
         .dm-sec-title { font-family: var(--font-head); font-size: 1.1rem; margin-bottom: 15px; color: var(--accent-cyan); display: flex; align-items: center; gap: 8px; }
         
-        .timeline-item { display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); align-items: center; }
+        .timeline-item { display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); align-items: center; gap:10px; }
         .timeline-item:last-child { border: none; margin: 0; padding: 0; }
         .tl-left { display: flex; flex-direction: column; gap: 5px; flex: 1; }
         .tl-lbl { font-size: 0.8rem; color: #888; font-weight: bold; }
@@ -182,7 +170,7 @@
         .btn-secondary { background: transparent; border: 1px solid var(--accent-orange); color: var(--accent-orange); padding: 14px; border-radius: 12px; font-family: var(--font-head); font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; text-transform: uppercase; }
         .btn-secondary:active { background: rgba(255,153,0,0.1); }
 
-        /* REGISTRATION & PAYMENT & CONTRIBUTE STYLES */
+        /* REGISTRATION & PAYMENT OVERLAYS */
         #payFeeRupees, #payFeePts { font-weight: bold; font-family: var(--font-head); font-size: 1.1rem; }
         #payFeeRupees { color: var(--accent-orange); }
         #payFeePts { color: var(--accent-cyan); }
@@ -194,7 +182,6 @@
         .ro-left { display: flex; align-items: center; gap: 15px; }
         .ro-icon { width: 40px; height: 40px; background: rgba(189,0,255,0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--accent-purple); font-size: 1.2rem; border: 1px solid rgba(189,0,255,0.2); }
         .ro-title { font-family: var(--font-head); font-size: 1rem; color: white; margin-bottom: 3px; }
-        .ro-desc { font-size: 0.75rem; color: #888; }
         
         .form-label { display: block; font-size: 0.85rem; color: #a0a0b0; margin-bottom: 8px; font-family: var(--font-head); letter-spacing: 0.5px; }
         .form-select { width: 100%; background: #070311; border: 1px solid var(--card-border); color: white; padding: 14px 15px; border-radius: 10px; font-family: var(--font-body); font-size: 1rem; margin-bottom: 20px; outline: none; }
@@ -209,7 +196,6 @@
         #customToast.show { visibility: visible; opacity: 1; bottom: 100px; }
 
         .app-footer { text-align: center; padding: 40px 20px 100px 20px; color: #555; font-size: 0.75rem; font-family: var(--font-body); letter-spacing: 1px; border-top: 1px solid var(--card-border); margin-top: 20px; }
-        .footer-made-with { margin-top: 10px; font-style: italic; color: #777; font-size: 0.8rem; }
 
         /* PERFECTLY ALIGNED BOTTOM NAVIGATION */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(7, 3, 17, 0.92); backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 5px env(safe-area-inset-bottom); border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.6); }
@@ -230,11 +216,11 @@
             body { padding-bottom: 0; }
         }
 
-        /* --- MEDIAN DETECTOR --- */
+        /* MEDIAN DETECTOR */
         .median-active .top-header { display: none !important; }
         .median-active { padding-top: 15px !important; }
     </style>
-
+    
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             if (navigator.userAgent.indexOf('gonative') > -1 || navigator.userAgent.indexOf('median') > -1) {
@@ -315,13 +301,6 @@
                         <option value="Paid">Paid Entry</option>
                     </select>
                 </div>
-                <div class="f-select-group">
-                    <label>Region</label>
-                    <select class="f-select">
-                        <option>India</option>
-                        <option>Global</option>
-                    </select>
-                </div>
             </div>
 
             <div style="display:flex; gap:10px; margin-top: 10px;">
@@ -352,7 +331,7 @@
 
                 <div class="dm-tab-content active" id="dtTabOverview">
                     <h2 id="dtTitle" class="t-title" style="font-size: 1.5rem; white-space: normal; margin-bottom: 5px;">Tournament Title</h2>
-                    <div style="color: #a0a0b0; font-size: 0.85rem; margin-bottom: 20px;">Organized by <span id="dtOrgName" style="color:white; font-weight:bold;">Organizer <i class="fa-solid fa-circle-check verified-badge"></i></span></div>
+                    <div style="color: #a0a0b0; font-size: 0.85rem; margin-bottom: 20px;">Organized by <span id="dtOrgName" style="color:white; font-weight:bold;">Verified Organizer</span> <i class="fa-solid fa-circle-check verified-badge"></i></div>
                     
                     <div class="dm-stat-grid">
                         <div class="stat-box">
@@ -377,21 +356,27 @@
                         </div>
                     </div>
 
+                    <div class="dm-section" id="dtStreamSection" style="display:none; border-color:#FF0000;">
+                        <div class="dm-sec-title" style="color:#FF0000;"><i class="fa-solid fa-tv"></i> Live Stream Preview</div>
+                        <div style="font-size:0.85rem; color:#ccc; margin-bottom:15px;">The organizer has provided a live stream link for this event.</div>
+                        <button class="btn-primary" style="background:#FF0000; box-shadow:0 5px 15px rgba(255,0,0,0.4);" id="dtStreamBtn"><i class="fa-brands fa-youtube"></i> Watch Live Stream</button>
+                    </div>
+
                     <div class="dm-section">
                         <div class="dm-sec-title"><i class="fa-regular fa-calendar-days"></i> Tournament Timeline</div>
                         <div class="timeline-item">
                             <div class="tl-left">
-                                <div class="tl-lbl">Registration Period</div>
+                                <div class="tl-lbl">Registration Period Ends</div>
                                 <div class="tl-val" id="dtRegDateRange">Loading...</div>
                             </div>
-                            <div class="tl-status" id="dtTimelineStatus">Open</div>
+                            <div class="tl-status">Open</div>
                         </div>
                         <div class="timeline-item">
                             <div class="tl-left">
                                 <div class="tl-lbl">Tournament Period</div>
-                                <div class="tl-val" id="dtMatchDateRange">Loading...</div>
+                                <div class="tl-val" id="dtMatchDateRange" style="color:var(--accent-cyan); font-weight:bold;">Loading...</div>
                             </div>
-                            <div class="tl-status" style="background: rgba(0,242,255,0.1); color: var(--accent-cyan); border-color: var(--accent-cyan);" id="dtTimelineMatchStatus">Upcoming</div>
+                            <div class="tl-status" style="background: rgba(0,242,255,0.1); color: var(--accent-cyan); border-color: var(--accent-cyan);">Scheduled</div>
                         </div>
                     </div>
                     
@@ -493,9 +478,9 @@
             </div>
 
             <form id="existingTeamForm" onsubmit="processRegistrationPayment(event)">
-                <label class="form-label">Select Clan/Team *</label>
+                <label class="form-label" id="regClanLabel">Select Roster *</label>
                 <select class="form-select" id="formSelectClan" required>
-                    <option value="" disabled selected>Choose your team...</option>
+                    <option value="" disabled selected>Loading your clans...</option>
                 </select>
                 
                 <div style="background: rgba(0,242,255,0.05); border-left: 3px solid var(--accent-cyan); padding: 15px; margin-bottom: 20px; font-size: 0.8rem; color: #ccc; line-height: 1.5;">
@@ -595,31 +580,17 @@
             setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3500);
         }
 
-        // --- FIXED: NATIVE SHARE FUNCTION ---
+        // Native Share Setup
         function shareTournament() {
             if(!activeTournament.title) return;
             const tId = activeTournament.id || activeTournament.title.replace(/\s+/g, '');
-            
-            // Build the clean URL to the tournament
             const loc = window.location;
             const link = loc.protocol + '//' + loc.host + loc.pathname + "?tournament=" + encodeURIComponent(tId);
             
-            // Try to use the native mobile share menu
             if (navigator.share) {
-                navigator.share({
-                    title: 'Join ' + activeTournament.title + ' on Tournyx',
-                    text: 'Check out this awesome Esports tournament!',
-                    url: link
-                }).catch((error) => {
-                    console.log('Sharing failed', error);
-                });
+                navigator.share({ title: 'Join ' + activeTournament.title, text: 'Check out this Esports tournament on Tournyx!', url: link }).catch((e) => console.log(e));
             } else {
-                // Fallback to copying to clipboard if the browser doesn't support Native Share
-                navigator.clipboard.writeText(link).then(() => {
-                    showToast("Tournament Link Copied to Clipboard!");
-                }).catch(err => {
-                    showToast("Failed to copy link", true);
-                });
+                navigator.clipboard.writeText(link).then(() => showToast("Link Copied!"));
             }
         }
 
@@ -632,44 +603,34 @@
             } catch(e) { return dateStr; }
         }
 
-        function getPrizeText(val) {
-            let num = parseInt(val);
-            return (isNaN(num) || num <= 0) ? "Glory" : num + " Rs.";
-        }
-        
-        function getEntryText(val) {
-            let num = parseInt(val);
-            if(isNaN(num) || num <= 0 || val === 'Free') return "Free";
-            return `${num} Rs. (${num * 50} PTS)`;
-        }
-
+        function getPrizeText(val) { let num = parseInt(val); return (isNaN(num) || num <= 0) ? "Glory" : num + " Rs."; }
+        function getEntryText(val) { let num = parseInt(val); if(isNaN(num) || num <= 0 || val === 'Free') return "Free"; return `${num} Rs. (${num * 50} PTS)`; }
         function formatImageUrl(url) {
             if (!url) return 'https://via.placeholder.com/600x300';
-            if (url.includes('drive.google.com/file/d/')) {
-                let id = url.split('/d/')[1].split('/')[0];
-                return `https://drive.google.com/uc?export=view&id=${id}`;
-            }
+            if (url.includes('drive.google.com/file/d/')) { let id = url.split('/d/')[1].split('/')[0]; return `https://drive.google.com/uc?export=view&id=${id}`; }
             return url;
         }
 
+        // --- BACKGROUND SYNC ---
         document.addEventListener("DOMContentLoaded", function() {
             let user = JSON.parse(localStorage.getItem('tournyx_user'));
-            if(!user || !user.email) {
-                window.location.href = "login.html";
-                return;
-            }
+            if(!user || !user.email) { window.location.href = "login.html"; return; }
             if(user.avatar) document.getElementById('headerProfilePic').src = user.avatar;
             
             localStorage.removeItem('myMatches');
 
             loadLiveTournaments();
             
+            // Check matches to lock joined buttons
             fetch(API_URL + "?action=get_matches&email=" + encodeURIComponent(user.email))
                 .then(res => res.json())
-                .then(data => {
-                    if(data.status === 'success') userLiveMatches = data.data;
-                });
-                
+                .then(data => { if(data.status === 'success') userLiveMatches = data.data; });
+            
+            // Pre-fetch live clans for the Registration Dropdown filtering
+            fetch(API_URL + "?action=get_my_clans&username=" + encodeURIComponent(user.username))
+                .then(res => res.json())
+                .then(data => { if(data.status === 'success') localStorage.setItem('tournyx_my_clans_cache', JSON.stringify(data.data)); });
+
             initTabSwitching(); 
         });
 
@@ -677,10 +638,11 @@
             let text = "UPCOMING"; let color = "var(--accent-cyan)";
             if (!status) return `<div class="t-status-badge"><i class="fa-solid fa-satellite-dish"></i> ${text}</div>`;
             let sLower = status.toLowerCase();
-            if (sLower.includes("live")) { text = "LIVE NOW"; color = "var(--accent-green)"; } 
+            let pulse = "";
+            if (sLower.includes("live")) { text = "LIVE NOW"; color = "var(--accent-green)"; pulse = `<div class="pulse-dot"></div>`; } 
             else if (sLower.includes("wait")) { text = "WAITING"; color = "var(--accent-orange)"; } 
             else if (sLower.includes("completed") || sLower.includes("past")) { text = "COMPLETED"; color = "#888"; }
-            return `<div class="t-status-badge" style="color:${color}; border-color:${color};"><i class="fa-solid fa-satellite-dish" style="color:${color};"></i> ${text}</div>`;
+            return `<div class="t-status-badge" style="color:${color}; border-color:${color};">${pulse} <i class="fa-solid fa-satellite-dish" style="color:${color};"></i> ${text}</div>`;
         }
 
         function refreshContent() {
@@ -754,13 +716,17 @@
             });
         }
 
+        // --- TOURNAMENT DETAILS OVERLAY ---
         function openTournamentDetails(tDataEncoded) {
             const t = JSON.parse(decodeURIComponent(tDataEncoded));
             activeTournament = t; 
 
             document.getElementById('dtBanner').src = formatImageUrl(t.banner);
             document.getElementById('dtTitle').innerHTML = `${t.title} <i class="fa-solid fa-circle-check verified-badge"></i>`;
-            document.getElementById('dtOrgName').innerHTML = `${t.org_email || 'Verified Organizer'} <i class="fa-solid fa-circle-check verified-badge"></i>`;
+            
+            // FIXED: Show Organizer Username
+            document.getElementById('dtOrgName').innerHTML = `${t.org_username || 'Verified Organizer'}`;
+            
             document.getElementById('dtPrize').innerText = getPrizeText(t.prize);
             document.getElementById('dtFee').innerText = getEntryText(t.fee);
             document.getElementById('dtGame').innerText = t.game || "N/A";
@@ -775,6 +741,19 @@
                 document.getElementById('prize2').innerText = "30% - " + (rawPrize * 0.30).toFixed(0) + " Rs.";
                 document.getElementById('prize3').innerText = "20% - " + (rawPrize * 0.20).toFixed(0) + " Rs.";
             }
+
+            // FIXED: Stream Section logic
+            const strmSec = document.getElementById('dtStreamSection');
+            if (t.stream_url && t.stream_url.trim() !== "") {
+                strmSec.style.display = 'block';
+                document.getElementById('dtStreamBtn').onclick = () => window.open(t.stream_url, '_blank');
+            } else {
+                strmSec.style.display = 'none';
+            }
+
+            // FIXED: Match Period logic
+            document.getElementById('dtMatchDateRange').innerText = t.match_period || "TBA";
+            document.getElementById('dtRegDateRange').innerText = formatDateTime(t.date);
 
             let isJoined = userLiveMatches.some(m => m.tournament_title === t.title || m.match_id === (t.id || t.title)); 
             
@@ -793,7 +772,6 @@
             }
 
             document.getElementById('dtTimeLeft').innerText = t.status || "Upcoming";
-            document.getElementById('dtRegDateRange').innerText = `Now - ${formatDateTime(t.date)}`;
             document.getElementById('tourneyDetailModal').classList.add('active');
         }
 
@@ -825,62 +803,30 @@
             }).catch(() => container.innerHTML = `<div style="text-align:center; color:#ff4d4d; padding:20px;">Failed to load teams.</div>`);
         }
 
-        // --- FIXED: CONTRIBUTE MODAL LOGIC ---
-        function openContributeModal() {
-            document.getElementById('contributeOverlay').classList.add('active');
-            let user = JSON.parse(localStorage.getItem('tournyx_user')) || {};
-            let bal = document.getElementById('contributeWalletBal');
-            if(bal) bal.innerText = user.rupees || 0;
-        }
-        
-        function closeContributeModal() {
-            document.getElementById('contributeOverlay').classList.remove('active');
-            document.getElementById('customAmtInput').value = "";
-            clearAmtBtns();
-        }
-        
-        function selectAmt(btn, amt) {
-            clearAmtBtns();
-            btn.classList.add('active');
-            document.getElementById('customAmtInput').value = amt;
-        }
-        
-        function clearAmtBtns() {
-            document.querySelectorAll('.amt-btn').forEach(b => b.classList.remove('active'));
-        }
-        
-        function processContribution() {
-            let val = parseInt(document.getElementById('customAmtInput').value);
-            if(isNaN(val) || val <= 0) { showToast("Please select a valid amount.", true); return; }
-
-            let user = JSON.parse(localStorage.getItem('tournyx_user')) || {};
-            let uRupees = parseInt(user.rupees) || 0;
-
-            if (val > uRupees) {
-                showToast("Insufficient Balance! Add funds to Wallet.", true);
-                setTimeout(() => { window.location.href = "wallet.html"; }, 1500);
-                return;
-            }
-
-            // Deduct Rupees locally and reflect in UI immediately
-            user.rupees = uRupees - val;
-            localStorage.setItem('tournyx_user', JSON.stringify(user));
-            document.getElementById('contributeWalletBal').innerText = user.rupees;
-            
-            showToast("Successfully contributed " + val + " Rs. to " + (activeTournament.title || "the event") + "!");
-            closeContributeModal();
-            // (Optional: You could also hit your API_URL here to record the donation in Google Sheets!)
-        }
-
-        // --- REGISTRATION LOGIC ---
+        // --- SMART GAME-FILTERED REGISTRATION LOGIC ---
         function openRegistrationFlow() {
             if(document.getElementById('masterJoinBtn').disabled) return;
-            let user = JSON.parse(localStorage.getItem('tournyx_user')) || {};
-            let userClan = user.clan || localStorage.getItem('tournyx_user_clan');
             
+            let user = JSON.parse(localStorage.getItem('tournyx_user')) || {};
+            // Fetch live cached clans
+            let userClans = JSON.parse(localStorage.getItem('tournyx_my_clans_cache')) || [];
+            
+            // FILTER logic: Only show clans matching the tournament's game!
+            let matchingClans = userClans.filter(c => c.game === activeTournament.game || activeTournament.game === 'Multiple' || activeTournament.game === 'Esports');
+
             const select = document.getElementById('formSelectClan');
             select.innerHTML = '<option value="" disabled selected>Choose your team...</option>';
-            select.innerHTML += userClan ? `<option value="${userClan}">${userClan}</option>` : `<option value="Personal Roster (Default)">Personal Roster (Default)</option>`;
+            
+            if (matchingClans.length > 0) {
+                matchingClans.forEach(c => {
+                    select.innerHTML += `<option value="${c.name}">${c.name} (${c.game})</option>`;
+                });
+                document.getElementById('regClanLabel').innerHTML = `Select ${activeTournament.game} Roster *`;
+            } else {
+                // Fallback if they don't have a clan for this game
+                select.innerHTML += `<option value="${user.username} (Solo Player)">Register as Solo Player</option>`;
+                document.getElementById('regClanLabel').innerHTML = `No ${activeTournament.game} clan found. Playing Solo.`;
+            }
             
             document.getElementById('finalSubmitBtn').innerText = "Proceed";
             document.getElementById('finalSubmitBtn').disabled = false;
@@ -921,7 +867,11 @@
 
             if(method === 'rupees' && user.rupees >= fee) { user.rupees -= fee; } 
             else if (method === 'points' && user.points >= (fee * 50)) { user.points -= (fee * 50); } 
-            else { showToast("Insufficient Balance!", true); return; }
+            else { 
+                showToast("Insufficient Balance! Add funds to Wallet.", true); 
+                setTimeout(() => { window.location.href = "wallet.html"; }, 1500);
+                return; 
+            }
 
             localStorage.setItem('tournyx_user', JSON.stringify(user));
             closePaymentModal();
@@ -936,7 +886,7 @@
                 method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     action: "join", match_id: t.id || t.title, game: t.game, title: t.title,
-                    date: t.date, prize: t.prize, email: user.email, phone: user.phone, 
+                    date: t.date, prize: t.prize, email: user.email, username: user.username, phone: user.phone, 
                     clan: clanName, entry_paid: cost, method: method
                 })
             }).then(() => {
@@ -957,6 +907,41 @@
                     }
                 }
             });
+        }
+
+        // --- CONTRIBUTE MODAL LOGIC ---
+        function openContributeModal() {
+            document.getElementById('contributeOverlay').classList.add('active');
+            let user = JSON.parse(localStorage.getItem('tournyx_user')) || {};
+            let bal = document.getElementById('contributeWalletBal');
+            if(bal) bal.innerText = user.rupees || 0;
+        }
+        function closeContributeModal() {
+            document.getElementById('contributeOverlay').classList.remove('active');
+            document.getElementById('customAmtInput').value = "";
+            clearAmtBtns();
+        }
+        function selectAmt(btn, amt) {
+            clearAmtBtns();
+            btn.classList.add('active');
+            document.getElementById('customAmtInput').value = amt;
+        }
+        function clearAmtBtns() { document.querySelectorAll('.amt-btn').forEach(b => b.classList.remove('active')); }
+        function processContribution() {
+            let val = parseInt(document.getElementById('customAmtInput').value);
+            if(isNaN(val) || val <= 0) { showToast("Please select a valid amount.", true); return; }
+
+            let user = JSON.parse(localStorage.getItem('tournyx_user')) || {};
+            let uRupees = parseInt(user.rupees) || 0;
+
+            if (val > uRupees) { showToast("Insufficient Balance!", true); return; }
+
+            user.rupees = uRupees - val;
+            localStorage.setItem('tournyx_user', JSON.stringify(user));
+            document.getElementById('contributeWalletBal').innerText = user.rupees;
+            
+            showToast("Successfully contributed " + val + " Rs. to " + (activeTournament.title || "the event") + "!");
+            closeContributeModal();
         }
 
         // --- FILTERS & UTILS ---
