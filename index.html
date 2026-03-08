@@ -791,26 +791,40 @@
         // CONFIG
         const API_URL = "https://script.google.com/macros/s/AKfycbynNLDDXS1wMrU6RGnk4nKb1jfQkQGuqrNIKWAt8wf46MaKP6y1rwGmSJg5fmm4KYU/exec";
 
-                        // STARTUP (Blazing Fast Loading)
+                                // ==========================================
+        // APP STARTUP & 2-SECOND LOADER (GITHUB PAGES OPTIMIZED)
+        // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
             let user = JSON.parse(localStorage.getItem('tournyx_user'));
+            
+            // 1. Authentication Guard
             if (!user) {
                 window.location.href = "login.html";
                 return; 
             }
 
-            // Immediately trigger the loader fade-out without waiting for images
-            const loader = document.getElementById('tournyx-loader');
-            loader.style.opacity = '0';
-            setTimeout(() => { loader.style.display = 'none'; }, 400); // Wait for CSS fade transition to finish
-
+            // 2. Load all data instantly in the background so the app is ready
             checkLoginStatus();
             checkNextMatch();
             loadFeaturedTournaments();
             syncLiveWalletPoints(user); 
             renderQuests(); 
             initScrollAnimations(); 
+
+            // 3. Force the loader to stay visible for EXACTLY 2 seconds
+            setTimeout(() => {
+                const loader = document.getElementById('tournyx-loader');
+                if (loader) {
+                    loader.style.opacity = '0'; // Trigger the CSS fade out
+                    
+                    // Remove it from the DOM after the fade transition completes (400ms)
+                    setTimeout(() => { 
+                        loader.style.display = 'none'; 
+                    }, 400); 
+                }
+            }, 2000); 
         });
+
 
 
 
