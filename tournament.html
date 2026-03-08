@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Create Tournament - Tournyx</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,506 +21,638 @@
             --accent-purple: #bd00ff;
             --accent-orange: #ff9900;
             --accent-green: #00ff7f;
+            --accent-red: #ff4d4d;
             --accent-gradient: linear-gradient(90deg, #7b2cbf, #bd00ff, #00f2ff);
             --font-head: 'Orbitron', sans-serif;
             --font-body: 'Rajdhani', sans-serif;
         }
-                /* --- ULTIMATE SCROLLBAR KILLER --- */
-        * {
-            -ms-overflow-style: none !important;  /* IE and Edge */
-            scrollbar-width: none !important;  /* Firefox */
-        }
-        *::-webkit-scrollbar {
-            display: none !important; /* Chrome, Safari, Android Webview, iOS */
-            width: 0 !important;
-            height: 0 !important;
-            background: transparent !important;
-            -webkit-appearance: none !important;
-        }
+        
+        /* ULTIMATE SCROLLBAR & OVERFLOW KILLER */
+        * { -ms-overflow-style: none !important; scrollbar-width: none !important; box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+        *::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; background: transparent !important; }
 
+        body { background-color: var(--primary-bg); color: white; font-family: var(--font-body); overflow-x: hidden; width: 100%; padding-bottom: env(safe-area-inset-bottom); padding-top: calc(65px + env(safe-area-inset-top)); }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at 50% 0%, #15062e 0%, #070311 100%); }
 
-        body {
-            background-color: var(--primary-bg);
-            color: white;
-            font-family: var(--font-body);
-            overflow-x: hidden;
-            padding-bottom: 90px;
-            padding-top: 60px; /* Exact match to header */
-        }
-
-        /* --- BACKGROUND --- */
-        #particles-canvas {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-            background: radial-gradient(circle at 50% 0%, #15062e 0%, #070311 100%);
-        }
+        /* --- TOP PROGRESS BAR --- */
+        .top-progress-bar { position: fixed; top: 0; left: 0; width: 100%; height: 4px; background: rgba(255,255,255,0.1); z-index: 3000; }
+        .progress-fill { height: 100%; width: 0%; background: var(--accent-cyan); transition: width 0.4s ease; box-shadow: 0 0 10px var(--accent-cyan); }
 
         /* --- HEADER --- */
-        .top-header {
-            position: fixed; top: 0; left: 0; width: 100%; padding: 10px 15px; height: 60px;
-            background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(15px);
-            border-bottom: 1px solid var(--card-border);
-            display: flex; align-items: center; justify-content: space-between; z-index: 2000;
-        }
+        .top-header { position: fixed; top: 4px; left: 0; width: 100%; padding: env(safe-area-inset-top) 15px 15px; background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(15px); border-bottom: 1px solid var(--card-border); z-index: 2000; box-shadow: 0 4px 30px rgba(0,0,0,0.5); }
+        .header-wrapper { display: flex; align-items: center; justify-content: space-between; max-width: 800px; margin: 0 auto; width: 100%; }
         .header-left { display: flex; align-items: center; gap: 15px; }
         .back-btn { font-size: 1.2rem; color: white; cursor: pointer; text-decoration: none; transition: 0.3s; }
         .back-btn:active { color: var(--accent-cyan); transform: scale(0.9); }
-        .app-title { font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; color: white; letter-spacing: 1px; }
+        .app-title { font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; color: white; letter-spacing: 1px; display: flex; flex-direction: column; }
+        .draft-status { font-size: 0.65rem; color: var(--accent-green); font-family: var(--font-body); font-style: italic; }
+        
+        .header-actions { display: flex; gap: 15px; color: #888; font-size: 1.1rem; }
+        .header-actions i { cursor: pointer; transition: 0.3s; }
+        .header-actions i:active { color: var(--accent-red); transform: scale(0.9); }
 
-        /* --- FORM CONTAINER & SECTIONS --- */
-        .form-container { padding: 20px 15px; max-width: 600px; margin: 0 auto; }
+        /* --- FORM CONTAINER (MASSIVE PADDING ADDED TO FIX OVERLAP) --- */
+        .form-container { padding: 20px 15px 150px 15px; max-width: 800px; margin: 0 auto; width: 100%; }
 
-        .form-section {
-            background: var(--secondary-bg); border: 1px solid var(--card-border);
-            border-radius: 15px; padding: 20px 15px; margin-bottom: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            animation: fadeIn 0.5s ease forwards;
-        }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* Form Sections */
+        .form-section { background: var(--secondary-bg); border: 1px solid var(--card-border); border-radius: 15px; padding: 25px 20px; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: slideUp 0.5s ease both; transition: border-color 0.3s; overflow: hidden; }
+        .form-section:focus-within { border-color: rgba(189,0,255,0.6); box-shadow: 0 0 15px rgba(189,0,255,0.2); }
+        .form-section.collapsed .section-content { display: none; }
+        .form-section:nth-child(1) { animation-delay: 0.1s; } .form-section:nth-child(2) { animation-delay: 0.2s; } .form-section:nth-child(3) { animation-delay: 0.3s; } .form-section:nth-child(4) { animation-delay: 0.4s; } .form-section:nth-child(5) { animation-delay: 0.5s; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .section-header {
-            font-family: var(--font-head); font-size: 1.1rem; margin-bottom: 20px;
-            display: flex; align-items: center; gap: 10px; color: white;
-        }
-        .section-header i { color: var(--accent-purple); font-size: 1.2rem; }
+        .section-header { font-family: var(--font-head); font-size: 1.1rem; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; color: white; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; user-select: none; }
+        .sh-left { display: flex; align-items: center; gap: 10px; }
+        .sh-left i { color: var(--accent-purple); font-size: 1.3rem; text-shadow: 0 0 10px rgba(189,0,255,0.4); }
+        .collapse-icon { font-size: 0.9rem; color: #888; transition: 0.3s; }
+        .form-section.collapsed .collapse-icon { transform: rotate(-90deg); }
 
         /* --- INPUT GROUPS --- */
-        .input-group { margin-bottom: 20px; }
-        .input-group:last-child { margin-bottom: 0; }
-        .row { display: flex; gap: 15px; margin-bottom: 20px; }
-        .col { flex: 1; }
+        .input-group { margin-bottom: 20px; width: 100%; position: relative; }
+        .row { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; width: 100%; }
+        .col { flex: 1 1 140px; min-width: 0; }
         
-        .input-label { display: block; font-size: 0.85rem; color: white; margin-bottom: 8px; font-family: var(--font-head); font-weight: bold; font-style: italic; letter-spacing: 0.5px; }
-        .input-sublabel { font-size: 0.75rem; color: #888; margin-top: 5px; font-style: italic; }
+        .input-label { display: flex; align-items: center; gap: 5px; font-size: 0.85rem; color: white; margin-bottom: 8px; font-family: var(--font-head); font-weight: bold; letter-spacing: 0.5px; }
+        .tooltip-icon { font-size: 0.8rem; color: var(--accent-cyan); cursor: pointer; }
+        .input-sublabel { font-size: 0.75rem; color: #888; margin-top: 5px; font-style: italic; display: flex; justify-content: space-between; }
         
-        .form-control {
-            width: 100%; background: var(--input-bg); border: 1px solid var(--card-border);
-            border-radius: 10px; padding: 14px 15px; color: white; font-family: var(--font-body);
-            font-size: 0.95rem; outline: none; transition: 0.3s; box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
-        }
+        .form-control { width: 100%; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 14px 15px; color: white; font-family: var(--font-body); font-size: 1rem; outline: none; transition: 0.3s; box-shadow: inset 0 0 5px rgba(0,0,0,0.3); }
         .form-control:focus { border-color: var(--accent-cyan); box-shadow: 0 0 10px rgba(0,242,255,0.2), inset 0 0 5px rgba(0,0,0,0.5); }
+        .form-control.error { border-color: var(--accent-red); box-shadow: 0 0 10px rgba(255,77,77,0.2); animation: shake 0.4s; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
         
-        select.form-control {
-            appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23888'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
-            background-repeat: no-repeat; background-position: right 15px center; background-size: 20px;
-        }
+        select.form-control { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23888'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 15px center; background-size: 20px; }
 
-        /* --- IMAGE UPLOADER UI --- */
-        .upload-box-wrapper { border: 2px dashed #333; border-radius: 15px; padding: 25px 15px; text-align: center; margin-bottom: 20px; position: relative; overflow: hidden; background: rgba(0,0,0,0.2); }
-        .upload-icon-circle { width: 60px; height: 60px; background: var(--accent-gradient); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; margin: 0 auto 15px; box-shadow: 0 5px 15px rgba(189,0,255,0.4); }
-        .upload-icon-circle.green { background: linear-gradient(45deg, #00b09b, #96c93d); box-shadow: 0 5px 15px rgba(0,176,155,0.4); }
-        .upload-title { font-family: var(--font-head); font-size: 1.1rem; color: white; margin-bottom: 5px; font-style: italic; }
-        .upload-desc { font-size: 0.85rem; color: #888; margin-bottom: 15px; }
-        .upload-btn { background: var(--accent-gradient); border: none; padding: 10px 20px; border-radius: 8px; color: white; font-family: var(--font-head); font-weight: bold; cursor: pointer; display: inline-block; }
-        .upload-btn.green { background: linear-gradient(45deg, #00b09b, #96c93d); color: #000; }
+        /* Quick Presets */
+        .preset-row { display: flex; gap: 8px; margin-top: 8px; }
+        .preset-badge { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #ccc; font-size: 0.75rem; padding: 3px 10px; border-radius: 12px; cursor: pointer; transition: 0.2s; font-weight: bold; }
+        .preset-badge:active { background: var(--accent-orange); color: black; border-color: var(--accent-orange); }
+
+        /* Image Uploader */
+        .upload-box-wrapper { border: 2px dashed rgba(189,0,255,0.3); border-radius: 15px; padding: 30px 15px; text-align: center; margin-bottom: 20px; position: relative; overflow: hidden; background: rgba(0,0,0,0.2); transition: 0.3s; cursor: pointer; }
+        .upload-box-wrapper:hover { border-color: var(--accent-cyan); background: rgba(0,242,255,0.05); }
+        .upload-box-wrapper.error { border-color: var(--accent-red); animation: shake 0.4s; }
+        .upload-icon-circle { width: 60px; height: 60px; background: var(--accent-gradient); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; margin: 0 auto 15px; box-shadow: 0 5px 15px rgba(189,0,255,0.4); pointer-events: none;}
         .file-input { display: none; }
+        .preview-img { width: 100%; height: 180px; object-fit: cover; border-radius: 12px; display: none; margin-top: 10px; border: 1px solid var(--accent-cyan); box-shadow: 0 5px 15px rgba(0,242,255,0.2); }
+        .remove-img { background: rgba(255,77,77,0.1); color: var(--accent-red); border: 1px solid rgba(255,77,77,0.3); padding: 8px 15px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; display: none; margin: 15px auto 0; text-align: center; font-weight: bold; width: max-content; transition: 0.3s; }
+
+        /* --- NATIVE RICH TEXT EDITOR --- */
+        .rich-text-wrapper { border: 1px solid var(--card-border); border-radius: 10px; background: var(--input-bg); overflow: hidden; transition: 0.3s; width: 100%; }
+        .rich-text-wrapper:focus-within { border-color: var(--accent-cyan); box-shadow: 0 0 10px rgba(0,242,255,0.2); }
+        .rich-text-wrapper.error { border-color: var(--accent-red); box-shadow: 0 0 10px rgba(255,77,77,0.2); animation: shake 0.4s; }
+        .rt-toolbar { padding: 12px 15px; border-bottom: 1px solid var(--card-border); display: flex; gap: 15px; color: #888; font-size: 1.1rem; background: rgba(255,255,255,0.02); overflow-x: auto; }
+        .rt-toolbar i { cursor: pointer; transition: 0.2s; padding: 5px 8px; border-radius: 6px; }
+        .rt-toolbar i:active { color: white; background: rgba(189,0,255,0.4); transform:scale(0.9);}
         
-        .preview-img { width: 100%; height: 160px; object-fit: cover; border-radius: 10px; display: none; margin-top: 10px; border: 1px solid var(--accent-cyan); }
-        .remove-img { color: #ff4d4d; font-size: 0.85rem; cursor: pointer; display: none; margin-top: 10px; text-align: center; font-weight: bold; text-decoration: underline; }
+        .rt-textarea { width: 100%; background: transparent; border: none; color: white; padding: 15px; font-family: var(--font-body); font-size: 1rem; outline: none; min-height: 150px; line-height: 1.6; overflow-y: auto; }
+        .rt-textarea:empty:before { content: attr(data-placeholder); color: #666; pointer-events: none; display: block; animation: pulsePlaceholder 4s infinite; }
+        @keyframes pulsePlaceholder { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
 
-        /* --- RICH TEXT FAKE TOOLBAR --- */
-        .rich-text-wrapper { border: 1px solid var(--card-border); border-radius: 10px; background: var(--input-bg); overflow: hidden; }
-        .rt-toolbar { padding: 10px 15px; border-bottom: 1px solid var(--card-border); display: flex; gap: 15px; color: #888; font-size: 1.1rem; }
-        .rt-toolbar i { cursor: pointer; transition: 0.2s; }
-        .rt-toolbar i:hover { color: white; }
-        .rt-textarea { width: 100%; background: transparent; border: none; color: white; padding: 15px; font-family: var(--font-body); font-size: 1rem; outline: none; resize: vertical; min-height: 120px; }
+        /* Selection Cards & Platforms */
+        .selection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 10px; width: 100%; }
+        .sel-card { background: var(--input-bg); border: 1px solid var(--card-border); padding: 15px 10px; border-radius: 12px; text-align: center; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+        .sel-card i { font-size: 1.5rem; color: #666; transition: 0.3s; }
+        .sel-card span { font-family: var(--font-head); font-size: 0.9rem; font-weight: bold; color: #888; transition: 0.3s; }
+        .sel-card.active { border-color: var(--accent-cyan); background: rgba(0,242,255,0.1); box-shadow: 0 0 15px rgba(0,242,255,0.2); }
+        .sel-card.active i { color: var(--accent-cyan); text-shadow: 0 0 10px rgba(0,242,255,0.4); }
+        .sel-card.active span { color: white; }
+        .platform-grid { grid-template-columns: 1fr 1fr 1fr; }
+        .platform-grid .sel-card { padding: 12px 5px; }
 
-        /* --- SELECTION CARDS --- */
-        .selection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-        .sel-card { background: var(--input-bg); border: 1px solid var(--card-border); padding: 20px 10px; border-radius: 12px; text-align: center; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
-        .sel-card i { font-size: 1.5rem; color: #888; transition: 0.3s; }
-        .sel-card span { font-family: var(--font-head); font-size: 0.9rem; font-weight: bold; font-style: italic; color: #aaa; transition: 0.3s; }
-        .sel-card.active { border-color: var(--accent-purple); background: rgba(189,0,255,0.1); box-shadow: 0 0 15px rgba(189,0,255,0.2); }
-        .sel-card.active i, .sel-card.active span { color: var(--accent-purple); }
+        /* Game Grid */
+        .search-game-box { position: relative; margin-bottom: 15px; width: 100%; }
+        .search-game-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #888; }
+        .game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; width: 100%; }
+        .game-card { position: relative; border-radius: 12px; overflow: hidden; height: 110px; cursor: pointer; border: 2px solid transparent; transition: 0.3s; background: #110822; }
+        .game-card img { width: 100%; height: 100%; object-fit: cover; opacity: 0.5; transition: 0.3s; }
+        .game-card.active { border-color: var(--accent-orange); box-shadow: 0 0 15px rgba(255,153,0,0.4); transform: scale(1.05); z-index: 2; }
+        .game-card.active img { opacity: 1; }
+        .game-label { position: absolute; bottom: 0; left: 0; width: 100%; text-align: center; font-family: var(--font-head); font-weight: bold; font-size: 0.8rem; padding: 25px 5px 8px; background: linear-gradient(transparent, rgba(0,0,0,0.9)); z-index: 2; pointer-events: none; }
+        .platform-tag { position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.8); padding: 3px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: bold; color: var(--accent-cyan); border: 1px solid rgba(0,242,255,0.3); }
 
-        /* --- GAME SELECTION GRID --- */
-        .game-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 12px; margin-top: 15px; }
-        .game-card { position: relative; border-radius: 12px; overflow: hidden; height: 100px; cursor: pointer; border: 2px solid transparent; transition: 0.3s; background: #222; }
-        .game-card img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; transition: 0.3s; }
-        .game-card:hover img, .game-card.active img { opacity: 1; }
-        .game-card.active { border-color: var(--accent-cyan); box-shadow: 0 0 15px rgba(0,242,255,0.4); transform: scale(1.05); z-index: 2; }
-        .game-label { position: absolute; bottom: 8px; left: 0; width: 100%; text-align: center; font-family: var(--font-head); font-weight: bold; font-size: 0.8rem; text-shadow: 0 0 5px rgba(0,0,0,0.8); z-index: 2; pointer-events: none; }
-        .platform-tag { position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.8); padding: 2px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: bold; color: #ccc; }
+        /* Live Calculator */
+        .calc-box { background: rgba(0,242,255,0.05); border: 1px solid var(--accent-cyan); border-radius: 12px; padding: 15px; margin-top: 15px; display: flex; justify-content: space-between; align-items: center; width: 100%; transition: 0.3s; }
+        .calc-lbl { font-size: 0.8rem; color: #ccc; font-family: var(--font-head); }
+        .calc-val { font-size: 1.3rem; font-weight: bold; color: var(--accent-cyan); text-shadow: 0 0 5px rgba(0,242,255,0.4); }
 
-        /* --- TOGGLE SWITCH --- */
-        .toggle-wrapper { display: flex; justify-content: space-between; align-items: center; background: var(--input-bg); padding: 15px; border-radius: 10px; border: 1px solid var(--card-border); margin-bottom: 20px; }
-        .toggle-info { flex: 1; }
-        .toggle-title { font-family: var(--font-head); font-size: 0.9rem; font-style: italic; margin-bottom: 3px; }
-        .toggle-desc { font-size: 0.75rem; color: #888; }
-        .switch { position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #070311; transition: .4s; border-radius: 34px; border: 1px solid #444; }
-        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 3px; background-color: #888; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--accent-purple); border-color: var(--accent-purple); }
-        input:checked + .slider:before { transform: translateX(20px); background-color: white; }
+        /* Custom Toggle Switch */
+        .custom-toggle { display: flex; align-items: center; justify-content: space-between; background: var(--input-bg); border: 1px solid var(--card-border); padding: 15px; border-radius: 10px; cursor: pointer; transition: 0.3s; width: 100%; }
+        .toggle-text { font-family: var(--font-head); font-size: 0.95rem; }
+        .toggle-sub { font-size: 0.75rem; color: #888; font-family: var(--font-body); margin-top: 2px; }
+        .toggle-check { width: 24px; height: 24px; border-radius: 6px; border: 2px solid #555; display: flex; align-items: center; justify-content: center; transition: 0.3s; flex-shrink: 0;}
+        .custom-toggle.active .toggle-check { background: var(--accent-cyan); border-color: var(--accent-cyan); }
+        .custom-toggle.active .toggle-check::after { content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900; color: #000; font-size: 0.8rem; }
 
-        /* --- SUBMIT BUTTON --- */
-        .submit-btn {
-            width: 100%; padding: 18px; background: var(--accent-purple);
-            border: none; border-radius: 12px; color: white; font-family: var(--font-head);
-            font-size: 1.1rem; font-weight: bold; text-transform: uppercase; cursor: pointer;
-            box-shadow: 0 5px 20px rgba(189, 0, 255, 0.4); transition: 0.3s; margin-top: 10px;
-            letter-spacing: 1px; display: flex; justify-content: center; align-items: center; gap: 10px;
-        }
+        /* --- SUBMIT BUTTON (FIXED STICKY OVERLAP) --- */
+        .submit-wrapper { position: fixed; bottom: 0; left: 0; width: 100%; padding: 15px; background: rgba(7,3,17,0.95); backdrop-filter: blur(15px); border-top: 1px solid var(--card-border); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.8); padding-bottom: calc(15px + env(safe-area-inset-bottom)); }
+        .submit-btn { width: 100%; max-width: 800px; margin: 0 auto; padding: 16px; background: var(--accent-gradient); border: none; border-radius: 12px; color: white; font-family: var(--font-head); font-size: 1.1rem; font-weight: bold; text-transform: uppercase; cursor: pointer; box-shadow: 0 5px 20px rgba(189, 0, 255, 0.4); transition: 0.3s; letter-spacing: 1px; display: flex; justify-content: center; align-items: center; gap: 10px; position: relative; overflow: hidden; }
         .submit-btn:active { transform: scale(0.98); box-shadow: 0 2px 10px rgba(189, 0, 255, 0.4); }
-        .submit-btn:disabled { background: #2a2a3a; color: #666; box-shadow: none; cursor: default; transform: none; }
-
-        /* --- LOADING OVERLAY --- */
-        .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(7,3,17,0.95); backdrop-filter: blur(10px); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 4000; display: none; opacity: 0; transition: 0.3s; }
-        .loading-overlay.active { display: flex; opacity: 1; }
-        .loader-ring { width: 60px; height: 60px; border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--accent-purple); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; box-shadow: 0 0 15px rgba(189,0,255,0.5); }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .success-msg { font-family: var(--font-head); font-size: 1.5rem; color: white; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
-        .success-sub { color: var(--accent-green); margin-top: 10px; font-size: 1rem; font-weight: bold; }
-        .btn-home { margin-top: 25px; padding: 12px 30px; background: transparent; border: 2px solid var(--accent-cyan); color: var(--accent-cyan); border-radius: 10px; font-family: var(--font-head); font-weight: bold; cursor: pointer; transition: 0.3s; display: none; }
-        .btn-home:active { background: var(--accent-cyan); color: #000; }
-
-        /* PERFECTLY ALIGNED 7-TAB BOTTOM NAVIGATION */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(15px); border-top: 1px solid var(--card-border); z-index: 1000; display: flex; align-items: stretch; justify-content: space-between; padding: 0 5px; padding-bottom: env(safe-area-inset-bottom); box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
-        .nav-item { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; color: #666; text-decoration: none; font-size: 0.6rem; font-family: var(--font-head); font-weight: bold; transition: 0.3s; }
-        .nav-item.active { color: var(--accent-cyan); text-shadow: 0 0 10px rgba(0,242,255,0.5); }
-        .nav-item i { font-size: 1.2rem; transition: 0.3s; }
-        .nav-item:hover { color: white; }
-        .nav-item span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; text-transform: capitalize; }
+        .submit-btn:disabled { background: #2a2a3a; color: #888; box-shadow: none; cursor: default; transform: none; }
         
-        /* Smaller, more proportional Floating Center Plus Button */
-        .fab-slot { flex: 1; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
-        .floating-plus { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 48px; height: 48px; background: var(--accent-cyan); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid var(--primary-bg); box-shadow: 0 0 0 2px var(--accent-purple), 0 -3px 10px rgba(0,0,0,0.5); color: #000; font-size: 1.5rem; cursor: pointer; transition: 0.3s; z-index: 10; }
-        .floating-plus.active { background: var(--accent-purple); border-color: var(--accent-cyan); color: white; box-shadow: 0 0 0 2px var(--accent-cyan), 0 -3px 10px rgba(189,0,255,0.5); }
+        /* Ripple Effect */
+        .ripple { position: absolute; border-radius: 50%; transform: scale(0); animation: ripple-anim 0.6s linear; background-color: rgba(255, 255, 255, 0.4); }
+        @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
 
-        @media (min-width: 850px) {
-            .form-container { max-width: 800px; }
-            .bottom-nav { display: none; }
-        }
+        /* LOADING & SUCCESS OVERLAY */
+        .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(7,3,17,0.95); backdrop-filter: blur(10px); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 4000; opacity: 0; pointer-events: none; transition: 0.4s; }
+        .loading-overlay.active { opacity: 1; pointer-events: auto; }
+        .loader-ring { width: 70px; height: 70px; border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--accent-cyan); border-radius: 50%; animation: spin 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite; margin-bottom: 20px; box-shadow: 0 0 20px rgba(0,242,255,0.5); }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .success-icon-anim { display: none; font-size: 5rem; color: var(--accent-green); margin-bottom: 20px; text-shadow: 0 0 30px rgba(0,255,127,0.6); animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 60% { transform: scale(1.3); } 100% { transform: scale(1); opacity: 1; } }
+        
+        #customToast { visibility: hidden; min-width: 250px; background-color: var(--accent-cyan); color: #000; text-align: center; border-radius: 10px; padding: 14px; position: fixed; z-index: 9999; left: 50%; bottom: -50px; transform: translateX(-50%); font-family: var(--font-head); font-weight: bold; transition: 0.4s; box-shadow: 0 5px 20px rgba(0,242,255,0.5);}
+        #customToast.show { visibility: visible; bottom: 100px; }
+
+        /* Stream Badge */
+        .stream-status { position: absolute; right: 15px; top: 40px; font-size: 1.2rem; display: none; }
+        .stream-status.valid { display: block; color: var(--accent-green); animation: popIn 0.3s; }
+        .stream-status.invalid { display: block; color: var(--accent-red); animation: shake 0.3s; }
+        
+        /* Median override to ensure visibility */
+        .median-active .top-header { display: flex !important; }
     </style>
 </head>
 <body>
 
     <canvas id="particles-canvas"></canvas>
 
+    <div class="top-progress-bar"><div class="progress-fill" id="formProgress"></div></div>
+
     <header class="top-header">
-        <div class="header-left">
-            <a href="javascript:history.back()" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
-            <div class="app-title">Set up your tournament</div>
+        <div class="header-wrapper">
+            <div class="header-left">
+                <a href="javascript:history.back()" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+                <div class="app-title">
+                    Setup Tournament
+                    <span class="draft-status" id="draftStatus">Draft saved: Just now</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <i class="fa-solid fa-trash-can" title="Clear Form" onclick="clearForm()"></i>
+            </div>
         </div>
     </header>
 
     <form id="createForm" class="form-container">
         
         <div class="form-section">
-            <div class="upload-box-wrapper" id="bannerArea">
-                <div class="upload-icon-circle"><i class="fa-solid fa-upload"></i></div>
-                <div class="upload-title">Upload Banner Image</div>
-                <div class="upload-desc">Choose a high-quality banner that showcases your tournament</div>
-                <div class="upload-btn" onclick="document.getElementById('bannerInput').click()">Choose Banner Image</div>
-                <div class="input-sublabel" style="margin-top: 15px;">Maximum file size: 5MB<br>Recommended: 1200x380px, 3.16:1 ratio</div>
-                <input type="file" id="bannerInput" class="file-input" accept="image/*" onchange="handleImageUpload(event, 'bannerPreview', 'bannerBase64', 'bannerArea', 'removeBanner')">
+            <div class="section-header" onclick="toggleSection(this)">
+                <div class="sh-left"><i class="fa-solid fa-image"></i> Visual Identity</div>
+                <i class="fa-solid fa-chevron-down collapse-icon"></i>
             </div>
-            <img src="" id="bannerPreview" class="preview-img">
-            <div id="removeBanner" class="remove-img" onclick="removeImage('bannerInput', 'bannerBase64', 'bannerArea', 'bannerPreview', 'removeBanner')">Remove Banner</div>
-            <input type="hidden" name="banner_base64" id="bannerBase64">
-
-            <div class="upload-box-wrapper" id="thumbArea" style="margin-top: 25px; margin-bottom: 0;">
-                <div class="upload-icon-circle green"><i class="fa-solid fa-upload"></i></div>
-                <div class="upload-title">Upload Thumbnail</div>
-                <div class="upload-desc">Choose an attractive thumbnail</div>
-                <div class="upload-btn green" onclick="document.getElementById('thumbInput').click()">Choose Thumbnail</div>
-                <div class="input-sublabel" style="margin-top: 15px;">Max 5MB • 400x200px</div>
-                <input type="file" id="thumbInput" class="file-input" accept="image/*" onchange="handleImageUpload(event, 'thumbPreview', 'thumbBase64', 'thumbArea', 'removeThumb')">
+            <div class="section-content">
+                <div class="upload-box-wrapper" id="bannerArea" onclick="document.getElementById('bannerInput').click(); triggerHaptic();">
+                    <div class="upload-icon-circle"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                    <div class="upload-title">Upload Banner Image *</div>
+                    <div class="upload-desc">High-quality banner (16:9 ratio) • Max 5MB</div>
+                </div>
+                <img src="" id="bannerPreview" class="preview-img">
+                <div id="removeBanner" class="remove-img" onclick="removeImage('bannerInput', 'bannerBase64', 'bannerArea', 'bannerPreview', 'removeBanner'); triggerHaptic();"><i class="fa-solid fa-trash"></i> Remove Banner</div>
+                <input type="file" id="bannerInput" class="file-input" accept="image/*" onchange="handleImageUpload(event, 'bannerPreview', 'bannerBase64', 'bannerArea', 'removeBanner')" required>
+                <input type="hidden" name="banner_base64" id="bannerBase64">
             </div>
-            <img src="" id="thumbPreview" class="preview-img">
-            <div id="removeThumb" class="remove-img" onclick="removeImage('thumbInput', 'thumbBase64', 'thumbArea', 'thumbPreview', 'removeThumb')">Remove Thumbnail</div>
-            <input type="hidden" name="thumbnail_base64" id="thumbBase64">
         </div>
 
         <div class="form-section">
-            <div class="section-header"><i class="fa-regular fa-calendar"></i> Basic Information</div>
-            
-            <div class="input-group">
-                <label class="input-label">Tournament Name *</label>
-                <input type="text" name="tournament_name" class="form-control" placeholder="Enter tournament name" required>
-                <div class="input-sublabel">Allowed: letters, numbers, spaces, and special characters</div>
+            <div class="section-header" onclick="toggleSection(this)">
+                <div class="sh-left"><i class="fa-solid fa-pen-to-square"></i> Basic Information</div>
+                <i class="fa-solid fa-chevron-down collapse-icon"></i>
             </div>
+            <div class="section-content">
+                <div class="input-group">
+                    <label class="input-label">Tournament Title *</label>
+                    <input type="text" name="tournament_name" id="inpTitle" class="form-control" placeholder="e.g., WarHawks Esports Championship" maxlength="60" required oninput="updateCharCount(this, 'titleCount')">
+                    <div class="input-sublabel"><span>Letters, numbers, special chars allowed.</span> <span id="titleCount">0/60</span></div>
+                </div>
 
-            <div class="input-group" style="margin-top: 25px;">
-                <label class="input-label">Tournament Rules *</label>
-                <div class="rich-text-wrapper">
-                    <div class="rt-toolbar">
-                        <i class="fa-solid fa-bold"></i>
-                        <i class="fa-solid fa-italic"></i>
-                        <i class="fa-solid fa-underline"></i>
-                        <i class="fa-solid fa-list-ul"></i>
-                        <i class="fa-solid fa-list-ol"></i>
-                        <i class="fa-solid fa-align-left"></i>
+                <div class="input-group">
+                    <label class="input-label">Tournament Rules & Info *</label>
+                    <div class="rich-text-wrapper" id="rtContainer">
+                        <div class="rt-toolbar">
+                            <i class="fa-solid fa-bold" onclick="formatText('bold'); triggerHaptic();" title="Bold"></i>
+                            <i class="fa-solid fa-italic" onclick="formatText('italic'); triggerHaptic();" title="Italic"></i>
+                            <i class="fa-solid fa-list-ul" onclick="formatText('insertUnorderedList'); triggerHaptic();" title="Bullet List"></i>
+                        </div>
+                        <div class="rt-textarea" id="editor" contenteditable="true" data-placeholder="Detail the rules, format, and requirements here..." oninput="updateWordCount()"></div>
+                        <input type="hidden" name="rules" id="hiddenRules" required>
                     </div>
-                    <textarea name="rules" class="rt-textarea" placeholder="Enter tournament description and strict rules..." required></textarea>
+                    <div class="input-sublabel" style="justify-content: flex-end;"><span id="wordCount">0 words</span></div>
                 </div>
             </div>
         </div>
 
         <div class="form-section">
-            <div class="section-header"><i class="fa-solid fa-gamepad"></i> Game Selection *</div>
-            <input type="text" class="form-control" placeholder="Search for games..." style="margin-bottom: 10px;">
-            
-            <div class="game-grid">
-                <div class="game-card active" onclick="selectGame('COD Mobile', this)">
-                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg8vsDFFkLAXTA234WJzc3OqsLbmB3HBlKaXhiJo-JFVcTtYmMUI2DVdk5ljTPvGPKj-vtcejjFAxZO0sapDafr6xqN7VpHLGCcxqYWWY2LIZszXhrnnO1gcXFeJzY2EclP6G1bLoea5bshOtT7Dl3p4F_l0pGDuz1j5KJ78dEnI7cQixwAeDC1vKG89N4/s460/1000094209.jpg">
-                    <div class="platform-tag">MOBILE</div>
-                    <div class="game-label">COD Mobile</div>
+            <div class="section-header" onclick="toggleSection(this)">
+                <div class="sh-left"><i class="fa-solid fa-gamepad"></i> Platform & Game</div>
+                <i class="fa-solid fa-chevron-down collapse-icon"></i>
+            </div>
+            <div class="section-content">
+                <div class="input-group">
+                    <label class="input-label">Select Platform *</label>
+                    <div class="selection-grid platform-grid">
+                        <div class="sel-card active" onclick="setPlatform('Mobile', this)">
+                            <i class="fa-solid fa-mobile-screen"></i><span>Mobile</span>
+                        </div>
+                        <div class="sel-card" onclick="setPlatform('PC', this)">
+                            <i class="fa-solid fa-desktop"></i><span>PC</span>
+                        </div>
+                        <div class="sel-card" onclick="setPlatform('Console', this)">
+                            <i class="fa-solid fa-gamepad"></i><span>Console</span>
+                        </div>
+                    </div>
+                    <input type="hidden" id="inpPlatform" value="Mobile">
                 </div>
-                <div class="game-card" onclick="selectGame('Free Fire', this)">
-                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiJvPTY_y_XU-0Lwbnjwm7961lCDkSlQh2MtCWHunFVX6WS7WCprCtkPyB334BU_-4vGsP0NseDQf4NPBEOIxqjk7VZQqZUHpnLb4Bw-c1UeXQy2M9DzNrNdYt_aL0GEb1AlTPupC5zEjJiP3Ci0Oxk-wdg5TF5cs8_UNSe3uTT1BE884je3iXr8QlMjx8/s240/1000094210.jpg">
-                    <div class="platform-tag">MOBILE</div>
-                    <div class="game-label">Free Fire</div>
+                
+                <label class="input-label" style="margin-top:20px;">Select Game *</label>
+                <div class="search-game-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" class="form-control" style="padding-left:40px;" id="gameSearch" placeholder="Search games..." onkeyup="filterGames()">
                 </div>
-                <div class="game-card" onclick="selectGame('BGMI', this)">
-                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj3MKUI87mMK4_3DltS3LQgqfrK1sESUIMMqlENdi0dPRtOFkeDbvPsTbSaCRaJOb17QZ5s9OO5dR6kFCYiCkgUCF2zBWwvGFSb3T-9Nz51XuIzMvIiOuqwcLzyzeFmn1orKbiETP4LrlaG-RidnWAAzBwUA3aL5_z62HP4_F7R02lAK_WSYdH0U_Gn7Es/s250/1000094211.jpg">
-                    <div class="platform-tag">MOBILE</div>
-                    <div class="game-label">BGMI</div>
+                
+                <div class="game-grid" id="gameGrid">
+                    <div class="game-card active" data-platform="Mobile" data-name="bgmi" onclick="selectGame('BGMI', this)">
+                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj3MKUI87mMK4_3DltS3LQgqfrK1sESUIMMqlENdi0dPRtOFkeDbvPsTbSaCRaJOb17QZ5s9OO5dR6kFCYiCkgUCF2zBWwvGFSb3T-9Nz51XuIzMvIiOuqwcLzyzeFmn1orKbiETP4LrlaG-RidnWAAzBwUA3aL5_z62HP4_F7R02lAK_WSYdH0U_Gn7Es/s250/1000094211.jpg">
+                        <div class="platform-tag">MOBILE</div>
+                        <div class="game-label">BGMI</div>
+                    </div>
+                    <div class="game-card" data-platform="Mobile" data-name="free fire" onclick="selectGame('Free Fire', this)">
+                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiJvPTY_y_XU-0Lwbnjwm7961lCDkSlQh2MtCWHunFVX6WS7WCprCtkPyB334BU_-4vGsP0NseDQf4NPBEOIxqjk7VZQqZUHpnLb4Bw-c1UeXQy2M9DzNrNdYt_aL0GEb1AlTPupC5zEjJiP3Ci0Oxk-wdg5TF5cs8_UNSe3uTT1BE884je3iXr8QlMjx8/s240/1000094210.jpg">
+                        <div class="platform-tag">MOBILE</div>
+                        <div class="game-label">Free Fire</div>
+                    </div>
+                    <div class="game-card" data-platform="Mobile" data-name="codm call of duty" onclick="selectGame('COD Mobile', this)">
+                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg8vsDFFkLAXTA234WJzc3OqsLbmB3HBlKaXhiJo-JFVcTtYmMUI2DVdk5ljTPvGPKj-vtcejjFAxZO0sapDafr6xqN7VpHLGCcxqYWWY2LIZszXhrnnO1gcXFeJzY2EclP6G1bLoea5bshOtT7Dl3p4F_l0pGDuz1j5KJ78dEnI7cQixwAeDC1vKG89N4/s460/1000094209.jpg">
+                        <div class="platform-tag">MOBILE</div>
+                        <div class="game-label">COD Mobile</div>
+                    </div>
+                    <div class="game-card" data-platform="PC" data-name="valorant" style="display:none;" onclick="selectGame('Valorant', this)">
+                        <img src="https://via.placeholder.com/200x200/110822/bd00ff?text=Valorant">
+                        <div class="platform-tag" style="color:var(--accent-purple); border-color:var(--accent-purple);">PC</div>
+                        <div class="game-label">Valorant</div>
+                    </div>
                 </div>
-                <div class="game-card" onclick="selectGame('Valorant', this)">
-                    <img src="https://via.placeholder.com/200x200/110822/bd00ff?text=Valorant">
-                    <div class="platform-tag">PC</div>
-                    <div class="game-label">Valorant</div>
+                <input type="hidden" id="selectedGame" value="BGMI">
+                <input type="hidden" name="game" id="finalGamePayload" value="BGMI [Mobile]">
+
+                <div class="input-group" style="margin-top: 25px;">
+                    <label class="input-label">Participation Format *</label>
+                    <div class="selection-grid">
+                        <div class="sel-card active" onclick="toggleSelCard(this, '.part-card', 'formatInput', 'Squad')">
+                            <i class="fa-solid fa-users"></i><span>Squad (4v4)</span>
+                        </div>
+                        <div class="sel-card part-card" onclick="toggleSelCard(this, '.part-card', 'formatInput', 'Solo')">
+                            <i class="fa-solid fa-user"></i><span>Solo</span>
+                        </div>
+                    </div>
+                    <input type="hidden" name="format" id="formatInput" value="Squad">
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <label class="input-label">Max Slots * <i class="fa-solid fa-circle-info tooltip-icon" onclick="showToast('Total number of teams/players allowed')"></i></label>
+                        <input type="number" name="slots" class="form-control" placeholder="e.g. 48" required>
+                    </div>
+                    <div class="col">
+                        <label class="input-label">Region</label>
+                        <select class="form-control" name="region">
+                            <option>India</option>
+                            <option>Asia</option>
+                            <option>Global</option>
+                        </select>
+                    </div>
                 </div>
             </div>
-            <input type="hidden" name="game" id="selectedGame" value="COD Mobile">
         </div>
 
         <div class="form-section">
-            <div class="section-header"><i class="fa-solid fa-trophy"></i> Tournament Settings</div>
-            
-            <div class="input-group">
-                <label class="input-label">Category *</label>
-                <div class="selection-grid">
-                    <div class="sel-card active" onclick="toggleSelCard(this, '.cat-card', 'catInput', 'Public')">
-                        <i class="fa-solid fa-globe"></i><span>Public</span>
-                    </div>
-                    <div class="sel-card cat-card" onclick="toggleSelCard(this, '.cat-card', 'catInput', 'Invitation')">
-                        <i class="fa-solid fa-user-lock"></i><span>Invitation Only</span>
-                    </div>
-                </div>
-                <input type="hidden" id="catInput" value="Public">
+            <div class="section-header" onclick="toggleSection(this)">
+                <div class="sh-left"><i class="fa-solid fa-money-bill-wave"></i> Economics & Prize</div>
+                <i class="fa-solid fa-chevron-down collapse-icon"></i>
             </div>
-
-            <div class="input-group">
-                <label class="input-label">Region</label>
-                <select name="region" class="form-control">
-                    <option value="Asia">Asia</option>
-                    <option value="India">India</option>
-                    <option value="Global">Global</option>
-                </select>
-                <div class="input-sublabel">Region is automatically selected based on timezone</div>
-            </div>
-
-            <div class="input-group">
-                <label class="input-label">Participation Type</label>
-                <div class="selection-grid">
-                    <div class="sel-card active" onclick="toggleSelCard(this, '.part-card', 'formatInput', 'Squad')">
-                        <i class="fa-solid fa-users"></i><span>Team vs Team</span>
-                    </div>
-                    <div class="sel-card part-card" onclick="toggleSelCard(this, '.part-card', 'formatInput', 'Solo')">
-                        <i class="fa-solid fa-user"></i><span>Solo vs Solo</span>
-                    </div>
-                </div>
-                <input type="hidden" name="format" id="formatInput" value="Squad">
-            </div>
-
-            <div class="input-group">
-                <label class="input-label">Max Teams/Players *</label>
-                <input type="number" name="slots" class="form-control" placeholder="16" required>
-            </div>
-        </div>
-
-        <div class="form-section">
-            <div class="section-header"><i class="fa-solid fa-wallet"></i> Entry & Prizes</div>
-            <div class="row">
-                <div class="col">
-                    <div class="input-group">
+            <div class="section-content">
+                <div class="row">
+                    <div class="col">
                         <label class="input-label">Entry Fee (Rs.)</label>
-                        <input type="number" name="entry_fee" class="form-control" placeholder="0 for Free" value="0">
+                        <input type="number" name="entry_fee" id="inpFee" class="form-control" placeholder="0 for Free" value="0" onkeyup="updateCalc()">
+                        <div class="preset-row">
+                            <span class="preset-badge" onclick="applyPreset('inpFee', 0)">Free</span>
+                            <span class="preset-badge" onclick="applyPreset('inpFee', 50)">50</span>
+                            <span class="preset-badge" onclick="applyPreset('inpFee', 100)">100</span>
+                        </div>
                     </div>
-                </div>
-                <div class="col">
-                    <div class="input-group">
+                    <div class="col">
                         <label class="input-label">Prize Pool (Rs.) *</label>
-                        <input type="number" name="prize_pool" class="form-control" placeholder="e.g., 5000" required>
+                        <input type="number" name="prize_pool" id="inpPrize" class="form-control" placeholder="e.g. 5000" required onkeyup="updateCalc()">
+                        <div class="preset-row">
+                            <span class="preset-badge" onclick="applyPreset('inpPrize', 1000)">1k</span>
+                            <span class="preset-badge" onclick="applyPreset('inpPrize', 5000)">5k</span>
+                            <span class="preset-badge" onclick="applyPreset('inpPrize', 10000)">10k</span>
+                        </div>
                     </div>
                 </div>
+
+                <div class="calc-box">
+                    <div>
+                        <div class="calc-lbl">Estimated Max Revenue</div>
+                        <div class="input-sublabel" style="margin:0;">Fee × Slots</div>
+                    </div>
+                    <div class="calc-val" id="calcRev">0 Rs.</div>
+                </div>
             </div>
         </div>
 
         <div class="form-section">
-            <div class="section-header"><i class="fa-regular fa-clock"></i> Tournament Timeline</div>
-            
-            <div class="input-group">
-                <label class="input-label">Tournament Timezone *</label>
-                <input type="text" class="form-control" value="(GMT+05:30) India - Asia/Kolkata" disabled style="color:#888;">
+            <div class="section-header" onclick="toggleSection(this)">
+                <div class="sh-left"><i class="fa-regular fa-calendar-check"></i> Timeline & Media</div>
+                <i class="fa-solid fa-chevron-down collapse-icon"></i>
             </div>
-
-            <div style="margin-top: 25px; margin-bottom: 10px; font-family: var(--font-head); color: var(--accent-cyan);"><i class="fa-regular fa-calendar-plus"></i> Registration Period</div>
-            <div class="input-group">
-                <label class="input-label">End Date & Time *</label>
-                <input type="datetime-local" class="form-control" required>
-            </div>
-
-            <div style="margin-top: 25px; margin-bottom: 10px; font-family: var(--font-head); color: var(--accent-cyan);"><i class="fa-solid fa-play"></i> Tournament Period</div>
-            <div class="input-group">
-                <label class="input-label">Start Date & Time *</label>
-                <input type="datetime-local" name="start_date" class="form-control" required>
-            </div>
-        </div>
-
-        <div class="form-section">
-            <div class="section-header"><i class="fa-solid fa-gear"></i> Optional Details</div>
-            
-            <div class="toggle-wrapper">
-                <div class="toggle-info">
-                    <div class="toggle-title">Use Organization Details</div>
-                    <div class="toggle-desc">Automatically fill contact info from your profile</div>
+            <div class="section-content">
+                <div class="input-group">
+                    <label class="input-label">Registration Deadline *</label>
+                    <input type="datetime-local" name="date" id="inpRegDate" class="form-control" required onchange="validateDates()">
+                    <div class="input-sublabel" id="timeRemainingText">Registrations close at this time.</div>
                 </div>
-                <label class="switch">
-                    <input type="checkbox" checked>
-                    <span class="slider"></span>
-                </label>
-            </div>
 
-            <div style="margin-top: 25px; margin-bottom: 15px; font-family: var(--font-head); color: var(--accent-purple);"><i class="fa-solid fa-globe"></i> Contact & Extras</div>
-            
-            <div class="input-group">
-                <label class="input-label">Country</label>
-                <input type="text" class="form-control" value="India">
-            </div>
+                <div class="input-group">
+                    <label class="input-label">Tournament Date (Display Text) *</label>
+                    <input type="text" name="match_period" class="form-control" placeholder="e.g. 15 March - 18 March" required>
+                    <div class="input-sublabel">Shows exactly when the matches will take place.</div>
+                </div>
 
-            <div class="input-group">
-                <label class="input-label">WhatsApp Number (Optional)</label>
-                <div style="display:flex; gap:10px;">
-                    <input type="text" class="form-control" value="+91 IN" style="width: 80px; text-align:center;" disabled>
-                    <input type="number" class="form-control" placeholder="Enter phone number">
+                <div class="input-group" style="margin-top:25px; position:relative;">
+                    <label class="input-label"><i class="fa-brands fa-youtube" style="color:#FF0000;"></i> Live Stream URL (Optional)</label>
+                    <input type="url" name="stream_url" id="inpStream" class="form-control" placeholder="https://youtube.com/..." onkeyup="validateStreamUrl()">
+                    <i class="fa-solid fa-circle-check stream-status" id="streamIcon"></i>
+                    <div class="input-sublabel">Valid YouTube or Twitch link for the "Watch Live" button.</div>
+                </div>
+
+                <div class="custom-toggle active" id="orgToggle" onclick="this.classList.toggle('active'); triggerHaptic();" style="margin-top:25px;">
+                    <div>
+                        <div class="toggle-text">Use Organization Username</div>
+                        <div class="toggle-sub">Shows your Username publicly as Organizer</div>
+                    </div>
+                    <div class="toggle-check"></div>
                 </div>
             </div>
-
-            <div class="input-group" style="margin-top: 20px;">
-                <label class="input-label">Sponsors (Optional)</label>
-                <input type="text" name="sponsors" class="form-control" placeholder="e.g., RedBull, Intel, Logitech">
-                <div class="input-sublabel">Separate multiple sponsors with commas</div>
-            </div>
-
-            <div class="input-group">
-                <label class="input-label">Live Stream Link (Optional)</label>
-                <input type="url" name="streams" class="form-control" placeholder="e.g., https://youtube.com/...">
-            </div>
         </div>
-
-        <button type="submit" class="submit-btn" id="publishBtn"><i class="fa-regular fa-floppy-disk"></i> Create Tournament</button>
 
     </form>
 
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="loader-ring" id="spinnerEl"></div>
-        <i class="fa-solid fa-circle-check" id="successIcon" style="display:none; font-size:4rem; color:var(--accent-green); margin-bottom:20px; text-shadow:0 0 20px rgba(0,255,127,0.5);"></i>
-        <h3 class="success-msg" id="loadingText">Processing...</h3>
-        <p class="success-sub" id="successSub" style="display: none;">Your tournament is now live!</p>
-        <button class="btn-home" id="closeLoading" onclick="window.location.href='explore.html'">Go to Explore</button>
+    <div class="submit-wrapper">
+        <button type="button" class="submit-btn" id="publishBtn" onclick="submitTournamentForm(event)">
+            <i class="fa-solid fa-rocket"></i> Publish Tournament
+        </button>
     </div>
 
-    <nav class="bottom-nav">
-        <a class="nav-item" href="index.html">
-            <i class="fa-solid fa-house"></i>
-            <span>Home</span>
-        </a>
-        <a class="nav-item" href="explore.html">
-            <i class="fa-solid fa-compass"></i>
-            <span>Explore</span>
-        </a>
-        <a class="nav-item" href="matches.html">
-            <i class="fa-solid fa-trophy"></i>
-            <span>Matches</span>
-        </a>
-        
-        <div class="fab-slot">
-            <div class="floating-plus active" onclick="window.location.href='tournament.html'">
-                <i class="fa-solid fa-plus"></i>
-            </div>
-        </div>
-        
-        <a class="nav-item" href="clans.html">
-            <i class="fa-solid fa-shield-halved"></i>
-            <span>Clan</span>
-        </a>
-        <a class="nav-item" href="wallet.html">
-            <i class="fa-solid fa-wallet"></i>
-            <span>Wallet</span>
-        </a>
-        <a class="nav-item" href="profile.html">
-            <i class="fa-solid fa-user"></i>
-            <span>Profile</span>
-        </a>
-    </nav>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loader-ring" id="spinnerEl"></div>
+        <i class="fa-solid fa-circle-check success-icon-anim" id="successIcon"></i>
+        <h3 class="status-msg" id="loadingText">Forging Tournament...</h3>
+        <p class="status-sub" id="successSub" style="display: none;">Your tournament has been successfully created and synced to the global server.</p>
+        <button class="btn-home" id="closeLoading" onclick="window.location.href='explore.html'">View in Explore</button>
+    </div>
+
+    <div id="customToast">Notification</div>
 
     <script>
-        // --- STRICT ORGANIZER AUTH CHECK ON LOAD ---
+        // --- 1. CORE CONFIGURATION & INIT ---
+        const API_URL = 'https://script.google.com/macros/s/AKfycbynNLDDXS1wMrU6RGnk4nKb1jfQkQGuqrNIKWAt8wf46MaKP6y1rwGmSJg5fmm4KYU/exec'; 
+        let currentUser = JSON.parse(localStorage.getItem('tournyx_user'));
+
         document.addEventListener("DOMContentLoaded", function() {
-            let user = JSON.parse(localStorage.getItem('tournyx_user'));
-            
-            // Note: Update "organizer" string if your local storage uses a different flag
-            if (!user || user.role !== 'organizer') {
-                alert("Access Denied: Only Organizers can create tournaments.");
-                window.history.back(); // Kick them out immediately
+            if (!currentUser || currentUser.role !== 'organizer') {
+                alert("Access Denied: Only Verified Organizers can create tournaments.");
+                window.location.href = "explore.html"; 
                 return;
             }
+            
+            // Setup dynamic placeholders
+            cyclePlaceholder();
+            
+            // Listeners for progress bar
+            document.querySelectorAll('.form-control').forEach(inp => {
+                inp.addEventListener('input', calculateProgress);
+            });
         });
 
-        // --- Background Animation ---
-        const canvas = document.getElementById('particles-canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        let particlesArray = [];
-        class Particle {
-            constructor() { this.x = Math.random()*canvas.width; this.y = Math.random()*canvas.height; this.size = Math.random()*2+0.5; this.speedY = Math.random()*0.5-0.25; this.opacity = Math.random()*0.4; }
-            update() { this.y += this.speedY; if (this.y < 0) this.y = canvas.height; if(this.y > canvas.height) this.y = 0; }
-            draw() { ctx.fillStyle = 'rgba(189,0,255,'+this.opacity+')'; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
+        // --- 2. ADVANCED UI FEATURES ---
+        function triggerHaptic() {
+            if(navigator.vibrate) { navigator.vibrate(50); }
         }
-        function init() { for(let i=0; i<60; i++) particlesArray.push(new Particle()); }
-        function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); particlesArray.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animate); }
-        init(); animate();
-        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
 
-        // --- Selection Logic ---
+        function showToast(msg, isError = false) {
+            var x = document.getElementById("customToast");
+            x.innerText = msg;
+            x.style.backgroundColor = isError ? "#ff4d4d" : "var(--accent-cyan)";
+            x.style.color = isError ? "white" : "#000";
+            x.className = "show";
+            triggerHaptic();
+            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3500);
+        }
+
+        function toggleSection(headerEl) {
+            headerEl.parentElement.classList.toggle('collapsed');
+            triggerHaptic();
+        }
+
+        function calculateProgress() {
+            let reqs = document.querySelectorAll('[required]');
+            let filled = 0;
+            reqs.forEach(r => {
+                if(r.id === 'hiddenRules') {
+                    if(document.getElementById('editor').innerText.trim().length > 0) filled++;
+                } else if (r.value && r.value.trim() !== "") {
+                    filled++;
+                }
+            });
+            let pct = (filled / reqs.length) * 100;
+            document.getElementById('formProgress').style.width = pct + '%';
+            
+            // Trigger autosave mock
+            document.getElementById('draftStatus').innerText = "Draft saved: Just now";
+        }
+
+        function updateCharCount(el, countId) {
+            document.getElementById(countId).innerText = `${el.value.length}/${el.maxLength}`;
+            calculateProgress();
+        }
+
+        function applyPreset(inputId, val) {
+            let inp = document.getElementById(inputId);
+            inp.value = val;
+            updateCalc();
+            calculateProgress();
+            triggerHaptic();
+            
+            // Add focus animation
+            inp.focus();
+            setTimeout(()=>inp.blur(), 200);
+        }
+
+        // Add ripple effect to buttons
+        document.querySelectorAll('.submit-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                let x = e.clientX - e.target.offsetLeft;
+                let y = e.clientY - e.target.offsetTop;
+                let ripples = document.createElement('span');
+                ripples.style.left = x + 'px';
+                ripples.style.top = y + 'px';
+                ripples.classList.add('ripple');
+                this.appendChild(ripples);
+                setTimeout(() => { ripples.remove() }, 600);
+            });
+        });
+
+        // --- 3. PLATFORM & GAME SELECTION ---
+        function setPlatform(platform, el) {
+            let siblings = el.parentElement.children;
+            for(let i=0; i<siblings.length; i++) { siblings[i].classList.remove('active'); }
+            el.classList.add('active');
+            document.getElementById('inpPlatform').value = platform;
+            triggerHaptic();
+            
+            // Filter Game Grid by Platform
+            let firstMatch = null;
+            document.querySelectorAll('.game-card').forEach(c => {
+                if(c.dataset.platform === platform) {
+                    c.style.display = 'block';
+                    if(!firstMatch) firstMatch = c;
+                } else {
+                    c.style.display = 'none';
+                    c.classList.remove('active');
+                }
+            });
+            
+            if(firstMatch) selectGame(firstMatch.querySelector('.game-label').innerText, firstMatch);
+        }
+
         function toggleSelCard(el, groupClass, inputId, val) {
             let siblings = el.parentElement.children;
             for(let i=0; i<siblings.length; i++) { siblings[i].classList.remove('active'); }
             el.classList.add('active');
             if(document.getElementById(inputId)) { document.getElementById(inputId).value = val; }
+            triggerHaptic();
         }
 
         function selectGame(game, el) {
             document.querySelectorAll('.game-card').forEach(c => c.classList.remove('active'));
             el.classList.add('active');
             document.getElementById('selectedGame').value = game;
+            
+            let platform = document.getElementById('inpPlatform').value;
+            document.getElementById('finalGamePayload').value = `${game} [${platform}]`;
+            triggerHaptic();
         }
 
-        // --- Base64 Image Upload Handlers ---
+        function filterGames() {
+            let q = document.getElementById('gameSearch').value.toLowerCase();
+            let currentPlatform = document.getElementById('inpPlatform').value;
+            document.querySelectorAll('.game-card').forEach(c => {
+                let matchesSearch = c.dataset.name.includes(q);
+                let matchesPlatform = c.dataset.platform === currentPlatform;
+                c.style.display = (matchesSearch && matchesPlatform) ? 'block' : 'none';
+            });
+        }
+
+        // --- 4. CALCULATORS & VALIDATORS ---
+        function updateCalc() {
+            let fee = parseInt(document.getElementById('inpFee').value) || 0;
+            let slots = parseInt(document.querySelector('input[name="slots"]').value) || 0;
+            let rev = fee * slots;
+            
+            let calcEl = document.getElementById('calcRev');
+            calcEl.innerText = rev.toLocaleString('en-IN') + " Rs.";
+            
+            calcEl.style.transform = 'scale(1.1)';
+            setTimeout(() => calcEl.style.transform = 'scale(1)', 200);
+        }
+
+        function validateStreamUrl() {
+            let val = document.getElementById('inpStream').value;
+            let icon = document.getElementById('streamIcon');
+            if(val.length < 5) { icon.className = "stream-status"; return; }
+            
+            let isValid = /(youtube\.com|youtu\.be|twitch\.tv)/i.test(val);
+            if(isValid) {
+                icon.className = "fa-solid fa-circle-check stream-status valid";
+            } else {
+                icon.className = "fa-solid fa-circle-xmark stream-status invalid";
+            }
+        }
+
+        function validateDates() {
+            let regStr = document.getElementById('inpRegDate').value;
+            if(!regStr) return;
+            
+            let regDate = new Date(regStr).getTime();
+            let now = new Date().getTime();
+            let textEl = document.getElementById('timeRemainingText');
+            
+            if(regDate < now) {
+                document.getElementById('inpRegDate').classList.add('error');
+                textEl.innerText = "Error: Date is in the past!";
+                textEl.style.color = "var(--accent-red)";
+            } else {
+                document.getElementById('inpRegDate').classList.remove('error');
+                let diffDays = Math.ceil((regDate - now) / (1000 * 60 * 60 * 24));
+                textEl.innerText = `Registration closes in approx ${diffDays} days.`;
+                textEl.style.color = "var(--accent-green)";
+            }
+            calculateProgress();
+        }
+
+        // --- 5. NATIVE RICH TEXT EDITOR ---
+        function formatText(command) {
+            document.execCommand(command, false, null);
+            document.getElementById('editor').focus();
+            updateWordCount();
+        }
+        
+        function updateWordCount() {
+            let text = document.getElementById('editor').innerText.trim();
+            document.getElementById('hiddenRules').value = document.getElementById('editor').innerHTML;
+            
+            let words = text === "" ? 0 : text.split(/\s+/).length;
+            document.getElementById('wordCount').innerText = `${words} words`;
+            
+            if(words > 0) document.getElementById('rtContainer').classList.remove('error');
+            calculateProgress();
+        }
+
+        const placeholders = ["Detail the rules here...", "Drop your Discord link...", "Explain the prize distribution...", "List match requirements..."];
+        let pIdx = 0;
+        function cyclePlaceholder() {
+            setInterval(() => {
+                pIdx = (pIdx + 1) % placeholders.length;
+                document.getElementById('editor').setAttribute('data-placeholder', placeholders[pIdx]);
+            }, 4000);
+        }
+
+        // --- 6. IMAGE UPLOAD HANDLING ---
         function handleImageUpload(event, previewId, base64Id, areaId, removeBtnId) {
             const file = event.target.files[0];
             if (!file) return;
 
-            if(file.size > 5 * 1024 * 1024) {
-                alert("File exceeds 5MB limit.");
-                return;
+            if(file.size > 5 * 1024 * 1024) { 
+                document.getElementById(areaId).classList.add('error');
+                showToast("File exceeds 5MB limit.", true); 
+                return; 
             }
 
             const reader = new FileReader();
             reader.onload = function(e) {
-                const base64String = e.target.result;
+                const b64 = e.target.result;
                 document.getElementById(areaId).style.display = 'none';
-                const previewImg = document.getElementById(previewId);
-                previewImg.style.display = 'block';
-                previewImg.src = base64String;
+                document.getElementById(previewId).src = b64;
+                document.getElementById(previewId).style.display = 'block';
                 document.getElementById(removeBtnId).style.display = 'block';
-                document.getElementById(base64Id).value = base64String;
+                document.getElementById(base64Id).value = b64;
+                
+                document.getElementById(areaId).classList.remove('error');
+                calculateProgress();
             };
             reader.readAsDataURL(file);
         }
@@ -531,82 +663,112 @@
             document.getElementById(previewId).style.display = 'none';
             document.getElementById(removeBtnId).style.display = 'none';
             document.getElementById(areaId).style.display = 'block';
+            calculateProgress();
         }
 
-        // --- API Submission Integration ---
-        const API_URL = 'https://script.google.com/macros/s/AKfycbynNLDDXS1wMrU6RGnk4nKb1jfQkQGuqrNIKWAt8wf46MaKP6y1rwGmSJg5fmm4KYU/exec'; 
+        function clearForm() {
+            if(confirm("Are you sure you want to clear the entire form?")) {
+                document.getElementById('createForm').reset();
+                document.getElementById('editor').innerHTML = "";
+                removeImage('bannerInput', 'bannerBase64', 'bannerArea', 'bannerPreview', 'removeBanner');
+                calculateProgress();
+                showToast("Form cleared.");
+            }
+        }
 
-        const form = document.getElementById('createForm');
-        const loading = document.getElementById('loadingOverlay');
-        const spinnerEl = document.getElementById('spinnerEl');
-        const successIcon = document.getElementById('successIcon');
-        const loadingText = document.getElementById('loadingText');
-        const successSub = document.getElementById('successSub');
-        const closeBtn = document.getElementById('closeLoading');
-        const publishBtn = document.getElementById('publishBtn');
-
-        form.addEventListener('submit', async (e) => {
+        // --- 7. FORM SUBMISSION ---
+        async function submitTournamentForm(e) {
             e.preventDefault();
+            const form = document.getElementById('createForm');
             
-            let user = JSON.parse(localStorage.getItem('tournyx_user'));
+            // Sync Rich Text
+            document.getElementById('hiddenRules').value = document.getElementById('editor').innerHTML;
             
-            // Double-check Auth on submit
-            if(!user || user.role !== 'organizer') {
-                alert("Only organizers can create tournaments.");
-                return;
+            // Strict Validation & Scroll to Error
+            let reqs = form.querySelectorAll('[required]');
+            let firstError = null;
+            
+            reqs.forEach(r => {
+                if(!r.value || r.value.trim() === "") { 
+                    if(r.id === 'hiddenRules') {
+                        document.getElementById('rtContainer').classList.add('error');
+                        if(!firstError) firstError = document.getElementById('rtContainer');
+                    } else if (r.id === 'bannerInput') {
+                        document.getElementById('bannerArea').classList.add('error');
+                        if(!firstError) firstError = document.getElementById('bannerArea');
+                    } else {
+                        r.classList.add('error'); 
+                        if(!firstError) firstError = r;
+                    }
+                } else { 
+                    if(r.id === 'hiddenRules') document.getElementById('rtContainer').classList.remove('error');
+                    else if (r.id === 'bannerInput') document.getElementById('bannerArea').classList.remove('error');
+                    else r.classList.remove('error'); 
+                }
+            });
+            
+            if(firstError) { 
+                firstError.scrollIntoView({behavior: 'smooth', block: 'center'});
+                showToast("Please fill all required fields.", true); 
+                return; 
             }
 
-            loading.classList.add('active');
+            // Lock UI (Double-click protection)
+            const publishBtn = document.getElementById('publishBtn');
             publishBtn.disabled = true;
+            publishBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+            document.getElementById('loadingOverlay').classList.add('active');
 
             const formData = new FormData(form);
             const rawData = Object.fromEntries(formData);
+            let useOrg = document.getElementById('orgToggle').classList.contains('active');
 
-            // Construct payload identically to required integration rules
             const payload = {
                 action: 'create_tournament',
-                org_email: user.email || 'guest@tournyx.com',
+                org_email: currentUser.email,
+                org_username: useOrg ? currentUser.username : "Verified Organizer",
                 title: rawData.tournament_name,
-                game: rawData.game,
+                game: document.getElementById('finalGamePayload').value, 
                 format: rawData.format,
                 slots: rawData.slots,
-                date: rawData.start_date,
+                date: rawData.date, 
+                match_period: rawData.match_period, 
                 fee: (!rawData.entry_fee || rawData.entry_fee == "0") ? "Free" : rawData.entry_fee,
                 prize: rawData.prize_pool,
-                rules: rawData.rules,
+                rules: rawData.rules, 
                 banner: rawData.banner_base64 || 'https://via.placeholder.com/1200x380/15062e/00f2ff?text=Tournament+Banner',
                 status: "Upcoming",
-                sponsors: rawData.sponsors || "", // New Option
-                streams: rawData.streams || ""    // New Option
+                stream_url: rawData.stream_url || ""
             };
 
             try {
-                await fetch(API_URL, {
+                const response = await fetch(API_URL, {
                     method: 'POST',
                     mode: 'no-cors', 
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
                 
-                setTimeout(() => { showSuccess(); }, 1500);
+                setTimeout(() => { showSuccess(); }, 1200);
 
             } catch (error) {
                 console.error('Error:', error);
-                setTimeout(() => { showSuccess(); }, 1500); 
+                document.getElementById('loadingText').innerText = "Network Error.";
+                document.getElementById('successSub').innerText = "Tournament draft saved locally.";
+                setTimeout(() => { showSuccess(true); }, 1500); 
             }
-        });
+        }
 
-        function showSuccess() {
-            spinnerEl.style.display = 'none';
-            successIcon.style.display = 'block';
-            loadingText.innerText = "Tournament Live!";
-            loadingText.style.color = "var(--accent-green)";
-            successSub.style.display = 'block';
-            closeBtn.style.display = 'inline-block';
-            form.reset();
-            removeImage('bannerInput', 'bannerBase64', 'bannerArea', 'bannerPreview', 'removeBanner');
-            removeImage('thumbInput', 'thumbBase64', 'thumbArea', 'thumbPreview', 'removeThumb');
-            publishBtn.disabled = false;
+        function showSuccess(isError = false) {
+            document.getElementById('spinnerEl').style.display = 'none';
+            document.getElementById('successIcon').style.display = 'block';
+            if(!isError) {
+                document.getElementById('loadingText').innerText = "Tournament Published!";
+                document.getElementById('loadingText').style.color = "var(--accent-green)";
+                document.getElementById('successSub').style.display = 'block';
+            }
+            document.getElementById('closeLoading').style.display = 'inline-block';
+            triggerHaptic();
         }
     </script>
 </body>
