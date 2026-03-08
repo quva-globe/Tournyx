@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Withdraw Funds - Tournyx</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,45 +29,46 @@
             --font-body: 'Rajdhani', sans-serif;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        /* --- ULTIMATE SCROLLBAR & OVERFLOW KILLER --- */
+        * { -ms-overflow-style: none !important; scrollbar-width: none !important; box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+        *::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; background: transparent !important; }
 
         body {
             background-color: var(--primary-bg);
             color: var(--text-main);
             font-family: var(--font-body);
-            padding-bottom: 90px;
-            padding-top: 65px;
             overflow-x: hidden;
-            width: 100vw;
+            width: 100%;
+            padding-bottom: calc(90px + env(safe-area-inset-bottom)); 
+            padding-top: calc(85px + env(safe-area-inset-top)); 
+        }
+
+        /* --- RESPONSIVE WRAPPER --- */
+        .container, .app-footer, .top-header .header-wrapper {
+            max-width: 800px; margin-left: auto !important; margin-right: auto !important; width: 100%;
         }
 
         /* --- BACKGROUND --- */
-        #particles-canvas {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-            background: radial-gradient(circle at 50% 0%, #15062e 0%, #070311 100%);
-        }
+        #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at 50% 0%, #15062e 0%, #070311 100%); pointer-events:none; transform:translateZ(0);}
 
         /* --- HEADER --- */
-        .top-header {
-            position: fixed; top: 0; left: 0; width: 100%; padding: 10px 15px; height: 65px;
-            background: rgba(7, 3, 17, 0.85); backdrop-filter: blur(15px);
+        .top-header { 
+            position: fixed; top: 0; left: 0; width: 100%; 
+            padding: calc(15px + env(safe-area-inset-top)) 15px 15px; 
+            background: rgba(7, 3, 17, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
             border-bottom: 1px solid var(--card-border);
             display: flex; align-items: center; justify-content: space-between; z-index: 2000;
-            box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 30px rgba(0,0,0,0.5); transform:translateZ(0);
         }
+        .header-wrapper { display: flex; align-items: center; justify-content: space-between; }
         .header-left { display: flex; align-items: center; gap: 15px; }
         .back-btn { color: white; font-size: 1.3rem; text-decoration: none; transition: 0.3s; cursor: pointer; padding: 5px; }
         .back-btn:active { color: var(--accent-cyan); transform: scale(0.9); }
-        .app-title {
-            font-family: var(--font-head); font-size: 1.2rem; font-weight: 700;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            letter-spacing: 1px; text-transform: uppercase;
-        }
+        .app-title { font-family: var(--font-head); font-size: 1.2rem; font-weight: 700; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px; text-transform: uppercase; margin:0;}
 
         /* --- CONTAINER --- */
-        .container { padding: 15px; animation: fadeIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-width: 600px; margin: 0 auto; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .container { padding: 15px; animation: slideInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes slideInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         /* --- BALANCE CARD --- */
         .balance-card {
@@ -75,10 +76,12 @@
             border: 1px solid rgba(0, 242, 255, 0.3); border-radius: 20px;
             padding: 25px; text-align: center; margin-bottom: 25px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); position: relative; overflow: hidden;
+            animation: borderGlow 4s infinite alternate; transform:translateZ(0);
         }
-        .balance-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%); transform: rotate(45deg); pointer-events: none; }
+        @keyframes borderGlow { from{border-color:rgba(0,242,255,0.2);} to{border-color:rgba(0,242,255,0.5);} }
+        .balance-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 60%); transform: rotate(45deg); pointer-events: none; }
         .balance-label { font-size: 0.85rem; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; font-weight: bold; }
-        .balance-amount { font-family: var(--font-head); font-size: 2.8rem; color: white; text-shadow: 0 0 15px rgba(0, 242, 255, 0.4); display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .balance-amount { font-family: var(--font-head); font-size: 2.8rem; color: white; text-shadow: 0 0 15px rgba(0, 242, 255, 0.4); display: flex; align-items: center; justify-content: center; gap: 8px; transition:0.3s;}
 
         /* --- FORM ELEMENTS --- */
         .form-group { margin-bottom: 20px; width: 100%; transition: all 0.3s ease; }
@@ -107,21 +110,23 @@
             color: var(--text-muted); padding: 10px 0; border-radius: 8px; text-align: center;
             font-family: var(--font-head); font-size: 0.85rem; cursor: pointer; transition: 0.3s; font-weight: bold;
         }
-        .chip:hover, .chip:active { background: rgba(0, 242, 255, 0.15); color: var(--accent-cyan); border-color: var(--accent-cyan); }
+        .chip:active { background: rgba(0, 242, 255, 0.15); color: var(--accent-cyan); border-color: var(--accent-cyan); transform:scale(0.95);}
         .chip.max { background: rgba(189, 0, 255, 0.15); color: var(--accent-purple); border-color: rgba(189, 0, 255, 0.4); }
 
-        /* INFO BOX */
+        /* INFO BOX (WITH REFUND WARNING) */
         .info-box {
             background: rgba(255,255,255,0.03); border-left: 3px solid var(--accent-purple);
-            padding: 15px; border-radius: 0 12px 12px 0; font-size: 0.8rem; color: #ccc; margin-bottom: 25px; line-height: 1.5;
+            padding: 15px; border-radius: 0 12px 12px 0; font-size: 0.85rem; color: #ccc; margin-bottom: 25px; line-height: 1.5;
         }
         .info-box i { color: var(--accent-purple); margin-right: 5px; font-size: 1rem; }
+        
+        .warning-text { margin-top:10px; padding-top:10px; border-top:1px dashed rgba(255,255,255,0.1); color:var(--accent-orange); font-size:0.75rem;}
 
         /* ACTION BUTTON */
         .withdraw-btn {
             width: 100%; padding: 18px; background: var(--accent-gradient); border: none; color: white;
             font-family: var(--font-head); font-size: 1.1rem; font-weight: bold; border-radius: 15px; cursor: pointer;
-            box-shadow: 0 5px 20px rgba(189, 0, 255, 0.4); transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; text-transform: uppercase; letter-spacing: 1px;
+            box-shadow: 0 5px 20px rgba(189, 0, 255, 0.4); transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; text-transform: uppercase; letter-spacing: 1px; will-change:transform;
         }
         .withdraw-btn:active { transform: scale(0.96); box-shadow: 0 2px 10px rgba(189, 0, 255, 0.4); }
         .withdraw-btn:disabled { background: #2a2a3a; color: #666; box-shadow: none; cursor: not-allowed; transform: none; border: 1px solid #444; }
@@ -133,7 +138,8 @@
         .contact-support { font-size: 0.75rem; color: var(--accent-cyan); text-decoration: none; display: flex; align-items: center; gap: 5px; background: rgba(0, 242, 255, 0.1); padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(0,242,255,0.3); transition: 0.3s; cursor: pointer; font-family: var(--font-head); font-weight: bold; }
         .contact-support:active { background: var(--accent-cyan); color: #000; }
         
-        .history-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; }
+        .history-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.3);}
+        .history-card:active { transform:scale(0.98); border-color:var(--accent-cyan);}
         .hist-info { display: flex; flex-direction: column; gap: 4px; }
         .hist-amount { font-family: var(--font-head); font-size: 1.1rem; color: white; font-weight: bold; }
         .hist-date { font-size: 0.75rem; color: var(--text-muted); }
@@ -146,63 +152,79 @@
         .empty-history { text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 30px 20px; border: 1px dashed var(--card-border); border-radius: 12px; background: rgba(0,0,0,0.3); }
 
         /* --- SUPPORT MODAL (Bottom Sheet) --- */
-        .bottom-sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 5000; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(5px); opacity: 0; transition: 0.3s; }
+        .bottom-sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 5000; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); opacity: 0; transition: 0.4s; }
         .bottom-sheet-overlay.active { display: flex; opacity: 1; }
-        .bottom-sheet { width: 100%; background: var(--secondary-bg); border-radius: 20px 20px 0 0; border-top: 1px solid var(--card-border); padding: 25px 20px; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 90vh; overflow-y: auto; box-shadow: 0 -10px 40px rgba(0,0,0,0.8); }
+        .bottom-sheet { width: 100%; max-width:800px; background: var(--secondary-bg); border-radius: 25px 25px 0 0; border-top: 1px solid var(--card-border); padding: 25px 20px calc(20px + env(safe-area-inset-bottom)); transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 90vh; overflow-y: auto; box-shadow: 0 -10px 40px rgba(0,0,0,0.8); }
         .bottom-sheet-overlay.active .bottom-sheet { transform: translateY(0); }
         
         .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .sheet-title { font-family: var(--font-head); font-size: 1.2rem; color: white; display: flex; align-items: center; gap: 8px; }
-        .close-sheet { color: #888; font-size: 1.5rem; cursor: pointer; padding: 5px; transition: 0.3s; }
-        .close-sheet:active { color: white; transform: rotate(90deg); }
+        .close-sheet { color: #888; font-size: 1.6rem; cursor: pointer; padding: 5px; transition: 0.3s; }
+        .close-sheet:hover { color: white; transform: rotate(90deg); }
 
         .sup-txn-item { background: #070311; border: 1px solid var(--card-border); padding: 15px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.3s; }
-        .sup-txn-item:active { border-color: var(--accent-cyan); background: rgba(0,242,255,0.1); }
+        .sup-txn-item:active { border-color: var(--accent-cyan); background: rgba(0,242,255,0.1); transform:scale(0.98);}
         .sup-txn-item h5 { font-family: var(--font-head); font-size: 1rem; color: white; margin-bottom: 3px; }
         .sup-txn-item p { font-size: 0.75rem; color: #888; }
 
         /* --- ANIMATED OVERLAYS (Status) --- */
-        .full-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(7,3,17,0.98); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.4s; }
+        .full-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(7,3,17,0.98); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.4s; backdrop-filter:blur(10px);}
         .full-overlay.active { opacity: 1; pointer-events: all; }
         
         .anim-circle { width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin-bottom: 20px; }
-        .anim-loading { border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--accent-purple); animation: spin 1s linear infinite; box-shadow: 0 0 20px rgba(189,0,255,0.5); }
+        .anim-loading { border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--accent-purple); animation: spin 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite; box-shadow: 0 0 20px rgba(189,0,255,0.5); }
         .anim-success { background: var(--accent-green); color: black; box-shadow: 0 0 30px rgba(0,255,127,0.6); animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .anim-error { background: var(--accent-red); color: white; box-shadow: 0 0 30px rgba(255,77,77,0.6); animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         
         .overlay-title { font-family: var(--font-head); font-size: 1.5rem; color: white; margin-bottom: 10px; }
-        .overlay-desc { color: #aaa; font-size: 0.9rem; text-align: center; max-width: 80%; }
+        .overlay-desc { color: #aaa; font-size: 0.9rem; text-align: center; max-width: 80%; line-height:1.4;}
 
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 80%{transform:scale(1.2);} 100% { transform: scale(1); opacity: 1; } }
 
         /* Custom Toast */
-        #customToast { visibility: hidden; min-width: 250px; background-color: var(--accent-red); color: #fff; text-align: center; border-radius: 10px; padding: 14px; position: fixed; z-index: 9999; left: 50%; bottom: -50px; transform: translateX(-50%); font-family: var(--font-head); font-weight: bold; box-shadow: 0 5px 20px rgba(255,77,77,0.6); opacity: 0; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        #customToast { visibility: hidden; min-width: 250px; background-color: var(--accent-cyan); color: #000; text-align: center; border-radius: 12px; padding: 14px; position: fixed; z-index: 9999; left: 50%; bottom: -50px; transform: translateX(-50%); font-family: var(--font-head); font-weight: bold; box-shadow: 0 5px 20px rgba(0,242,255,0.6); opacity: 0; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         #customToast.show { visibility: visible; opacity: 1; bottom: 100px; }
 
         /* --- FOOTER & NAV --- */
-        .app-footer { text-align: center; padding: 30px 20px; color: #555; font-size: 0.75rem; font-family: var(--font-body); letter-spacing: 1px; border-top: 1px solid var(--card-border); margin-top: 20px; }
+        .app-footer { text-align: center; padding: 30px 20px 110px 20px; color: #555; font-size: 0.75rem; font-family: var(--font-body); letter-spacing: 1px; border-top: 1px solid var(--card-border); margin-top: 20px; }
 
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(15px); border-top: 1px solid var(--card-border); z-index: 1000; display: flex; align-items: stretch; justify-content: space-between; padding: 0 5px; padding-bottom: env(safe-area-inset-bottom); box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
-        .nav-item { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; color: #666; text-decoration: none; font-size: 0.6rem; font-family: var(--font-head); font-weight: bold; transition: 0.3s; }
-        .nav-item.active { color: var(--accent-cyan); text-shadow: 0 0 10px rgba(0,242,255,0.5); }
-        .nav-item i { font-size: 1.2rem; transition: 0.3s; }
-        .nav-item:hover { color: white; }
-        .nav-item span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; text-transform: capitalize; }
+        /* PERFECT BOTTOM NAVIGATION */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 5px env(safe-area-inset-bottom); border-top: 1px solid rgba(189, 0, 255, 0.2); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.8); transform: translateZ(0);}
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; color: #666; text-decoration: none; font-size: 0.65rem; font-family: var(--font-head); font-weight: bold; flex: 1; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; will-change: transform, color;}
+        .nav-item span { margin-top: 4px; transition: 0.3s; }
+        .nav-item i { font-size: 1.3rem; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .nav-item.active { color: var(--accent-cyan); }
+        .nav-item.active i { transform: translateY(-4px); color: var(--accent-cyan); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
+        .nav-item.active span { transform: translateY(2px); color: white; }
+        .fab-slot { flex: 1.2; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
+        .floating-plus { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); width: 58px; height: 58px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 4px solid var(--primary-bg); box-shadow: 0 10px 25px rgba(189,0,255,0.5); color: #fff; font-size: 1.8rem; cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 10; will-change: transform;}
+        .floating-plus:hover { transform: translateX(-50%) scale(1.1) rotate(90deg); box-shadow: 0 15px 35px rgba(0,242,255,0.6); }
+
+        @media (min-width: 850px) { .bottom-nav { display: none !important; } }
         
-        .fab-slot { flex: 1; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
-        .floating-plus { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 48px; height: 48px; background: var(--accent-cyan); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid var(--primary-bg); box-shadow: 0 0 0 2px var(--accent-purple), 0 -3px 10px rgba(0,0,0,0.5); color: #000; font-size: 1.5rem; cursor: pointer; transition: 0.3s; z-index: 10; }
-        .floating-plus:active { transform: translateX(-50%) scale(0.95); box-shadow: 0 0 0 2px var(--accent-purple), 0 -1px 5px rgba(0,0,0,0.5); }
+        /* MEDIAN APP OVERRIDE - Forces Header Visibility */
+        .median-active .top-header { display: flex !important; visibility: visible !important; }
     </style>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            if (navigator.userAgent.indexOf('gonative') > -1 || navigator.userAgent.indexOf('median') > -1) {
+                document.body.classList.add('median-active');
+            }
+        });
+    </script>
 </head>
 <body>
 
     <canvas id="particles-canvas"></canvas>
 
     <div class="top-bar top-header">
-        <div class="header-left">
-            <a href="wallet.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
-            <h1 class="app-title">Withdraw</h1>
+        <div class="header-wrapper">
+            <div class="header-left">
+                <a href="wallet.html" class="back-btn" onclick="triggerHaptic()"><i class="fa-solid fa-arrow-left"></i></a>
+                <h1 class="app-title">Withdraw</h1>
+            </div>
         </div>
     </div>
 
@@ -220,17 +242,17 @@
                 <input type="number" id="withdrawAmount" class="form-control" placeholder="Minimum 50" oninput="validateAmount()">
             </div>
             <div class="quick-chips">
-                <div class="chip" onclick="setAmount(50)">50</div>
-                <div class="chip" onclick="setAmount(100)">100</div>
-                <div class="chip" onclick="setAmount(250)">250</div>
-                <div class="chip max" onclick="setMaxAmount()">MAX</div>
+                <div class="chip" onclick="setAmount(50); triggerHaptic();">+50</div>
+                <div class="chip" onclick="setAmount(100); triggerHaptic();">+100</div>
+                <div class="chip" onclick="setAmount(250); triggerHaptic();">+250</div>
+                <div class="chip max" onclick="setMaxAmount(); triggerHaptic();">MAX</div>
             </div>
-            <div id="amountError" style="color: var(--accent-red); font-size: 0.75rem; margin-top: 8px; display: none; font-weight:bold;"></div>
+            <div id="amountError" style="color: var(--accent-red); font-size: 0.75rem; margin-top: 8px; display: none; font-weight:bold; animation:slideInUp 0.3s;"></div>
         </div>
 
         <div class="form-group">
             <label class="form-label">Payment Method</label>
-            <select id="paymentMethod" class="form-control no-prefix" onchange="updatePaymentPlaceholder()">
+            <select id="paymentMethod" class="form-control no-prefix" onchange="updatePaymentPlaceholder(); triggerHaptic();">
                 <option value="upi">UPI ID (Fastest)</option>
                 <option value="bank">Bank Transfer (IMPS/NEFT)</option>
                 <option value="wallet">Paytm Wallet Number</option>
@@ -238,20 +260,25 @@
         </div>
 
         <div class="form-group" id="field1Group" style="animation: fadeIn 0.3s ease;">
-            <label class="form-label" id="paymentDetailsLabel">UPI ID</label>
-            <input type="text" id="paymentDetails" class="form-control no-prefix" placeholder="e.g. yourname@oksbi">
+            <label class="form-label" id="paymentDetailsLabel">UPI ID *</label>
+            <input type="text" id="paymentDetails" class="form-control no-prefix" placeholder="e.g. yourname@oksbi" required>
         </div>
 
         <div class="form-group" id="field2Group" style="display: none; animation: fadeIn 0.3s ease;">
-            <label class="form-label" id="paymentDetails2Label">IFSC Code</label>
+            <label class="form-label" id="paymentDetails2Label">IFSC Code *</label>
             <input type="text" id="paymentDetails2" class="form-control no-prefix" placeholder="e.g. SBIN0001234">
         </div>
 
         <div class="info-box">
-            <i class="fa-solid fa-circle-info"></i> Minimum withdrawal is Rs. 50. Maximum is Rs. 20,000. Withdrawals are processed safely and usually credited within 24 hours.
+            <div style="font-weight:bold; color:white; margin-bottom:5px;"><i class="fa-solid fa-circle-info"></i> Withdrawal Guidelines</div>
+            Minimum withdrawal is Rs. 50. Maximum is Rs. 20,000 per request. Withdrawals are processed safely via 256-bit SSL encryption.
+            <div class="warning-text">
+                <i class="fa-solid fa-triangle-exclamation" style="color:var(--accent-orange);"></i> 
+                <strong>Note:</strong> If the amount is debited from your wallet but the transaction fails, it will be automatically refunded within 3-5 working days.
+            </div>
         </div>
 
-        <button class="withdraw-btn" id="withdrawBtn" onclick="processWithdrawal()">
+        <button class="withdraw-btn" id="withdrawBtn" onclick="processWithdrawal(); triggerHaptic();">
             <span>Withdraw Now</span>
             <i class="fa-solid fa-arrow-right"></i>
         </button>
@@ -259,10 +286,10 @@
         <div class="history-section">
             <div class="history-header">
                 <h3 class="history-title">Withdrawal Status</h3>
-                <div class="contact-support" onclick="openSupportModal()"><i class="fa-brands fa-whatsapp"></i> Support</div>
+                <div class="contact-support" onclick="openSupportModal(); triggerHaptic();"><i class="fa-brands fa-whatsapp"></i> Support</div>
             </div>
             <div id="historyList">
-                <div style="text-align: center; color: var(--text-muted); padding: 20px;"><i class="fa-solid fa-spinner fa-spin"></i> Fetching ledger...</div>
+                <div style="text-align: center; color: var(--text-muted); padding: 20px;"><i class="fa-solid fa-spinner fa-spin" style="font-size:1.5rem; color:var(--accent-purple);"></i><br><br>Fetching ledger...</div>
             </div>
         </div>
 
@@ -272,14 +299,14 @@
         <div class="bottom-sheet">
             <div class="sheet-header">
                 <div class="sheet-title"><i class="fa-solid fa-headset" style="color:var(--accent-cyan);"></i> Select Transaction</div>
-                <i class="fa-solid fa-xmark close-sheet" onclick="closeSupportModal()"></i>
+                <i class="fa-solid fa-xmark close-sheet" onclick="closeSupportModal(); triggerHaptic();"></i>
             </div>
-            <p style="font-size:0.85rem; color:#aaa; margin-bottom:15px;">Select a recent withdrawal to attach to your support ticket:</p>
+            <p style="font-size:0.85rem; color:#aaa; margin-bottom:15px; line-height:1.5;">Select a recent withdrawal to attach to your support ticket for faster resolution:</p>
             
             <div id="supportTxnList" style="max-height: 40vh; overflow-y:auto; margin-bottom:15px;">
                 </div>
 
-            <button class="withdraw-btn" style="background:#2a2a3a; color:white; border:1px solid #444; box-shadow:none; padding:12px;" onclick="contactSupportGeneral()">I have a general inquiry instead</button>
+            <button class="withdraw-btn" style="background:transparent; color:white; border:1px solid #444; box-shadow:none; padding:15px; font-size:1rem;" onclick="contactSupportGeneral(); triggerHaptic();">I have a general inquiry instead</button>
         </div>
     </div>
 
@@ -329,7 +356,7 @@
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
         let pArray = [];
         class P { constructor(){ this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.s=Math.random()*2; this.c=Math.random()>0.5?'#bd00ff':'#00f2ff'; } u(){ this.y-=0.5; if(this.y<0)this.y=canvas.height; } d(){ ctx.fillStyle=this.c; ctx.globalAlpha=0.3; ctx.beginPath(); ctx.arc(this.x,this.y,this.s,0,Math.PI*2); ctx.fill(); } }
-        for(let i=0; i<40; i++) pArray.push(new P());
+        for(let i=0; i<30; i++) pArray.push(new P());
         function anim(){ ctx.clearRect(0,0,canvas.width,canvas.height); pArray.forEach(p=>{p.u();p.d()}); requestAnimationFrame(anim); }
         anim();
         window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
@@ -340,6 +367,8 @@
         let userData = JSON.parse(localStorage.getItem('tournyx_user'));
         let currentBalance = 0;
 
+        function triggerHaptic() { if(navigator.vibrate) navigator.vibrate(40); }
+
         // AUTH CHECK
         if(!userData) {
             alert("Please login to access your Wallet.");
@@ -348,12 +377,25 @@
             initPageData();
         }
 
+        // Animated Number Counter
+        function animateValue(obj, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = formatNum(Math.floor(progress * (end - start) + start));
+                if (progress < 1) { window.requestAnimationFrame(step); }
+            };
+            window.requestAnimationFrame(step);
+        }
+
         function formatNum(num) { return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
 
         function showToast(msg, isError = false) {
             const t = document.getElementById('customToast');
             t.innerText = msg; t.className = "show";
-            t.style.backgroundColor = isError ? "var(--accent-red)" : "var(--accent-green)";
+            t.style.backgroundColor = isError ? "var(--accent-red)" : "var(--accent-cyan)";
+            t.style.color = isError ? "white" : "black";
             setTimeout(() => t.className = "", 3000);
         }
 
@@ -368,8 +410,8 @@
 
             circle.className = 'anim-circle'; 
             if (state === 'loading') { circle.classList.add('anim-loading'); circle.innerHTML = ''; }
-            else if (state === 'success') { circle.classList.add('anim-success'); circle.innerHTML = '<i class="fa-solid fa-check"></i>'; }
-            else if (state === 'error') { circle.classList.add('anim-error'); circle.innerHTML = '<i class="fa-solid fa-xmark"></i>'; }
+            else if (state === 'success') { circle.classList.add('anim-success'); circle.innerHTML = '<i class="fa-solid fa-check"></i>'; triggerHaptic(); }
+            else if (state === 'error') { circle.classList.add('anim-error'); circle.innerHTML = '<i class="fa-solid fa-xmark"></i>'; triggerHaptic(); }
         }
         function hideOverlay() { document.getElementById('statusOverlay').classList.remove('active'); }
 
@@ -377,13 +419,18 @@
         async function initPageData() {
             // 1. Immediately show cached balance
             currentBalance = parseFloat(userData.rupees) || 0;
-            document.getElementById('displayBalance').innerText = formatNum(currentBalance);
+            animateValue(document.getElementById('displayBalance'), 0, currentBalance, 1000);
 
-            // 2. Fetch fresh balance from server to prevent local manipulation
+            // 2. Fetch fresh balance silently
             try {
-                const res = await fetch(API_URL, {
-                    method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'sync_user', email: userData.email })
+                fetch(API_URL + "?action=sync_user&email=" + encodeURIComponent(userData.email))
+                .then(r=>r.json()).then(data => {
+                    if(data.status === 'success') {
+                        currentBalance = parseFloat(data.data.rupees) || 0;
+                        document.getElementById('displayBalance').innerText = formatNum(currentBalance);
+                        userData.rupees = currentBalance.toString();
+                        localStorage.setItem('tournyx_user', JSON.stringify(userData));
+                    }
                 });
             } catch(e) { console.log("Sync error - using cached balance"); }
 
@@ -393,7 +440,7 @@
 
         // --- 5. UI FUNCTIONS (Dynamic Fields & Validation) ---
         function setAmount(val) {
-            document.getElementById('withdrawAmount').value = val;
+            document.getElementById('withdrawAmount').value = (parseFloat(document.getElementById('withdrawAmount').value) || 0) + val;
             validateAmount();
         }
 
@@ -410,15 +457,15 @@
             const group2 = document.getElementById('field2Group');
 
             if(method === 'upi') { 
-                label1.innerText = 'UPI ID'; input1.placeholder = 'e.g. yourname@oksbi'; 
+                label1.innerText = 'UPI ID *'; input1.placeholder = 'e.g. yourname@oksbi'; 
                 group2.style.display = 'none';
             }
             else if(method === 'bank') { 
-                label1.innerText = 'Account Number'; input1.placeholder = 'e.g. 123456789012'; 
+                label1.innerText = 'Account Number *'; input1.placeholder = 'e.g. 123456789012'; 
                 group2.style.display = 'block';
             }
             else { 
-                label1.innerText = 'Wallet Number'; input1.placeholder = 'e.g. 9876543210'; 
+                label1.innerText = 'Wallet Number *'; input1.placeholder = 'e.g. 9876543210'; 
                 group2.style.display = 'none';
             }
         }
@@ -431,7 +478,6 @@
 
             if (!amountInput) { errorDiv.style.display = 'none'; btn.disabled = false; return true; }
 
-            // NEW: Minimum updated to 50
             if (amount < 50) { errorDiv.innerText = "Minimum withdrawal amount is Rs. 50"; errorDiv.style.display = 'block'; btn.disabled = true; return false; }
             else if (amount > 20000) { errorDiv.innerText = "Maximum withdrawal amount is Rs. 20,000 per request."; errorDiv.style.display = 'block'; btn.disabled = true; return false; }
             else if (amount > currentBalance) { errorDiv.innerText = "Insufficient balance!"; errorDiv.style.display = 'block'; btn.disabled = true; return false; }
@@ -443,42 +489,53 @@
             const historyList = document.getElementById('historyList');
             
             try {
-                // Background Sync to API
-                fetch(API_URL, {
-                    method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'get_withdrawals', email: userData.email })
+                // Background Sync to Unified Transactions
+                fetch(API_URL + "?action=get_transactions&email=" + encodeURIComponent(userData.email))
+                .then(r=>r.json()).then(data => {
+                    if(data.status === 'success') {
+                        localStorage.setItem('tournyx_txns', JSON.stringify(data.data));
+                        renderHistoryUI();
+                    }
                 });
 
-                // Simulate data return via local storage for visual continuity
-                let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
-                let withdrawals = txns.filter(t => t.title.includes("Withdraw"));
+                // Render cache instantly
+                renderHistoryUI();
 
-                historyList.innerHTML = ""; 
-
-                if (withdrawals.length > 0) {
-                    withdrawals.forEach(item => {
-                        let statusColor = "status-pending";
-                        let statusText = item.status || "Pending";
-                        
-                        if (statusText === "Success" || statusText === "Completed") statusColor = "status-success";
-                        if (statusText === "Failed" || statusText === "Refunded") statusColor = "status-failed";
-                        
-                        let card = document.createElement('div');
-                        card.className = 'history-card';
-                        card.innerHTML = `
-                            <div class="hist-info">
-                                <span class="hist-amount">Rs. ${formatNum(item.amount)}</span>
-                                <span class="hist-date">${item.date} &bull; ${item.ref || 'UPI'}</span>
-                            </div>
-                            <div class="hist-status ${statusColor}">${statusText}</div>
-                        `;
-                        historyList.appendChild(card);
-                    });
-                } else {
-                    historyList.innerHTML = `<div class="empty-history">No withdrawal records found.</div>`;
-                }
             } catch (e) {
-                historyList.innerHTML = `<div class="empty-history" style="color:var(--error-red)">Failed to load history.</div>`;
+                historyList.innerHTML = `<div class="empty-history" style="color:var(--accent-red)"><i class="fa-solid fa-triangle-exclamation"></i> Failed to load history.</div>`;
+            }
+        }
+
+        function renderHistoryUI() {
+            const historyList = document.getElementById('historyList');
+            let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
+            
+            // Filter unified ledger for withdrawals
+            let withdrawals = txns.filter(t => t.title.toLowerCase().includes("withdraw"));
+
+            historyList.innerHTML = ""; 
+
+            if (withdrawals.length > 0) {
+                withdrawals.forEach(item => {
+                    let statusColor = "status-pending";
+                    let statusText = item.status || "Pending";
+                    
+                    if (statusText === "Success" || statusText === "Completed") statusColor = "status-success";
+                    if (statusText === "Failed" || statusText === "Refunded") statusColor = "status-failed";
+                    
+                    let card = document.createElement('div');
+                    card.className = 'history-card';
+                    card.innerHTML = `
+                        <div class="hist-info">
+                            <span class="hist-amount">Rs. ${formatNum(item.amount)}</span>
+                            <span class="hist-date">${item.date} &bull; ID: ${item.id}</span>
+                        </div>
+                        <div class="hist-status ${statusColor}">${statusText}</div>
+                    `;
+                    historyList.appendChild(card);
+                });
+            } else {
+                historyList.innerHTML = `<div class="empty-history"><i class="fa-solid fa-file-invoice" style="font-size:2rem; opacity:0.5; margin-bottom:10px;"></i><br>No withdrawal records found.</div>`;
             }
         }
 
@@ -500,7 +557,7 @@
                 finalDetails = details1;
             }
 
-            showOverlay('loading', 'Processing Request', 'Securely transmitting to our servers...');
+            showOverlay('loading', 'Processing Request', 'Securely transmitting via 256-bit encryption...');
 
             const payload = {
                 action: 'withdraw_request',
@@ -521,12 +578,12 @@
                 userData.rupees = currentBalance.toString();
                 localStorage.setItem('tournyx_user', JSON.stringify(userData));
                 
-                // 2. Add to Local Ledger history
+                // 2. Add to Unified Local Ledger
                 let localTxns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
                 localTxns.unshift({ 
                     id: "WD" + Date.now().toString().slice(-6), 
                     date: new Date().toLocaleString('en-US', { month: 'short', day: '2-digit', hour: 'numeric', minute: '2-digit', hour12: true }), 
-                    amount: amount, type: "Debit", title: "Withdrawal Requested", ref: method, status: "Pending"
+                    amount: amount, type: "Debit", title: "Withdrawal Requested", status: "Pending"
                 });
                 localStorage.setItem('tournyx_txns', JSON.stringify(localTxns));
 
@@ -537,7 +594,7 @@
                 document.getElementById('paymentDetails2').value = '';
 
                 showOverlay('success', 'Request Sent!', 'Funds will be transferred within 24-48 hours.');
-                setTimeout(() => { hideOverlay(); fetchWithdrawalHistory(); }, 3000);
+                setTimeout(() => { hideOverlay(); renderHistoryUI(); }, 3000);
 
             }).catch(e => {
                 showOverlay('error', 'Network Error', 'Could not process request. Please try again.');
@@ -550,8 +607,7 @@
             const container = document.getElementById('supportTxnList');
             let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
             
-            // Filter to show only withdrawals/debits
-            let withdrawals = txns.filter(t => t.title.includes("Withdraw"));
+            let withdrawals = txns.filter(t => t.title.toLowerCase().includes("withdraw"));
             
             container.innerHTML = "";
             if (withdrawals.length === 0) {
@@ -573,9 +629,7 @@
             document.getElementById('supportModalOverlay').classList.add('active');
         }
 
-        function closeSupportModal() {
-            document.getElementById('supportModalOverlay').classList.remove('active');
-        }
+        function closeSupportModal() { document.getElementById('supportModalOverlay').classList.remove('active'); }
 
         function contactSupportSpecific(txnId, amount, date, status) {
             let msg = `Hello Tournyx Support, I need help with my withdrawal request.%0A%0A*Transaction ID:* ${txnId}%0A*Amount:* Rs. ${amount}%0A*Date:* ${date}%0A*Status:* ${status}%0A*User Email:* ${userData.email}%0A%0APlease check the status of my transaction.`;
