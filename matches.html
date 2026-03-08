@@ -25,38 +25,24 @@
         /* --- ULTIMATE SCROLLBAR KILLER --- */
         * { -ms-overflow-style: none !important; scrollbar-width: none !important; }
         *::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; background: transparent !important; -webkit-appearance: none !important; }
-
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
-        body { 
-            background-color: var(--primary-bg); color: white; font-family: var(--font-body); 
-            padding-bottom: calc(90px + env(safe-area-inset-bottom)); 
-            padding-top: calc(60px + env(safe-area-inset-top)); 
-            overflow-x: hidden; 
-        }
+        body { background-color: var(--primary-bg); color: white; font-family: var(--font-body); padding-bottom: calc(90px + env(safe-area-inset-bottom)); padding-top: calc(60px + env(safe-area-inset-top)); overflow-x: hidden; }
 
         /* --- RESPONSIVE WRAPPER --- */
-        .stats-row, .tabs, .search-box, .match-list, .app-footer {
-            max-width: 1000px; margin-left: auto !important; margin-right: auto !important;
-        }
+        .stats-row, .tabs, .search-box, .match-list, .app-footer, .top-header .header-wrapper { max-width: 1000px; margin-left: auto !important; margin-right: auto !important; width: 100%; }
 
         /* --- BACKGROUND --- */
         #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at 50% 20%, #15062e 0%, #070311 100%); }
 
         /* --- HEADER --- */
-        .top-header { 
-            position: fixed; top: 0; left: 0; width: 100%; 
-            padding: env(safe-area-inset-top) 15px 10px 15px; 
-            background: rgba(7, 3, 17, 0.85); backdrop-filter: blur(20px); 
-            border-bottom: 1px solid var(--card-border); 
-            z-index: 2000; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); 
-        }
-        .header-wrapper { max-width: 1000px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; width: 100%; }
+        .top-header { position: fixed; top: 0; left: 0; width: 100%; padding: env(safe-area-inset-top) 15px 15px; background: rgba(7, 3, 17, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--card-border); z-index: 2000; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); }
+        .header-wrapper { display: flex; align-items: center; justify-content: space-between; }
         .header-left { display: flex; align-items: center; gap: 10px; }
         .app-logo { width: 30px; height: 30px; border-radius: 50%; object-fit: contain; box-shadow: 0 0 10px var(--accent-purple); }
         .app-title { font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px; text-transform: uppercase; }
         
-        .refresh-btn { width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); border-radius: 50%; cursor: pointer; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); transition: 0.3s; }
+        .refresh-btn { width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); border-radius: 50%; cursor: pointer; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); transition: 0.3s; flex-shrink: 0;}
         .refresh-btn:active { transform: rotate(180deg); background: var(--accent-cyan); color: black; box-shadow: 0 0 15px rgba(0,242,255,0.5); }
 
         /* --- ADVANCED STATS WIDGET --- */
@@ -72,9 +58,9 @@
         .tab.active::after { content: ''; position: absolute; bottom: -1px; left: 20%; width: 60%; height: 3px; background: var(--accent-cyan); box-shadow: 0 -2px 10px var(--accent-cyan); border-radius: 3px 3px 0 0; }
 
         .search-box { position: relative; margin: 0 15px 15px; }
-        .search-input { width: 100%; background: #110822; border: 1px solid var(--card-border); padding: 10px 15px 10px 35px; border-radius: 10px; color: white; font-size: 0.85rem; font-family: var(--font-body); outline: none; transition: 0.3s; }
+        .search-input { width: 100%; background: #110822; border: 1px solid var(--card-border); padding: 12px 15px 12px 40px; border-radius: 10px; color: white; font-size: 0.9rem; font-family: var(--font-body); outline: none; transition: 0.3s; box-sizing: border-box; }
         .search-input:focus { border-color: var(--accent-cyan); box-shadow: 0 0 10px rgba(0,242,255,0.2); }
-        .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #888; font-size: 0.9rem; }
+        .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #888; font-size: 0.9rem; }
 
         /* --- LIST CONTAINER & SKELETON --- */
         .match-list { padding: 0 15px; min-height: 50vh; display: flex; flex-direction: column; gap: 20px; position: relative; }
@@ -85,25 +71,26 @@
         @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
         .s-card { background: var(--secondary-bg); border-radius: 16px; border: 1px solid var(--card-border); overflow: hidden; height: 260px; }
         
-        .real-content-wrapper { display: flex; flex-direction: column; gap: 20px; width: 100%; animation: fadeIn 0.4s ease; }
+        .real-content-wrapper { display: flex; flex-direction: column; gap: 20px; width: 100%; }
 
-        /* --- MATCH CARD --- */
-        .match-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; overflow: hidden; position: relative; display: flex; flex-direction: column; box-shadow: 0 10px 25px rgba(0,0,0,0.5); transition: 0.3s; cursor: pointer; }
-        .match-card:active { transform: scale(0.98); border-color: var(--accent-cyan); }
-        @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+        /* --- 3D MATCH CARD --- */
+        .match-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; overflow: hidden; position: relative; display: flex; flex-direction: column; box-shadow: 0 10px 25px rgba(0,0,0,0.5); transition: transform 0.3s, border-color 0.3s; cursor: pointer; animation: slideInUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .match-card:hover { transform: translateY(-3px); border-color: var(--accent-cyan); box-shadow: 0 15px 35px rgba(0,242,255,0.1); }
+        .match-card:active { transform: scale(0.98); }
+        @keyframes slideInUp { from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);} }
 
         .m-banner-wrapper { position: relative; width: 100%; height: 140px; background: #000; overflow: hidden; }
         .m-banner { width: 100%; height: 100%; object-fit: cover; opacity: 0.85; transition: 0.5s; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .match-card:hover .m-banner { opacity: 1; transform: scale(1.05); }
 
-        .m-share-btn { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.8); color: var(--accent-cyan); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid var(--accent-cyan); backdrop-filter: blur(5px); z-index: 5; transition: 0.3s; }
-        .m-share-btn:hover { background: var(--accent-cyan); color: #000; }
+        .m-share-btn { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.8); color: var(--accent-cyan); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid var(--accent-cyan); backdrop-filter: blur(5px); z-index: 5; transition: 0.3s; box-shadow: 0 0 10px rgba(0,0,0,0.8); }
+        .m-share-btn:hover { background: var(--accent-cyan); color: #000; transform: scale(1.1); }
 
         .m-content { padding: 15px; }
 
         .m-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
-        .m-title-box { flex: 1; padding-right: 10px; }
-        .m-title { font-family: var(--font-head); font-size: 1.1rem; color: white; margin-bottom: 5px; letter-spacing: 0.5px; text-shadow: 0 0 5px rgba(255,255,255,0.3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .m-title-box { flex: 1; padding-right: 10px; min-width: 0; }
+        .m-title { font-family: var(--font-head); font-size: 1.15rem; color: white; margin-bottom: 5px; letter-spacing: 0.5px; text-shadow: 0 0 5px rgba(255,255,255,0.3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .m-date { font-size: 0.8rem; color: #aaa; display: flex; align-items: center; gap: 6px; }
 
         .m-actions-box { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
@@ -112,25 +99,29 @@
         .leave-btn { background: rgba(255, 77, 77, 0.1); border: 1px solid rgba(255, 77, 77, 0.4); color: #ff4d4d; padding: 6px 12px; border-radius: 8px; font-size: 0.7rem; cursor: pointer; font-weight: bold; transition: 0.3s; font-family: var(--font-head); text-transform: uppercase; z-index: 5; }
         .leave-btn:hover { background: rgba(255, 77, 77, 0.2); border-color: #ff4d4d; box-shadow: 0 0 10px rgba(255,77,77,0.3); }
 
-        .m-details-row { display: flex; justify-content: space-between; font-size: 0.8rem; color: #888; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px; margin-bottom: 12px; }
-        .m-detail-item i { color: var(--accent-purple); margin-right: 4px; }
+        .m-details-row { display: flex; justify-content: space-between; font-size: 0.85rem; color: #888; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
+        .m-detail-item { display: flex; align-items: center; gap: 6px; }
+        .m-detail-item i { color: var(--accent-purple); }
 
         /* ROOM ID BOX */
         .room-box-container { background: rgba(0,0,0,0.4); border-radius: 12px; border: 1px solid var(--card-border); padding: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
-        .room-item { display: flex; flex-direction: column; gap: 4px; flex: 1; cursor: pointer; transition: 0.3s; padding: 4px; border-radius: 6px; z-index: 5; }
+        .room-item { display: flex; flex-direction: column; gap: 4px; flex: 1; cursor: pointer; transition: 0.3s; padding: 4px; border-radius: 6px; z-index: 5; min-width: 0; }
         .room-item:hover { background: rgba(255,255,255,0.05); }
-        .room-item:first-child { border-right: 1px dashed rgba(255,255,255,0.1); padding-right: 15px; margin-right: 10px; }
+        .room-item:first-child { border-right: 1px dashed rgba(255,255,255,0.1); padding-right: 10px; margin-right: 10px; }
 
         .room-label { font-size: 0.65rem; color: #888; text-transform: uppercase; font-family: var(--font-head); letter-spacing: 1px; display: flex; align-items: center; justify-content: space-between; }
+        .room-label i { opacity: 0.3; transition: 0.3s; }
+        .room-item:hover .room-label i { opacity: 1; color: var(--accent-cyan); }
         .room-val { font-family: 'Courier New', monospace; font-size: 1.1rem; font-weight: bold; letter-spacing: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
-        .val-waiting { color: #555; }
+        .val-waiting { color: #555; filter: blur(2px); user-select: none; }
         .val-active { color: var(--accent-green); text-shadow: 0 0 10px rgba(0,255,127,0.4); }
 
         /* EMPTY STATE */
         .empty-box { text-align: center; padding: 60px 20px; color: #666; animation: fadeIn 0.5s; width: 100%; }
-        .empty-icon { font-size: 3.5rem; margin-bottom: 15px; color: rgba(189,0,255,0.3); }
-        .browse-link { display: inline-block; margin-top: 20px; padding: 12px 30px; background: var(--accent-gradient); color: white; text-decoration: none; border-radius: 12px; font-weight: bold; font-family: var(--font-head); font-size: 0.9rem; box-shadow: 0 5px 15px rgba(189,0,255,0.4); transition: 0.3s; }
+        .empty-icon { font-size: 4rem; margin-bottom: 20px; color: rgba(189,0,255,0.3); animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); color: rgba(189,0,255,0.6); } }
+        .browse-link { display: inline-block; margin-top: 20px; padding: 14px 35px; background: var(--accent-gradient); color: white; text-decoration: none; border-radius: 12px; font-weight: bold; font-family: var(--font-head); font-size: 0.9rem; box-shadow: 0 5px 15px rgba(189,0,255,0.4); transition: 0.3s; letter-spacing: 1px; }
         .browse-link:active { transform: scale(0.95); }
 
         /* CUSTOM TOAST */
@@ -182,10 +173,8 @@
                 <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_20wCR-WBMpQmw3vxcYUf-vxIO1PYDJoQN_Sid3UDjA9tf0cuX0eH40jbzHoJad4cxbnjhPjqfCw1Z5V1LhgN9zFuIQC0fJjecTy3D9PFu5WjR2H1wHwTD1bUGnXY_NiApWn5gMs6velcQngSzKoP1yHzX0cVsFSUFM8zIefcbiPayY7680Kz0V0ZAAE/s1264/1000093706.png" class="app-logo" alt="Logo">
                 <div class="app-title">MY MATCHES</div>
             </div>
-            <div class="header-right">
-                <div class="refresh-btn" onclick="fetchLiveMatches(true)">
-                    <i class="fa-solid fa-rotate-right" id="refreshIcon"></i>
-                </div>
+            <div class="refresh-btn" onclick="fetchLiveMatches(true)">
+                <i class="fa-solid fa-rotate-right" id="refreshIcon"></i>
             </div>
         </div>
     </header>
@@ -208,7 +197,7 @@
 
     <div class="search-box">
         <i class="fa-solid fa-magnifying-glass search-icon"></i>
-        <input class="search-input" id="matchSearch" onkeyup="renderMatches()" placeholder="Search your matches..." type="text" />
+        <input class="search-input" id="matchSearch" onkeyup="renderMatches()" placeholder="Search matches or clans..." type="text" />
     </div>
 
     <div class="match-list" id="matchList">
@@ -218,7 +207,7 @@
                 <div style="padding: 15px; display:flex; flex-direction:column; gap:10px;">
                     <div style="height: 15px; width: 60%; background: rgba(255,255,255,0.05); border-radius:5px;"></div>
                     <div style="height: 10px; width: 40%; background: rgba(255,255,255,0.05); border-radius:5px;"></div>
-                    <div style="height: 40px; width: 100%; background: rgba(255,255,255,0.05); border-radius:8px; margin-top:10px;"></div>
+                    <div style="height: 50px; width: 100%; background: rgba(255,255,255,0.05); border-radius:12px; margin-top:10px;"></div>
                 </div>
             </div>
         </div>
@@ -280,7 +269,7 @@
         // --- 2. CONFIGURATION & HELPERS ---
         const API_URL = "https://script.google.com/macros/s/AKfycbynNLDDXS1wMrU6RGnk4nKb1jfQkQGuqrNIKWAt8wf46MaKP6y1rwGmSJg5fmm4KYU/exec";
         let currentTab = 'Upcoming'; 
-        let globalLiveMatches = []; // Holds the unified live data
+        let globalLiveMatches = []; 
 
         function showToast(msg, isError = false) {
             var x = document.getElementById("customToast");
@@ -288,6 +277,7 @@
             x.style.backgroundColor = isError ? "#ff4d4d" : "var(--accent-cyan)";
             x.style.color = isError ? "white" : "#000";
             x.className = "show";
+            if(navigator.vibrate) navigator.vibrate(50);
             setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
         }
 
@@ -297,20 +287,25 @@
             navigator.clipboard.writeText(text).then(() => { showToast(`${type} Copied!`); });
         }
 
-        function shareMatch(event, title) {
-            event.stopPropagation();
-            const id = title.replace(/\s+/g, '');
-            const link = window.location.origin + window.location.pathname.replace('matches.html', '') + "explore.html?tournament=" + encodeURIComponent(id);
-            navigator.clipboard.writeText(link).then(() => { showToast("Invite Link Copied!"); });
+        // TRUE REDIRECTION LOGIC using Unique ID
+        function viewDetails(matchId) {
+            if(!matchId) return;
+            window.location.href = `explore.html?tournament=${encodeURIComponent(matchId)}`;
         }
 
-        function viewDetails(name) {
-            let id = name.replace(/\s+/g, '');
-            window.location.href = `explore.html?tournament=${encodeURIComponent(id)}`;
+        function shareMatch(event, title, matchId) {
+            event.stopPropagation();
+            const link = window.location.origin + window.location.pathname.replace('matches.html', '') + "explore.html?tournament=" + encodeURIComponent(matchId);
+            
+            if (navigator.share) {
+                navigator.share({ title: 'Join ' + title, text: 'Check out this match on Tournyx!', url: link }).catch(console.error);
+            } else {
+                navigator.clipboard.writeText(link).then(() => { showToast("Invite Link Copied!"); });
+            }
         }
 
         function formatImageUrl(url) {
-            if (!url) return 'https://via.placeholder.com/600x300';
+            if (!url) return 'https://via.placeholder.com/600x300/15062e/00f2ff?text=Tournament+Banner';
             if (url.includes('drive.google.com/file/d/')) {
                 let id = url.split('/d/')[1].split('/')[0];
                 return `https://drive.google.com/uc?export=view&id=${id}`;
@@ -318,10 +313,9 @@
             return url;
         }
 
-        // --- 3. 100% LIVE DATA FETCH ENGINE ---
+        // --- 3. UNIFIED FETCH ENGINE ---
         document.addEventListener("DOMContentLoaded", function() {
-            // Completely wipe old local storage logic for matches to prevent "ghost" joins!
-            localStorage.removeItem('myMatches'); 
+            localStorage.removeItem('myMatches'); // Prevent Ghost loading
             fetchLiveMatches();
         });
 
@@ -337,7 +331,7 @@
             if(isManual) document.getElementById('refreshIcon').classList.add('fa-spin');
 
             try {
-                // Fetch All Tournaments & User's Specific Entries simultaneously
+                // Fetch Global Tournaments & User Entries simultaneously
                 const [tournamentsRes, myMatchesRes] = await Promise.all([
                     fetch(API_URL + "?action=get_tournaments").then(r => r.json()),
                     fetch(API_URL + "?action=get_matches&email=" + encodeURIComponent(user.email)).then(r => r.json())
@@ -348,15 +342,16 @@
 
                 globalLiveMatches = [];
 
-                // Merge the user's entry with the main tournament visual data
+                // Unified Mapping logic
                 myEntries.forEach(entry => {
-                    let tDetails = allTournaments.find(t => t.title === entry.tournament_title || t.id === entry.match_id);
+                    // Try to match by ID first, fallback to Title
+                    let tDetails = allTournaments.find(t => t.id === entry.match_id || t.title === entry.tournament_title);
                     
                     if (tDetails) {
                         globalLiveMatches.push({
-                            match_id: tDetails.id || entry.match_id,
+                            match_id: tDetails.id || entry.match_id, // The crucial redirect key
                             name: tDetails.title || entry.tournament_title,
-                            date: tDetails.date,
+                            date: tDetails.match_period || tDetails.date || 'TBA',
                             img: formatImageUrl(tDetails.banner),
                             status: tDetails.status || "Upcoming",
                             roomID: entry.room_id || "WAITING",
@@ -366,7 +361,6 @@
                     }
                 });
 
-                // Clear the loader and render!
                 document.getElementById('skeletonLoader').classList.remove('active');
                 document.getElementById('realContent').style.display = 'flex';
                 if(isManual) {
@@ -448,22 +442,23 @@
                 else if (sLower.includes("wait") || sLower.includes("pending")) { rStatus = "WAITING ID"; sColor = "var(--accent-orange)"; }
                 else if (sLower.includes("completed")) { rStatus = "COMPLETED"; sColor = "#888"; }
 
+                // Blurs text if waiting
                 let idClass = rID === 'WAITING' ? 'val-waiting' : 'val-active';
                 let passClass = rPass === 'WAITING' ? 'val-waiting' : 'val-active';
                 
                 let html = `
-                    <div class="match-card">
-                        <div class="m-banner-wrapper" onclick="viewDetails('${match.name}')">
+                    <div class="match-card" onclick="viewDetails('${match.match_id}')">
+                        <div class="m-banner-wrapper">
                             <img src="${match.img}" class="m-banner">
-                            <div class="m-share-btn" onclick="shareMatch(event, '${match.name}')"><i class="fa-solid fa-share-nodes"></i></div>
+                            <div class="m-share-btn" onclick="shareMatch(event, '${match.name}', '${match.match_id}')"><i class="fa-solid fa-share-nodes"></i></div>
                         </div>
                         
                         <div class="m-content">
                             <div class="m-header-row">
-                                <div class="m-title-box" onclick="viewDetails('${match.name}')">
+                                <div class="m-title-box">
                                     <h4 class="m-title">${match.name}</h4>
                                     <div class="m-date">
-                                        <i class="fa-regular fa-calendar" style="color:var(--accent-cyan)"></i> ${match.date || 'TBD'}
+                                        <i class="fa-regular fa-calendar" style="color:var(--accent-cyan)"></i> ${match.date}
                                     </div>
                                 </div>
                                 <div class="m-actions-box">
@@ -472,18 +467,18 @@
                                 </div>
                             </div>
                             
-                            <div class="m-details-row" onclick="viewDetails('${match.name}')">
-                                <div class="m-detail-item"><i class="fa-solid fa-users"></i> Clan: <span style="color:white;">${match.clan}</span></div>
-                                <div class="m-detail-item"><span style="color:var(--accent-green)">Registered</span></div>
+                            <div class="m-details-row">
+                                <div class="m-detail-item"><i class="fa-solid fa-shield-halved"></i> Roster: <span style="color:white; font-weight:bold;">${match.clan}</span></div>
+                                <div class="m-detail-item"><span style="color:var(--accent-green); font-weight:bold;"><i class="fa-solid fa-check-circle"></i> Confirmed</span></div>
                             </div>
                             
                             <div class="room-box-container">
                                 <div class="room-item" onclick="copyText(event, '${rID}', 'Room ID')">
-                                    <span class="room-label">Room ID <i class="fa-regular fa-copy" style="opacity:0.5;"></i></span>
+                                    <span class="room-label">Room ID <i class="fa-regular fa-copy"></i></span>
                                     <span class="room-val ${idClass}">${rID}</span>
                                 </div>
                                 <div class="room-item" onclick="copyText(event, '${rPass}', 'Password')">
-                                    <span class="room-label">Password <i class="fa-regular fa-copy" style="opacity:0.5;"></i></span>
+                                    <span class="room-label">Password <i class="fa-regular fa-copy"></i></span>
                                     <span class="room-val ${passClass}">${rPass}</span>
                                 </div>
                             </div>
@@ -503,17 +498,17 @@
                 let user = JSON.parse(localStorage.getItem('tournyx_user')) || {};
                 if(!user.email) return;
 
-                // Visual Feedback
+                // Visual Feedback Lock
                 const btn = document.getElementById(`btn-${matchId}`);
                 if(btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; }
 
-                // Hit the server to permanently delete the row
+                // Safe Backend Payload
                 fetch(API_URL, {
                     method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ action: "unjoin", title: tournamentName, email: user.email })
                 }).then(() => {
                     showToast("Successfully left the match!");
-                    // Instantly re-fetch from the server to get the clean list
+                    // Background refresh to remove card
                     setTimeout(() => { fetchLiveMatches(); }, 1000);
                 }).catch(e => {
                     showToast("Failed to process request.", true);
