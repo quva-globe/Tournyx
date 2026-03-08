@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Explore - Tournyx</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -22,7 +22,8 @@
             --font-head: 'Orbitron', sans-serif;
             --font-body: 'Rajdhani', sans-serif;
         }
-                        /* --- ULTIMATE SCROLLBAR KILLER --- */
+
+        /* --- ULTIMATE SCROLLBAR KILLER --- */
         * {
             -ms-overflow-style: none !important;  /* IE and Edge */
             scrollbar-width: none !important;  /* Firefox */
@@ -34,19 +35,35 @@
             background: transparent !important;
             -webkit-appearance: none !important;
         }
-
-
         
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
-        /* Set top padding exactly to header height for no gaps */
-        body { background-color: var(--primary-bg); color: white; font-family: var(--font-body); padding-bottom: 90px; padding-top: 60px; overflow-x: hidden; }
+        body { 
+            background-color: var(--primary-bg); color: white; font-family: var(--font-body); 
+            padding-bottom: calc(90px + env(safe-area-inset-bottom)); 
+            padding-top: calc(60px + env(safe-area-inset-top)); 
+            overflow-x: hidden; 
+        }
+
+        /* --- RESPONSIVE WRAPPER --- */
+        .search-row, .game-scroll, .tourney-list, .app-footer {
+            max-width: 1000px;
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
 
         /* --- BACKGROUND --- */
         #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at 50% 0%, #15062e 0%, #070311 100%); }
 
         /* --- HEADER --- */
-        .top-header { position: fixed; top: 0; left: 0; width: 100%; padding: 10px 15px; height: 60px; background: rgba(7, 3, 17, 0.85); backdrop-filter: blur(15px); border-bottom: 1px solid var(--card-border); display: flex; align-items: center; justify-content: space-between; z-index: 2000; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); }
+        .top-header { 
+            position: fixed; top: 0; left: 0; width: 100%; 
+            padding: env(safe-area-inset-top) 15px 10px 15px; 
+            background: rgba(7, 3, 17, 0.85); backdrop-filter: blur(20px); 
+            border-bottom: 1px solid var(--card-border); 
+            z-index: 2000; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); 
+        }
+        .header-wrapper { max-width: 1000px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; width: 100%; }
         .header-left { display: flex; align-items: center; gap: 10px; }
         .app-logo { width: 30px; height: 30px; border-radius: 50%; object-fit: contain; box-shadow: 0 0 10px var(--accent-purple); }
         .app-title { font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px; }
@@ -63,8 +80,7 @@
         .action-btn:active { transform: scale(0.9); }
 
         /* --- QUICK GAME FILTERS --- */
-        .game-scroll { display: flex; gap: 12px; overflow-x: auto; padding: 0 15px 15px; scrollbar-width: none; }
-        .game-scroll::-webkit-scrollbar { display: none; }
+        .game-scroll { display: flex; gap: 12px; overflow-x: auto; padding: 0 15px 15px; }
         .game-item { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.05); padding: 6px 15px 6px 6px; border-radius: 30px; border: 1px solid transparent; cursor: pointer; transition: 0.3s; opacity: 0.7; flex-shrink: 0; }
         .game-item.active { opacity: 1; border-color: var(--accent-cyan); background: rgba(0,242,255,0.1); transform: scale(1.05); }
         .game-icon { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
@@ -126,17 +142,16 @@
         .detail-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary-bg); z-index: 3000; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; overflow: hidden; }
         .detail-modal.active { transform: translateX(0); }
         
-        .dm-header { background: rgba(7,3,17,0.95); padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); flex-shrink: 0; z-index: 10; height: 60px; }
+        .dm-header { background: rgba(7,3,17,0.95); padding: env(safe-area-inset-top) 15px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); flex-shrink: 0; z-index: 10; }
         .dm-back { font-size: 1.3rem; cursor: pointer; color: white; padding: 5px; }
         .dm-title { font-family: var(--font-head); font-weight: bold; flex: 1; text-align: center; font-size: 1.1rem; text-shadow: 0 0 5px rgba(255,255,255,0.5); }
         .dm-share { font-size: 1.3rem; color: var(--accent-cyan); cursor: pointer; padding: 5px; }
 
-        /* Scrollable Content Area */
         .dm-scroll-area { flex: 1; overflow-y: auto; padding-bottom: 20px; animation: fadeIn 0.4s; }
+        .dm-scroll-content { max-width: 800px; margin: 0 auto; } /* Centered for desktop */
         
         .dm-banner { width: 100%; height: 220px; object-fit: cover; }
-        .dm-nav { display: flex; gap: 20px; padding: 15px; border-bottom: 1px solid var(--card-border); overflow-x: auto; scrollbar-width: none; background: var(--primary-bg); position: sticky; top: 0; z-index: 5; flex-shrink: 0; }
-        .dm-nav::-webkit-scrollbar { display: none; }
+        .dm-nav { display: flex; gap: 20px; padding: 15px; border-bottom: 1px solid var(--card-border); overflow-x: auto; background: var(--primary-bg); position: sticky; top: 0; z-index: 5; flex-shrink: 0; }
         .dm-nav-item { font-family: var(--font-head); font-size: 0.9rem; color: #888; cursor: pointer; white-space: nowrap; padding-bottom: 5px; border-bottom: 2px solid transparent; transition: 0.3s; }
         .dm-nav-item.active { color: var(--accent-cyan); border-bottom-color: var(--accent-cyan); text-shadow: 0 0 5px rgba(0,242,255,0.4); font-weight: bold; }
 
@@ -160,7 +175,6 @@
         .tl-val { font-family: var(--font-body); font-size: 0.95rem; color: white; white-space: normal; }
         .tl-status { background: rgba(0,255,127,0.1); color: var(--accent-green); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; border: 1px solid var(--accent-green); text-transform: uppercase; white-space: nowrap; }
 
-        /* Prize Pool Distribution Custom UI */
         .prize-card { background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); border-radius: 12px; padding: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
         .prize-card.gold { border-color: rgba(255, 215, 0, 0.4); background: rgba(255, 215, 0, 0.05); }
         .prize-card.silver { border-color: rgba(192, 192, 192, 0.4); background: rgba(192, 192, 192, 0.05); }
@@ -168,22 +182,26 @@
         .pc-rank { font-family: var(--font-head); font-weight: bold; font-size: 1rem; display: flex; align-items: center; gap: 10px; }
         .pc-val { font-size: 1rem; font-weight: bold; color: var(--accent-cyan); text-shadow: 0 0 5px rgba(0,242,255,0.3); }
 
+        /* Dynamic Teams List */
+        .clan-item { display: flex; align-items: center; gap: 12px; background: rgba(20,10,35,0.5); border: 1px solid rgba(189,0,255,0.1); padding: 12px; border-radius: 12px; margin-bottom: 10px; }
+        .clan-item-icon { width: 35px; height: 35px; border-radius: 8px; background: rgba(0,242,255,0.1); color: var(--accent-cyan); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+        .clan-item-name { font-family: var(--font-head); font-size: 1rem; color: white; flex: 1; }
+
         /* LOCKED FOOTER */
-        .locked-footer { background: #070311; padding: 15px; border-top: 1px solid var(--card-border); display: flex; gap: 10px; flex-shrink: 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
-        .btn-primary { flex: 1; background: var(--accent-gradient); color: white; border: none; padding: 14px; border-radius: 12px; font-family: var(--font-head); font-weight: bold; font-size: 1rem; cursor: pointer; box-shadow: 0 5px 15px rgba(189,0,255,0.4); text-transform: uppercase; transition: 0.3s; }
+        .locked-footer { background: #070311; padding: 15px 15px calc(15px + env(safe-area-inset-bottom)); border-top: 1px solid var(--card-border); display: flex; gap: 10px; flex-shrink: 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); z-index: 50;}
+        .btn-primary { flex: 1; background: var(--accent-gradient); color: white; border: none; padding: 14px; border-radius: 12px; font-family: var(--font-head); font-weight: bold; font-size: 1rem; cursor: pointer; box-shadow: 0 5px 15px rgba(189,0,255,0.4); text-transform: uppercase; transition: 0.3s; display:flex; align-items:center; justify-content:center; gap:8px;}
         .btn-primary:active { transform: scale(0.98); }
         .btn-primary:disabled { background: #2a2a3a; color: #666; border: 1px solid #444; box-shadow: none; cursor: default; }
         .btn-secondary { background: transparent; border: 1px solid var(--accent-orange); color: var(--accent-orange); padding: 14px; border-radius: 12px; font-family: var(--font-head); font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; text-transform: uppercase; }
         .btn-secondary:active { background: rgba(255,153,0,0.1); }
 
-        /* PAYMENT SELECTOR BOTTOM SHEET (For Rs OR Points logic) */
+        /* PAYMENT SELECTOR BOTTOM SHEET */
         #payFeeRupees, #payFeePts { font-weight: bold; font-family: var(--font-head); font-size: 1.1rem; }
         #payFeeRupees { color: var(--accent-orange); }
         #payFeePts { color: var(--accent-cyan); }
         
         .bal-display { font-size: 0.8rem; color: #888; margin-top: 5px; }
         
-        /* Reg Options UI */
         .reg-option { background: var(--primary-bg); border: 1px solid var(--card-border); padding: 15px; border-radius: 12px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: 0.3s; }
         .reg-option:active { transform: scale(0.98); border-color: var(--accent-cyan); }
         .reg-option.disabled { opacity: 0.5; cursor: default; border-color: #444; }
@@ -192,55 +210,60 @@
         .ro-title { font-family: var(--font-head); font-size: 1rem; color: white; margin-bottom: 3px; }
         .ro-desc { font-size: 0.75rem; color: #888; }
         
-        /* Custom Select */
         .form-label { display: block; font-size: 0.85rem; color: #a0a0b0; margin-bottom: 8px; font-family: var(--font-head); letter-spacing: 0.5px; }
         .form-select { width: 100%; background: #070311; border: 1px solid var(--card-border); color: white; padding: 14px 15px; border-radius: 10px; font-family: var(--font-body); font-size: 1rem; margin-bottom: 20px; outline: none; }
 
-        /* Custom Toast Notification */
         #customToast { visibility: hidden; min-width: 250px; background-color: var(--accent-cyan); color: #000; text-align: center; border-radius: 10px; padding: 16px; position: fixed; z-index: 9999; left: 50%; bottom: -50px; transform: translateX(-50%); font-family: var(--font-head); font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.5); opacity: 0; transition: opacity 0.4s, bottom 0.4s; }
         #customToast.show { visibility: visible; opacity: 1; bottom: 100px; }
 
-        /* --- FOOTER & NAV --- */
         .app-footer { text-align: center; padding: 40px 20px 100px 20px; color: #555; font-size: 0.75rem; font-family: var(--font-body); letter-spacing: 1px; border-top: 1px solid var(--card-border); margin-top: 20px; }
         .footer-made-with { margin-top: 10px; font-style: italic; color: #777; font-size: 0.8rem; }
 
-        /* PERFECTLY ALIGNED BOTTOM NAVIGATION (7 Tabs, exact match to screenshot) */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(15px); border-top: 1px solid var(--card-border); z-index: 1000; display: flex; align-items: stretch; justify-content: space-between; padding: 0 5px; padding-bottom: env(safe-area-inset-bottom); box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
-        .nav-item { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; color: #666; text-decoration: none; font-size: 0.6rem; font-family: var(--font-head); font-weight: bold; transition: 0.3s; }
-        .nav-item.active { color: var(--accent-cyan); text-shadow: 0 0 10px rgba(0,242,255,0.5); }
-        .nav-item i { font-size: 1.2rem; transition: 0.3s; }
-        .nav-item:hover { color: white; }
-        .nav-item span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; text-transform: capitalize; }
-        
-        /* Smaller, more proportional Floating Center Plus Button */
-        .fab-slot { flex: 1; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
-        .floating-plus { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 48px; height: 48px; background: var(--accent-cyan); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid var(--primary-bg); box-shadow: 0 0 0 2px var(--accent-purple), 0 -3px 10px rgba(0,0,0,0.5); color: #000; font-size: 1.5rem; cursor: pointer; transition: 0.3s; z-index: 10; }
-        .floating-plus:active { transform: translateX(-50%) scale(0.95); box-shadow: 0 0 0 2px var(--accent-purple), 0 -1px 5px rgba(0,0,0,0.5); }
-
-        /* --- CONTRIBUTE MODAL UI (Fixed Layout) --- */
-        .amt-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
-        .amt-btn { flex: 1; min-width: 45px; background: #070311; border: 1px solid var(--accent-orange); color: var(--accent-orange); padding: 12px 0; text-align: center; border-radius: 8px; font-family: var(--font-head); font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 0.9rem; }
-        .amt-btn.active { background: rgba(255,153,0,0.15); box-shadow: 0 0 10px rgba(255,153,0,0.3); }
-        .custom-amt-input { width: 100%; background: #070311; border: 1px solid var(--card-border); color: white; padding: 14px 15px; border-radius: 10px; font-family: var(--font-body); font-size: 1rem; outline: none; transition: 0.3s; margin-bottom: 5px; }
-        .custom-amt-input:focus { border-color: var(--accent-orange); box-shadow: 0 0 10px rgba(255,153,0,0.2); }
+        /* PERFECTLY ALIGNED BOTTOM NAVIGATION */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(7, 3, 17, 0.92); backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 5px env(safe-area-inset-bottom); border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.6); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; color: #666; text-decoration: none; font-size: 0.65rem; font-family: var(--font-head); font-weight: bold; flex: 1; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; }
+        .nav-item span { margin-top: 4px; transition: 0.3s; }
+        .nav-item i { font-size: 1.3rem; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .nav-item.active { color: var(--accent-cyan); }
+        .nav-item.active i { transform: translateY(-4px); color: var(--accent-cyan); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
+        .nav-item.active span { transform: translateY(2px); color: white; }
+        .fab-slot { flex: 1.2; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
+        .floating-plus { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); width: 58px; height: 58px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 4px solid var(--primary-bg); box-shadow: 0 10px 25px rgba(189,0,255,0.5); color: #fff; font-size: 1.8rem; cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 10; }
+        .floating-plus:hover { transform: translateX(-50%) scale(1.1) rotate(90deg); box-shadow: 0 15px 35px rgba(0,242,255,0.6); }
+        .nav-item.create-btn span { display: none; }
 
         @media (min-width: 850px) {
             .tourney-card { flex: 0 0 calc(50% - 10px); }
             .tourney-list { flex-direction: row; flex-wrap: wrap; gap: 20px; }
-            .bottom-nav { display: none; }
+            .bottom-nav { display: none !important; }
+            body { padding-bottom: 0; }
         }
+
+        /* --- MEDIAN DETECTOR --- */
+        .median-active .top-header { display: none !important; }
+        .median-active { padding-top: 15px !important; }
     </style>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            if (navigator.userAgent.indexOf('gonative') > -1 || navigator.userAgent.indexOf('median') > -1) {
+                document.body.classList.add('median-active');
+            }
+        });
+    </script>
 </head>
 <body>
     <canvas id="particles-canvas"></canvas>
 
     <header class="top-header">
-        <div class="header-left">
-            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_20wCR-WBMpQmw3vxcYUf-vxIO1PYDJoQN_Sid3UDjA9tf0cuX0eH40jbzHoJad4cxbnjhPjqfCw1Z5V1LhgN9zFuIQC0fJjecTy3D9PFu5WjR2H1wHwTD1bUGnXY_NiApWn5gMs6velcQngSzKoP1yHzX0cVsFSUFM8zIefcbiPayY7680Kz0V0ZAAE/s1264/1000093706.png" class="app-logo">
-            <div class="app-title">EXPLORE</div>
-        </div>
-        <div class="header-right">
-            <img src="https://via.placeholder.com/40" class="header-profile-img" id="headerProfilePic" onclick="window.location.href='profile.html'">
+        <div class="header-wrapper">
+            <div class="header-left">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_20wCR-WBMpQmw3vxcYUf-vxIO1PYDJoQN_Sid3UDjA9tf0cuX0eH40jbzHoJad4cxbnjhPjqfCw1Z5V1LhgN9zFuIQC0fJjecTy3D9PFu5WjR2H1wHwTD1bUGnXY_NiApWn5gMs6velcQngSzKoP1yHzX0cVsFSUFM8zIefcbiPayY7680Kz0V0ZAAE/s1264/1000093706.png" class="app-logo" alt="Logo">
+                <div class="app-title">EXPLORE</div>
+            </div>
+            <div class="header-right">
+                <img src="https://via.placeholder.com/40" class="header-profile-img" id="headerProfilePic" onclick="window.location.href='profile.html'">
+            </div>
         </div>
     </header>
 
@@ -325,126 +348,112 @@
         </div>
         
         <div class="dm-scroll-area">
-            <img src="" id="dtBanner" class="dm-banner">
-            
-            <div class="dm-nav" id="dtNav">
-                <div class="dm-nav-item active" data-tab="dtTabOverview">Overview</div>
-                <div class="dm-nav-item" data-tab="dtTabMatches">Matches</div>
-                <div class="dm-nav-item" data-tab="dtTabTeams">Teams</div>
-                <div class="dm-nav-item" data-tab="dtTabPrizes">Prizes</div>
-                <div class="dm-nav-item" data-tab="dtTabRules">Rules</div>
-                <div class="dm-nav-item" data-tab="dtTabStreams">Streams</div>
-            </div>
-
-            <div class="dm-tab-content active" id="dtTabOverview">
-                <h2 id="dtTitle" class="t-title" style="font-size: 1.5rem; white-space: normal; margin-bottom: 5px;">Tournament Title</h2>
-                <div style="color: #a0a0b0; font-size: 0.85rem; margin-bottom: 20px;">Organized by <span style="color:white; font-weight:bold;">WARHAWKS ESP <i class="fa-solid fa-circle-check verified-badge"></i></span></div>
+            <div class="dm-scroll-content">
+                <img src="" id="dtBanner" class="dm-banner">
                 
-                <div class="dm-stat-grid">
-                    <div class="stat-box">
-                        <i class="fa-solid fa-trophy"></i>
-                        <div class="val" id="dtPrize">0 Rs.</div>
-                        <div class="lbl">Prize Pool</div>
+                <div class="dm-nav" id="dtNav">
+                    <div class="dm-nav-item active" data-tab="dtTabOverview">Overview</div>
+                    <div class="dm-nav-item" data-tab="dtTabMatches">Matches</div>
+                    <div class="dm-nav-item" data-tab="dtTabTeams" onclick="fetchLiveTeams()">Teams</div>
+                    <div class="dm-nav-item" data-tab="dtTabPrizes">Prizes</div>
+                    <div class="dm-nav-item" data-tab="dtTabRules">Rules</div>
+                </div>
+
+                <div class="dm-tab-content active" id="dtTabOverview">
+                    <h2 id="dtTitle" class="t-title" style="font-size: 1.5rem; white-space: normal; margin-bottom: 5px;">Tournament Title</h2>
+                    <div style="color: #a0a0b0; font-size: 0.85rem; margin-bottom: 20px;">Organized by <span id="dtOrgName" style="color:white; font-weight:bold;">Organizer <i class="fa-solid fa-circle-check verified-badge"></i></span></div>
+                    
+                    <div class="dm-stat-grid">
+                        <div class="stat-box">
+                            <i class="fa-solid fa-trophy"></i>
+                            <div class="val" id="dtPrize">0 Rs.</div>
+                            <div class="lbl">Prize Pool</div>
+                        </div>
+                        <div class="stat-box" style="border-color: var(--accent-orange);">
+                            <i class="fa-solid fa-ticket" style="color: var(--accent-orange);"></i>
+                            <div class="val" id="dtFee">Free</div>
+                            <div class="lbl">Entry Fee</div>
+                        </div>
+                        <div class="stat-box">
+                            <i class="fa-solid fa-users"></i>
+                            <div class="val" id="dtRegistrations">0/0</div>
+                            <div class="lbl">Registered</div>
+                        </div>
+                        <div class="stat-box">
+                            <i class="fa-solid fa-stopwatch"></i>
+                            <div class="val" style="color:var(--accent-cyan);" id="dtTimeLeft">Upcoming</div>
+                            <div class="lbl">Status</div>
+                        </div>
                     </div>
-                    <div class="stat-box" style="border-color: var(--accent-orange);">
-                        <i class="fa-solid fa-ticket" style="color: var(--accent-orange);"></i>
-                        <div class="val" id="dtFee">Free</div>
-                        <div class="lbl">Entry Fee</div>
+
+                    <div class="dm-section">
+                        <div class="dm-sec-title"><i class="fa-regular fa-calendar-days"></i> Tournament Timeline</div>
+                        <div class="timeline-item">
+                            <div class="tl-left">
+                                <div class="tl-lbl">Registration Period</div>
+                                <div class="tl-val" id="dtRegDateRange">Loading...</div>
+                            </div>
+                            <div class="tl-status" id="dtTimelineStatus">Open</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="tl-left">
+                                <div class="tl-lbl">Tournament Period</div>
+                                <div class="tl-val" id="dtMatchDateRange">Loading...</div>
+                            </div>
+                            <div class="tl-status" style="background: rgba(0,242,255,0.1); color: var(--accent-cyan); border-color: var(--accent-cyan);" id="dtTimelineMatchStatus">Upcoming</div>
+                        </div>
                     </div>
-                    <div class="stat-box">
-                        <i class="fa-solid fa-users"></i>
-                        <div class="val" id="dtRegistrations">0/48</div>
-                        <div class="lbl">Registered</div>
-                    </div>
-                    <div class="stat-box">
-                        <i class="fa-solid fa-stopwatch"></i>
-                        <div class="val" style="color:var(--accent-cyan);" id="dtTimeLeft">Upcoming</div>
-                        <div class="lbl">Status</div>
+                    
+                    <div class="dm-section">
+                        <div class="dm-sec-title"><i class="fa-solid fa-circle-info"></i> About Tournament</div>
+                        <div style="font-size: 0.9rem; color: #ccc; line-height: 1.6; margin-bottom: 15px;" id="dtDescription"></div>
+                        <div class="t-details-grid" style="margin: 0; grid-template-columns: 1fr;">
+                            <div class="t-detail-item"><i class="fa-solid fa-gamepad"></i> Game: <span id="dtGame" style="color:white; font-weight:bold; margin-left: 5px;">Loading...</span></div>
+                            <div class="t-detail-item"><i class="fa-solid fa-mobile-screen"></i> Platform: <span style="color:white; font-weight:bold; margin-left: 5px;">Mobile Only</span></div>
+                            <div class="t-detail-item"><i class="fa-solid fa-sitemap"></i> Format: <span id="dtFormat" style="color:white; font-weight:bold; margin-left: 5px;">Loading...</span></div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="dm-section">
-                    <div class="dm-sec-title"><i class="fa-regular fa-calendar-days"></i> Tournament Timeline</div>
-                    
-                    <div class="timeline-item">
-                        <div class="tl-left">
-                            <div class="tl-lbl">Registration Period</div>
-                            <div class="tl-val" id="dtRegDateRange">Loading...</div>
-                        </div>
-                        <div class="tl-status" id="dtTimelineStatus">Open</div>
-                    </div>
-                    
-                    <div class="timeline-item">
-                        <div class="tl-left">
-                            <div class="tl-lbl">Tournament Period</div>
-                            <div class="tl-val" id="dtMatchDateRange">Loading...</div>
-                        </div>
-                        <div class="tl-status" style="background: rgba(0,242,255,0.1); color: var(--accent-cyan); border-color: var(--accent-cyan);" id="dtTimelineMatchStatus">Upcoming</div>
-                    </div>
+                <div class="dm-tab-content" id="dtTabMatches">
+                    <div class="dm-sec-title"><i class="fa-solid fa-sitemap"></i> Match Schedule</div>
+                    <div style="text-align:center; color:#888; padding:40px;">Matches have not been generated yet.</div>
                 </div>
                 
-                <div class="dm-section">
-                    <div class="dm-sec-title"><i class="fa-solid fa-circle-info"></i> About Tournament</div>
-                    <div style="font-size: 0.9rem; color: #ccc; line-height: 1.6; margin-bottom: 15px;" id="dtDescription">
-                        Standard competitive rules apply. Make sure your squad is ready 10 mins before match time.
-                    </div>
-                    <div class="t-details-grid" style="margin: 0; grid-template-columns: 1fr;">
-                        <div class="t-detail-item"><i class="fa-solid fa-gamepad"></i> Game: <span id="dtGame" style="color:white; font-weight:bold; margin-left: 5px;">Loading...</span></div>
-                        <div class="t-detail-item"><i class="fa-solid fa-mobile-screen"></i> Platform: <span style="color:white; font-weight:bold; margin-left: 5px;">Mobile Only</span></div>
-                        <div class="t-detail-item"><i class="fa-solid fa-sitemap"></i> Format: <span id="dtFormat" style="color:white; font-weight:bold; margin-left: 5px;">Loading...</span></div>
-                        <div class="t-detail-item"><i class="fa-solid fa-globe"></i> Region: <span style="color:white; font-weight:bold; margin-left: 5px;">India 🇮🇳</span></div>
+                <div class="dm-tab-content" id="dtTabTeams">
+                    <div class="dm-sec-title"><i class="fa-solid fa-users"></i> Registered Teams</div>
+                    <div id="liveTeamsList" style="margin-top: 15px;">
+                        <div style="text-align:center; color:var(--accent-cyan); padding:40px;"><i class="fa-solid fa-spinner fa-spin"></i> Fetching roster...</div>
                     </div>
                 </div>
-            </div>
 
-            <div class="dm-tab-content" id="dtTabMatches">
-                <div class="dm-sec-title"><i class="fa-solid fa-sitemap"></i> Match Schedule</div>
-                <div style="text-align:center; color:#888; padding:40px;">Matches have not been generated yet.</div>
-            </div>
-            
-            <div class="dm-tab-content" id="dtTabTeams">
-                <div class="dm-sec-title"><i class="fa-solid fa-users"></i> Registered Teams</div>
-                <div style="text-align:center; color:#888; padding:40px;">Fetching teams list...</div>
-            </div>
+                <div class="dm-tab-content" id="dtTabPrizes">
+                    <div class="dm-sec-title" style="justify-content:center; font-size:1.3rem; margin-bottom: 5px;"><i class="fa-solid fa-trophy"></i> Prize Pool Distribution</div>
+                    <div style="text-align:center; font-family:var(--font-head); color:var(--accent-orange); font-size:1.5rem; font-weight:bold; margin-bottom:5px;" id="dtPrizeTotalHead">0 Rs.</div>
+                    <div style="text-align:center; color:#888; font-size:0.8rem; margin-bottom:20px;">Total Prize Pool</div>
 
-            <div class="dm-tab-content" id="dtTabPrizes">
-                <div class="dm-sec-title" style="justify-content:center; font-size:1.3rem; margin-bottom: 5px;"><i class="fa-solid fa-trophy"></i> Prize Pool Distribution</div>
-                <div style="text-align:center; font-family:var(--font-head); color:var(--accent-orange); font-size:1.5rem; font-weight:bold; margin-bottom:5px;" id="dtPrizeTotalHead">0 Rs.</div>
-                <div style="text-align:center; color:#888; font-size:0.8rem; margin-bottom:20px;">Total Prize Pool</div>
-
-                <div class="prize-card gold">
-                    <div class="pc-rank"><i class="fa-solid fa-medal" style="color:#FFD700; font-size:1.5rem;"></i> 1st Place</div>
-                    <div class="pc-val" id="prize1">0 Rs.</div>
+                    <div class="prize-card gold">
+                        <div class="pc-rank"><i class="fa-solid fa-medal" style="color:#FFD700; font-size:1.5rem;"></i> 1st Place</div>
+                        <div class="pc-val" id="prize1">0 Rs.</div>
+                    </div>
+                    <div class="prize-card silver">
+                        <div class="pc-rank"><i class="fa-solid fa-medal" style="color:#C0C0C0; font-size:1.5rem;"></i> 2nd Place</div>
+                        <div class="pc-val" id="prize2">0 Rs.</div>
+                    </div>
+                    <div class="prize-card bronze">
+                        <div class="pc-rank"><i class="fa-solid fa-medal" style="color:#CD7F32; font-size:1.5rem;"></i> 3rd Place</div>
+                        <div class="pc-val" id="prize3">0 Rs.</div>
+                    </div>
                 </div>
-                <div class="prize-card silver">
-                    <div class="pc-rank"><i class="fa-solid fa-medal" style="color:#C0C0C0; font-size:1.5rem;"></i> 2nd Place</div>
-                    <div class="pc-val" id="prize2">0 Rs.</div>
-                </div>
-                <div class="prize-card bronze">
-                    <div class="pc-rank"><i class="fa-solid fa-medal" style="color:#CD7F32; font-size:1.5rem;"></i> 3rd Place</div>
-                    <div class="pc-val" id="prize3">0 Rs.</div>
+
+                <div class="dm-tab-content" id="dtTabRules">
+                    <div class="dm-sec-title"><i class="fa-solid fa-gavel"></i> General Rules</div>
+                    <div style="font-size:0.9rem; color:#ccc; line-height:1.6;" id="dtRulesText"></div>
                 </div>
             </div>
+        </div> 
 
-            <div class="dm-tab-content" id="dtTabRules">
-                <div class="dm-sec-title"><i class="fa-solid fa-gavel"></i> General Rules</div>
-                <div style="font-size:0.9rem; color:#ccc; line-height:1.6;" id="dtRulesText">
-                    1. Players must use mobile devices. Emulators are strictly prohibited.<br>
-                    2. Exploiting bugs or glitches will result in a permanent ban.<br>
-                    3. All teams must be ready in the lobby 10 minutes before start.<br>
-                    4. Match results must be submitted with a clear screenshot.
-                </div>
-            </div>
-
-            <div class="dm-tab-content" id="dtTabStreams">
-                <div class="dm-sec-title"><i class="fa-solid fa-video"></i> Live Streams</div>
-                <div style="text-align:center; padding: 40px 20px;">
-                    <i class="fa-solid fa-video-slash" style="font-size:3rem; color:#444; margin-bottom:15px;"></i>
-                    <div style="font-family:var(--font-head); font-size:1.1rem; color:#888;">No streams available yet</div>
-                    <div style="font-size:0.85rem; color:#666; margin-top:5px;">Streams will be available during matches</div>
-                </div>
-            </div>
-        </div> <div class="locked-footer">
+        <div class="locked-footer">
             <button class="btn-secondary" onclick="openContributeModal()"><i class="fa-regular fa-heart"></i> Contribute</button>
             <button class="btn-primary" id="masterJoinBtn" onclick="openRegistrationFlow()">Register Now</button>
         </div>
@@ -482,10 +491,6 @@
                 </div>
                 <i class="fa-solid fa-arrow-right icon-arrow" style="color:var(--accent-cyan);"></i>
             </div>
-            
-            <div style="text-align:center; margin-top:15px;">
-                <button type="button" class="btn-secondary" onclick="window.location.href='wallet.html'" style="width:100%; border-color:#444; color:white; text-transform:uppercase;">Add Funds / Check Wallet</button>
-            </div>
         </div>
     </div>
 
@@ -496,30 +501,6 @@
                 <i class="fa-solid fa-xmark close-sheet" onclick="closeRegistrationFlow()"></i>
             </div>
 
-            <div id="regOptions">
-                <div class="reg-option" onclick="showExistingTeamForm()">
-                    <div class="ro-left">
-                        <div class="ro-icon"><i class="fa-solid fa-users"></i></div>
-                        <div>
-                            <div class="ro-title">Existing Clan</div>
-                            <div class="ro-desc">Register with a ready team to compete.</div>
-                        </div>
-                    </div>
-                    <i class="fa-solid fa-arrow-right" style="color:var(--accent-purple);"></i>
-                </div>
-                
-                <div class="reg-option" onclick="window.location.href='clans.html'">
-                    <div class="ro-left">
-                        <div class="ro-icon" style="background:rgba(0,242,255,0.1); color:var(--accent-cyan); border-color:rgba(0,242,255,0.2);"><i class="fa-solid fa-user-plus"></i></div>
-                        <div>
-                            <div class="ro-title">Create New Clan</div>
-                            <div class="ro-desc">Redirects to Clan manager.</div>
-                        </div>
-                    </div>
-                    <i class="fa-solid fa-arrow-right" style="color:var(--accent-cyan);"></i>
-                </div>
-            </div>
-
             <form id="existingTeamForm" onsubmit="processRegistrationPayment(event)">
                 <label class="form-label">Select Clan/Team *</label>
                 <select class="form-select" id="formSelectClan" required>
@@ -527,9 +508,8 @@
                 </select>
                 
                 <div style="background: rgba(0,242,255,0.05); border-left: 3px solid var(--accent-cyan); padding: 15px; margin-bottom: 20px; font-size: 0.8rem; color: #ccc; line-height: 1.5;">
-                    <div style="font-weight:bold; margin-bottom:8px; color:white;"><i class="fa-solid fa-circle-exclamation"></i> Important Registration Guidelines</div>
-                    <div><i class="fa-solid fa-bolt" style="color:var(--accent-orange)"></i> Once confirmed, your roster details will be locked.</div>
-                    <div style="margin-top:8px;"><i class="fa-solid fa-bolt" style="color:var(--accent-orange)"></i> Ensure your wallet has sufficient balance for paid entries.</div>
+                    <div style="font-weight:bold; margin-bottom:8px; color:white;"><i class="fa-solid fa-circle-exclamation"></i> Important Guidelines</div>
+                    <div><i class="fa-solid fa-bolt" style="color:var(--accent-orange)"></i> Do not click Proceed twice. Wait for confirmation.</div>
                 </div>
 
                 <div style="display:flex; gap:10px;">
@@ -553,21 +533,11 @@
                 <div class="amt-btn" onclick="selectAmt(this, 50)">50</div>
                 <div class="amt-btn" onclick="selectAmt(this, 100)">100</div>
                 <div class="amt-btn" onclick="selectAmt(this, 500)">500</div>
-                <div class="amt-btn" onclick="selectAmt(this, 1000)">1000</div>
             </div>
-
-            <label class="form-label" style="color:white; margin-bottom:10px; margin-top:20px;">Or Enter Custom Amount (Rs.)</label>
-            <input type="number" class="custom-amt-input" id="customAmtInput" placeholder="Enter amount" oninput="clearAmtBtns()">
-            <div style="font-size:0.7rem; color:#888; margin-top:5px;">Maximum: 100,000 Rs.</div>
-
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:25px; font-family:var(--font-head); font-size:0.9rem; color:#a0a0b0;">
-                <span>Your Wallet Balance:</span>
-                <span style="color:white; font-weight:bold;"><span id="contributeWalletBal">0</span> Rs.</span>
-            </div>
-
+            <input type="number" class="custom-amt-input" id="customAmtInput" placeholder="Custom amount" oninput="clearAmtBtns()">
             <div style="display:flex; gap:10px; margin-top: 25px;">
-                <button type="button" class="btn-secondary" onclick="closeContributeModal()" style="flex:1; border: 1px solid white; color:white;">Cancel</button>
-                <button type="button" class="btn-primary" onclick="processContribution()" style="flex:1; background:linear-gradient(90deg, #ff9900, #ff5e00);"><i class="fa-regular fa-heart"></i> Contribute</button>
+                <button type="button" class="btn-secondary" onclick="closeContributeModal()" style="flex:1;">Cancel</button>
+                <button type="button" class="btn-primary" onclick="processContribution()" style="flex:1;">Contribute</button>
             </div>
         </div>
     </div>
@@ -614,12 +584,10 @@
     </nav>
 
     <script>
-        // CONFIGURATION
         const API_URL = 'https://script.google.com/macros/s/AKfycbynNLDDXS1wMrU6RGnk4nKb1jfQkQGuqrNIKWAt8wf46MaKP6y1rwGmSJg5fmm4KYU/exec';
         let activeTournament = {}; 
         let pendingRegistrationData = null; 
 
-        // Custom Toast Function
         function showToast(msg, isError = false) {
             var x = document.getElementById("customToast");
             x.innerText = msg;
@@ -629,20 +597,15 @@
             setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3500);
         }
 
-        // DATE FORMATTER HELPER 
         function formatDateTime(dateStr) {
             if (!dateStr || dateStr === "TBD") return "TBD";
             try {
                 const d = new Date(dateStr);
                 if (isNaN(d.getTime())) return dateStr; 
-                const options = { month: 'short', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true };
-                return d.toLocaleString('en-US', options);
-            } catch(e) {
-                return dateStr;
-            }
+                return d.toLocaleString('en-US', { month: 'short', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true });
+            } catch(e) { return dateStr; }
         }
 
-        // CURRENCY FORMATTER
         function getPrizeText(val) {
             let num = parseInt(val);
             return (isNaN(num) || num <= 0) ? "Glory" : num + " Rs.";
@@ -651,65 +614,56 @@
         function getEntryText(val) {
             let num = parseInt(val);
             if(isNaN(num) || num <= 0 || val === 'Free') return "Free";
-            let pts = num * 50; 
-            return `${num} Rs. (${pts} PTS)`;
+            return `${num} Rs. (${num * 50} PTS)`;
         }
 
-        // STARTUP
+        // FIX: Google Drive Image Converter
+        function formatImageUrl(url) {
+            if (!url) return 'https://via.placeholder.com/600x300';
+            if (url.includes('drive.google.com/file/d/')) {
+                let id = url.split('/d/')[1].split('/')[0];
+                return `https://drive.google.com/uc?export=view&id=${id}`;
+            }
+            return url;
+        }
+
         document.addEventListener("DOMContentLoaded", function() {
             let user = JSON.parse(localStorage.getItem('tournyx_user'));
             if(!user) {
-                user = { points: 5000, rupees: 100, email: "guest@tournyx.com" };
-                localStorage.setItem('tournyx_user', JSON.stringify(user));
+                window.location.href = "login.html";
+                return;
             }
-            if(user && user.avatar) { document.getElementById('headerProfilePic').src = user.avatar; }
+            if(user.avatar) document.getElementById('headerProfilePic').src = user.avatar;
             
             loadLiveTournaments();
             initTabSwitching(); 
         });
 
-        // LIVE STATUS BADGE HTML HELPER
         function getStatusBadgeHtml(status) {
-            let text = "UPCOMING";
-            let color = "var(--accent-cyan)";
+            let text = "UPCOMING"; let color = "var(--accent-cyan)";
             if (!status) return `<div class="t-status-badge"><i class="fa-solid fa-satellite-dish"></i> ${text}</div>`;
-            
             let sLower = status.toLowerCase();
-            if (sLower.includes("live")) {
-                text = "LIVE NOW"; color = "var(--accent-green)";
-            } else if (sLower.includes("open") || sLower.includes("join") || sLower.includes("upcoming")) {
-                text = "UPCOMING"; color = "var(--accent-cyan)";
-            } else if (sLower.includes("wait") || sLower.includes("pending")) {
-                text = "WAITING"; color = "var(--accent-orange)";
-            } else if (sLower.includes("completed") || sLower.includes("past")) {
-                text = "COMPLETED"; color = "#888";
-            }
+            if (sLower.includes("live")) { text = "LIVE NOW"; color = "var(--accent-green)"; } 
+            else if (sLower.includes("wait")) { text = "WAITING"; color = "var(--accent-orange)"; } 
+            else if (sLower.includes("completed") || sLower.includes("past")) { text = "COMPLETED"; color = "#888"; }
             return `<div class="t-status-badge" style="color:${color}; border-color:${color};"><i class="fa-solid fa-satellite-dish" style="color:${color};"></i> ${text}</div>`;
         }
 
-        // --- LOAD FEED ---
         function refreshContent() {
-            const icon = document.getElementById('refreshIcon');
-            const loader = document.getElementById('contentLoader');
-            const container = document.getElementById('tournamentContainer');
-            if(icon) icon.classList.add('fa-spin'); 
-            if(loader) loader.style.display = 'flex'; 
-            if(container) { Array.from(container.children).forEach(child => { if (child.id !== 'contentLoader') child.style.display = 'none'; }); }
-            loadLiveTournaments(true); 
+            document.getElementById('refreshIcon').classList.add('fa-spin'); 
+            document.getElementById('contentLoader').style.display = 'flex'; 
+            Array.from(document.getElementById('tournamentContainer').children).forEach(c => { if(c.id !== 'contentLoader') c.style.display = 'none'; });
+            loadLiveTournaments(); 
         }
 
-        function loadLiveTournaments(isRefresh = false) {
+        function loadLiveTournaments() {
             fetch(API_URL + "?action=get_tournaments")
             .then(res => res.json())
             .then(data => {
                 if (data.status === "success") {
                     const feed = document.getElementById('tournamentContainer');
-                    const loader = document.getElementById('contentLoader');
-                    const icon = document.getElementById('refreshIcon');
-
                     feed.innerHTML = "";
-                    if(loader) feed.appendChild(loader);
-
+                    
                     data.data.forEach(t => {
                         const card = document.createElement('div');
                         card.className = 'tourney-card'; 
@@ -717,443 +671,238 @@
                         card.setAttribute('data-mode', t.format || "All"); 
                         card.setAttribute('data-status', t.status || "Upcoming"); 
                         card.setAttribute('data-fee', (t.fee === '0' || t.fee === 'Free' || !t.fee) ? 'Free' : 'Paid');
-                        
-                        const tDataStr = encodeURIComponent(JSON.stringify(t));
-                        card.setAttribute('onclick', `openTournamentDetails('${tDataStr}')`);
+                        card.setAttribute('onclick', `openTournamentDetails('${encodeURIComponent(JSON.stringify(t))}')`);
 
-                        const bg = (t.banner && t.banner.startsWith('http')) ? t.banner : 'https://via.placeholder.com/600x300';
-                        const prizeText = getPrizeText(t.prize);
-                        const feeText = getEntryText(t.fee);
-                        const feeColor = (feeText === "Free") ? '#00ff7f' : '#ffd700';
-                        
+                        const bg = formatImageUrl(t.banner);
                         const totalSlots = t.slots || 48;
-                        const slotsFilled = t.filled_slots || Math.floor(Math.random() * (totalSlots - 5 + 1)) + 5; 
-                        const progressPct = (slotsFilled / totalSlots) * 100;
-                        const endDate = formatDateTime(t.date);
-                        
+                        const slotsFilled = t.filled_slots || 0; 
+
                         card.innerHTML = `
                             <div class="t-banner-wrapper">
                                 <img src="${bg}" class="t-banner-img">
                                 ${getStatusBadgeHtml(t.status)} 
-                                <div class="t-timer-badge">Ends: ${endDate}</div>
+                                <div class="t-timer-badge">Ends: ${formatDateTime(t.date)}</div>
                             </div>
                             <div class="t-info-box">
                                 <div class="t-title">${t.title || "Tournament"} <i class="fa-solid fa-circle-check verified-badge"></i></div>
                                 <div class="t-details-grid">
                                     <div class="t-detail-item"><i class="fa-solid fa-gamepad"></i> ${t.game || "Esports"} (${t.format || "Any"})</div>
-                                    <div class="t-detail-item"><i class="fa-solid fa-calendar-day"></i> ${endDate}</div>
+                                    <div class="t-detail-item"><i class="fa-solid fa-calendar-day"></i> ${formatDateTime(t.date).split(',')[0]}</div>
                                     <div class="t-detail-item" style="flex-direction:column; align-items:flex-start; gap:2px;">
                                         <span><i class="fa-solid fa-users"></i> ${slotsFilled}/${totalSlots} Slots Filled</span>
-                                        <div class="progress-container"><div class="progress-bar" style="width:${progressPct}%"></div></div>
+                                        <div class="progress-container"><div class="progress-bar" style="width:${(slotsFilled/totalSlots)*100}%"></div></div>
                                     </div>
-                                    <div class="t-detail-item"><i class="fa-solid fa-ticket"></i> <span style="color:${feeColor}; font-weight:bold;">Entry: ${feeText}</span></div>
+                                    <div class="t-detail-item"><i class="fa-solid fa-ticket"></i> <span style="color:${getEntryText(t.fee) === "Free" ? '#00ff7f' : '#ffd700'}; font-weight:bold;">Entry: ${getEntryText(t.fee)}</span></div>
                                 </div>
                                 <div class="t-action-row">
-                                    <div class="t-prize-area">
-                                        <div class="t-prize-label">Prize Pool</div>
-                                        <div class="t-prize-val">${prizeText}</div>
-                                    </div>
+                                    <div class="t-prize-area"><div class="t-prize-label">Prize Pool</div><div class="t-prize-val">${getPrizeText(t.prize)}</div></div>
                                     <button class="join-btn-card">VIEW DETAILS</button>
                                 </div>
                             </div>`;
                         feed.appendChild(card);
                     });
-
-                    setTimeout(() => {
-                        if(loader) loader.style.display = 'none';
-                        if(icon) icon.classList.remove('fa-spin');
-                        applyFilter(); 
-                        
-                        const urlParams = new URLSearchParams(window.location.search);
-                        const sharedId = urlParams.get('tournament');
-                        if (sharedId) {
-                            const found = data.data.find(x => x.id == sharedId || (x.title && x.title.replace(/\s+/g, '') === sharedId));
-                            if (found) { openTournamentDetails(encodeURIComponent(JSON.stringify(found))); }
-                        }
-                    }, 800); 
+                    applyFilter(); 
                 }
+                document.getElementById('refreshIcon').classList.remove('fa-spin');
             })
-            .catch(err => {
-                if(document.getElementById('contentLoader')) document.getElementById('contentLoader').style.display = 'none';
-                if(document.getElementById('refreshIcon')) document.getElementById('refreshIcon').classList.remove('fa-spin');
-            });
+            .catch(err => document.getElementById('refreshIcon').classList.remove('fa-spin'));
         }
 
-        // --- TAB SWITCHING ---
         function initTabSwitching() {
-            const nav = document.getElementById('dtNav');
-            if (!nav) return;
-            const navItems = nav.querySelectorAll('.dm-nav-item');
+            const navItems = document.querySelectorAll('.dm-nav-item');
             navItems.forEach(item => {
                 item.addEventListener('click', function() {
-                    const tabId = this.getAttribute('data-tab');
-                    if (!tabId) return;
                     navItems.forEach(ni => ni.classList.remove('active'));
                     this.classList.add('active');
-                    const detailModal = document.getElementById('tourneyDetailModal');
-                    const tabContents = detailModal.querySelectorAll('.dm-tab-content');
-                    tabContents.forEach(content => content.classList.remove('active'));
-                    document.getElementById(tabId).classList.add('active');
+                    document.querySelectorAll('.dm-tab-content').forEach(content => content.classList.remove('active'));
+                    document.getElementById(this.getAttribute('data-tab')).classList.add('active');
                 });
             });
         }
 
-        // --- DETAIL MODAL ---
+        // --- FIX: TRUE JOIN STATUS CHECK & MODAL LOGIC ---
         function openTournamentDetails(tDataEncoded) {
             const t = JSON.parse(decodeURIComponent(tDataEncoded));
             activeTournament = t; 
 
-            const bg = (t.banner && t.banner.startsWith('http')) ? t.banner : 'https://via.placeholder.com/600x300';
-            const rawPrize = (!t.prize || t.prize == 0) ? 0 : parseInt(t.prize);
-            
-            document.getElementById('dtBanner').src = bg;
-            document.getElementById('dtTitle').innerHTML = `${t.title || "Event"} <i class="fa-solid fa-circle-check verified-badge"></i>`;
+            document.getElementById('dtBanner').src = formatImageUrl(t.banner);
+            document.getElementById('dtTitle').innerHTML = `${t.title} <i class="fa-solid fa-circle-check verified-badge"></i>`;
+            document.getElementById('dtOrgName').innerHTML = `${t.org_email || 'Verified Organizer'} <i class="fa-solid fa-circle-check verified-badge"></i>`;
             document.getElementById('dtPrize').innerText = getPrizeText(t.prize);
             document.getElementById('dtFee').innerText = getEntryText(t.fee);
             document.getElementById('dtGame').innerText = t.game || "N/A";
             document.getElementById('dtFormat').innerText = t.format || "N/A";
-            document.getElementById('dtDescription').innerText = t.description || "Standard competitive rules apply. Make sure your squad is ready 10 mins before match time.";
+            document.getElementById('dtDescription').innerText = t.rules || "Standard competitive rules apply.";
+            document.getElementById('dtRulesText').innerText = t.rules || "No specific rules provided.";
             
-            // Dynamically Calculate Prize Pool Distribution 
+            const rawPrize = (!t.prize || t.prize == 0) ? 0 : parseInt(t.prize);
             document.getElementById('dtPrizeTotalHead').innerText = getPrizeText(t.prize);
             if (rawPrize > 0) {
                 document.getElementById('prize1').innerText = "50% - " + (rawPrize * 0.50).toFixed(0) + " Rs.";
                 document.getElementById('prize2').innerText = "30% - " + (rawPrize * 0.30).toFixed(0) + " Rs.";
                 document.getElementById('prize3').innerText = "20% - " + (rawPrize * 0.20).toFixed(0) + " Rs.";
-            } else {
-                document.getElementById('prize1').innerText = "Glory & Honor";
-                document.getElementById('prize2').innerText = "Respect";
-                document.getElementById('prize3').innerText = "Experience";
             }
 
-            if(t.rules) document.getElementById('dtRulesText').innerText = t.rules;
-
-            const totalSlots = t.slots || 48;
-            const slotsFilled = t.filled_slots || Math.floor(Math.random() * (totalSlots - 5 + 1)) + 5;
-            document.getElementById('dtRegistrations').innerText = `${slotsFilled}/${totalSlots}`;
-
-            const navItems = document.querySelectorAll('.dm-nav-item');
-            navItems.forEach(ni => ni.classList.remove('active'));
-            navItems[0].classList.add('active');
-            const tabContents = document.querySelectorAll('.dm-tab-content');
-            tabContents.forEach(content => content.classList.remove('active'));
-            document.getElementById('dtTabOverview').classList.add('active');
-            
-            const endDate = formatDateTime(t.date);
-            document.getElementById('dtRegDateRange').innerText = `Now - ${endDate}`;
-            document.getElementById('dtMatchDateRange').innerText = `Starts roughly at ${endDate}`;
-            
-            let sLower = (t.status || "Upcoming").toLowerCase();
-            const tlStatusEl = document.getElementById('dtTimelineStatus');
-            const tlMatchStatusEl = document.getElementById('dtTimelineMatchStatus');
-            document.getElementById('dtTimeLeft').innerText = t.status || "Upcoming";
-
-            if (sLower.includes("completed") || sLower.includes("live")) {
-                tlStatusEl.innerText = "Closed";
-                tlStatusEl.style.color = "#888"; tlStatusEl.style.background = "#222"; tlStatusEl.style.borderColor = "#333";
-                tlMatchStatusEl.innerText = sLower.includes("live") ? "In Progress" : "Ended";
-            } else { 
-                tlStatusEl.innerText = "Open";
-                tlStatusEl.removeAttribute('style'); 
-                tlMatchStatusEl.innerText = "Upcoming";
-            }
-
+            // Fresh Local Check
             let matches = JSON.parse(localStorage.getItem('myMatches')) || [];
-            let isJoined = matches.some(m => m.name === t.title);
-            let btn = document.getElementById('masterJoinBtn');
+            let isJoined = matches.some(m => m.name === t.title); 
             
-            if(isJoined || sLower.includes("live") || sLower.includes("completed")) {
-                btn.innerText = sLower.includes("completed") ? "COMPLETED" : (isJoined ? "ALREADY JOINED" : "CLOSED");
+            let btn = document.getElementById('masterJoinBtn');
+            let sLower = (t.status || "Upcoming").toLowerCase();
+            
+            if(isJoined) {
+                btn.innerHTML = "<i class='fa-solid fa-check'></i> ALREADY JOINED";
+                btn.disabled = true;
+            } else if (sLower.includes("completed") || sLower.includes("live")) {
+                btn.innerText = sLower.includes("completed") ? "COMPLETED" : "MATCH CLOSED";
                 btn.disabled = true;
             } else {
                 btn.innerText = "Register Now";
                 btn.disabled = false;
             }
 
+            document.getElementById('dtTimeLeft').innerText = t.status || "Upcoming";
+            document.getElementById('dtRegDateRange').innerText = `Now - ${formatDateTime(t.date)}`;
             document.getElementById('tourneyDetailModal').classList.add('active');
         }
 
-        function closeDetailModal() {
-            document.getElementById('tourneyDetailModal').classList.remove('active');
-            const url = new URL(window.location);
-            url.searchParams.delete('tournament');
-            window.history.replaceState({}, '', url);
-        }
+        function closeDetailModal() { document.getElementById('tourneyDetailModal').classList.remove('active'); }
 
-        // --- SHARE LINK ---
-        function shareTournament() {
+        // --- FIX: LIVE TEAMS FETCH ---
+        function fetchLiveTeams() {
             if(!activeTournament.title) return;
-            const tId = activeTournament.id || activeTournament.title.replace(/\s+/g, '');
-            const link = window.location.origin + window.location.pathname + "?tournament=" + encodeURIComponent(tId);
+            const container = document.getElementById('liveTeamsList');
+            container.innerHTML = `<div style="text-align:center; color:var(--accent-cyan); padding:40px;"><i class="fa-solid fa-spinner fa-spin"></i> Fetching roster...</div>`;
             
-            navigator.clipboard.writeText(link).then(() => {
-                showToast("Tournament Link Copied!");
-            }).catch(err => {
-                showToast("Failed to copy link", true);
-            });
+            fetch(API_URL + "?action=get_tournament_details&match_id=" + encodeURIComponent(activeTournament.id || activeTournament.title))
+            .then(res => res.json())
+            .then(data => {
+                container.innerHTML = "";
+                if(data.status === 'success' && data.data.length > 0) {
+                    document.getElementById('dtRegistrations').innerText = `${data.data.length}/${activeTournament.slots || 48}`;
+                    data.data.forEach(team => {
+                        container.innerHTML += `
+                            <div class="clan-item">
+                                <div class="clan-item-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                                <div class="clan-item-name">${team.clan || "Solo Player"}</div>
+                                <div style="font-size:0.75rem; color:#888;">${team.status || 'Verified'}</div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    container.innerHTML = `<div style="text-align:center; color:#888; padding:40px;">No teams registered yet. Be the first!</div>`;
+                }
+            }).catch(() => container.innerHTML = `<div style="text-align:center; color:#ff4d4d; padding:20px;">Failed to load teams.</div>`);
         }
 
-        // --- WALLET & CONTRIBUTE MODAL (Currency Only) ---
-        function openContributeModal() {
-            document.getElementById('contributeOverlay').classList.add('active');
-            let user = JSON.parse(localStorage.getItem('tournyx_user')) || {};
-            document.getElementById('contributeWalletBal').innerText = user.rupees || 0;
-        }
-        function closeContributeModal() {
-            document.getElementById('contributeOverlay').classList.remove('active');
-            document.getElementById('customAmtInput').value = "";
-            clearAmtBtns();
-        }
-        function selectAmt(btn, amt) {
-            clearAmtBtns();
-            btn.classList.add('active');
-            document.getElementById('customAmtInput').value = amt;
-        }
-        function clearAmtBtns() {
-            document.querySelectorAll('.amt-btn').forEach(b => b.classList.remove('active'));
-        }
-        
-        function processContribution() {
-            let val = parseInt(document.getElementById('customAmtInput').value);
-            if(!val || val <= 0) { showToast("Please select a valid amount.", true); return; }
-
-            let user = JSON.parse(localStorage.getItem('tournyx_user')) || {};
-            let uRupees = parseInt(user.rupees) || 0;
-
-            if (val > uRupees) {
-                showToast("Insufficient Balance! Redirecting to Wallet...", true);
-                setTimeout(() => { window.location.href = "wallet.html"; }, 1500);
-                return;
-            }
-
-            // Deduct Rupees locally
-            user.rupees = uRupees - val;
-            localStorage.setItem('tournyx_user', JSON.stringify(user));
-            document.getElementById('contributeWalletBal').innerText = user.rupees;
-            
-            showToast("Successfully contributed " + val + " Rs.!");
-            closeContributeModal();
-        }
-
-        // --- REGISTRATION LOGIC WITH DUAL PAYMENT CHOICES ---
+        // --- FIX: DOUBLE CLICK & REGISTRATION ---
         function openRegistrationFlow() {
             if(document.getElementById('masterJoinBtn').disabled) return;
-            document.getElementById('regOverlay').classList.add('active');
-            document.getElementById('regOptions').style.display = 'block';
-            document.getElementById('existingTeamForm').style.display = 'none';
-        }
-
-        function closeRegistrationFlow() {
-            document.getElementById('regOverlay').classList.remove('active');
-        }
-
-        function showExistingTeamForm() {
-            document.getElementById('regOptions').style.display = 'none';
-            document.getElementById('existingTeamForm').style.display = 'block';
-            
             let user = JSON.parse(localStorage.getItem('tournyx_user')) || {};
             let userClan = user.clan || localStorage.getItem('tournyx_user_clan');
             
             const select = document.getElementById('formSelectClan');
             select.innerHTML = '<option value="" disabled selected>Choose your team...</option>';
+            select.innerHTML += userClan ? `<option value="${userClan}">${userClan}</option>` : `<option value="Personal Roster (Default)">Personal Roster (Default)</option>`;
             
-            if (userClan) {
-                select.innerHTML += `<option value="${userClan}">${userClan}</option>`;
-            } else {
-                select.innerHTML += `<option value="Personal Roster (Default)">Personal Roster (Default)</option>`;
-            }
+            document.getElementById('finalSubmitBtn').innerText = "Proceed";
+            document.getElementById('finalSubmitBtn').disabled = false;
+            document.getElementById('regOverlay').classList.add('active');
         }
+        function closeRegistrationFlow() { document.getElementById('regOverlay').classList.remove('active'); }
 
         function processRegistrationPayment(e) {
             e.preventDefault();
-            const t = activeTournament;
-            const clanName = document.getElementById('formSelectClan').value;
             
-            let rawFeeRupees = parseInt(t.fee);
+            // ANTI DOUBLE-CLICK LOCK
+            const submitBtn = document.getElementById('finalSubmitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+
+            const clanName = document.getElementById('formSelectClan').value;
+            let rawFeeRupees = parseInt(activeTournament.fee);
+            
             if (!isNaN(rawFeeRupees) && rawFeeRupees > 0) {
-                // Paid tournament - show choice bottom sheet
                 closeRegistrationFlow();
                 pendingRegistrationData = { clanName: clanName };
-                
                 let user = JSON.parse(localStorage.getItem('tournyx_user')) || {};
-                let uRupees = parseInt(user.rupees) || 0;
-                let uPoints = parseInt(user.points) || 0;
-                let ptsCost = rawFeeRupees * 50; 
-
-                // Populate Modal Text
+                
                 document.getElementById('payFeeRupees').innerText = rawFeeRupees + " Rs.";
-                document.getElementById('payFeePts').innerText = ptsCost + " PTS";
-                document.getElementById('balRupees').innerText = uRupees;
-                document.getElementById('balPts').innerText = uPoints;
-
-                // Handle 'Or' Logic visually/functionally
-                let hasRupees = uRupees >= rawFeeRupees;
-                let hasPoints = uPoints >= ptsCost;
-
-                const optRupees = document.getElementById('payOptRupees');
-                const optPts = document.getElementById('payOptPts');
-
-                if (hasRupees) {
-                    optRupees.classList.remove('disabled');
-                    optRupees.setAttribute('onclick', "confirmPayment('rupees')");
-                } else {
-                    optRupees.classList.add('disabled');
-                    optRupees.removeAttribute('onclick');
-                    optRupees.querySelector('.bal-display').innerHTML += " <span style='color:red;'>(Insufficient)</span>";
-                }
-
-                if (hasPoints) {
-                    optPts.classList.remove('disabled');
-                    optPts.setAttribute('onclick', "confirmPayment('points')");
-                } else {
-                    optPts.classList.add('disabled');
-                    optPts.removeAttribute('onclick');
-                    optPts.querySelector('.bal-display').innerHTML += " <span style='color:red;'>(Insufficient)</span>";
-                }
-
+                document.getElementById('payFeePts').innerText = (rawFeeRupees * 50) + " PTS";
+                document.getElementById('balRupees').innerText = user.rupees || 0;
+                document.getElementById('balPts').innerText = user.points || 0;
                 document.getElementById('paymentOverlay').classList.add('active');
             } else {
-                // Free Entry
                 submitFinalRegistration(clanName, 0, 'free');
             }
         }
-
-        function closePaymentModal() {
-            document.getElementById('paymentOverlay').classList.remove('active');
-            pendingRegistrationData = null;
-        }
+        function closePaymentModal() { document.getElementById('paymentOverlay').classList.remove('active'); }
 
         function confirmPayment(method) {
-            if(!pendingRegistrationData) return;
-            
             const t = activeTournament;
-            let rawFeeRupees = parseInt(t.fee);
-            let ptsCost = rawFeeRupees * 50;
-            
-            let user = JSON.parse(localStorage.getItem('tournyx_user')) || {};
-            let uRupees = parseInt(user.rupees) || 0;
-            let uPoints = parseInt(user.points) || 0;
+            let user = JSON.parse(localStorage.getItem('tournyx_user'));
+            let fee = parseInt(t.fee);
 
-            if(method === 'rupees') {
-                if(uRupees < rawFeeRupees) {
-                    showToast("Insufficient Rupees Balance!", true);
-                    return;
-                }
-                user.rupees -= rawFeeRupees;
-            } else if (method === 'points') {
-                if(uPoints < ptsCost) {
-                    showToast(`Insufficient Points! You need ${ptsCost} PTS.`, true);
-                    return;
-                }
-                user.points -= ptsCost;
-            }
+            if(method === 'rupees' && user.rupees >= fee) { user.rupees -= fee; } 
+            else if (method === 'points' && user.points >= (fee * 50)) { user.points -= (fee * 50); } 
+            else { showToast("Insufficient Balance!", true); return; }
 
-            // Valid Payment, save user locally and proceed
             localStorage.setItem('tournyx_user', JSON.stringify(user));
             closePaymentModal();
-            
-            submitFinalRegistration(pendingRegistrationData.clanName, rawFeeRupees, method);
+            submitFinalRegistration(pendingRegistrationData.clanName, fee, method);
         }
 
-        function submitFinalRegistration(clanName, costBaseRupees, methodUsed) {
+        function submitFinalRegistration(clanName, cost, method) {
             const t = activeTournament;
-            let user = JSON.parse(localStorage.getItem('tournyx_user')) || {};
-            const userPhone = user.phone || "Unknown";
-            const userEmail = user.email || "Unknown";
+            let user = JSON.parse(localStorage.getItem('tournyx_user'));
             
             let newMatch = {
-                name: t.title, date: formatDateTime(t.date), prize: t.prize, img: (t.banner && t.banner.startsWith('http') ? t.banner : 'https://via.placeholder.com/600x300'),
-                status: "Pending Room ID", roomID: "WAITING", roomPass: "WAITING",
-                phone: userPhone, email: userEmail, clan: clanName, joinedAt: new Date().getTime()
+                name: t.title, date: formatDateTime(t.date), prize: t.prize, img: formatImageUrl(t.banner),
+                status: "Pending Room ID", roomID: "WAITING", roomPass: "WAITING", clan: clanName
             };
-
-            let existingMatches = JSON.parse(localStorage.getItem('myMatches')) || [];
-            existingMatches.push(newMatch);
-            localStorage.setItem('myMatches', JSON.stringify(existingMatches));
-
-            let finalMatchID = t.id || ("T-" + Math.floor(Math.random() * 1000)); 
 
             fetch(API_URL, {
                 method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    action: "join", match_id: finalMatchID, game: t.game, title: t.title,
-                    date: t.date, time: "20:00 PM", prize: t.prize,
-                    email: userEmail, phone: userPhone, username: clanName
+                    action: "join", match_id: t.id || t.title, game: t.game, title: t.title,
+                    date: t.date, prize: t.prize, email: user.email, phone: user.phone, username: clanName
                 })
             }).then(() => {
-                finalizeJoin(costBaseRupees > 0);
-            }).catch(error => {
-                finalizeJoin(costBaseRupees > 0);
+                let existingMatches = JSON.parse(localStorage.getItem('myMatches')) || [];
+                existingMatches.push(newMatch);
+                localStorage.setItem('myMatches', JSON.stringify(existingMatches));
+                
+                closeRegistrationFlow();
+                showToast(cost > 0 ? "Payment successful! Slot secured." : "Registration Confirmed!");
+                
+                let btn = document.getElementById('masterJoinBtn');
+                btn.innerHTML = "<i class='fa-solid fa-check'></i> ALREADY JOINED";
+                btn.disabled = true;
             });
         }
 
-        function finalizeJoin(wasPaid) {
-            closeRegistrationFlow();
-            let msg = wasPaid ? "Payment successful! Slot secured." : "Registration Confirmed! Slot secured.";
-            showToast(msg);
-            
-            let btn = document.getElementById('masterJoinBtn');
-            btn.innerText = "ALREADY JOINED";
-            btn.disabled = true;
-            
-            let dtRegs = document.getElementById('dtRegistrations');
-            let current = parseInt(dtRegs.innerText.split('/')[0]);
-            let total = parseInt(dtRegs.innerText.split('/')[1]);
-            dtRegs.innerText = `${current + 1}/${total}`;
-        }
-
-        // --- PERFECTED FILTERS ---
-        function openAdvancedFilter() {
-            document.getElementById('advancedFilterOverlay').classList.add('active');
-        }
-        function closeAdvancedFilter() {
-            document.getElementById('advancedFilterOverlay').classList.remove('active');
-            applyAdvancedFilters();
-        }
-        function resetFilters() {
-            document.getElementById('fltStatus').value = "All";
-            document.getElementById('fltFormat').value = "All";
-            document.getElementById('fltFee').value = "All";
-            applyAdvancedFilters();
-        }
+        // --- FILTERS & UTILS ---
+        function openAdvancedFilter() { document.getElementById('advancedFilterOverlay').classList.add('active'); }
+        function closeAdvancedFilter() { document.getElementById('advancedFilterOverlay').classList.remove('active'); applyAdvancedFilters(); }
+        function resetFilters() { document.getElementById('fltStatus').value = "All"; document.getElementById('fltFormat').value = "All"; document.getElementById('fltFee').value = "All"; applyAdvancedFilters(); }
+        
+        let activeGame = 'All';
+        function filterGame(game, el) { document.querySelectorAll('.game-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); activeGame = game; applyAdvancedFilters(); }
+        function applyFilter() { applyAdvancedFilters(); }
+        
         function applyAdvancedFilters() {
-            let statusF = document.getElementById('fltStatus').value; // e.g. "Live"
-            let formatF = document.getElementById('fltFormat').value; // e.g. "Solo"
-            let feeF = document.getElementById('fltFee').value;       // e.g. "Free"
+            let s = document.getElementById('fltStatus').value; let f = document.getElementById('fltFormat').value; let c = document.getElementById('fltFee').value;
             let search = document.getElementById('searchInput').value.toLowerCase();
-            let gameF = activeGame; // from quick pills
-
-            const cards = document.querySelectorAll('.tourney-card');
-            cards.forEach(card => {
-                const g = card.dataset.game; const m = card.dataset.mode; const f = card.dataset.fee;
-                const s = card.dataset.status; 
-                const title = card.querySelector('.t-title').innerText.toLowerCase();
+            document.querySelectorAll('.tourney-card').forEach(card => {
                 let show = true;
-                
-                if(statusF !== 'All' && s !== statusF) show = false;
-                if(formatF !== 'All' && m !== formatF) show = false;
-                if(feeF !== 'All' && f !== feeF) show = false;
-                if(gameF !== 'All' && g !== gameF) show = false;
-                if(search && !title.includes(search)) show = false;
-                
+                if(s !== 'All' && card.dataset.status !== s) show = false;
+                if(f !== 'All' && card.dataset.mode !== f) show = false;
+                if(c !== 'All' && card.dataset.fee !== c) show = false;
+                if(activeGame !== 'All' && card.dataset.game !== activeGame) show = false;
+                if(search && !card.querySelector('.t-title').innerText.toLowerCase().includes(search)) show = false;
                 card.style.display = show ? 'block' : 'none';
             });
         }
-        
-        // --- QUICK FILTERS (GAME) ---
-        let activeGame = 'All';
-        function filterGame(game, el) { 
-            document.querySelectorAll('.game-item').forEach(i => i.classList.remove('active')); 
-            el.classList.add('active'); 
-            activeGame = game; 
-            applyAdvancedFilters(); 
-        }
-        
-        // --- Search bar trigger ---
-        function applyFilter() {
-            applyAdvancedFilters();
-        }
-
     </script>
 </body>
 </html>
