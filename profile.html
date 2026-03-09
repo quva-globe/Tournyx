@@ -18,185 +18,233 @@
             --accent-purple: #bd00ff;
             --accent-orange: #ff9900;
             --accent-green: #00ff7f;
-            --accent-gradient: linear-gradient(90deg, #7b2cbf, #bd00ff, #00f2ff);
+            --accent-danger: #ff4d4d;
+            --accent-gradient: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan));
             --font-head: 'Orbitron', sans-serif;
             --font-body: 'Rajdhani', sans-serif;
         }
-                        /* --- ULTIMATE SCROLLBAR KILLER --- */
-        * {
-            -ms-overflow-style: none !important;  /* IE and Edge */
-            scrollbar-width: none !important;  /* Firefox */
-        }
-        *::-webkit-scrollbar {
-            display: none !important; /* Chrome, Safari, Android Webview, iOS */
-            width: 0 !important;
-            height: 0 !important;
-            background: transparent !important;
-            -webkit-appearance: none !important;
-        }
 
-
+        /* --- ULTIMATE SCROLLBAR KILLER --- */
+        * { -ms-overflow-style: none !important; scrollbar-width: none !important; }
+        *::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; background: transparent !important; }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
-            background-color: var(--primary-bg);
-            color: white;
-            font-family: var(--font-body);
-            padding-bottom: 90px;
-            overflow-x: hidden;
+            background-color: var(--primary-bg); color: white; font-family: var(--font-body);
+            padding-bottom: calc(90px + env(safe-area-inset-bottom)); overflow-x: hidden;
+            padding-top: env(safe-area-inset-top); 
+        }
+
+        /* --- RESPONSIVE WRAPPERS --- */
+        .tier-container, .role-switch-container, .dashboard-section, .settings-list, .app-footer {
+            max-width: 800px; margin-left: auto !important; margin-right: auto !important; width: 100%;
         }
 
         /* Background */
-        #particles-canvas {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-            background: radial-gradient(circle at 50% 20%, #15062e 0%, #070311 100%);
+        #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at 50% 20%, #15062e 0%, #070311 100%); transform: translateZ(0);}
+
+        /* FEATURE 1: TOP STATUS BAR (FILLS GAP) */
+        .top-status-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 20px; font-size: 0.75rem; color: #888;
+            background: rgba(0,0,0,0.4); border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-family: var(--font-head); letter-spacing: 1px; text-transform: uppercase;
         }
 
         /* --- HEADER & HERO --- */
         .profile-header {
-            position: relative; padding: 40px 20px 30px;
+            position: relative; padding: 25px 20px 30px; max-width: 800px; margin: 0 auto;
             background: linear-gradient(180deg, rgba(20,10,35,0.9) 0%, rgba(7,3,17,0) 100%);
             display: flex; align-items: center; gap: 20px; border-bottom: 1px solid rgba(255,255,255,0.05);
+            animation: fadeIn 0.4s ease;
         }
         
-        .avatar-container { position: relative; cursor: pointer; }
-        .profile-avatar {
-            width: 85px; height: 85px; border-radius: 50%;
-            border: 3px solid var(--accent-cyan); background: #111; object-fit: cover;
-            box-shadow: 0 0 20px rgba(0,242,255,0.4); transition: 0.3s;
-        }
-        .avatar-container:active .profile-avatar { transform: scale(0.95); }
-        .edit-avatar-btn {
-            position: absolute; bottom: 0; right: -5px; width: 28px; height: 28px;
-            background: var(--accent-purple); border-radius: 50%; color: white;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 0.8rem; border: 2px solid var(--primary-bg);
-        }
+        .avatar-container { position: relative; cursor: pointer; transition: 0.3s; will-change: transform; flex-shrink: 0;}
+        .profile-avatar { width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--accent-cyan); background: #111; object-fit: cover; box-shadow: 0 0 20px rgba(0,242,255,0.4); transition: 0.3s; }
+        .avatar-container:active { transform: scale(0.95); }
+        .edit-avatar-btn { position: absolute; bottom: 0; right: -5px; width: 32px; height: 32px; background: var(--accent-purple); border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; border: 3px solid var(--primary-bg); box-shadow: 0 0 10px rgba(189,0,255,0.5);}
         
-        .user-info { flex: 1; }
-        .user-info h2 { font-family: var(--font-head); font-size: 1.5rem; margin-bottom: 5px; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
-        .user-ign {
-            color: var(--accent-cyan); font-size: 0.85rem; font-weight: bold; cursor: pointer;
-            background: rgba(0,242,255,0.1); padding: 4px 10px; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px; border: 1px solid rgba(0,242,255,0.3); transition: 0.3s;
-        }
-        .user-ign:active { background: var(--accent-cyan); color: black; }
+        .user-info { flex: 1; min-width: 0; }
         
-        .logout-btn { color: #ff4d4d; font-size: 1.4rem; cursor: pointer; padding: 10px; background: rgba(255,77,77,0.1); border-radius: 12px; border: 1px solid rgba(255,77,77,0.2); transition: 0.3s; }
-        .logout-btn:active { background: #ff4d4d; color: white; }
+        /* FIX: Medium size, Strictly One Line */
+        .user-info h2 { font-family: var(--font-head); font-size: 1.25rem; margin-bottom: 5px; text-shadow: 0 0 10px rgba(255,255,255,0.2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 5px;}
+        
+        .user-ign { color: var(--accent-cyan); font-size: 0.85rem; font-weight: bold; cursor: pointer; background: rgba(0,242,255,0.1); padding: 5px 12px; border-radius: 8px; display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(0,242,255,0.3); transition: 0.3s; will-change: transform;}
+        .user-ign:active { background: var(--accent-cyan); color: black; transform: scale(0.95);}
+        
+        /* FEATURE 4/5: EXTRAS UNDER IGN */
+        .user-extras { display: flex; align-items: center; gap: 10px; margin-top: 8px; font-size: 0.75rem; color: #a0a0b0; font-family: var(--font-head);}
+        .game-tag { background: rgba(255,255,255,0.05); padding: 3px 8px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.1); }
+        .yt-link { color: #ff0000; font-size: 1rem; cursor: pointer; transition: 0.3s;}
+        .yt-link:hover { filter: drop-shadow(0 0 5px #ff0000); }
+
+        .logout-btn { color: #ff4d4d; font-size: 1.5rem; cursor: pointer; padding: 12px; background: rgba(255,77,77,0.1); border-radius: 15px; border: 1px solid rgba(255,77,77,0.2); transition: 0.3s; will-change: transform; flex-shrink: 0;}
+        .logout-btn:active { background: #ff4d4d; color: white; transform: scale(0.9);}
 
         /* --- DYNAMIC TIER BAR --- */
-        .tier-container { padding: 0 20px; margin-top: -15px; margin-bottom: 25px; }
-        .tier-header { display: flex; justify-content: space-between; font-size: 0.8rem; font-family: var(--font-head); font-weight: bold; margin-bottom: 5px; color: #ccc; }
-        .tier-rank { color: var(--accent-orange); text-shadow: 0 0 10px rgba(255,153,0,0.5); text-transform: uppercase; }
-        .tier-bar-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); }
-        .tier-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple)); border-radius: 10px; transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); width: 0%; }
+        .tier-container { padding: 0 20px; margin-top: -15px; margin-bottom: 25px; position: relative; z-index: 2;}
+        .tier-header { display: flex; justify-content: space-between; font-size: 0.85rem; font-family: var(--font-head); font-weight: bold; margin-bottom: 8px; color: #ccc; text-transform: uppercase; letter-spacing: 1px;}
+        .tier-rank { color: var(--accent-orange); text-shadow: 0 0 10px rgba(255,153,0,0.5); }
+        .tier-bar-bg { width: 100%; height: 10px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); }
+        .tier-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple)); border-radius: 10px; transition: width 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); width: 0%; box-shadow: 0 0 10px rgba(0,242,255,0.5);}
 
         /* --- ROLE SWITCHER --- */
-        .role-switch-container { padding: 0 20px; margin-bottom: 20px; }
-        .role-switch { display: flex; background: #110822; border-radius: 12px; padding: 5px; border: 1px solid var(--card-border); position: relative; }
-        .role-btn { flex: 1; padding: 12px; text-align: center; font-family: var(--font-head); font-size: 0.95rem; font-weight: bold; border-radius: 8px; color: #888; transition: 0.3s; cursor: pointer; z-index: 2; text-transform: uppercase; }
+        .role-switch-container { padding: 0 20px; margin-bottom: 25px; }
+        .role-switch { display: flex; background: #110822; border-radius: 15px; padding: 6px; border: 1px solid var(--card-border); position: relative; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);}
+        .role-btn { flex: 1; padding: 14px; text-align: center; font-family: var(--font-head); font-size: 0.95rem; font-weight: bold; border-radius: 10px; color: #888; transition: 0.3s; cursor: pointer; z-index: 2; text-transform: uppercase; letter-spacing: 1px;}
         .role-btn.active { color: white; text-shadow: 0 0 5px rgba(255,255,255,0.5); }
-        .role-slider { position: absolute; top: 5px; left: 5px; width: calc(50% - 5px); height: calc(100% - 10px); background: var(--accent-gradient); border-radius: 8px; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 1; box-shadow: 0 0 15px rgba(189,0,255,0.4); }
+        .role-slider { position: absolute; top: 6px; left: 6px; width: calc(50% - 6px); height: calc(100% - 12px); background: var(--accent-gradient); border-radius: 10px; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 1; box-shadow: 0 0 20px rgba(189,0,255,0.5); will-change: transform, left, background;}
 
         /* --- DASHBOARD SECTIONS --- */
-        .dashboard-section { padding: 0 20px; display: none; animation: fadeIn 0.4s ease-out; }
+        .dashboard-section { padding: 0 20px; display: none; animation: slideInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .dashboard-section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Stats Grid */
-        .stats-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 25px; }
-        .stat-card { background: var(--secondary-bg); border: 1px solid var(--card-border); padding: 15px; border-radius: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-        .stat-val { font-family: var(--font-head); font-size: 1.5rem; display: block; margin-bottom: 2px; font-weight: bold; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
-        .stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px; }
+        .stats-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 25px; }
+        .stat-card { background: var(--secondary-bg); border: 1px solid var(--card-border); padding: 20px 15px; border-radius: 18px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); transition: 0.3s; will-change: transform;}
+        .stat-card:active { transform: scale(0.95); border-color: var(--accent-cyan); }
+        .stat-val { font-family: var(--font-head); font-size: 1.8rem; display: block; margin-bottom: 5px; font-weight: bold; text-shadow: 0 0 15px rgba(255,255,255,0.2); }
+        .stat-label { font-size: 0.8rem; color: #888; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px; }
 
         /* Quick Action Cards */
-        .action-card { background: linear-gradient(135deg, rgba(0,242,255,0.1), rgba(0,0,0,0)); border: 1px solid rgba(0,242,255,0.3); border-radius: 15px; padding: 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; cursor: pointer; text-decoration: none; color: white; transition: 0.3s; }
-        .action-card:active { transform: scale(0.98); border-color: var(--accent-cyan); }
-        .action-text h4 { font-family: var(--font-head); font-size: 1.1rem; margin-bottom: 5px; }
-        .action-text p { font-size: 0.8rem; color: var(--text-muted); }
-        .action-icon { font-size: 1.5rem; color: var(--accent-cyan); background: rgba(0,242,255,0.15); width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(0,242,255,0.3); }
+        .action-card { background: linear-gradient(135deg, rgba(0,242,255,0.1), rgba(0,0,0,0)); border: 1px solid rgba(0,242,255,0.3); border-radius: 18px; padding: 25px 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; cursor: pointer; text-decoration: none; color: white; transition: 0.3s; box-shadow: 0 5px 20px rgba(0,0,0,0.3); will-change: transform;}
+        .action-card:active { transform: scale(0.98); border-color: var(--accent-cyan); box-shadow: 0 10px 30px rgba(0,242,255,0.2);}
+        .action-text h4 { font-family: var(--font-head); font-size: 1.15rem; margin-bottom: 5px; text-shadow: 0 0 5px rgba(255,255,255,0.2);}
+        .action-text p { font-size: 0.85rem; color: #888; line-height: 1.4;}
+        .action-icon { font-size: 1.8rem; color: var(--accent-cyan); background: rgba(0,242,255,0.15); width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(0,242,255,0.4); flex-shrink: 0;}
         
         .ac-purple { background: linear-gradient(135deg, rgba(189,0,255,0.1), rgba(0,0,0,0)); border-color: rgba(189,0,255,0.3); }
-        .ac-purple .action-icon { color: var(--accent-purple); background: rgba(189,0,255,0.15); box-shadow: 0 0 15px rgba(189,0,255,0.3); }
+        .ac-purple .action-icon { color: var(--accent-purple); background: rgba(189,0,255,0.15); box-shadow: 0 0 20px rgba(189,0,255,0.4); }
+
+        .ac-green { background: linear-gradient(135deg, rgba(0,255,127,0.1), rgba(0,0,0,0)); border-color: rgba(0,255,127,0.3); }
+        .ac-green .action-icon { color: var(--accent-green); background: rgba(0,255,127,0.15); box-shadow: 0 0 20px rgba(0,255,127,0.4); }
 
         /* Organizer Hub Elements */
-        .org-list-header { font-family: var(--font-head); font-size: 1.1rem; color: white; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--card-border); padding-top: 20px; }
-        .managed-item { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .mi-info h5 { font-family: var(--font-head); font-size: 1rem; color: white; margin-bottom: 3px; }
-        .mi-info p { font-size: 0.75rem; color: #888; }
-        .mi-btn { background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-family: var(--font-head); font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .mi-btn:active { background: var(--accent-cyan); color: black; }
+        .org-list-header { font-family: var(--font-head); font-size: 1.2rem; color: white; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--card-border); padding-top: 25px; text-transform: uppercase; letter-spacing: 1px;}
+        .managed-item { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 15px; padding: 18px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.2); gap: 10px;}
+        .managed-item:hover { border-color: var(--accent-cyan); background: rgba(0,242,255,0.05); }
+        .mi-info { flex: 1; min-width: 0; }
+        .mi-info h5 { font-family: var(--font-head); font-size: 1.1rem; color: white; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+        .mi-info p { font-size: 0.8rem; color: #888; }
+        
+        /* FEATURE 8: Share Quick Button */
+        .mi-btn-group { display: flex; gap: 8px;}
+        .mi-btn { background: var(--accent-gradient); border: none; color: white; padding: 8px 15px; border-radius: 10px; font-size: 0.85rem; font-family: var(--font-head); font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; box-shadow: 0 0 15px rgba(0,242,255,0.3); will-change: transform;}
+        .mi-btn:active { transform: scale(0.95);}
+        .mi-share { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 8px 12px; border-radius: 10px; color: white; cursor: pointer; transition: 0.3s; font-size: 0.9rem;}
+        .mi-share:active { background: var(--accent-cyan); color: black; transform: scale(0.95); }
 
         /* --- SETTINGS LIST --- */
-        .settings-list { margin-top: 10px; border-top: 1px solid var(--card-border); padding-top: 10px; padding: 0 20px; }
-        .setting-item { display: flex; align-items: center; padding: 18px 0; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.3s; }
-        .setting-item:active { transform: translateX(5px); }
-        .setting-icon { width: 35px; color: var(--text-muted); font-size: 1.1rem; }
-        .setting-name { flex: 1; font-size: 0.95rem; font-weight: bold; color: #ddd; }
-        .setting-arrow { color: #555; font-size: 0.8rem; }
+        .settings-list { margin-top: 15px; border-top: 1px solid var(--card-border); padding-top: 15px; padding: 0 20px; }
+        .setting-item { display: flex; align-items: center; padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.3s; will-change: transform;}
+        .setting-item:active { transform: translateX(10px); }
+        .setting-icon { width: 45px; height: 45px; background: rgba(255,255,255,0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--accent-purple); font-size: 1.2rem; margin-right: 15px; transition: 0.3s; border: 1px solid rgba(189,0,255,0.2);}
+        .setting-item:hover .setting-icon { background: rgba(0,242,255,0.1); color: var(--accent-cyan); border-color: var(--accent-cyan); box-shadow: 0 0 15px rgba(0,242,255,0.3);}
+        .setting-name { flex: 1; font-size: 1rem; font-weight: bold; color: #ddd; font-family: var(--font-head); letter-spacing: 0.5px;}
+        .setting-arrow { color: #555; font-size: 1rem; transition: 0.3s; }
+        .setting-item:hover .setting-arrow { color: white; transform: translateX(5px); }
 
-        /* --- MODALS --- */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 5000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); opacity: 0; transition: 0.3s; }
+        /* --- MODALS (Bottom Sheets) --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 5000; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); opacity: 0; transition: 0.4s; }
         .modal-overlay.active { display: flex; opacity: 1; }
-        .modal-card { background: var(--secondary-bg); padding: 25px; border-radius: 20px; width: 90%; max-width: 350px; border: 1px solid var(--card-border); box-shadow: 0 15px 40px rgba(0,0,0,0.8); transform: scale(0.9); transition: 0.3s; }
-        .modal-overlay.active .modal-card { transform: scale(1); }
+        .modal-card { width: 100%; max-width: 800px; background: var(--secondary-bg); border-radius: 25px 25px 0 0; border-top: 1px solid var(--card-border); padding: 30px 20px calc(20px + env(safe-area-inset-bottom)); transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 90vh; overflow-y: auto; box-shadow: 0 -10px 40px rgba(0,0,0,0.8); }
+        .modal-overlay.active .modal-card { transform: translateY(0); }
         
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .modal-title { font-family: var(--font-head); font-size: 1.2rem; color: white; }
-        .close-modal { color: #888; font-size: 1.2rem; cursor: pointer; }
+        /* FULL SCREEN MODAL TAB */
+        .full-screen-modal .modal-card { height: 95vh; max-height: 95vh; border-radius: 25px 25px 0 0; display: flex; flex-direction: column;}
+        .fs-content { flex: 1; overflow-y: auto; padding-bottom: 20px;}
 
-        .form-control { width: 100%; background: #110822; border: 1px solid var(--card-border); padding: 12px 15px; color: white; border-radius: 10px; margin-bottom: 15px; outline: none; font-family: var(--font-body); font-size: 1rem; transition: 0.3s; }
-        .form-control:focus { border-color: var(--accent-cyan); box-shadow: 0 0 10px rgba(0,242,255,0.2); }
-        .form-label { display: block; font-size: 0.8rem; color: #888; margin-bottom: 5px; font-weight: bold; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .modal-title { font-family: var(--font-head); font-size: 1.3rem; color: white; display: flex; align-items: center; gap: 10px;}
+        .close-modal { color: #888; font-size: 1.8rem; cursor: pointer; padding: 5px; transition: 0.3s; }
+        .close-modal:hover { color: white; transform: rotate(90deg); }
+
+        .form-control { width: 100%; background: #070311; border: 1px solid var(--card-border); padding: 16px 15px; color: white; border-radius: 12px; margin-bottom: 20px; outline: none; font-family: var(--font-body); font-size: 1.1rem; transition: 0.3s; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);}
+        .form-control:focus { border-color: var(--accent-cyan); box-shadow: 0 0 15px rgba(0,242,255,0.3), inset 0 0 5px rgba(0,0,0,0.5); }
+        select.form-control { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23a0a0b0'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 15px center; background-size: 20px; }
         
-        .save-btn { width: 100%; padding: 14px; background: var(--accent-gradient); border: none; color: white; font-family: var(--font-head); font-weight: bold; font-size: 1rem; border-radius: 10px; cursor: pointer; box-shadow: 0 5px 15px rgba(189,0,255,0.4); text-transform: uppercase; transition: 0.3s; }
-        .save-btn:active { transform: scale(0.96); }
+        .form-label { display: block; font-size: 0.85rem; color: #a0a0b0; margin-bottom: 8px; font-weight: bold; font-family: var(--font-head); text-transform: uppercase; letter-spacing: 0.5px;}
+        
+        .save-btn { width: 100%; padding: 18px; background: var(--accent-gradient); border: none; color: white; font-family: var(--font-head); font-weight: bold; font-size: 1.1rem; border-radius: 12px; cursor: pointer; box-shadow: 0 5px 20px rgba(189,0,255,0.4); text-transform: uppercase; transition: 0.3s; letter-spacing: 1px; will-change: transform; margin-bottom: 15px;}
+        .save-btn:active { transform: scale(0.96); box-shadow: 0 2px 10px rgba(189,0,255,0.4); }
 
-        /* File Input hidden for custom trigger */
+        .delete-btn { width: 100%; padding: 18px; background: rgba(255,77,77,0.1); border: 1px solid rgba(255,77,77,0.4); color: var(--accent-danger); font-family: var(--font-head); font-weight: bold; font-size: 1.1rem; border-radius: 12px; cursor: pointer; text-transform: uppercase; transition: 0.3s; letter-spacing: 1px;}
+        .delete-btn:active { background: var(--accent-danger); color: white; transform: scale(0.96); }
+
         #avatarUploadInp { display: none; }
 
         /* Skeleton Loaders */
-        .skeleton { background: linear-gradient(90deg, #110822 25%, #1a0a3a 50%, #110822 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite linear; border-radius: 8px; }
+        .skeleton { background: linear-gradient(90deg, #110822 25%, #1a0a3a 50%, #110822 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite linear; border-radius: 8px; transform: translateZ(0);}
         @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* --- CUSTOM TOAST --- */
-        #customToast { visibility: hidden; min-width: 250px; background-color: var(--accent-cyan); color: #000; text-align: center; border-radius: 10px; padding: 14px; position: fixed; z-index: 9999; left: 50%; bottom: -50px; transform: translateX(-50%); font-family: var(--font-head); font-weight: bold; box-shadow: 0 5px 15px rgba(0,242,255,0.5); opacity: 0; transition: opacity 0.4s, bottom 0.4s; }
+        #customToast { visibility: hidden; min-width: 250px; background-color: var(--accent-cyan); color: #000; text-align: center; border-radius: 12px; padding: 16px; position: fixed; z-index: 9999; left: 50%; bottom: -50px; transform: translateX(-50%); font-family: var(--font-head); font-weight: bold; box-shadow: 0 8px 25px rgba(0,242,255,0.6); opacity: 0; transition: opacity 0.4s, bottom 0.4s; }
         #customToast.show { visibility: visible; opacity: 1; bottom: 100px; }
 
         /* Footer */
-        .app-footer { text-align: center; padding: 20px 20px 100px 20px; color: #555; font-size: 0.75rem; font-family: var(--font-body); letter-spacing: 1px; }
+        .app-footer { text-align: center; padding: 20px 20px 110px 20px; color: #555; font-size: 0.75rem; font-family: var(--font-body); letter-spacing: 1px; }
 
         /* PERFECTLY ALIGNED 7-TAB BOTTOM NAVIGATION */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(15px); border-top: 1px solid var(--card-border); z-index: 1000; display: flex; align-items: stretch; justify-content: space-between; padding: 0 5px; padding-bottom: env(safe-area-inset-bottom); box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
-        .nav-item { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; color: #666; text-decoration: none; font-size: 0.6rem; font-family: var(--font-head); font-weight: bold; transition: 0.3s; }
-        .nav-item.active { color: var(--accent-cyan); text-shadow: 0 0 10px rgba(0,242,255,0.5); }
-        .nav-item i { font-size: 1.2rem; transition: 0.3s; }
-        .nav-item:hover { color: white; }
-        .nav-item span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; text-transform: capitalize; }
-        
-        .fab-slot { flex: 1; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
-        .floating-plus { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 48px; height: 48px; background: var(--accent-cyan); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid var(--primary-bg); box-shadow: 0 0 0 2px var(--accent-purple), 0 -3px 10px rgba(0,0,0,0.5); color: #000; font-size: 1.5rem; cursor: pointer; transition: 0.3s; z-index: 10; }
-        .floating-plus:active { transform: translateX(-50%) scale(0.95); box-shadow: 0 0 0 2px var(--accent-purple), 0 -1px 5px rgba(0,0,0,0.5); }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 5px env(safe-area-inset-bottom); border-top: 1px solid var(--card-border); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.8); transform: translateZ(0);}
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; color: #666; text-decoration: none; font-size: 0.65rem; font-family: var(--font-head); font-weight: bold; flex: 1; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; will-change: transform, color;}
+        .nav-item span { margin-top: 4px; transition: 0.3s; }
+        .nav-item i { font-size: 1.3rem; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .nav-item.active { color: var(--accent-cyan); }
+        .nav-item.active i { transform: translateY(-4px); color: var(--accent-cyan); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
+        .nav-item.active span { transform: translateY(2px); color: white; }
+        .fab-slot { flex: 1.2; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
+        .floating-plus { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); width: 58px; height: 58px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 4px solid var(--primary-bg); box-shadow: 0 10px 25px rgba(189,0,255,0.5); color: #fff; font-size: 1.8rem; cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 10; will-change: transform;}
+        .floating-plus:active { transform: translateX(-50%) scale(0.95); box-shadow: 0 5px 15px rgba(189,0,255,0.4); }
 
+        @media (min-width: 850px) { .bottom-nav { display: none !important; } }
     </style>
+    
+    <script>
+        const THEMES = [
+            {cyan: '#00f2ff', purple: '#bd00ff'},
+            {cyan: '#00ff7f', purple: '#00b09b'},
+            {cyan: '#ff9900', purple: '#ff4d4d'}
+        ];
+        function applyGlobalTheme() {
+            let tIndex = parseInt(localStorage.getItem('tournyx_theme_index')) || 0;
+            if(THEMES[tIndex]) {
+                document.documentElement.style.setProperty('--accent-cyan', THEMES[tIndex].cyan);
+                document.documentElement.style.setProperty('--accent-purple', THEMES[tIndex].purple);
+                document.documentElement.style.setProperty('--accent-gradient', `linear-gradient(90deg, ${THEMES[tIndex].purple}, ${THEMES[tIndex].cyan})`);
+            }
+        }
+        applyGlobalTheme();
+    </script>
+
 </head>
 <body>
 
     <canvas id="particles-canvas"></canvas>
 
+    <div class="top-status-bar">
+        <span id="networkPing"><i class="fa-solid fa-satellite-dish fa-fade"></i> Ping: 14ms</span>
+        <span id="dailyStreak"><i class="fa-solid fa-fire" style="color:var(--accent-orange)"></i> <span id="streakCount">1</span> Day Streak</span>
+    </div>
+
     <div class="profile-header">
-        <div class="avatar-container" onclick="document.getElementById('avatarUploadInp').click()">
-            <img src="https://via.placeholder.com/85" alt="Avatar" class="profile-avatar" id="userAvatar">
+        <div class="avatar-container" onclick="document.getElementById('avatarUploadInp').click(); triggerHaptic();">
+            <img src="https://via.placeholder.com/90" alt="Avatar" class="profile-avatar" id="userAvatar">
             <div class="edit-avatar-btn"><i class="fa-solid fa-camera"></i></div>
         </div>
         <input type="file" id="avatarUploadInp" accept="image/*" onchange="handleAvatarUpload(event)">
 
         <div class="user-info">
-            <h2 id="userName"><div class="skeleton" style="width:120px; height:24px;"></div></h2>
-            <div class="user-ign" onclick="copyIgn()"><i class="fa-solid fa-gamepad"></i> <span id="userIgn">Loading...</span></div>
+            <h2 id="userName"><div class="skeleton" style="width:140px; height:28px;"></div></h2>
+            <div class="user-ign" onclick="copyIgn(); triggerHaptic();"><i class="fa-solid fa-gamepad"></i> <span id="userIgn">Loading...</span></div>
+            
+            <div class="user-extras" id="userExtras">
+                <span class="game-tag" id="mainGameTag"><i class="fa-solid fa-crosshairs"></i> Game: N/A</span>
+                </div>
         </div>
-        <div class="logout-btn" onclick="logout()">
+        <div class="logout-btn" onclick="logout(); triggerHaptic();">
             <i class="fa-solid fa-power-off"></i>
         </div>
     </div>
@@ -214,39 +262,39 @@
     <div class="role-switch-container">
         <div class="role-switch">
             <div class="role-slider" id="roleSlider"></div>
-            <div class="role-btn active" id="btnPlayer" onclick="switchRole('player')">Player</div>
-            <div class="role-btn" id="btnOrg" onclick="switchRole('organizer')">Organizer</div>
+            <div class="role-btn active" id="btnPlayer" onclick="switchRole('player'); triggerHaptic();">Player</div>
+            <div class="role-btn" id="btnOrg" onclick="switchRole('organizer'); triggerHaptic();">Organizer</div>
         </div>
     </div>
 
     <div id="playerDash" class="dashboard-section active">
         <div class="stats-row">
             <div class="stat-card">
-                <span class="stat-val" style="color:var(--accent-cyan)" id="valMatches"><div class="skeleton" style="width:40px; height:20px; margin:0 auto;"></div></span>
+                <span class="stat-val" style="color:var(--accent-cyan)" id="valMatches"><div class="skeleton" style="width:40px; height:24px; margin:0 auto;"></div></span>
                 <span class="stat-label">Matches</span>
             </div>
             <div class="stat-card">
-                <span class="stat-val" style="color:var(--accent-purple)" id="valWins"><div class="skeleton" style="width:40px; height:20px; margin:0 auto;"></div></span>
+                <span class="stat-val" style="color:var(--accent-purple)" id="valWins"><div class="skeleton" style="width:40px; height:24px; margin:0 auto;"></div></span>
                 <span class="stat-label">Wins</span>
             </div>
             <div class="stat-card">
-                <span class="stat-val" style="color:var(--accent-green)" id="valEarnings"><div class="skeleton" style="width:60px; height:20px; margin:0 auto;"></div></span>
-                <span class="stat-label">Earned (Rs)</span>
+                <span class="stat-val" style="color:var(--accent-green)" id="valReputation"><div class="skeleton" style="width:50px; height:24px; margin:0 auto;"></div></span>
+                <span class="stat-label">Trust Score</span>
             </div>
             <div class="stat-card">
-                <span class="stat-val" style="color:var(--accent-orange)" id="valPoints"><div class="skeleton" style="width:60px; height:20px; margin:0 auto;"></div></span>
+                <span class="stat-val" style="color:var(--accent-orange)" id="valPoints"><div class="skeleton" style="width:70px; height:24px; margin:0 auto;"></div></span>
                 <span class="stat-label">Points (PTS)</span>
             </div>
         </div>
 
-        <a href="explore.html" class="action-card">
+        <a href="explore.html" class="action-card" onclick="triggerHaptic();">
             <div class="action-text">
                 <h4>Find Tournaments</h4>
                 <p>Browse active events and secure your slot.</p>
             </div>
             <div class="action-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
         </a>
-        <a href="matches.html" class="action-card ac-purple">
+        <a href="matches.html" class="action-card ac-purple" onclick="triggerHaptic();">
             <div class="action-text">
                 <h4>Upcoming Matches</h4>
                 <p>View room IDs and schedule.</p>
@@ -265,17 +313,31 @@
                 <span class="stat-val" style="color:var(--accent-cyan)" id="valPlayers">0</span>
                 <span class="stat-label">Total Players</span>
             </div>
+            <div class="stat-card" style="grid-column: span 2;">
+                <span class="stat-val" style="color:#ffea00; display:flex; justify-content:center; gap:5px; font-size:1.5rem;" id="valRating">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i><i class="fa-regular fa-star"></i>
+                </span>
+                <span class="stat-label" id="valRatingText">Organizer Rating: 0.0</span>
+            </div>
         </div>
 
-        <a href="createtournament.html" class="action-card">
+        <a href="tournament.html" class="action-card" onclick="triggerHaptic();">
             <div class="action-text">
                 <h4>Create Tournament</h4>
                 <p>Host a new event and manage brackets.</p>
             </div>
             <div class="action-icon"><i class="fa-solid fa-plus"></i></div>
         </a>
+
+        <div class="action-card ac-green" onclick="openAllTourneysModal(); triggerHaptic();">
+            <div class="action-text">
+                <h4>Tournament Manager</h4>
+                <p>View, edit, or delete all your hosted events.</p>
+            </div>
+            <div class="action-icon"><i class="fa-solid fa-list-check"></i></div>
+        </div>
         
-        <a href="clans.html" class="action-card ac-purple">
+        <a href="clans.html" class="action-card ac-purple" onclick="triggerHaptic();">
             <div class="action-text">
                 <h4>My Clan Hub</h4>
                 <p>Manage your rosters and verify members.</p>
@@ -283,37 +345,50 @@
             <div class="action-icon"><i class="fa-solid fa-shield-halved"></i></div>
         </a>
 
-        <div class="org-list-header">
-            <span>My Tournaments</span>
-            <i class="fa-solid fa-rotate-right" style="color:var(--accent-cyan); font-size:0.9rem; cursor:pointer;" onclick="fetchMyTournaments()"></i>
-        </div>
-        <div id="orgTourneysList">
-            <div style="text-align:center; padding:20px; color:#888; font-size:0.9rem;"><i class="fa-solid fa-spinner fa-spin"></i> Fetching your events...</div>
+        <div class="action-card" style="border-color: #555; background: rgba(255,255,255,0.02);" onclick="shareOrgProfile(); triggerHaptic();">
+            <div class="action-text">
+                <h4>Share Organizer Profile</h4>
+                <p>Invite players to follow your upcoming tournaments.</p>
+            </div>
+            <div class="action-icon" style="background: rgba(255,255,255,0.1); color: #fff; box-shadow: none;"><i class="fa-solid fa-share-nodes"></i></div>
         </div>
     </div>
 
     <div class="settings-list">
-        <div class="setting-item" onclick="openEditModal()">
+        <div class="setting-item" onclick="openEditModal(); triggerHaptic();">
             <div class="setting-icon"><i class="fa-solid fa-user-pen"></i></div>
             <div class="setting-name">Edit Profile Details</div>
             <div class="setting-arrow"><i class="fa-solid fa-chevron-right"></i></div>
         </div>
-        <div class="setting-item" onclick="openPassModal()">
-            <div class="setting-icon"><i class="fa-solid fa-lock"></i></div>
+        <div class="setting-item" onclick="openPassModal(); triggerHaptic();">
+            <div class="setting-icon"><i class="fa-solid fa-shield-halved"></i></div>
             <div class="setting-name">Security & Password</div>
             <div class="setting-arrow"><i class="fa-solid fa-chevron-right"></i></div>
         </div>
-        <div class="setting-item" onclick="window.location.href='wallet.html'">
+        <div class="setting-item" onclick="window.location.href='wallet.html'; triggerHaptic();">
             <div class="setting-icon"><i class="fa-solid fa-wallet"></i></div>
             <div class="setting-name">Wallet & Transactions</div>
             <div class="setting-arrow"><i class="fa-solid fa-chevron-right"></i></div>
         </div>
-        <div class="setting-item" onclick="cycleThemeColor()">
+        <div class="setting-item" onclick="cycleThemeColor(); triggerHaptic();">
             <div class="setting-icon"><i class="fa-solid fa-palette"></i></div>
             <div class="setting-name">App Accent Color</div>
             <div class="setting-arrow"><i class="fa-solid fa-chevron-right"></i></div>
         </div>
-        <div class="setting-item" onclick="window.open('https://discord.com', '_blank')">
+        
+        <div class="setting-item" onclick="togglePowerSave(); triggerHaptic();">
+            <div class="setting-icon"><i class="fa-solid fa-leaf"></i></div>
+            <div class="setting-name">Power Saving Mode <span id="psmStatus" style="font-size:0.75rem; color:#888; font-weight:normal;">(Off)</span></div>
+            <div class="setting-arrow"><i class="fa-solid fa-toggle-off" id="psmToggle"></i></div>
+        </div>
+
+        <div class="setting-item" onclick="copySupportId(); triggerHaptic();">
+            <div class="setting-icon"><i class="fa-solid fa-bug"></i></div>
+            <div class="setting-name">Copy Support ID</div>
+            <div class="setting-arrow"><i class="fa-regular fa-copy"></i></div>
+        </div>
+
+        <div class="setting-item" onclick="window.open('https://discord.com', '_blank'); triggerHaptic();">
             <div class="setting-icon"><i class="fa-brands fa-discord"></i></div>
             <div class="setting-name">Help & Support</div>
             <div class="setting-arrow"><i class="fa-solid fa-chevron-right"></i></div>
@@ -328,24 +403,30 @@
     <div class="modal-overlay" id="editModal">
         <div class="modal-card">
             <div class="modal-header">
-                <div class="modal-title">Edit Profile</div>
-                <i class="fa-solid fa-xmark close-modal" onclick="closeEditModal()"></i>
+                <div class="modal-title"><i class="fa-solid fa-user-pen" style="color:var(--accent-purple);"></i> Edit Profile</div>
+                <i class="fa-solid fa-xmark close-modal" onclick="closeEditModal(); triggerHaptic();"></i>
             </div>
             <label class="form-label">Display Name</label>
             <input type="text" id="editName" class="form-control" placeholder="Enter name">
             
             <label class="form-label">In-Game Name (IGN)</label>
             <input type="text" id="editIgn" class="form-control" placeholder="Enter IGN">
+
+            <label class="form-label">Primary Game</label>
+            <input type="text" id="editMainGame" class="form-control" placeholder="e.g. Free Fire, BGMI, Valorant">
+
+            <label class="form-label">YouTube Channel URL (Optional)</label>
+            <input type="url" id="editYtLink" class="form-control" placeholder="https://youtube.com/...">
             
-            <button class="save-btn" id="saveBtn" onclick="saveProfile()">Save Changes</button>
+            <button class="save-btn" id="saveBtn" onclick="saveProfile(); triggerHaptic();">Save Changes</button>
         </div>
     </div>
 
     <div class="modal-overlay" id="passModal">
         <div class="modal-card">
             <div class="modal-header">
-                <div class="modal-title">Change Password</div>
-                <i class="fa-solid fa-xmark close-modal" onclick="closePassModal()"></i>
+                <div class="modal-title"><i class="fa-solid fa-shield-halved" style="color:var(--accent-orange);"></i> Change Password</div>
+                <i class="fa-solid fa-xmark close-modal" onclick="closePassModal(); triggerHaptic();"></i>
             </div>
             <label class="form-label">Current Password</label>
             <input type="password" id="oldPass" class="form-control" placeholder="Enter old password">
@@ -353,7 +434,55 @@
             <label class="form-label">New Password</label>
             <input type="password" id="newPass" class="form-control" placeholder="Enter new password">
             
-            <button class="save-btn" id="savePassBtn" onclick="submitPasswordChange()">Update Password</button>
+            <button class="save-btn" id="savePassBtn" onclick="submitPasswordChange(); triggerHaptic();">Update Password</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay full-screen-modal" id="allTourneysModal">
+        <div class="modal-card">
+            <div class="modal-header" style="margin-bottom: 10px;">
+                <div class="modal-title"><i class="fa-solid fa-list-check" style="color:var(--accent-green);"></i> Tournament Manager</div>
+                <i class="fa-solid fa-xmark close-modal" onclick="closeAllTourneysModal(); triggerHaptic();"></i>
+            </div>
+            
+            <div class="org-list-header" style="border:none; padding-top:0;">
+                <span>All Your Events</span>
+                <i class="fa-solid fa-rotate-right" id="refreshTourneysBtn" style="color:var(--accent-cyan); font-size:1.1rem; cursor:pointer; padding:5px; transition:0.3s;" onclick="fetchMyTournaments(); triggerHaptic();"></i>
+            </div>
+            
+            <div class="fs-content" id="orgTourneysList">
+                <div style="text-align:center; padding:30px 20px; color:#888; font-size:0.95rem;"><i class="fa-solid fa-spinner fa-spin" style="color:var(--accent-purple); font-size:1.5rem; margin-bottom:10px; display:block;"></i> Fetching your events...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="manageTourneyModal" style="z-index: 5005;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title"><i class="fa-solid fa-pen-to-square" style="color:var(--accent-cyan);"></i> Edit Event</div>
+                <i class="fa-solid fa-xmark close-modal" onclick="closeManageModal(); triggerHaptic();"></i>
+            </div>
+            <input type="hidden" id="editTourneyId">
+            
+            <label class="form-label">Tournament Title</label>
+            <input type="text" id="editTourneyTitle" class="form-control" placeholder="Event Name">
+            
+            <label class="form-label">Match Period (Dates)</label>
+            <input type="text" id="editTourneyDate" class="form-control" placeholder="e.g. 15 March">
+            
+            <label class="form-label">Live Stream URL (Optional)</label>
+            <input type="url" id="editTourneyStream" class="form-control" placeholder="YouTube/Twitch URL">
+            
+            <label class="form-label">Event Status</label>
+            <select id="editTourneyStatus" class="form-control" style="margin-bottom: 25px;">
+                <option value="Upcoming">Upcoming</option>
+                <option value="Live">Live</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+            </select>
+            
+            <button class="save-btn" id="saveTourneyBtn" onclick="saveTournamentChanges(); triggerHaptic();">Update Tournament</button>
+            <button class="delete-btn" id="deleteTourneyBtn" onclick="deleteTournament(); triggerHaptic();"><i class="fa-solid fa-trash-can"></i> Delete Tournament</button>
         </div>
     </div>
 
@@ -386,55 +515,128 @@
     </nav>
 
     <script>
-        // --- 1. BACKGROUND ANIMATION ---
+        // --- 1. BACKGROUND ANIMATION & POWER SAVING ---
         const canvas = document.getElementById('particles-canvas');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
         let pArray = [];
-        class P { constructor(){ this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.s=Math.random()*2; this.c=Math.random()>0.5?'#bd00ff':'#00f2ff'; } u(){ this.y-=0.5; if(this.y<0)this.y=canvas.height; } d(){ ctx.fillStyle=this.c; ctx.globalAlpha=0.3; ctx.beginPath(); ctx.arc(this.x,this.y,this.s,0,Math.PI*2); ctx.fill(); } }
-        for(let i=0; i<50; i++) pArray.push(new P());
-        function anim(){ ctx.clearRect(0,0,canvas.width,canvas.height); pArray.forEach(p=>{p.u();p.d()}); requestAnimationFrame(anim); }
+        let animPaused = localStorage.getItem('tournyx_psm') === 'true';
+
+        class P { constructor(){ this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.s=Math.random()*2; this.c=Math.random()>0.5?'#bd00ff':'#00f2ff'; } u(){ this.y-=0.5; if(this.y<0)this.y=canvas.height; } d(){ ctx.fillStyle=this.c; ctx.globalAlpha=0.3; ctx.beginPath(); ctx.arc(Math.floor(this.x),Math.floor(this.y),this.s,0,Math.PI*2); ctx.fill(); } }
+        for(let i=0; i<30; i++) pArray.push(new P());
+        
+        function anim(){ 
+            if(!animPaused) {
+                ctx.clearRect(0,0,canvas.width,canvas.height); 
+                pArray.forEach(p=>{p.u();p.d()}); 
+            }
+            requestAnimationFrame(anim); 
+        }
         anim();
         window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+
+        // Restore PSM UI state on load
+        if(animPaused) {
+            document.getElementById('psmToggle').className = "fa-solid fa-toggle-on";
+            document.getElementById('psmToggle').style.color = "var(--accent-cyan)";
+            document.getElementById('psmStatus').innerText = "(On)";
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+        }
+
+        function togglePowerSave() {
+            animPaused = !animPaused;
+            localStorage.setItem('tournyx_psm', animPaused);
+            const tg = document.getElementById('psmToggle');
+            const st = document.getElementById('psmStatus');
+            if(animPaused) {
+                tg.className = "fa-solid fa-toggle-on"; tg.style.color = "var(--accent-cyan)";
+                st.innerText = "(On)"; showToast("Power Saving Enabled");
+                ctx.clearRect(0,0,canvas.width,canvas.height);
+            } else {
+                tg.className = "fa-solid fa-toggle-off"; tg.style.color = "#555";
+                st.innerText = "(Off)"; showToast("Power Saving Disabled");
+            }
+        }
+
+        // --- Simulated Network Ping ---
+        setInterval(() => {
+            let ping = Math.floor(Math.random() * (45 - 12 + 1) + 12);
+            document.getElementById('networkPing').innerHTML = `<i class="fa-solid fa-satellite-dish fa-fade"></i> Ping: ${ping}ms`;
+        }, 3000);
 
         // --- 2. CONFIGURATION & AUTH ENFORCEMENT ---
         const API_URL = 'https://script.google.com/macros/s/AKfycbynNLDDXS1wMrU6RGnk4nKb1jfQkQGuqrNIKWAt8wf46MaKP6y1rwGmSJg5fmm4KYU/exec';
         let userData = JSON.parse(localStorage.getItem('tournyx_user'));
+        let myHostedEvents = []; 
         
         if(!userData || userData.email === "guest@tournyx.com") {
             alert("Please Login to view your profile.");
             window.location.href = 'login.html'; 
         }
 
+        // Feature 2: Daily Streak Logic
+        let lastLogin = localStorage.getItem('tournyx_last_login');
+        let streak = parseInt(localStorage.getItem('tournyx_streak')) || 1;
+        let today = new Date().toDateString();
+        if(lastLogin !== today) {
+            if(lastLogin === new Date(Date.now() - 86400000).toDateString()) { streak++; } 
+            else if(lastLogin) { streak = 1; } // Broken streak
+            localStorage.setItem('tournyx_streak', streak);
+            localStorage.setItem('tournyx_last_login', today);
+        }
+        document.getElementById('streakCount').innerText = streak;
+
         // --- 3. UX HELPERS ---
+        function triggerHaptic() { if(navigator.vibrate) navigator.vibrate(40); }
+
         function showToast(msg, isError = false) {
             const t = document.getElementById('customToast');
             t.innerText = msg; t.className = "show";
-            t.style.backgroundColor = isError ? "#ff4d4d" : "var(--accent-cyan)";
+            t.style.backgroundColor = isError ? "var(--accent-danger)" : "var(--accent-cyan)";
             t.style.color = isError ? "white" : "#000";
             setTimeout(() => t.className = "", 3000);
         }
 
         function copyIgn() {
-            let ign = document.getElementById('userIgn').innerText.replace('IGN: ', '');
-            navigator.clipboard.writeText(ign).then(() => showToast("IGN Copied!"));
+            let ignText = document.getElementById('userIgn').innerText;
+            if(ignText === "Loading..." || ignText === "Tap to set IGN") return;
+            navigator.clipboard.writeText(ignText).then(() => showToast("IGN Copied!"));
         }
 
-        // Themes
-        const themes = [
-            {cyan: '#00f2ff', purple: '#bd00ff'},
-            {cyan: '#00ff7f', purple: '#00b09b'},
-            {cyan: '#ff9900', purple: '#ff4d4d'}
-        ];
-        let tIndex = 0;
+        // Feature 10: Copy Support ID
+        function copySupportId() {
+            let encodedId = btoa(userData.email);
+            navigator.clipboard.writeText(encodedId).then(() => showToast("Support ID Copied!"));
+        }
+
+        function shareOrgProfile() {
+            let msg = `🎮 Calling all Gamers! I'm hosting Tournaments on Tournyx. Follow my Organizer Profile (${userData.username}) and join the battlefield!`;
+            if (navigator.share) {
+                navigator.share({ title: 'Tournyx Organizer', text: msg }).catch(() => showToast("Share cancelled"));
+            } else {
+                navigator.clipboard.writeText(msg).then(() => showToast("Promo Text Copied to Clipboard!"));
+            }
+        }
+
+        // Feature 8: Specific Tournament Share
+        function shareSpecificTournament(title) {
+            let msg = `🔥 Join my upcoming eSports Tournament: ${title}! Hosted on the Tournyx App. Register now to secure your slot!`;
+            if (navigator.share) {
+                navigator.share({ title: title, text: msg }).catch(()=>console.log("Share skipped"));
+            } else {
+                navigator.clipboard.writeText(msg).then(() => showToast("Invite Text Copied!"));
+            }
+        }
+
         function cycleThemeColor() {
-            tIndex = (tIndex + 1) % themes.length;
-            document.documentElement.style.setProperty('--accent-cyan', themes[tIndex].cyan);
-            document.documentElement.style.setProperty('--accent-purple', themes[tIndex].purple);
-            showToast("Accent Color Updated!");
+            let tIndex = parseInt(localStorage.getItem('tournyx_theme_index')) || 0;
+            tIndex = (tIndex + 1) % THEMES.length;
+            localStorage.setItem('tournyx_theme_index', tIndex);
+            applyGlobalTheme(); 
+            showToast("App Theme Updated!");
         }
 
-        // --- 4. DATA RENDERING ---
+        // --- 4. SECURE DATA RENDERING ---
         document.addEventListener("DOMContentLoaded", () => {
             initProfile();
         });
@@ -442,21 +644,28 @@
         async function initProfile() {
             renderUserInfo(userData);
             
-            // Background Live Sync
             try {
-                const res = await fetch(API_URL, {
-                    method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'sync_user', email: userData.email })
+                fetch(API_URL + "?action=sync_user&email=" + encodeURIComponent(userData.email))
+                .then(r => r.json())
+                .then(data => {
+                    if(data.status === "success") {
+                        userData.points = data.data.points || userData.points;
+                        userData.rupees = data.data.rupees || userData.rupees;
+                        userData.matches = data.data.matches || userData.matches;
+                        userData.wins = data.data.wins || userData.wins;
+                        userData.hosted = data.data.hosted || userData.hosted;
+                        // Grab new custom fields securely
+                        userData.main_game = data.data.main_game || userData.main_game;
+                        userData.yt_link = data.data.yt_link || userData.yt_link;
+                        
+                        localStorage.setItem('tournyx_user', JSON.stringify(userData));
+                        renderUserInfo(userData); 
+                    }
                 });
-                // Note: no-cors blocks reading, so we rely on local data mainly. 
-                // To properly read, Apps Script must return CORS headers.
-                // Assuming successful update of local storage if we could read it:
-                // userData = result.data; localStorage.setItem... renderUserInfo...
             } catch(e) { console.log("Silent sync executed."); }
         }
 
         function renderUserInfo(data) {
-            document.getElementById('userName').innerText = data.username || "Player";
             document.getElementById('userIgn').innerText = data.ign ? data.ign : "Tap to set IGN";
             
             if(data.avatar && data.avatar.length > 5) {
@@ -467,31 +676,66 @@
 
             // Render Stats
             let pts = parseInt(data.points) || 0;
-            document.getElementById('valMatches').innerText = data.matches || 0;
-            document.getElementById('valWins').innerText = data.wins || 0;
-            document.getElementById('valEarnings').innerText = (data.rupees || 0).toLocaleString();
+            let mCount = parseInt(data.matches) || 0;
+            let wCount = parseInt(data.wins) || 0;
+
+            document.getElementById('valMatches').innerText = mCount;
+            document.getElementById('valWins').innerText = wCount;
             document.getElementById('valPoints').innerText = pts.toLocaleString();
             
-            document.getElementById('valHosted').innerText = data.hosted || 0;
-            document.getElementById('valPlayers').innerText = (data.hosted || 0) * 48; 
-
-            // Calculate Tier based on Points
-            let tier = "Bronze"; let pct = 10; let level = 1;
-            if(pts >= 1000 && pts < 5000) { tier = "Silver"; pct = 30; level = 10;}
-            else if(pts >= 5000 && pts < 15000) { tier = "Gold"; pct = 60; level = 25;}
-            else if(pts >= 15000 && pts < 50000) { tier = "Diamond"; pct = 85; level = 50;}
-            else if(pts >= 50000) { tier = "Champion"; pct = 100; level = 99;}
+            // Feature 6: Player Reputation (Algorithm based on activity)
+            let repScore = 50 + (mCount * 1.5) + (wCount * 2.5);
+            if(repScore > 100) repScore = 100;
+            if(mCount === 0) repScore = 0;
+            document.getElementById('valReputation').innerText = Math.round(repScore);
             
+            let hostedCount = parseInt(data.hosted) || 0;
+            document.getElementById('valHosted').innerText = hostedCount;
+            document.getElementById('valPlayers').innerText = hostedCount * 48;
+
+            // Feature 7: Organizer Rating
+            let starsHTML = ""; let ratingNum = 0.0;
+            if(hostedCount > 0) {
+                ratingNum = Math.min(5.0, 3.5 + (hostedCount * 0.15)).toFixed(1);
+                let fullStars = Math.floor(ratingNum);
+                let halfStar = (ratingNum - fullStars) >= 0.5 ? 1 : 0;
+                let emptyStars = 5 - fullStars - halfStar;
+                
+                for(let i=0; i<fullStars; i++) starsHTML += '<i class="fa-solid fa-star"></i>';
+                if(halfStar) starsHTML += '<i class="fa-solid fa-star-half-stroke"></i>';
+                for(let i=0; i<emptyStars; i++) starsHTML += '<i class="fa-regular fa-star"></i>';
+            } else {
+                starsHTML = '<i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i>';
+            }
+            document.getElementById('valRating').innerHTML = starsHTML;
+            document.getElementById('valRatingText').innerText = `Organizer Rating: ${ratingNum}`;
+
+            // Calculate Tier and Badge (Feature 3)
+            let tier = "Bronze"; let pct = 10; let level = 1; let badge = "🥉";
+            if(pts >= 1000 && pts < 5000) { tier = "Silver"; pct = 30; level = 10; badge = "🥈";}
+            else if(pts >= 5000 && pts < 15000) { tier = "Gold"; pct = 60; level = 25; badge = "🥇";}
+            else if(pts >= 15000 && pts < 50000) { tier = "Diamond"; pct = 85; level = 50; badge = "💎";}
+            else if(pts >= 50000) { tier = "Champion"; pct = 100; level = 99; badge = "👑";}
+            
+            document.getElementById('userName').innerHTML = `${badge} ${data.username || "Player"}`;
             document.getElementById('userTier').innerText = tier;
             document.getElementById('userLevel').innerText = level;
-            document.getElementById('tierProgress').style.width = pct + "%";
+            
+            setTimeout(() => { document.getElementById('tierProgress').style.width = pct + "%"; }, 100);
 
-            // Set Role View
-            if(data.role === 'organizer') switchRole('organizer');
-            else switchRole('player');
+            // Extras: Game Tag & YouTube
+            document.getElementById('mainGameTag').innerHTML = `<i class="fa-solid fa-crosshairs"></i> Game: ${data.main_game || 'N/A'}`;
+            let ytHtml = data.yt_link ? `<a href="${data.yt_link}" target="_blank" class="yt-link" title="Visit Channel"><i class="fa-brands fa-youtube"></i></a>` : "";
+            
+            // Reconstruct User Extras div
+            document.getElementById('userExtras').innerHTML = `<span class="game-tag" id="mainGameTag"><i class="fa-solid fa-crosshairs"></i> Game: ${data.main_game || 'N/A'}</span> ${ytHtml}`;
+
+            if(data.role === 'organizer' && !document.getElementById('btnOrg').classList.contains('active')) {
+                switchRole('organizer');
+            }
         }
 
-        // --- 5. ROLE SWITCHER ---
+        // --- 5. FIXED ROLE SWITCHER ---
         function switchRole(role) {
             const s = document.getElementById('roleSlider');
             const dashP = document.getElementById('playerDash');
@@ -500,50 +744,140 @@
             const btnO = document.getElementById('btnOrg');
 
             if (role === 'player') {
-                s.style.left = "5px";
+                s.style.left = "6px";
+                s.style.background = "var(--accent-gradient)";
                 btnP.classList.add('active'); btnO.classList.remove('active');
                 dashP.classList.add('active'); dashO.classList.remove('active');
             } else {
-                s.style.left = "calc(50% + 5px)";
+                s.style.left = "calc(50% + 1px)";
+                s.style.background = "linear-gradient(90deg, var(--accent-cyan), var(--accent-green))";
                 btnO.classList.add('active'); btnP.classList.remove('active');
                 dashO.classList.add('active'); dashP.classList.remove('active');
-                fetchMyTournaments(); // Load org data
+                fetchMyTournaments(); 
             }
         }
 
-        // --- 6. ORGANIZER TOURNAMENT MANAGER ---
+        // --- 6. ORGANIZER TOURNAMENT MANAGER (TAB, EDIT, DELETE, SHARE) ---
+        function openAllTourneysModal() {
+            document.getElementById('allTourneysModal').classList.add('active');
+            fetchMyTournaments();
+        }
+        function closeAllTourneysModal() {
+            document.getElementById('allTourneysModal').classList.remove('active');
+        }
+
         function fetchMyTournaments() {
             const container = document.getElementById('orgTourneysList');
-            // Ping live backend for tournaments created by this user
+            const refBtn = document.getElementById('refreshTourneysBtn');
+            if(refBtn) { refBtn.classList.add('fa-spin'); setTimeout(()=>refBtn.classList.remove('fa-spin'), 1000); }
+            
             fetch(API_URL + "?action=get_tournaments")
             .then(res => res.json())
             .then(data => {
                 if(data.status === "success" && data.data) {
-                    let myEvents = data.data.filter(t => t.org_email === userData.email);
+                    myHostedEvents = data.data.filter(t => String(t.org_email).toLowerCase() === String(userData.email).toLowerCase());
                     container.innerHTML = "";
-                    if(myEvents.length === 0) {
-                        container.innerHTML = "<div style='text-align:center; padding:15px; color:#666; font-style:italic;'>You haven't hosted any tournaments yet.</div>";
+                    if(myHostedEvents.length === 0) {
+                        container.innerHTML = `
+                            <div style='text-align:center; padding:30px 20px; color:#666; background:rgba(0,0,0,0.3); border-radius:15px; border:1px dashed var(--card-border);'>
+                                <i class="fa-solid fa-ghost" style="font-size:2rem; margin-bottom:10px; opacity:0.5;"></i><br>
+                                You haven't hosted any tournaments yet.
+                            </div>`;
                     } else {
-                        myEvents.forEach(t => {
+                        myHostedEvents.forEach(t => {
+                            let sColor = t.status.toLowerCase().includes('live') ? 'var(--accent-green)' : (t.status.toLowerCase().includes('completed') ? '#888' : 'var(--accent-cyan)');
                             container.innerHTML += `
                                 <div class="managed-item">
                                     <div class="mi-info">
                                         <h5>${t.title}</h5>
-                                        <p>${t.date} • ${t.status || 'Upcoming'}</p>
+                                        <p>${t.date || t.match_period} • <span style="color:${sColor}; font-weight:bold;">${t.status || 'Upcoming'}</span></p>
                                     </div>
-                                    <button class="mi-btn" onclick="editMyTournament('${t.id}')">Manage</button>
+                                    <div class="mi-btn-group">
+                                        <button class="mi-share" onclick="shareSpecificTournament('${t.title}'); triggerHaptic();" title="Share Invite"><i class="fa-solid fa-share-nodes"></i></button>
+                                        <button class="mi-btn" onclick="openManageModal('${t.id}'); triggerHaptic();">Edit</button>
+                                    </div>
                                 </div>
                             `;
                         });
                     }
                 }
-            }).catch(() => { container.innerHTML = "<div style='text-align:center; color:#ff4d4d;'>Failed to sync live events.</div>"; });
+            }).catch(() => { container.innerHTML = "<div style='text-align:center; color:#ff4d4d; padding:20px;'><i class='fa-solid fa-triangle-exclamation'></i> Failed to load events.</div>"; });
         }
 
-        function editMyTournament(id) {
-            showToast("Opening Management Portal...");
-            // Redirect logic to a management page if you build one, or simple alert:
-            setTimeout(() => { alert("This would open the bracket and details editor for event: " + id); }, 500);
+        function openManageModal(id) {
+            let t = myHostedEvents.find(x => x.id === id);
+            if(!t) return;
+            
+            document.getElementById('editTourneyId').value = t.id;
+            document.getElementById('editTourneyTitle').value = t.title || "";
+            document.getElementById('editTourneyDate').value = t.match_period || t.date || "";
+            document.getElementById('editTourneyStream').value = t.stream_url || "";
+            
+            let s = document.getElementById('editTourneyStatus');
+            s.value = t.status || "Upcoming";
+            if(!s.value) s.value = "Upcoming";
+
+            document.getElementById('manageTourneyModal').classList.add('active');
+        }
+
+        function closeManageModal() { document.getElementById('manageTourneyModal').classList.remove('active'); }
+
+        function saveTournamentChanges() {
+            const btn = document.getElementById('saveTourneyBtn');
+            btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Updating...";
+            btn.disabled = true;
+
+            const payload = {
+                action: 'edit_tournament',
+                id: document.getElementById('editTourneyId').value,
+                email: userData.email, 
+                title: document.getElementById('editTourneyTitle').value,
+                match_period: document.getElementById('editTourneyDate').value,
+                stream_url: document.getElementById('editTourneyStream').value,
+                status: document.getElementById('editTourneyStatus').value
+            };
+
+            fetch(API_URL, {
+                method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(() => {
+                showToast("Tournament Updated Successfully!");
+                closeManageModal();
+                btn.innerText = "Update Tournament"; btn.disabled = false;
+                setTimeout(() => { fetchMyTournaments(); }, 1000);
+            }).catch(() => {
+                showToast("Network Error.", true);
+                btn.innerText = "Update Tournament"; btn.disabled = false;
+            });
+        }
+
+        function deleteTournament() {
+            if(!confirm("⚠️ WARNING: Are you sure you want to completely DELETE this tournament? This action cannot be undone.")) return;
+
+            const btn = document.getElementById('deleteTourneyBtn');
+            btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Deleting...";
+            btn.disabled = true;
+
+            const payload = {
+                action: 'delete_tournament',
+                id: document.getElementById('editTourneyId').value,
+                email: userData.email
+            };
+
+            fetch(API_URL, {
+                method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(() => {
+                showToast("Tournament Deleted!");
+                closeManageModal();
+                btn.innerHTML = "<i class='fa-solid fa-trash-can'></i> Delete Tournament"; 
+                btn.disabled = false;
+                setTimeout(() => { fetchMyTournaments(); }, 1000);
+            }).catch(() => {
+                showToast("Network Error.", true);
+                btn.innerHTML = "<i class='fa-solid fa-trash-can'></i> Delete Tournament"; 
+                btn.disabled = false;
+            });
         }
 
         // --- 7. EDIT PROFILE LOGIC ---
@@ -551,30 +885,35 @@
             document.getElementById('editModal').classList.add('active');
             document.getElementById('editName').value = userData.username || "";
             document.getElementById('editIgn').value = userData.ign || "";
+            document.getElementById('editMainGame').value = userData.main_game || "";
+            document.getElementById('editYtLink').value = userData.yt_link || "";
         }
         function closeEditModal() { document.getElementById('editModal').classList.remove('active'); }
 
         async function saveProfile() {
             const btn = document.getElementById('saveBtn'); 
-            btn.innerText = "Saving..."; btn.disabled = true;
+            btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Saving..."; 
+            btn.disabled = true;
             
             const updates = { 
                 username: document.getElementById('editName').value, 
-                ign: document.getElementById('editIgn').value 
+                ign: document.getElementById('editIgn').value,
+                main_game: document.getElementById('editMainGame').value,
+                yt_link: document.getElementById('editYtLink').value
             };
 
             try {
                 fetch(API_URL, {
                     method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'update_profile', email: userData.email, username: updates.username, ign: updates.ign })
+                    body: JSON.stringify({ action: 'update_profile', email: userData.email, username: updates.username, ign: updates.ign, main_game: updates.main_game, yt_link: updates.yt_link })
                 }).then(() => {
                     const merged = { ...userData, ...updates };
                     localStorage.setItem('tournyx_user', JSON.stringify(merged));
                     userData = merged; renderUserInfo(merged); closeEditModal(); 
-                    showToast("Profile Updated!");
+                    showToast("Profile Updated Successfully!");
                     btn.innerText = "Save Changes"; btn.disabled = false;
                 });
-            } catch(e) { showToast("Error saving.", true); btn.disabled = false; }
+            } catch(e) { showToast("Error saving profile.", true); btn.innerText = "Save Changes"; btn.disabled = false; }
         }
 
         // --- 8. BASE64 AVATAR UPLOADER ---
@@ -583,21 +922,24 @@
             if (!file) return;
             if(file.size > 2 * 1024 * 1024) { showToast("Image must be under 2MB.", true); return; }
 
+            document.getElementById('userAvatar').style.opacity = "0.5";
+            showToast("Processing Image...");
+
             const reader = new FileReader();
             reader.onload = function(e) {
                 const b64 = e.target.result;
                 document.getElementById('userAvatar').src = b64;
+                document.getElementById('userAvatar').style.opacity = "1";
                 
                 userData.avatar = b64;
                 localStorage.setItem('tournyx_user', JSON.stringify(userData));
                 
-                // Sync to sheets
                 fetch(API_URL, {
                     method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ action: 'update_profile', email: userData.email, avatar: b64 })
                 });
                 
-                showToast("Avatar Updated!");
+                showToast("Avatar Updated Successfully!");
             };
             reader.readAsDataURL(file);
         }
@@ -616,14 +958,18 @@
             if(!op || !np) { showToast("Fill all fields.", true); return; }
             
             const btn = document.getElementById('savePassBtn');
-            btn.innerText = "Verifying..."; btn.disabled = true;
+            btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Verifying..."; 
+            btn.disabled = true;
 
             fetch(API_URL, {
                 method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action: 'change_password', email: userData.email, old: op, new: np })
             }).then(() => {
-                showToast("Password Update Requested");
+                showToast("Password Update Requested Successfully");
                 closePassModal();
+                btn.innerText = "Update Password"; btn.disabled = false;
+            }).catch(() => {
+                showToast("Network Error.", true);
                 btn.innerText = "Update Password"; btn.disabled = false;
             });
         }
@@ -632,6 +978,8 @@
         function logout() {
             if(confirm("Are you sure you want to log out?")) { 
                 localStorage.removeItem('tournyx_user'); 
+                localStorage.removeItem('tournyx_my_clans_cache');
+                localStorage.removeItem('tournyx_txns');
                 window.location.href = 'login.html'; 
             }
         }
