@@ -766,7 +766,7 @@
             document.getElementById('allTourneysModal').classList.remove('active');
         }
 
-        function fetchMyTournaments() {
+                function fetchMyTournaments() {
             const container = document.getElementById('orgTourneysList');
             const refBtn = document.getElementById('refreshTourneysBtn');
             if(refBtn) { refBtn.classList.add('fa-spin'); setTimeout(()=>refBtn.classList.remove('fa-spin'), 1000); }
@@ -775,7 +775,8 @@
             .then(res => res.json())
             .then(data => {
                 if(data.status === "success" && data.data) {
-                    myHostedEvents = data.data.filter(t => String(t.org_email).toLowerCase() === String(userData.email).toLowerCase());
+                    // MATCHED TO YOUR SHEET: organizer_email
+                    myHostedEvents = data.data.filter(t => String(t.organizer_email).toLowerCase() === String(userData.email).toLowerCase());
                     container.innerHTML = "";
                     if(myHostedEvents.length === 0) {
                         container.innerHTML = `
@@ -790,11 +791,11 @@
                                 <div class="managed-item">
                                     <div class="mi-info">
                                         <h5>${t.title}</h5>
-                                        <p>${t.date || t.match_period} • <span style="color:${sColor}; font-weight:bold;">${t.status || 'Upcoming'}</span></p>
+                                        <p>${t.match_period || t.date} • <span style="color:${sColor}; font-weight:bold;">${t.status || 'Upcoming'}</span></p>
                                     </div>
                                     <div class="mi-btn-group">
                                         <button class="mi-share" onclick="shareSpecificTournament('${t.title}'); triggerHaptic();" title="Share Invite"><i class="fa-solid fa-share-nodes"></i></button>
-                                        <button class="mi-btn" onclick="openManageModal('${t.id}'); triggerHaptic();">Edit</button>
+                                        <button class="mi-btn" onclick="openManageModal('${t.match_id}'); triggerHaptic();">Edit</button>
                                     </div>
                                 </div>
                             `;
@@ -804,11 +805,12 @@
             }).catch(() => { container.innerHTML = "<div style='text-align:center; color:#ff4d4d; padding:20px;'><i class='fa-solid fa-triangle-exclamation'></i> Failed to load events.</div>"; });
         }
 
-        function openManageModal(id) {
-            let t = myHostedEvents.find(x => x.id === id);
+        // MATCHED TO YOUR SHEET: match_id
+        function openManageModal(match_id) {
+            let t = myHostedEvents.find(x => x.match_id === match_id);
             if(!t) return;
             
-            document.getElementById('editTourneyId').value = t.id;
+            document.getElementById('editTourneyId').value = t.match_id;
             document.getElementById('editTourneyTitle').value = t.title || "";
             document.getElementById('editTourneyDate').value = t.match_period || t.date || "";
             document.getElementById('editTourneyStream').value = t.stream_url || "";
@@ -819,6 +821,7 @@
 
             document.getElementById('manageTourneyModal').classList.add('active');
         }
+
 
         function closeManageModal() { document.getElementById('manageTourneyModal').classList.remove('active'); }
 
