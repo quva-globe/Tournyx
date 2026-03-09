@@ -741,10 +741,10 @@
             const rawData = Object.fromEntries(formData);
             let useOrg = document.getElementById('orgToggle').classList.contains('active');
 
-            const payload = {
+                        const payload = {
                 action: 'create_tournament',
-                org_email: currentUser.email,
-                org_username: useOrg ? currentUser.username : "Verified Organizer",
+                organizer_email: currentUser.email, // MATCHED TO SHEET
+                organizer_username: useOrg ? currentUser.username : "Verified Organizer", // MATCHED TO SHEET
                 title: rawData.tournament_name,
                 game: document.getElementById('finalGamePayload').value, 
                 format: rawData.format,
@@ -758,6 +758,7 @@
                 status: "Upcoming",
                 stream_url: rawData.stream_url || ""
             };
+
 
             try {
                 const response = await fetch(API_URL, {
