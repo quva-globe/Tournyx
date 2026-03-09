@@ -6,6 +6,26 @@
     <title>My Matches - Tournyx</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+          <script>
+            (function() {
+                try {
+                    const THEMES = [
+                        {cyan: '#00f2ff', purple: '#bd00ff'},
+                        {cyan: '#00ff7f', purple: '#00b09b'},
+                        {cyan: '#ff9900', purple: '#ff4d4d'}
+                    ];
+                    let tIndex = parseInt(localStorage.getItem('tournyx_theme_index')) || 0;
+                    if(THEMES[tIndex]) {
+                        document.documentElement.style.setProperty('--accent-cyan', THEMES[tIndex].cyan);
+                        document.documentElement.style.setProperty('--accent-purple', THEMES[tIndex].purple);
+                        document.documentElement.style.setProperty('--accent-gradient', `linear-gradient(90deg, ${THEMES[tIndex].purple}, ${THEMES[tIndex].cyan})`);
+                    }
+                } catch(e) {
+                    console.log("Theme setting bypassed - strict browser settings.");
+                }
+            })();
+        </script>
+
     <style>
         /* --- GLOBAL VARIABLES --- */
         :root {
