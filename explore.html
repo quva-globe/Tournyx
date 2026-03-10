@@ -47,7 +47,7 @@
         * { -ms-overflow-style: none !important; scrollbar-width: none !important; box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
         *::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; background: transparent !important; -webkit-appearance: none !important; }
         
-        body { background-color: var(--primary-bg); color: white; font-family: var(--font-body); padding-bottom: calc(90px + env(safe-area-inset-bottom)); padding-top: calc(60px + env(safe-area-inset-top)); overflow-x: hidden; }
+        body { background-color: var(--primary-bg); color: white; font-family: var(--font-body); padding-bottom: calc(90px + env(safe-area-bottom)); padding-top: calc(60px + env(safe-area-inset-top)); overflow-x: hidden; }
 
         /* --- RESPONSIVE WRAPPER --- */
         .search-row, .game-scroll, .tourney-list, .app-footer, .top-header .header-wrapper { max-width: 1000px; margin-left: auto !important; margin-right: auto !important; width: 100%; }
@@ -744,15 +744,16 @@
             document.getElementById('dtBanner').src = formatImageUrl(t.banner);
             document.getElementById('dtTitle').innerHTML = `${t.title} <i class="fa-solid fa-circle-check verified-badge"></i>`;
             
-            // FIXED: Show Organizer Username
             document.getElementById('dtOrgName').innerHTML = `${t.org_username || 'Verified Organizer'}`;
             
             document.getElementById('dtPrize').innerText = getPrizeText(t.prize);
             document.getElementById('dtFee').innerText = getEntryText(t.fee);
             document.getElementById('dtGame').innerText = t.game || "N/A";
             document.getElementById('dtFormat').innerText = t.format || "N/A";
-            document.getElementById('dtDescription').innerText = t.rules || "Standard competitive rules apply.";
-            document.getElementById('dtRulesText').innerText = t.rules || "No specific rules provided.";
+            
+            // FIXED BUG 2: Use .innerHTML instead of .innerText so the rich text tags format properly
+            document.getElementById('dtDescription').innerHTML = t.rules || "Standard competitive rules apply.";
+            document.getElementById('dtRulesText').innerHTML = t.rules || "No specific rules provided.";
             
             const rawPrize = (!t.prize || t.prize == 0) ? 0 : parseInt(t.prize);
             document.getElementById('dtPrizeTotalHead').innerText = getPrizeText(t.prize);
@@ -762,7 +763,6 @@
                 document.getElementById('prize3').innerText = "20% - " + (rawPrize * 0.20).toFixed(0) + " Rs.";
             }
 
-            // FIXED: Stream Section logic
             const strmSec = document.getElementById('dtStreamSection');
             if (t.stream_url && t.stream_url.trim() !== "") {
                 strmSec.style.display = 'block';
@@ -771,7 +771,6 @@
                 strmSec.style.display = 'none';
             }
 
-            // FIXED: Match Period logic
             document.getElementById('dtMatchDateRange').innerText = t.match_period || "TBA";
             document.getElementById('dtRegDateRange').innerText = formatDateTime(t.date);
 
@@ -828,11 +827,15 @@
             if(document.getElementById('masterJoinBtn').disabled) return;
             
             let user = JSON.parse(localStorage.getItem('tournyx_user')) || {};
-            // Fetch live cached clans
             let userClans = JSON.parse(localStorage.getItem('tournyx_my_clans_cache')) || [];
             
-            // FILTER logic: Only show clans matching the tournament's game!
-            let matchingClans = userClans.filter(c => c.game === activeTournament.game || activeTournament.game === 'Multiple' || activeTournament.game === 'Esports');
+            // FIXED BUG 1: Smart filtering. Uses .includes() so "Free Fire [Mobile]" matches a clan named "Free Fire"
+            let matchingClans = userClans.filter(c => {
+                if(!c.game || !activeTournament.game) return false;
+                let tourneyGame = activeTournament.game.toLowerCase();
+                let clanGame = c.game.toLowerCase();
+                return tourneyGame.includes(clanGame) || clanGame.includes(tourneyGame) || tourneyGame === 'multiple' || tourneyGame === 'esports';
+            });
 
             const select = document.getElementById('formSelectClan');
             select.innerHTML = '<option value="" disabled selected>Choose your team...</option>';
@@ -843,9 +846,8 @@
                 });
                 document.getElementById('regClanLabel').innerHTML = `Select ${activeTournament.game} Roster *`;
             } else {
-                // Fallback if they don't have a clan for this game
                 select.innerHTML += `<option value="${user.username} (Solo Player)">Register as Solo Player</option>`;
-                document.getElementById('regClanLabel').innerHTML = `No ${activeTournament.game} clan found. Playing Solo.`;
+                document.getElementById('regClanLabel').innerHTML = `No matching clan found. Playing Solo.`;
             }
             
             document.getElementById('finalSubmitBtn').innerText = "Proceed";
