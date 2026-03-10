@@ -6,25 +6,26 @@
     <title>eSports Clan Hub - Tournyx</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-           <script>
-            (function() {
-                try {
-                    const THEMES = [
-                        {cyan: '#00f2ff', purple: '#bd00ff'},
-                        {cyan: '#00ff7f', purple: '#00b09b'},
-                        {cyan: '#ff9900', purple: '#ff4d4d'}
-                    ];
-                    let tIndex = parseInt(localStorage.getItem('tournyx_theme_index')) || 0;
-                    if(THEMES[tIndex]) {
-                        document.documentElement.style.setProperty('--accent-cyan', THEMES[tIndex].cyan);
-                        document.documentElement.style.setProperty('--accent-purple', THEMES[tIndex].purple);
-                        document.documentElement.style.setProperty('--accent-gradient', `linear-gradient(90deg, ${THEMES[tIndex].purple}, ${THEMES[tIndex].cyan})`);
-                    }
-                } catch(e) {
-                    console.log("Theme setting bypassed - strict browser settings.");
+    
+    <script>
+        (function() {
+            try {
+                const THEMES = [
+                    {cyan: '#00f2ff', purple: '#bd00ff'},
+                    {cyan: '#00ff7f', purple: '#00b09b'},
+                    {cyan: '#ff9900', purple: '#ff4d4d'}
+                ];
+                let tIndex = parseInt(localStorage.getItem('tournyx_theme_index')) || 0;
+                if(THEMES[tIndex]) {
+                    document.documentElement.style.setProperty('--accent-cyan', THEMES[tIndex].cyan);
+                    document.documentElement.style.setProperty('--accent-purple', THEMES[tIndex].purple);
+                    document.documentElement.style.setProperty('--accent-gradient', `linear-gradient(90deg, ${THEMES[tIndex].purple}, ${THEMES[tIndex].cyan})`);
                 }
-            })();
-        </script>
+            } catch(e) {
+                console.log("Theme setting bypassed - strict browser settings.");
+            }
+        })();
+    </script>
 
     <style>
         /* --- GLOBAL VARIABLES --- */
@@ -115,7 +116,7 @@
         .xp-bar-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 5px; overflow: hidden; }
         .xp-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent-orange), #ffdd00); width: 0%; border-radius: 5px; box-shadow: 0 0 10px var(--accent-orange); transition: width 1.5s ease-in-out; }
 
-        /* LIVE STATS GRID (Auto-Calculated from Match History) */
+        /* LIVE STATS GRID */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 20px; }
         .stat-box { background: var(--card-bg); border: 1px solid var(--card-border); padding: 15px; border-radius: 15px; text-align: center; display: flex; flex-direction: column; align-items: center; position: relative; overflow:hidden; transition:0.3s;}
         .stat-box:hover { transform: translateY(-3px); border-color:var(--accent-cyan); box-shadow: 0 5px 15px rgba(0,242,255,0.1); }
@@ -570,19 +571,21 @@
             grid.innerHTML = "";
             
             userLiveClans.forEach((clan, i) => {
-                // Safeguard against broken rows missing a name
                 if(!clan || !clan.name) return; 
                 
                 let cName = clan.name;
                 let cTag = clan.tag || "TNYX";
                 let cGame = clan.game || "Esports";
                 let firstChar = cName.charAt(0).toUpperCase();
-                let imgFallback = `https://via.placeholder.com/150x150/110822/00f2ff?text=${firstChar}`;
+                
+                // FIXED BUG 1: Pull the saved logo directly from the clan object!
+                let finalLogo = clan.logo && clan.logo.length > 10 ? clan.logo : `https://via.placeholder.com/150x150/110822/00f2ff?text=${firstChar}`;
+                
                 let rCount = clan.roster ? clan.roster.length : 1;
 
                 grid.innerHTML += `
                     <div class="hub-card" onclick="openClanDashboard(${i})">
-                        <img src="${clan.logo || imgFallback}" class="hc-logo" onerror="this.src='${imgFallback}'">
+                        <img src="${finalLogo}" class="hc-logo" onerror="this.src='https://via.placeholder.com/150x150/110822/00f2ff?text=${firstChar}'">
                         <div class="hc-info">
                             <div class="hc-name">${cName} <i class="fa-solid fa-circle-check" style="color:#1da1f2; font-size:0.8rem;"></i></div>
                             <div style="font-size:0.75rem; color:#888;">#${cTag} • <i class="fa-solid fa-users"></i> ${rCount}/6</div>
@@ -593,7 +596,7 @@
                 `;
             });
             
-            if(grid.innerHTML === "") showNoClan(); // If all rows were broken
+            if(grid.innerHTML === "") showNoClan(); 
         }
 
         function returnToHub() {
@@ -622,7 +625,7 @@
         function openClanDashboard(index) {
             activeClan = userLiveClans[index];
             renderDashboard(activeClan);
-            calculateLiveClanStats(activeClan); // Auto Fetch live stats
+            calculateLiveClanStats(activeClan); 
         }
 
         function renderDashboard(clan) {
@@ -641,11 +644,10 @@
             document.getElementById('dashMinRank').innerHTML = `${clan.minRank || 'None'} <i class="fa-solid fa-pen" style="font-size:0.6rem; color:#888; margin-left:5px;"></i>`;
             document.getElementById('dashAutoAccept').checked = clan.autoAccept || false;
             
-            document.getElementById('dashLogo').src = clan.logo || `https://via.placeholder.com/150x150/110822/00f2ff?text=${clan.name.charAt(0)}`;
-            document.getElementById('dashBanner').src = clan.banner || "https://via.placeholder.com/600x200/110822/bd00ff?text=Clan+Banner";
+            document.getElementById('dashLogo').src = clan.logo && clan.logo.length > 10 ? clan.logo : `https://via.placeholder.com/150x150/110822/00f2ff?text=${clan.name.charAt(0)}`;
+            document.getElementById('dashBanner').src = clan.banner && clan.banner.length > 10 ? clan.banner : "https://via.placeholder.com/600x200/110822/bd00ff?text=Clan+Banner";
             document.getElementById('dashGameText').innerText = clan.game || "Esports";
 
-            document.getElementById('dashMembers').innerText = clan.roster ? clan.roster.length : 1;
             document.getElementById('rosterCountTag').innerText = `(${clan.roster ? clan.roster.length : 1}/6)`;
             
             let rBadge = document.getElementById('dashRecruit');
@@ -897,7 +899,15 @@
             document.getElementById('globalClansList').innerHTML = "<div style='text-align:center; color:#888; padding:20px;'><i class='fa-solid fa-spinner fa-spin'></i> Loading servers...</div>";
             fetch(API_URL + "?action=get_all_clans").then(r=>r.text()).then(text => {
                 let data = JSON.parse(text);
-                if(data.status==='success') { globalClans = data.data; renderClans(globalClans); }
+                if(data.status==='success') { 
+                    // FIXED BUG 2: Filter out any clan that the user is already a part of!
+                    let allClans = data.data;
+                    globalClans = allClans.filter(gClan => {
+                        // Return true only if this global clan's ID does NOT match any of my own clans
+                        return !userLiveClans.some(myClan => myClan.clanId === gClan.clanId);
+                    });
+                    renderClans(globalClans); 
+                }
             }).catch(()=>document.getElementById('globalClansList').innerHTML="Error loading.");
         }
 
@@ -915,14 +925,17 @@
             list.forEach(c => {
                 if(!c.name) return;
                 let firstChar = c.name.charAt(0).toUpperCase();
-                let imgFallback = `https://via.placeholder.com/150x150/110822/bd00ff?text=${firstChar}`;
+                
+                // FIXED BUG 1: Read the logo properly for the Search List too
+                let finalLogo = c.logo && c.logo.length > 10 ? c.logo : `https://via.placeholder.com/150x150/110822/bd00ff?text=${firstChar}`;
+                
                 let rCount = c.roster ? c.roster.length : 1;
                 let cGame = c.game || "Esports";
                 let cTag = c.tag || "TNYX";
 
                 html += `
                 <div class="search-card">
-                    <img src="${c.logo || imgFallback}" class="sc-img" onerror="this.src='${imgFallback}'">
+                    <img src="${finalLogo}" class="sc-img" onerror="this.src='https://via.placeholder.com/150x150/110822/bd00ff?text=${firstChar}'">
                     <div class="sc-info">
                         <div class="sc-name">${c.name} <span style="font-size:0.7rem; color:#888;">#${cTag}</span></div>
                         <div style="font-size:0.8rem; color:var(--accent-cyan); display:flex; gap:10px; margin-top:3px; align-items:center; flex-wrap:wrap;">
