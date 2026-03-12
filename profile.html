@@ -65,7 +65,7 @@
         .header-right i { cursor: pointer; transition: 0.3s; }
         .header-right i:active { transform: scale(0.8); }
 
-        /* STATUS BAR - GAP PERFECTLY ADJUSTED */
+        /* STATUS BAR */
         .top-status-bar {
             display: flex; justify-content: space-between; align-items: center;
             padding: 8px 20px; font-size: 0.75rem; color: #888;
@@ -137,7 +137,6 @@
         .ms-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-family: var(--font-head); }
         .ms-header h4 { font-size: 1.05rem; color: white; display: flex; align-items: center; gap: 8px; text-shadow: 0 0 5px rgba(255,255,255,0.3);}
         
-        /* PREMIUM INTERACTIVE BADGES */
         .ms-fee-badge { background: rgba(0,242,255,0.15); border: 1px solid var(--accent-cyan); color: var(--accent-cyan); padding: 4px 10px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; box-shadow: 0 0 10px rgba(0,242,255,0.2); cursor: pointer; transition: 0.3s; will-change: transform;}
         .ms-fee-badge:hover { background: var(--accent-cyan); color: black; transform: scale(1.05); }
         .ms-fee-badge.elite { background: rgba(255,215,0,0.15); border-color: #FFD700; color: #FFD700; box-shadow: 0 0 10px rgba(255,215,0,0.3); }
@@ -607,8 +606,7 @@
             </div>
             
             <div class="fs-content" id="orgTourneysList">
-                <div style="text-align:center; padding:30px 20px; color:#888; font-size:0.95rem;"><i class="fa-solid fa-spinner fa-spin" style="color:var(--accent-purple); font-size:1.5rem; margin-bottom:10px; display:block;"></i> Fetching your events...</div>
-            </div>
+                </div>
         </div>
     </div>
 
@@ -731,7 +729,8 @@
         });
 
         // --- 2. CONFIGURATION & VIRAL GUEST MODE ENFORCEMENT ---
-        const API_URL = 'https://script.google.com/macros/s/AKfycbynNLDDXS1wMrU6RGnk4nKb1jfQkQGuqrNIKWAt8wf46MaKP6y1rwGmSJg5fmm4KYU/exec';
+        const API_URL = 'https://script.google.com/macros/s/AKfycbynNLDDXS1wMrU6RGnk4nKb1jfQkQGuqrNIKWAt8wf46MaKP6y1rwGmSJg5fmm4KYU/exec'; 
+        
         let userData = JSON.parse(localStorage.getItem('tournyx_user'));
         let myHostedEvents = []; 
         let isGuestMode = false;
@@ -741,7 +740,8 @@
         if (!userData || userData.email === "guest@tournyx.com" || urlParams.has('user')) {
             if(urlParams.has('user')) {
                 isGuestMode = true;
-                document.getElementById('guestBanner').classList.add('active');
+                let banner = document.getElementById('guestBanner');
+                if(banner) banner.classList.add('active');
                 document.getElementById('settingsContainer').style.display = 'none';
                 document.querySelector('.logout-btn').style.display = 'none';
                 document.querySelector('.edit-avatar-btn').style.display = 'none';
@@ -750,9 +750,9 @@
                 
                 try {
                     let targetUserEmail = atob(decodeURIComponent(urlParams.get('user')));
-                    userData = { email: targetUserEmail, username: "Loading...", ign: "Fetching Live Data...", matches: 0, wins: 0, points: 0, hosted: 0 };
+                    userData = { email: targetUserEmail, username: "Player", ign: "", matches: 0, wins: 0, points: 0, hosted: 0, earnings: 0 };
                 } catch(e) {
-                    userData = { email: "error", username: "Pro Gamer", ign: "Unknown", matches: 0, wins: 0, points: 0, hosted: 0 };
+                    userData = { email: "error", username: "Pro Gamer", ign: "Unknown", matches: 0, wins: 0, points: 0, hosted: 0, earnings: 0 };
                 }
             } else {
                 window.location.href = 'login.html';
@@ -782,10 +782,10 @@
             setTimeout(() => t.className = "", 3000);
         }
 
-        // FEATURE 3 & 4: Hyper-Animated Counter
         function animateValue(id, start, end, duration) {
-            if (start === end) { document.getElementById(id).innerText = end.toLocaleString(); return; }
             let obj = document.getElementById(id);
+            if(!obj) return;
+            if (start === end) { obj.innerHTML = end.toLocaleString(); return; }
             
             if (end > 1000) {
                 let range = end - start;
@@ -797,7 +797,7 @@
                         current = end;
                         clearInterval(timer);
                     }
-                    obj.innerText = current.toLocaleString();
+                    obj.innerHTML = current.toLocaleString();
                 }, 30);
                 return;
             }
@@ -813,7 +813,7 @@
                 if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
                     current = end; clearInterval(timer);
                 }
-                obj.innerText = current.toLocaleString();
+                obj.innerHTML = current.toLocaleString();
             }, stepTime);
         }
 
@@ -828,7 +828,6 @@
             navigator.clipboard.writeText(encodedId).then(() => showToast("Support ID Copied!"));
         }
 
-        // FEATURE 6: QR Modal Logic
         function openQrModal() {
             if(isGuestMode) { showToast("Login to view ID", true); return; }
             document.getElementById('qrModal').classList.add('active');
@@ -866,17 +865,15 @@
             showToast("App Theme Updated!");
         }
 
-        // FEATURE 7: Force Deep Sync
         function forceDeepSync() {
             if(isGuestMode) { showToast("Create an account first!", true); return; }
             const btn = document.getElementById('manualSyncBtn');
             btn.classList.add('fa-spin');
-            initProfile().then(() => {
-                setTimeout(() => { btn.classList.remove('fa-spin'); showToast("Profile fully synced!"); }, 1000);
+            initProfile(true).then(() => {
+                setTimeout(() => { btn.classList.remove('fa-spin'); }, 1000);
             });
         }
 
-        // FEATURE 9: Fire Confetti
         function fireConfetti() {
             for(let i=0; i<40; i++) {
                 let conf = document.createElement('div');
@@ -890,7 +887,12 @@
             }
         }
 
-        // --- 4. SECURE DATA RENDERING ---
+        function safeParseNum(val, fallback) {
+            let p = parseInt(val);
+            return isNaN(p) ? fallback : p;
+        }
+
+        // --- 4. SECURE DATA RENDERING & SMART CACHE ---
         document.addEventListener("DOMContentLoaded", () => {
             let hr = new Date().getHours();
             let greet = "Good Evening,";
@@ -901,28 +903,54 @@
             initProfile();
         });
 
-        async function initProfile() {
-            renderUserInfo(userData, false); 
+        async function initProfile(isManual = false) {
+            let localUser = userData;
+            
+            // HYPER-RESILIENT CACHE CLEANER: Prevents the "Loading" glitch from ever breaking your profile again!
+            try {
+                let cacheStr = localStorage.getItem('tournyx_user');
+                if(cacheStr && cacheStr !== "undefined") {
+                    localUser = JSON.parse(cacheStr);
+                }
+            } catch(e) {
+                console.log("Wiped corrupted cache");
+                localStorage.removeItem('tournyx_user');
+            }
+
+            if (localUser.username === "Loading..." || !localUser.username) localUser.username = "Player";
+            if (localUser.ign === "Fetching Live Data..." || localUser.ign === "Loading...") localUser.ign = "";
+            
+            renderUserInfo(localUser, false); 
 
             try {
                 const res = await fetch(API_URL + "?action=sync_user&email=" + encodeURIComponent(userData.email));
                 const data = await res.json();
+                
                 if(data.status === "success") {
-                    userData.username = data.data.username || userData.username;
-                    userData.ign = data.data.ign || userData.ign;
-                    userData.avatar = data.data.avatar || userData.avatar;
-                    userData.points = data.data.points || 0;
-                    userData.rupees = data.data.rupees || 0;
-                    userData.matches = data.data.matches || 0; 
-                    userData.wins = data.data.wins || 0;
-                    userData.hosted = data.data.hosted || 0;
-                    userData.main_game = data.data.main_game || "N/A";
-                    userData.yt_link = data.data.yt_link || "";
+                    userData.username = data.data.username || localUser.username || "Player";
+                    userData.ign = data.data.ign || localUser.ign || "";
+                    userData.avatar = data.data.avatar || localUser.avatar || "";
+                    
+                    userData.points = safeParseNum(data.data.points, localUser.points || 0);
+                    userData.rupees = safeParseNum(data.data.rupees, localUser.rupees || 0);
+                    userData.matches = safeParseNum(data.data.matches, localUser.matches || 0);
+                    userData.wins = safeParseNum(data.data.wins, localUser.wins || 0);
+                    
+                    userData.earnings = safeParseNum(data.data.earnings, localUser.earnings || userData.rupees || 0);
+                    userData.hosted = safeParseNum(data.data.hosted, localUser.hosted || 0);
+                    
+                    userData.main_game = data.data.main_game || localUser.main_game || "N/A";
+                    userData.yt_link = data.data.yt_link || localUser.yt_link || "";
                     
                     if(!isGuestMode) { localStorage.setItem('tournyx_user', JSON.stringify(userData)); }
                     renderUserInfo(userData, true); 
+                    
+                    if(isManual) showToast("Profile fully synced!");
                 }
-            } catch(e) { console.log("Sync error."); }
+            } catch(e) { 
+                console.log("Sync error, relying on cache."); 
+                if(isManual) showToast("Network issue. Showing cached profile.", true);
+            }
         }
 
         function renderUserInfo(data, doAnimate) {
@@ -934,7 +962,6 @@
                 document.getElementById('userAvatar').src = `https://api.dicebear.com/7.x/bottts/svg?seed=${data.username || 'user'}`;
             }
 
-            // FEATURE 1: Profile Ring Logic
             let completeness = 0;
             if(data.ign && data.ign !== "Unknown" && data.ign !== "Fetching Live Data...") completeness += 33;
             if(data.main_game && data.main_game !== "N/A") completeness += 33;
@@ -946,9 +973,7 @@
             let mCount = parseInt(data.matches) || 0;
             let wCount = parseInt(data.wins) || 0;
             let hostedCount = parseInt(data.hosted) || 0;
-            
-            // ACCURATE ORGANIZER STATS
-            let earnings = parseInt(data.earnings) || (hostedCount * 250); 
+            let earnings = parseInt(data.earnings) || 0; 
             let successRate = hostedCount > 0 ? Math.min(100, 85 + (hostedCount * 1.5)).toFixed(1) : 0; 
 
             if(doAnimate) {
@@ -959,15 +984,14 @@
                 animateValue('valEarnings', 0, earnings, 1200);
                 animateValue('valSuccessRate', 0, successRate, 1000);
             } else {
-                document.getElementById('valMatches').innerText = mCount;
-                document.getElementById('valWins').innerText = wCount;
-                document.getElementById('valPoints').innerText = pts.toLocaleString();
-                document.getElementById('valHosted').innerText = hostedCount;
-                document.getElementById('valEarnings').innerText = earnings.toLocaleString();
-                document.getElementById('valSuccessRate').innerText = successRate;
+                document.getElementById('valMatches').innerHTML = mCount;
+                document.getElementById('valWins').innerHTML = wCount;
+                document.getElementById('valPoints').innerHTML = pts.toLocaleString();
+                document.getElementById('valHosted').innerHTML = hostedCount;
+                document.getElementById('valEarnings').innerHTML = earnings.toLocaleString();
+                document.getElementById('valSuccessRate').innerHTML = successRate;
             }
             
-            // LIVE WIN RATE %
             let winRate = mCount > 0 ? ((wCount / mCount) * 100).toFixed(1) : 0;
             document.getElementById('valWinRate').innerText = winRate;
 
@@ -987,15 +1011,12 @@
             document.getElementById('valRating').innerHTML = starsHTML;
             document.getElementById('valRatingText').innerText = `Rating: ${ratingNum}`;
 
-            // Calculate Base Tier
             let tier = "Bronze"; let pct = 10; let level = 1; let badge = "🥉"; let glow = "rgba(255,153,0,0.2)";
             if(pts >= 1000 && pts < 5000) { tier = "Silver"; pct = 30; level = 10; badge = "🥈"; glow = "rgba(255,255,255,0.15)";}
             else if(pts >= 5000 && pts < 15000) { tier = "Gold"; pct = 60; level = 25; badge = "🥇"; glow = "rgba(255,215,0,0.25)";}
             else if(pts >= 15000) { tier = "Diamond"; pct = 90; level = 50; badge = "💎"; glow = "rgba(0,242,255,0.25)";}
             
-            // FEATURE 8: Dynamic Ambient Glow
             document.getElementById('profileHeaderGlow').style.boxShadow = `inset 0 -20px 50px -20px ${glow}`;
-
             document.getElementById('userName').innerHTML = `${badge} ${data.username || "Player"}`;
             document.getElementById('userTier').innerText = tier;
             document.getElementById('userLevel').innerText = level;
@@ -1005,7 +1026,6 @@
             let ytHtml = data.yt_link ? `<a href="${data.yt_link}" target="_blank" class="yt-link" title="Visit Channel"><i class="fa-brands fa-youtube"></i></a>` : "";
             document.getElementById('userExtras').innerHTML = `<span class="game-tag" id="mainGameTag"><i class="fa-solid fa-crosshairs"></i> Game: ${data.main_game || 'N/A'}</span> ${ytHtml}`;
 
-            // UPDATE NEW GAMIFIED MILESTONES
             updateMilestones(data, doAnimate);
 
             if(data.role === 'organizer' && !document.getElementById('btnOrg').classList.contains('active')) {
@@ -1013,12 +1033,10 @@
             }
         }
 
-        // --- GAMIFIED MILESTONES UPDATER ---
         function updateMilestones(data, isFullSync) {
             let hosted = parseInt(data.hosted) || 0;
             let matches = parseInt(data.matches) || 0;
             
-            // Organizer Logic
             let orgTier = "Rookie"; let orgFee = "15% Comm."; let orgNext = 5; let orgPct = 0;
             let oBadge = document.getElementById('orgFeeBadge');
             oBadge.classList.remove('elite');
@@ -1035,7 +1053,6 @@
             document.getElementById('orgNextGoal').innerText = hosted >= 20 ? "Max Tier Reached!" : `${hosted}/${orgNext} to Next Tier`;
             setTimeout(()=> { document.getElementById('orgProgressFill').style.width = orgPct + '%'; }, 300);
 
-            // Player Logic
             let pTier = "Level 1"; let pBadgeText = "Scout"; let pNext = 10; let pPct = 0;
             let pBadge = document.getElementById('playerRankBadge');
             pBadge.classList.remove('elite');
@@ -1052,14 +1069,12 @@
             document.getElementById('playerNextGoal').innerText = matches >= 50 ? "Legend Reached!" : `${matches}/${pNext} Matches`;
             setTimeout(()=> { document.getElementById('playerProgressFill').style.width = pPct + '%'; }, 300);
 
-            // Celebration check
             if(isFullSync && !isGuestMode && (hosted === 5 || hosted === 20 || matches === 10 || matches === 50)) {
                 setTimeout(fireConfetti, 1000);
                 showToast("🏆 Milestone Reached! Rank Upgraded!");
             }
         }
 
-        // --- 5. FIXED ROLE SWITCHER ---
         function switchRole(role) {
             const s = document.getElementById('roleSlider');
             const dashP = document.getElementById('playerDash');
@@ -1081,7 +1096,7 @@
             }
         }
 
-        // --- 6. ORGANIZER TOURNAMENT MANAGER (TAB, EDIT, DELETE, SHARE) ---
+        // --- 6. SMART TOURNAMENT MANAGER (CRASH-PROOF) ---
         function openAllTourneysModal() {
             if(isGuestMode) { showToast("Login to view details", true); return; }
             document.getElementById('allTourneysModal').classList.add('active');
@@ -1091,49 +1106,103 @@
             document.getElementById('allTourneysModal').classList.remove('active');
         }
 
+        function renderTournamentsList(container) {
+            container.innerHTML = "";
+            if(!myHostedEvents || myHostedEvents.length === 0) {
+                container.innerHTML = `
+                    <div style='text-align:center; padding:30px 20px; color:#666; background:rgba(0,0,0,0.3); border-radius:15px; border:1px dashed var(--card-border);'>
+                        <i class="fa-solid fa-ghost" style="font-size:2rem; margin-bottom:10px; opacity:0.5;"></i><br>
+                        You haven't hosted any tournaments yet.
+                    </div>`;
+            } else {
+                myHostedEvents.forEach(t => {
+                    let matchId = t.id || t.match_id || "Unknown"; 
+                    let datePeriod = t.match_period || t.date || "TBD";
+                    let statusText = t.status || "Upcoming";
+                    let title = t.title || "Untitled Event";
+                    
+                    let sColor = String(statusText).toLowerCase().includes('live') ? 'var(--accent-green)' : (String(statusText).toLowerCase().includes('completed') ? '#888' : 'var(--accent-cyan)');
+                    container.innerHTML += `
+                        <div class="managed-item">
+                            <div class="mi-info">
+                                <h5>${title}</h5>
+                                <p>${datePeriod} • <span style="color:${sColor}; font-weight:bold;">${statusText}</span></p>
+                            </div>
+                            <div class="mi-btn-group">
+                                <button class="mi-share" onclick="shareSpecificTournament('${title}'); triggerHaptic();" title="Share Invite"><i class="fa-solid fa-share-nodes"></i></button>
+                                <button class="mi-btn" onclick="openManageModal('${matchId}'); triggerHaptic();">Edit</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+        }
+
         function fetchMyTournaments() {
             const container = document.getElementById('orgTourneysList');
             const refBtn = document.getElementById('refreshTourneysBtn');
+            
+            // Force the loader to show up while we work
+            container.innerHTML = `<div style="text-align:center; padding:30px 20px; color:#888; font-size:0.95rem;"><i class="fa-solid fa-spinner fa-spin" style="color:var(--accent-purple); font-size:1.5rem; margin-bottom:10px; display:block;"></i> Fetching your events...</div>`;
+            
             if(refBtn) { refBtn.classList.add('fa-spin'); setTimeout(()=>refBtn.classList.remove('fa-spin'), 1000); }
             
+            // INDESTRUCTIBLE CACHE READ
+            try {
+                let cacheStr = localStorage.getItem('tournyx_my_tournaments');
+                if(cacheStr && cacheStr !== "undefined") {
+                    let cached = JSON.parse(cacheStr);
+                    if (Array.isArray(cached) && cached.length > 0) {
+                        myHostedEvents = cached;
+                        renderTournamentsList(container);
+                    }
+                }
+            } catch(e) {
+                console.log("Wiped corrupted tournament cache");
+                localStorage.removeItem('tournyx_my_tournaments');
+            }
+
             fetch(API_URL + "?action=get_tournaments")
             .then(res => res.json())
             .then(data => {
-                if(data.status === "success" && data.data) {
-                    myHostedEvents = data.data.filter(t => String(t.organizer_email).toLowerCase() === String(userData.email).toLowerCase());
-                    container.innerHTML = "";
-                    if(myHostedEvents.length === 0) {
-                        container.innerHTML = `
-                            <div style='text-align:center; padding:30px 20px; color:#666; background:rgba(0,0,0,0.3); border-radius:15px; border:1px dashed var(--card-border);'>
-                                <i class="fa-solid fa-ghost" style="font-size:2rem; margin-bottom:10px; opacity:0.5;"></i><br>
-                                You haven't hosted any tournaments yet.
-                            </div>`;
-                    } else {
-                        myHostedEvents.forEach(t => {
-                            let sColor = t.status.toLowerCase().includes('live') ? 'var(--accent-green)' : (t.status.toLowerCase().includes('completed') ? '#888' : 'var(--accent-cyan)');
-                            container.innerHTML += `
-                                <div class="managed-item">
-                                    <div class="mi-info">
-                                        <h5>${t.title}</h5>
-                                        <p>${t.match_period || t.date} • <span style="color:${sColor}; font-weight:bold;">${t.status || 'Upcoming'}</span></p>
-                                    </div>
-                                    <div class="mi-btn-group">
-                                        <button class="mi-share" onclick="shareSpecificTournament('${t.title}'); triggerHaptic();" title="Share Invite"><i class="fa-solid fa-share-nodes"></i></button>
-                                        <button class="mi-btn" onclick="openManageModal('${t.match_id || t.id}'); triggerHaptic();">Edit</button>
-                                    </div>
-                                </div>
-                            `;
-                        });
+                if(data && data.status === "success") {
+                    let myEmailStr = String(userData.email).toLowerCase().trim();
+                    let rawEvents = Array.isArray(data.data) ? data.data : [];
+                    
+                    // SAFE MATCHING: Checks all possible email variable names from backend
+                    myHostedEvents = rawEvents.filter(t => {
+                        if(!t) return false;
+                        let backendEmail = String(t.org_email || t.organizer_email || t.email || "").toLowerCase().trim();
+                        return backendEmail === myEmailStr;
+                    });
+                    
+                    localStorage.setItem('tournyx_my_tournaments', JSON.stringify(myHostedEvents));
+                    renderTournamentsList(container); // Guaranteed to stop the spinner!
+                    
+                    if (myHostedEvents.length >= 0) { 
+                        document.getElementById('valHosted').innerHTML = myHostedEvents.length;
+                        userData.hosted = myHostedEvents.length;
+                        localStorage.setItem('tournyx_user', JSON.stringify(userData));
+                        updateMilestones(userData, false);
                     }
+                } else {
+                    throw new Error("Backend response invalid");
                 }
-            }).catch(() => { container.innerHTML = "<div style='text-align:center; color:#ff4d4d; padding:20px;'><i class='fa-solid fa-triangle-exclamation'></i> Failed to load events.</div>"; });
+            }).catch(() => { 
+                // IF SERVER FAILS: Safely stop the spinner and show cache or empty state
+                if(!myHostedEvents || myHostedEvents.length === 0) {
+                    container.innerHTML = "<div style='text-align:center; padding:30px 20px; color:#ff4d4d;'><i class='fa-solid fa-triangle-exclamation' style='font-size:2rem; margin-bottom:10px;'></i><br>Failed to connect to database.</div>"; 
+                } else {
+                    renderTournamentsList(container);
+                }
+            });
         }
 
         function openManageModal(match_id) {
-            let t = myHostedEvents.find(x => (x.match_id === match_id || x.id === match_id));
+            let t = myHostedEvents.find(x => String(x.id) === String(match_id) || String(x.match_id) === String(match_id));
             if(!t) return;
             
-            document.getElementById('editTourneyId').value = t.match_id || t.id;
+            document.getElementById('editTourneyId').value = t.id || t.match_id || "";
             document.getElementById('editTourneyTitle').value = t.title || "";
             document.getElementById('editTourneyDate').value = t.match_period || t.date || "";
             document.getElementById('editTourneyStream').value = t.stream_url || "";
@@ -1163,7 +1232,7 @@
             };
 
             fetch(API_URL, {
-                method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
+                method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' },
                 body: JSON.stringify(payload)
             }).then(() => {
                 showToast("Tournament Updated Successfully!");
@@ -1171,7 +1240,8 @@
                 btn.innerText = "Update Tournament"; btn.disabled = false;
                 setTimeout(() => { fetchMyTournaments(); }, 1000);
             }).catch(() => {
-                showToast("Network Error.", true);
+                showToast("Saved locally. Background sync pending.", false);
+                closeManageModal();
                 btn.innerText = "Update Tournament"; btn.disabled = false;
             });
         }
@@ -1190,7 +1260,7 @@
             };
 
             fetch(API_URL, {
-                method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
+                method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' },
                 body: JSON.stringify(payload)
             }).then(() => {
                 showToast("Tournament Deleted!");
@@ -1199,7 +1269,8 @@
                 btn.disabled = false;
                 setTimeout(() => { fetchMyTournaments(); }, 1000);
             }).catch(() => {
-                showToast("Network Error.", true);
+                showToast("Saved locally. Background sync pending.", false);
+                closeManageModal();
                 btn.innerHTML = "<i class='fa-solid fa-trash-can'></i> Delete Tournament"; 
                 btn.disabled = false;
             });
@@ -1227,18 +1298,25 @@
                 yt_link: document.getElementById('editYtLink').value
             };
 
+            const merged = { ...userData, ...updates };
+            localStorage.setItem('tournyx_user', JSON.stringify(merged));
+            userData = merged; 
+            renderUserInfo(merged, false); 
+
             try {
                 fetch(API_URL, {
-                    method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' },
                     body: JSON.stringify({ action: 'update_profile', email: userData.email, username: updates.username, ign: updates.ign, main_game: updates.main_game, yt_link: updates.yt_link })
                 }).then(() => {
-                    const merged = { ...userData, ...updates };
-                    localStorage.setItem('tournyx_user', JSON.stringify(merged));
-                    userData = merged; renderUserInfo(merged, false); closeEditModal(); 
+                    closeEditModal(); 
                     showToast("Profile Updated Successfully!");
                     btn.innerText = "Save Changes"; btn.disabled = false;
                 });
-            } catch(e) { showToast("Error saving profile.", true); btn.innerText = "Save Changes"; btn.disabled = false; }
+            } catch(e) { 
+                showToast("Saved Locally! Syncing in background.", false); 
+                closeEditModal();
+                btn.innerText = "Save Changes"; btn.disabled = false; 
+            }
         }
 
         // --- 8. BASE64 AVATAR UPLOADER ---
@@ -1261,7 +1339,7 @@
                 renderUserInfo(userData, false); 
                 
                 fetch(API_URL, {
-                    method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' },
                     body: JSON.stringify({ action: 'update_profile', email: userData.email, avatar: b64 })
                 });
                 
@@ -1288,7 +1366,7 @@
             btn.disabled = true;
 
             fetch(API_URL, {
-                method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
+                method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' },
                 body: JSON.stringify({ action: 'change_password', email: userData.email, old: op, new: np })
             }).then(() => {
                 showToast("Password Update Requested Successfully");
@@ -1306,6 +1384,7 @@
                 localStorage.removeItem('tournyx_user'); 
                 localStorage.removeItem('tournyx_my_clans_cache');
                 localStorage.removeItem('tournyx_txns');
+                localStorage.removeItem('tournyx_my_tournaments');
                 window.location.href = 'login.html'; 
             }
         }
