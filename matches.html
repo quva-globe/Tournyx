@@ -33,8 +33,7 @@
     <style>
         /* --- GLOBAL VARIABLES --- */
         :root {
-            :root {
-    --primary-bg: #070311;
+            --primary-bg: #070311;
             --secondary-bg: #0d061e;
             --card-bg: rgba(20, 10, 35, 0.7);
             --card-border: rgba(189, 0, 255, 0.2);
@@ -43,7 +42,6 @@
             --accent-orange: #ff9900;
             --accent-green: #00ff7f;
             --accent-gradient: linear-gradient(90deg, #7b2cbf, #bd00ff, #00f2ff);
-
             --font-head: 'Orbitron', sans-serif;
             --font-body: 'Rajdhani', sans-serif;
         }
@@ -53,32 +51,44 @@
         *::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; background: transparent !important; -webkit-appearance: none !important; }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
-        body { background-color: var(--primary-bg); color: white; font-family: var(--font-body); padding-bottom: calc(90px + env(safe-area-inset-bottom)); padding-top: calc(60px + env(safe-area-inset-top)); overflow-x: hidden; }
+        /* DESKTOP RESPONSIVE TOP PADDING */
+        body { background-color: var(--primary-bg); color: white; font-family: var(--font-body); padding-bottom: calc(90px + env(safe-area-inset-bottom)); padding-top: calc(75px + env(safe-area-inset-top)); overflow-x: hidden; }
 
         /* --- RESPONSIVE WRAPPER --- */
-        .stats-row, .tabs, .search-box, .match-list, .app-footer, .top-header .header-wrapper { max-width: 1000px; margin-left: auto !important; margin-right: auto !important; width: 100%; }
+        .stats-row, .tabs-wrapper, .match-list, .app-footer, .top-header .header-wrapper { max-width: 1000px; margin-left: auto !important; margin-right: auto !important; width: 100%; }
 
         /* --- BACKGROUND --- */
-        #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at 50% 20%, #15062e 0%, #070311 100%); }
+        #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at 50% 20%, #15062e 0%, #070311 100%); transform: translateZ(0);}
 
-        /* --- HEADER --- */
+        /* --- OFFLINE BANNER --- */
+        .offline-banner { position: fixed; top: 0; left: 0; width: 100%; background: var(--accent-orange); color: #000; text-align: center; padding: 5px; font-family: var(--font-head); font-weight: bold; font-size: 0.8rem; z-index: 9999; transform: translateY(-100%); transition: 0.4s; }
+        .offline-banner.active { transform: translateY(0); }
+
+        /* --- HEADER & DESKTOP NAV --- */
         .top-header { position: fixed; top: 0; left: 0; width: 100%; padding: env(safe-area-inset-top) 15px 15px; background: rgba(7, 3, 17, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--card-border); z-index: 2000; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); }
         .header-wrapper { display: flex; align-items: center; justify-content: space-between; }
         .header-left { display: flex; align-items: center; gap: 10px; }
         .app-logo { width: 30px; height: 30px; border-radius: 50%; object-fit: contain; box-shadow: 0 0 10px var(--accent-purple); }
         .app-title { font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px; text-transform: uppercase; }
         
+        .desktop-nav { display: none; align-items: center; gap: 25px; }
+        .desktop-nav a { color: var(--text-muted); text-decoration: none; font-family: var(--font-head); font-size: 0.95rem; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: 1px;}
+        .desktop-nav a:hover, .desktop-nav a.active { color: var(--accent-cyan); text-shadow: 0 0 10px rgba(0,242,255,0.4); }
+        @media (min-width: 850px) { .desktop-nav { display: flex; } }
+
         .refresh-btn { width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); border-radius: 50%; cursor: pointer; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); transition: 0.3s; flex-shrink: 0;}
         .refresh-btn:active { transform: rotate(180deg); background: var(--accent-cyan); color: black; box-shadow: 0 0 15px rgba(0,242,255,0.5); }
+        .refresh-btn.cooldown { opacity: 0.5; pointer-events: none; border-color: #555; color: #555; }
 
         /* --- ADVANCED STATS WIDGET --- */
-        .stats-row { display: flex; gap: 10px; padding: 15px 15px 5px; }
+        .stats-row { display: flex; gap: 10px; padding: 5px 15px 5px; margin-bottom: 5px; }
         .stat-box { flex: 1; background: var(--secondary-bg); border: 1px solid var(--card-border); padding: 10px; border-radius: 12px; text-align: center; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
         .stat-val { font-family: var(--font-head); font-size: 1.3rem; font-weight: bold; color: white; text-shadow: 0 0 5px rgba(255,255,255,0.3); }
         .stat-lbl { font-size: 0.7rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
 
-        /* --- TABS & SEARCH --- */
-        .tabs { display: flex; padding: 10px 15px 0; border-bottom: 1px solid var(--card-border); margin-bottom: 15px; }
+        /* --- GLASSMORPHISM STICKY TABS & SEARCH --- */
+        .tabs-wrapper { position: sticky; top: calc(50px + env(safe-area-inset-top)); z-index: 1500; background: rgba(7,3,17,0.92); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); padding-top: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .tabs { display: flex; padding: 0 15px; margin-bottom: 10px; }
         .tab { flex: 1; text-align: center; padding: 12px; color: #888; font-family: var(--font-head); cursor: pointer; position: relative; transition: 0.3s; font-weight: bold; letter-spacing: 0.5px; }
         .tab.active { color: var(--accent-cyan); text-shadow: 0 0 10px rgba(0,242,255,0.4); }
         .tab.active::after { content: ''; position: absolute; bottom: -1px; left: 20%; width: 60%; height: 3px; background: var(--accent-cyan); box-shadow: 0 -2px 10px var(--accent-cyan); border-radius: 3px 3px 0 0; }
@@ -87,27 +97,33 @@
         .search-input { width: 100%; background: #110822; border: 1px solid var(--card-border); padding: 12px 15px 12px 40px; border-radius: 10px; color: white; font-size: 0.9rem; font-family: var(--font-body); outline: none; transition: 0.3s; box-sizing: border-box; }
         .search-input:focus { border-color: var(--accent-cyan); box-shadow: 0 0 10px rgba(0,242,255,0.2); }
         .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #888; font-size: 0.9rem; }
+        .highlight { color: var(--accent-orange); font-weight: 900; text-shadow: 0 0 5px rgba(255,153,0,0.5); }
 
         /* --- LIST CONTAINER & SKELETON --- */
-        .match-list { padding: 0 15px; min-height: 50vh; display: flex; flex-direction: column; gap: 20px; position: relative; }
+        .match-list { padding: 15px 15px 0; min-height: 50vh; display: flex; flex-direction: column; gap: 20px; position: relative; }
         
-        .skeleton-wrapper { display: none; flex-direction: column; gap: 20px; width: 100%; }
-        .skeleton-wrapper.active { display: flex; }
-        .skeleton { background: linear-gradient(90deg, #110822 25%, #1a0a3a 50%, #110822 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite linear; }
+        .skeleton-wrapper { display: flex; flex-direction: column; gap: 20px; width: 100%; }
+        .skeleton { background: linear-gradient(90deg, #110822 25%, #1a0a3a 50%, #110822 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite linear; transform: translateZ(0); }
         @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
         .s-card { background: var(--secondary-bg); border-radius: 16px; border: 1px solid var(--card-border); overflow: hidden; height: 260px; }
         
-        .real-content-wrapper { display: flex; flex-direction: column; gap: 20px; width: 100%; }
+        .real-content-wrapper { display: none; flex-direction: column; gap: 20px; width: 100%; }
 
-        /* --- 3D MATCH CARD --- */
-        .match-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; overflow: hidden; position: relative; display: flex; flex-direction: column; box-shadow: 0 10px 25px rgba(0,0,0,0.5); transition: transform 0.3s, border-color 0.3s; cursor: pointer; animation: slideInUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .match-card:hover { transform: translateY(-3px); border-color: var(--accent-cyan); box-shadow: 0 15px 35px rgba(0,242,255,0.1); }
+        /* --- 3D MATCH CARD & DYNAMIC GLOW --- */
+        .match-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; overflow: hidden; position: relative; display: flex; flex-direction: column; box-shadow: 0 10px 25px rgba(0,0,0,0.5); transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s; cursor: pointer; animation: slideInUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .match-card:hover { transform: translateY(-3px); }
         .match-card:active { transform: scale(0.98); }
+        
+        /* Status Glows */
+        .match-card.glow-upcoming:hover { border-color: var(--accent-cyan); box-shadow: 0 10px 30px rgba(0,242,255,0.15); }
+        .match-card.glow-live { border-color: rgba(0,255,127,0.4); box-shadow: 0 0 20px rgba(0,255,127,0.1); }
+        .match-card.glow-live:hover { border-color: var(--accent-green); box-shadow: 0 10px 30px rgba(0,255,127,0.2); }
+        
         @keyframes slideInUp { from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);} }
 
         .m-banner-wrapper { position: relative; width: 100%; height: 140px; background: #000; overflow: hidden; }
-        .m-banner { width: 100%; height: 100%; object-fit: cover; opacity: 0.85; transition: 0.5s; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .match-card:hover .m-banner { opacity: 1; transform: scale(1.05); }
+        .m-banner { width: 100%; height: 100%; object-fit: cover; opacity: 0.85; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .match-card:hover .m-banner { opacity: 1; transform: scale(1.08); }
 
         .m-share-btn { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.8); color: var(--accent-cyan); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid var(--accent-cyan); backdrop-filter: blur(5px); z-index: 5; transition: 0.3s; box-shadow: 0 0 10px rgba(0,0,0,0.8); }
         .m-share-btn:hover { background: var(--accent-cyan); color: #000; transform: scale(1.1); }
@@ -122,32 +138,35 @@
         .m-actions-box { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
         .status-badge { color: #000; background: var(--accent-cyan); padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: bold; font-family: var(--font-head); box-shadow: 0 0 10px rgba(0,242,255,0.3); text-transform: uppercase; }
         
-        .leave-btn { background: rgba(255, 77, 77, 0.1); border: 1px solid rgba(255, 77, 77, 0.4); color: #ff4d4d; padding: 6px 12px; border-radius: 8px; font-size: 0.7rem; cursor: pointer; font-weight: bold; transition: 0.3s; font-family: var(--font-head); text-transform: uppercase; z-index: 5; }
-        .leave-btn:hover { background: rgba(255, 77, 77, 0.2); border-color: #ff4d4d; box-shadow: 0 0 10px rgba(255,77,77,0.3); }
+        /* Secure 2-Step Leave Button */
+        .leave-btn { background: rgba(255, 77, 77, 0.1); border: 1px solid rgba(255, 77, 77, 0.4); color: #ff4d4d; padding: 6px 12px; border-radius: 8px; font-size: 0.7rem; cursor: pointer; font-weight: bold; transition: 0.3s; font-family: var(--font-head); text-transform: uppercase; z-index: 5; min-width: 65px; text-align: center;}
 
         .m-details-row { display: flex; justify-content: space-between; font-size: 0.85rem; color: #888; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
         .m-detail-item { display: flex; align-items: center; gap: 6px; }
         .m-detail-item i { color: var(--accent-purple); }
 
-        /* ROOM ID BOX */
+        /* ROOM ID BOX & BLUR REVEAL */
         .room-box-container { background: rgba(0,0,0,0.4); border-radius: 12px; border: 1px solid var(--card-border); padding: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
-        .room-item { display: flex; flex-direction: column; gap: 4px; flex: 1; cursor: pointer; transition: 0.3s; padding: 4px; border-radius: 6px; z-index: 5; min-width: 0; }
+        .room-item { display: flex; flex-direction: column; gap: 4px; flex: 1; cursor: pointer; transition: 0.3s; padding: 4px; border-radius: 6px; z-index: 5; min-width: 0; text-align: center;}
         .room-item:hover { background: rgba(255,255,255,0.05); }
         .room-item:first-child { border-right: 1px dashed rgba(255,255,255,0.1); padding-right: 10px; margin-right: 10px; }
 
-        .room-label { font-size: 0.65rem; color: #888; text-transform: uppercase; font-family: var(--font-head); letter-spacing: 1px; display: flex; align-items: center; justify-content: space-between; }
-        .room-label i { opacity: 0.3; transition: 0.3s; }
-        .room-item:hover .room-label i { opacity: 1; color: var(--accent-cyan); }
-        .room-val { font-family: 'Courier New', monospace; font-size: 1.1rem; font-weight: bold; letter-spacing: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .room-label { font-size: 0.65rem; color: #888; text-transform: uppercase; font-family: var(--font-head); letter-spacing: 1px; display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 2px;}
+        .room-val { font-family: 'Courier New', monospace; font-size: 1.1rem; font-weight: bold; letter-spacing: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: 0.5s ease; }
         
-        .val-waiting { color: #555; filter: blur(2px); user-select: none; }
-        .val-active { color: var(--accent-green); text-shadow: 0 0 10px rgba(0,255,127,0.4); }
+        .val-waiting { color: #555; filter: blur(3px); user-select: none; }
+        .val-active { color: var(--accent-green); text-shadow: 0 0 10px rgba(0,255,127,0.4); filter: blur(0px); }
+        .val-copied { color: var(--accent-cyan) !important; text-shadow: 0 0 10px rgba(0,242,255,0.6) !important; font-family: var(--font-head); font-size: 0.9rem;}
 
-        /* EMPTY STATE */
+        /* DYNAMIC EMPTY STATE */
         .empty-box { text-align: center; padding: 60px 20px; color: #666; animation: fadeIn 0.5s; width: 100%; }
-        .empty-icon { font-size: 4rem; margin-bottom: 20px; color: rgba(189,0,255,0.3); animation: float 3s ease-in-out infinite; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); color: rgba(189,0,255,0.6); } }
-        .browse-link { display: inline-block; margin-top: 20px; padding: 14px 35px; background: var(--accent-gradient); color: white; text-decoration: none; border-radius: 12px; font-weight: bold; font-family: var(--font-head); font-size: 0.9rem; box-shadow: 0 5px 15px rgba(189,0,255,0.4); transition: 0.3s; letter-spacing: 1px; }
+        .empty-icon { font-size: 4rem; margin-bottom: 20px; color: rgba(0,242,255,0.2); animation: floatRadar 3s ease-in-out infinite; }
+        .empty-icon.history { color: rgba(189,0,255,0.2); animation: floatGhost 3s ease-in-out infinite; }
+        @keyframes floatRadar { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-10px) scale(1.1); color: rgba(0,242,255,0.5); } }
+        @keyframes floatGhost { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); color: rgba(189,0,255,0.5); } }
+        @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+        
+        .browse-link { display: inline-block; margin-top: 20px; padding: 14px 35px; background: var(--accent-gradient); color: white; text-decoration: none; border-radius: 12px; font-weight: bold; font-family: var(--font-head); font-size: 0.9rem; box-shadow: 0 5px 15px rgba(189,0,255,0.4); transition: 0.3s; letter-spacing: 1px; border: none; cursor: pointer; }
         .browse-link:active { transform: scale(0.95); }
 
         /* CUSTOM TOAST */
@@ -158,7 +177,7 @@
         .app-footer { text-align: center; padding: 30px 20px 100px 20px; color: #555; font-size: 0.75rem; font-family: var(--font-body); letter-spacing: 1px; border-top: 1px solid var(--card-border); margin-top: 30px; }
         .footer-made-with { margin-top: 10px; font-style: italic; color: #777; font-size: 0.8rem; }
 
-        /* PERFECTLY ALIGNED 7-TAB BOTTOM NAVIGATION */
+        /* DESKTOP RESPONSIVE NAV HIDDEN */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(7, 3, 17, 0.92); backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 5px env(safe-area-inset-bottom); border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.6); }
         .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; color: #666; text-decoration: none; font-size: 0.65rem; font-family: var(--font-head); font-weight: bold; flex: 1; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; }
         .nav-item span { margin-top: 4px; transition: 0.3s; }
@@ -180,6 +199,7 @@
         /* --- MEDIAN DETECTOR --- */
         .median-active .top-header { display: none !important; }
         .median-active { padding-top: 15px !important; }
+        .median-active .tabs-wrapper { top: env(safe-area-inset-top); }
     </style>
     
     <script>
@@ -192,6 +212,8 @@
 </head>
 <body>
     <canvas id="particles-canvas"></canvas>
+    
+    <div class="offline-banner" id="offlineBanner"><i class="fa-solid fa-wifi"></i> You are offline. Showing Cached Matches.</div>
 
     <header class="top-header">
         <div class="header-wrapper">
@@ -199,7 +221,16 @@
                 <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_20wCR-WBMpQmw3vxcYUf-vxIO1PYDJoQN_Sid3UDjA9tf0cuX0eH40jbzHoJad4cxbnjhPjqfCw1Z5V1LhgN9zFuIQC0fJjecTy3D9PFu5WjR2H1wHwTD1bUGnXY_NiApWn5gMs6velcQngSzKoP1yHzX0cVsFSUFM8zIefcbiPayY7680Kz0V0ZAAE/s1264/1000093706.png" class="app-logo" alt="Logo">
                 <div class="app-title">MY MATCHES</div>
             </div>
-            <div class="refresh-btn" onclick="fetchLiveMatches(true)">
+            
+            <nav class="desktop-nav">
+                <a href="index.html"><i class="fa-solid fa-house"></i> Home</a>
+                <a href="explore.html"><i class="fa-solid fa-compass"></i> Explore</a>
+                <a href="matches.html" class="active"><i class="fa-solid fa-trophy"></i> Matches</a>
+                <a href="clans.html"><i class="fa-solid fa-shield-halved"></i> Clan</a>
+                <a href="tournament.html" style="color:var(--accent-cyan);"><i class="fa-solid fa-plus"></i> Create</a>
+            </nav>
+
+            <div class="refresh-btn" onclick="manualRefresh()" id="refreshBtn">
                 <i class="fa-solid fa-rotate-right" id="refreshIcon"></i>
             </div>
         </div>
@@ -216,24 +247,34 @@
         </div>
     </div>
 
-    <div class="tabs">
-        <div class="tab active" onclick="switchTab('Upcoming', this)">UPCOMING</div>
-        <div class="tab" onclick="switchTab('Completed', this)">HISTORY</div>
-    </div>
+    <div class="tabs-wrapper">
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('Upcoming', this); triggerHaptic();">UPCOMING</div>
+            <div class="tab" onclick="switchTab('Completed', this); triggerHaptic();">HISTORY</div>
+        </div>
 
-    <div class="search-box">
-        <i class="fa-solid fa-magnifying-glass search-icon"></i>
-        <input class="search-input" id="matchSearch" onkeyup="renderMatches()" placeholder="Search matches or clans..." type="text" />
+        <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input class="search-input" id="matchSearch" onkeyup="renderMatches()" placeholder="Search matches or clans..." type="text" />
+        </div>
     </div>
 
     <div class="match-list" id="matchList">
-        <div id="skeletonLoader" class="skeleton-wrapper">
+        <div id="skeletonLoader" class="skeleton-wrapper" style="display: none;">
             <div class="s-card skeleton">
                 <div style="height: 140px; background: rgba(255,255,255,0.05);"></div>
                 <div style="padding: 15px; display:flex; flex-direction:column; gap:10px;">
                     <div style="height: 15px; width: 60%; background: rgba(255,255,255,0.05); border-radius:5px;"></div>
                     <div style="height: 10px; width: 40%; background: rgba(255,255,255,0.05); border-radius:5px;"></div>
-                    <div style="height: 50px; width: 100%; background: rgba(255,255,255,0.05); border-radius:12px; margin-top:10px;"></div>
+                    <div style="height: 60px; width: 100%; background: rgba(255,255,255,0.05); border-radius:12px; margin-top:10px;"></div>
+                </div>
+            </div>
+            <div class="s-card skeleton">
+                <div style="height: 140px; background: rgba(255,255,255,0.05);"></div>
+                <div style="padding: 15px; display:flex; flex-direction:column; gap:10px;">
+                    <div style="height: 15px; width: 60%; background: rgba(255,255,255,0.05); border-radius:5px;"></div>
+                    <div style="height: 10px; width: 40%; background: rgba(255,255,255,0.05); border-radius:5px;"></div>
+                    <div style="height: 60px; width: 100%; background: rgba(255,255,255,0.05); border-radius:12px; margin-top:10px;"></div>
                 </div>
             </div>
         </div>
@@ -282,7 +323,13 @@
     </nav>
 
     <script>
-        // --- 1. BACKGROUND ANIMATION ---
+        // --- BOMB-PROOF STRING PARSER ---
+        function s(val, fallback="") {
+            if (val === null || val === undefined) return fallback;
+            return String(val).trim() || fallback;
+        }
+
+        // --- BACKGROUND ANIMATION ---
         const canvas = document.getElementById('particles-canvas');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
@@ -292,10 +339,14 @@
         function anim(){ ctx.clearRect(0,0,canvas.width,canvas.height); pArray.forEach(p=>{p.u();p.d()}); requestAnimationFrame(anim); }
         anim();
 
-        // --- 2. CONFIGURATION & HELPERS ---
+        // --- CONFIGURATION & INIT ---
         const API_URL = "https://script.google.com/macros/s/AKfycbynNLDDXS1wMrU6RGnk4nKb1jfQkQGuqrNIKWAt8wf46MaKP6y1rwGmSJg5fmm4KYU/exec";
         let currentTab = 'Upcoming'; 
         let globalLiveMatches = []; 
+        let silentPollInterval;
+        let isRefreshing = false;
+
+        function triggerHaptic() { if(navigator.vibrate) navigator.vibrate(30); }
 
         function showToast(msg, isError = false) {
             var x = document.getElementById("customToast");
@@ -303,24 +354,35 @@
             x.style.backgroundColor = isError ? "#ff4d4d" : "var(--accent-cyan)";
             x.style.color = isError ? "white" : "#000";
             x.className = "show";
-            if(navigator.vibrate) navigator.vibrate(50);
+            triggerHaptic();
             setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
         }
 
-        function copyText(event, text, type) {
+        // FEATURE 6: In-Place Micro-interaction
+        function copyRoomData(event, element, text, type) {
             event.stopPropagation();
             if(text === 'WAITING' || !text) return;
-            navigator.clipboard.writeText(text).then(() => { showToast(`${type} Copied!`); });
+            navigator.clipboard.writeText(text).then(() => {
+                triggerHaptic();
+                let origHTML = element.innerHTML;
+                element.innerHTML = "COPIED!";
+                element.className = "room-val val-copied";
+                setTimeout(() => {
+                    element.innerHTML = origHTML;
+                    element.className = "room-val val-active";
+                }, 1500);
+            });
         }
 
-        // TRUE REDIRECTION LOGIC using Unique ID
         function viewDetails(matchId) {
             if(!matchId) return;
+            triggerHaptic();
             window.location.href = `explore.html?tournament=${encodeURIComponent(matchId)}`;
         }
 
         function shareMatch(event, title, matchId) {
             event.stopPropagation();
+            triggerHaptic();
             const link = window.location.origin + window.location.pathname.replace('matches.html', '') + "explore.html?tournament=" + encodeURIComponent(matchId);
             
             if (navigator.share) {
@@ -332,32 +394,74 @@
 
         function formatImageUrl(url) {
             if (!url) return 'https://via.placeholder.com/600x300/15062e/00f2ff?text=Tournament+Banner';
-            if (url.includes('drive.google.com/file/d/')) {
-                let id = url.split('/d/')[1].split('/')[0];
+            if (String(url).includes('drive.google.com/file/d/')) {
+                let id = String(url).split('/d/')[1].split('/')[0];
                 return `https://drive.google.com/uc?export=view&id=${id}`;
             }
-            return url;
+            return String(url);
         }
 
-        // --- 3. UNIFIED FETCH ENGINE ---
+        // FEATURE 13: Offline Detection
+        window.addEventListener('offline', () => { document.getElementById('offlineBanner').classList.add('active'); });
+        window.addEventListener('online', () => { document.getElementById('offlineBanner').classList.remove('active'); fetchLiveMatches(true); });
+
+        // --- FETCH ENGINE (Feature 1: Instant Cache & Strict Ghost Removal) ---
         document.addEventListener("DOMContentLoaded", function() {
-            localStorage.removeItem('myMatches'); // Prevent Ghost loading
+            if(!navigator.onLine) document.getElementById('offlineBanner').classList.add('active');
+            
+            const user = JSON.parse(localStorage.getItem('tournyx_user'));
+            if (!user || !user.email) { window.location.href = "login.html"; return; }
+
+            // GHOST CACHE PURGE: Strict email-bound cache reading
+            try {
+                let cachedData = localStorage.getItem(`tournyx_my_matches_cache_${user.email}`);
+                if(cachedData) {
+                    let parsed = JSON.parse(cachedData);
+                    if(Array.isArray(parsed) && parsed.length > 0) {
+                        globalLiveMatches = parsed;
+                        document.getElementById('skeletonLoader').style.display = 'none';
+                        document.getElementById('realContent').style.display = 'flex';
+                        renderMatches();
+                    }
+                }
+            } catch(e) { localStorage.removeItem(`tournyx_my_matches_cache_${user.email}`); }
+            
             fetchLiveMatches();
+            startSilentPolling();
         });
 
+        // FEATURE 11: Smart Debounce Refresh
+        function manualRefresh() {
+            if(isRefreshing) return;
+            isRefreshing = true;
+            triggerHaptic();
+            document.getElementById('refreshIcon').classList.add('fa-spin');
+            document.getElementById('refreshBtn').classList.add('cooldown');
+            
+            // Instantly show skeleton for feedback
+            document.getElementById('realContent').style.display = 'none';
+            document.getElementById('skeletonLoader').style.display = 'flex';
+            
+            fetchLiveMatches(true).then(() => {
+                setTimeout(() => {
+                    document.getElementById('refreshIcon').classList.remove('fa-spin');
+                    document.getElementById('refreshBtn').classList.remove('cooldown');
+                    isRefreshing = false;
+                }, 1000);
+            });
+        }
+
+        // FLAWLESS FETCH & SKELETON HANDLER
         async function fetchLiveMatches(isManual = false) {
             const user = JSON.parse(localStorage.getItem('tournyx_user'));
-            if (!user || !user.email) {
-                window.location.href = "login.html";
-                return;
+            if (!user || !user.email) return;
+
+            if(globalLiveMatches.length === 0) {
+                document.getElementById('skeletonLoader').style.display = 'flex';
+                document.getElementById('realContent').style.display = 'none';
             }
 
-            document.getElementById('skeletonLoader').classList.add('active');
-            document.getElementById('realContent').style.display = 'none';
-            if(isManual) document.getElementById('refreshIcon').classList.add('fa-spin');
-
             try {
-                // Fetch Global Tournaments & User Entries simultaneously
                 const [tournamentsRes, myMatchesRes] = await Promise.all([
                     fetch(API_URL + "?action=get_tournaments").then(r => r.json()),
                     fetch(API_URL + "?action=get_matches&email=" + encodeURIComponent(user.email)).then(r => r.json())
@@ -365,47 +469,64 @@
 
                 let allTournaments = tournamentsRes.data || [];
                 let myEntries = myMatchesRes.data || [];
+                let freshMatches = [];
 
-                globalLiveMatches = [];
-
-                // Unified Mapping logic
                 myEntries.forEach(entry => {
-                    // Try to match by ID first, fallback to Title
-                    let tDetails = allTournaments.find(t => t.id === entry.match_id || t.title === entry.tournament_title);
-                    
+                    let tDetails = allTournaments.find(t => t.id == entry.match_id || t.title == entry.tournament_title);
                     if (tDetails) {
-                        globalLiveMatches.push({
-                            match_id: tDetails.id || entry.match_id, // The crucial redirect key
-                            name: tDetails.title || entry.tournament_title,
-                            date: tDetails.match_period || tDetails.date || 'TBA',
+                        freshMatches.push({
+                            match_id: s(tDetails.id) || s(entry.match_id), 
+                            name: s(tDetails.title) || s(entry.tournament_title, "Unknown Tournament"),
+                            date: s(tDetails.match_period) || s(tDetails.date, "TBA"),
                             img: formatImageUrl(tDetails.banner),
-                            status: tDetails.status || "Upcoming",
-                            roomID: entry.room_id || "WAITING",
-                            roomPass: entry.room_pass || "WAITING",
-                            clan: entry.clan || "Solo Player"
+                            status: s(tDetails.status, "Upcoming"),
+                            roomID: s(entry.room_id, "WAITING"),
+                            roomPass: s(entry.room_pass, "WAITING"),
+                            clan: s(entry.clan, "Solo Player")
                         });
                     }
                 });
 
-                document.getElementById('skeletonLoader').classList.remove('active');
-                document.getElementById('realContent').style.display = 'flex';
-                if(isManual) {
-                    document.getElementById('refreshIcon').classList.remove('fa-spin');
-                    showToast("Live Server Synced!");
+                // NO DOM FLASHING: Only re-render if data actually changed (or manual refresh)
+                let oldDataStr = JSON.stringify(globalLiveMatches);
+                let newDataStr = JSON.stringify(freshMatches);
+
+                if (oldDataStr !== newDataStr || isManual || freshMatches.length === 0) {
+                    globalLiveMatches = freshMatches;
+                    localStorage.setItem(`tournyx_my_matches_cache_${user.email}`, newDataStr);
+                    renderMatches(); // Render handles empty states securely
                 }
 
-                renderMatches();
+                if(isManual) showToast("Matches Synced!");
 
             } catch (error) {
                 console.error("Live Fetch Error:", error);
-                document.getElementById('skeletonLoader').classList.remove('active');
+                if(globalLiveMatches.length === 0) {
+                    document.getElementById('skeletonLoader').style.display = 'none';
+                    document.getElementById('realContent').style.display = 'flex';
+                    document.getElementById('realContent').innerHTML = `
+                        <div class="empty-box">
+                            <i class="fa-solid fa-wifi empty-icon" style="color:#ff4d4d; animation:none;"></i>
+                            <h3 style="color:#ff4d4d; font-family:var(--font-head);">Connection Failed</h3>
+                            <p style="font-size:0.85rem; color:#888; margin-bottom:15px;">Unable to reach live servers.</p>
+                            <button onclick="manualRefresh()" class="browse-link" style="border:none; cursor:pointer;">Try Again</button>
+                        </div>`;
+                }
+            } finally {
+                // ALWAYS ensure skeleton is hidden when done
+                document.getElementById('skeletonLoader').style.display = 'none';
                 document.getElementById('realContent').style.display = 'flex';
-                document.getElementById('realContent').innerHTML = `<div class="empty-box"><h3 style="color:#ff4d4d;">Network Error</h3><p>Could not reach the server.</p></div>`;
-                if(isManual) document.getElementById('refreshIcon').classList.remove('fa-spin');
             }
         }
 
-        // --- 4. RENDER ENGINE ---
+        // FEATURE 8: Silent Polling
+        function startSilentPolling() {
+            silentPollInterval = setInterval(() => {
+                if(navigator.onLine && !isRefreshing) fetchLiveMatches();
+            }, 10000); 
+        }
+
+        // --- RENDER ENGINE ---
         function switchTab(tabName, element) {
             currentTab = tabName;
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -414,42 +535,58 @@
         }
 
         function updateStats(matches) {
-            let active = matches.filter(m => !m.status.toLowerCase().includes('completed')).length;
-            let history = matches.filter(m => m.status.toLowerCase().includes('completed')).length;
+            if(!Array.isArray(matches)) matches = [];
+            let active = matches.filter(m => !s(m.status).toLowerCase().includes('completed')).length;
+            let history = matches.filter(m => s(m.status).toLowerCase().includes('completed')).length;
             document.getElementById('statActive').innerText = active;
             document.getElementById('statHistory').innerText = history;
+        }
+
+        // FEATURE 4: Bomb-Proof Search Highlighter
+        function highlightText(text, search) {
+            text = s(text);
+            if(!search) return text;
+            try {
+                let re = new RegExp(`(${search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                return text.replace(re, `<span class="highlight">$1</span>`);
+            } catch(e) { return text; }
         }
 
         function renderMatches() {
             const container = document.getElementById('realContent');
             updateStats(globalLiveMatches);
 
-            let search = document.getElementById('matchSearch').value.toLowerCase();
+            let search = s(document.getElementById('matchSearch').value).toLowerCase();
             let displayMatches = [];
 
             if (currentTab === 'Upcoming') {
-                displayMatches = globalLiveMatches.filter(m => !m.status.toLowerCase().includes('completed'));
+                displayMatches = globalLiveMatches.filter(m => !s(m.status).toLowerCase().includes('completed'));
             } else {
-                displayMatches = globalLiveMatches.filter(m => m.status.toLowerCase().includes('completed'));
+                displayMatches = globalLiveMatches.filter(m => s(m.status).toLowerCase().includes('completed'));
             }
 
             if (search) {
                 displayMatches = displayMatches.filter(m => 
-                    (m.name || "").toLowerCase().includes(search) || (m.clan || "").toLowerCase().includes(search)
+                    s(m.name).toLowerCase().includes(search) || s(m.clan).toLowerCase().includes(search)
                 );
             }
 
             container.innerHTML = ""; 
 
+            // FEATURE 13: Dynamic Empty States with Explore CTA
             if (displayMatches.length === 0) {
-                let msg = currentTab === 'Upcoming' ? (search ? "No Matches Found" : "No Upcoming Matches") : "No History Found";
-                let subMsg = currentTab === 'Upcoming' ? "Join a tournament from the Explore tab to see it here." : "You haven't finished any matches yet.";
+                let isUp = currentTab === 'Upcoming';
+                let msg = isUp ? (search ? "No Matches Found" : "No Upcoming Matches") : "No History Found";
+                let subMsg = isUp ? "Join a tournament from the Explore tab to see it here." : "You haven't finished any matches yet.";
+                let iconClass = isUp ? "fa-solid fa-satellite-dish" : "fa-solid fa-ghost history";
+                let btnHtml = isUp ? `<a href="explore.html" class="browse-link"><i class="fa-solid fa-compass"></i> Explore Tournaments</a>` : '';
+                
                 container.innerHTML = `
                     <div class="empty-box">
-                        <i class="fa-solid fa-ghost empty-icon"></i>
+                        <i class="${iconClass} empty-icon"></i>
                         <h3 style="color:white; font-family:var(--font-head);">${msg}</h3>
                         <p style="font-size:0.85rem; margin-top:5px; margin-bottom: 20px;">${subMsg}</p>
-                        ${currentTab === 'Upcoming' ? `<a href="explore.html" class="browse-link">Find Tournaments</a>` : ''}
+                        ${btnHtml}
                     </div>`;
                 return;
             }
@@ -457,53 +594,57 @@
             let sortedMatches = [...displayMatches].reverse();
 
             sortedMatches.forEach((match) => {
-                let rID = match.roomID !== "" ? match.roomID : "WAITING";
-                let rPass = match.roomPass !== "" ? match.roomPass : "WAITING";
+                let rID = s(match.roomID) !== "" ? match.roomID : "WAITING";
+                let rPass = s(match.roomPass) !== "" ? match.roomPass : "WAITING";
                 
-                let sLower = (match.status || "Upcoming").toLowerCase();
+                let sLower = s(match.status, "Upcoming").toLowerCase();
                 let rStatus = "UPCOMING";
                 let sColor = "var(--accent-cyan)";
+                let glowClass = "glow-upcoming"; 
                 
-                if (sLower.includes("live")) { rStatus = "LIVE NOW"; sColor = "var(--accent-green)"; }
-                else if (sLower.includes("wait") || sLower.includes("pending")) { rStatus = "WAITING ID"; sColor = "var(--accent-orange)"; }
-                else if (sLower.includes("completed")) { rStatus = "COMPLETED"; sColor = "#888"; }
+                if (sLower.includes("live")) { rStatus = "LIVE NOW"; sColor = "var(--accent-green)"; glowClass = "glow-live"; }
+                else if (sLower.includes("wait") || sLower.includes("pending")) { rStatus = "WAITING ID"; sColor = "var(--accent-orange)"; glowClass = ""; }
+                else if (sLower.includes("completed")) { rStatus = "COMPLETED"; sColor = "#888"; glowClass = ""; }
 
-                // Blurs text if waiting
+                // FEATURE 10: Fluid Blur Unveil
                 let idClass = rID === 'WAITING' ? 'val-waiting' : 'val-active';
                 let passClass = rPass === 'WAITING' ? 'val-waiting' : 'val-active';
                 
+                let displayTitle = highlightText(match.name, search);
+                let displayClan = highlightText(match.clan, search);
+
                 let html = `
-                    <div class="match-card" onclick="viewDetails('${match.match_id}')">
+                    <div class="match-card ${glowClass}" onclick="viewDetails('${match.match_id}')">
                         <div class="m-banner-wrapper">
                             <img src="${match.img}" class="m-banner">
-                            <div class="m-share-btn" onclick="shareMatch(event, '${match.name}', '${match.match_id}')"><i class="fa-solid fa-share-nodes"></i></div>
+                            <div class="m-share-btn" onclick="shareMatch(event, '${s(match.name).replace(/'/g, "\\'")}', '${match.match_id}')"><i class="fa-solid fa-share-nodes"></i></div>
                         </div>
                         
                         <div class="m-content">
                             <div class="m-header-row">
                                 <div class="m-title-box">
-                                    <h4 class="m-title">${match.name}</h4>
+                                    <h4 class="m-title">${displayTitle}</h4>
                                     <div class="m-date">
                                         <i class="fa-regular fa-calendar" style="color:var(--accent-cyan)"></i> ${match.date}
                                     </div>
                                 </div>
                                 <div class="m-actions-box">
                                     <span class="status-badge" style="background:${sColor}; color:${(sLower.includes('completed')) ? 'white' : 'black'}">${rStatus}</span>
-                                    ${(currentTab === 'Upcoming') ? `<button id="btn-${match.match_id}" onclick="unjoinMatch(event, '${match.name}', '${match.match_id}')" class="leave-btn">LEAVE</button>` : ''}
+                                    ${(currentTab === 'Upcoming') ? `<button id="btn-${match.match_id}" data-step="0" onclick="secureUnjoin(event, this, '${s(match.name).replace(/'/g, "\\'")}', '${match.match_id}')" class="leave-btn">LEAVE</button>` : ''}
                                 </div>
                             </div>
                             
                             <div class="m-details-row">
-                                <div class="m-detail-item"><i class="fa-solid fa-shield-halved"></i> Roster: <span style="color:white; font-weight:bold;">${match.clan}</span></div>
+                                <div class="m-detail-item"><i class="fa-solid fa-shield-halved"></i> Roster: <span style="color:white; font-weight:bold;">${displayClan}</span></div>
                                 <div class="m-detail-item"><span style="color:var(--accent-green); font-weight:bold;"><i class="fa-solid fa-check-circle"></i> Confirmed</span></div>
                             </div>
                             
                             <div class="room-box-container">
-                                <div class="room-item" onclick="copyText(event, '${rID}', 'Room ID')">
+                                <div class="room-item" onclick="copyRoomData(event, this.querySelector('.room-val'), '${rID}', 'Room ID')">
                                     <span class="room-label">Room ID <i class="fa-regular fa-copy"></i></span>
                                     <span class="room-val ${idClass}">${rID}</span>
                                 </div>
-                                <div class="room-item" onclick="copyText(event, '${rPass}', 'Password')">
+                                <div class="room-item" onclick="copyRoomData(event, this.querySelector('.room-val'), '${rPass}', 'Password')">
                                     <span class="room-label">Password <i class="fa-regular fa-copy"></i></span>
                                     <span class="room-val ${passClass}">${rPass}</span>
                                 </div>
@@ -515,32 +656,55 @@
             });
         }
 
-        // --- 5. TRUE UNJOIN LOGIC (Directly strikes the Server) ---
-        function unjoinMatch(event, tournamentName, matchId) {
-            event.stopPropagation(); 
-            
-            if(confirm("Are you sure you want to leave " + tournamentName + "? Paid entry fees are non-refundable.")) {
+        // --- FEATURE 5: TWO-STEP SECURE UNJOIN ---
+        function secureUnjoin(event, btn, tournamentName, matchId) {
+            event.stopPropagation();
+            triggerHaptic();
+
+            if (btn.dataset.step === "1") {
+                executeUnjoin(tournamentName, matchId, btn);
+            } else {
+                btn.dataset.step = "1";
+                let origText = btn.innerText;
+                btn.innerText = "SURE?";
+                btn.style.background = "var(--accent-danger)";
+                btn.style.color = "white";
                 
-                let user = JSON.parse(localStorage.getItem('tournyx_user')) || {};
-                if(!user.email) return;
-
-                // Visual Feedback Lock
-                const btn = document.getElementById(`btn-${matchId}`);
-                if(btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; }
-
-                // Safe Backend Payload
-                fetch(API_URL, {
-                    method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: "unjoin", title: tournamentName, email: user.email })
-                }).then(() => {
-                    showToast("Successfully left the match!");
-                    // Background refresh to remove card
-                    setTimeout(() => { fetchLiveMatches(); }, 1000);
-                }).catch(e => {
-                    showToast("Failed to process request.", true);
-                    if(btn) { btn.disabled = false; btn.innerText = "LEAVE"; }
-                });
+                // Reset if they don't tap again
+                setTimeout(() => {
+                    if(btn && btn.dataset.step === "1") {
+                        btn.dataset.step = "0";
+                        btn.innerText = origText;
+                        btn.style.background = "";
+                        btn.style.color = "";
+                    }
+                }, 3000);
             }
+        }
+
+        function executeUnjoin(tournamentName, matchId, btn) {
+            let user = JSON.parse(localStorage.getItem('tournyx_user')) || {};
+            if(!user.email) return;
+
+            btn.disabled = true; 
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; 
+
+            fetch(API_URL, {
+                method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: "unjoin", title: tournamentName, email: user.email })
+            }).then(() => {
+                showToast("Successfully left the match!");
+                
+                // Instantly remove from local UI & update cache strictly
+                globalLiveMatches = globalLiveMatches.filter(m => m.match_id !== matchId);
+                localStorage.setItem(`tournyx_my_matches_cache_${user.email}`, JSON.stringify(globalLiveMatches));
+                renderMatches();
+
+                fetchLiveMatches(); // Sync background to ensure DB is clean
+            }).catch(e => {
+                showToast("Failed to process request.", true);
+                if(btn) { btn.disabled = false; btn.innerText = "LEAVE"; btn.dataset.step="0"; btn.style.background=""; btn.style.color=""; }
+            });
         }
     </script>
 </body>
