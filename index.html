@@ -138,7 +138,7 @@
         .menu-backdrop { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 2999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .menu-backdrop.active { opacity: 1; pointer-events: auto; }
         
-        /* Changed to smooth right transition instead of buggy 3D transform */
+        /* Fully responsive desktop/mobile overlay menu */
         .overlay-menu { 
             position: fixed; top: 0; right: -320px; 
             width: 100%; max-width: 300px; height: 100vh; 
@@ -147,6 +147,7 @@
             padding: 20px; display: flex; flex-direction: column; 
             box-shadow: -10px 0 30px rgba(0,0,0,0.8); 
         }
+        @media(min-width: 768px) { .overlay-menu { max-width: 350px; right: -350px; } }
         .overlay-menu.active { right: 0; }
         
         .menu-user-info-link { text-decoration: none; display: block; margin-bottom: 30px; background: rgba(189,0,255,0.05); padding: 15px; border-radius: 15px; border: 1px solid rgba(189,0,255,0.2); }
@@ -213,7 +214,9 @@
         .stat-label { font-size: 0.8rem; color: #b0b0cc; font-weight: bold; text-transform:uppercase; letter-spacing: 1px; }
 
         .marquee-container { width: 100%; overflow: hidden; padding-bottom: 5px; }
-        .marquee-track { display: flex; gap: 15px; width: max-content; animation: scroll 25s linear infinite; transform: translateZ(0);}
+        /* Smooth infinite scroll fix */
+        .marquee-track { display: flex; gap: 15px; width: max-content; animation: scroll 30s linear infinite; transform: translateZ(0);}
+        .marquee-track:hover { animation-play-state: paused; }
         @keyframes scroll { 0% { transform: translate3d(0,0,0); } 100% { transform: translate3d(-50%,0,0); } }
         .game-pill { padding: 10px 25px; background: linear-gradient(90deg, #110822, #1a0a3a); border: 1px solid rgba(189,0,255,0.4); border-radius: 50px; font-family: var(--font-head); font-size: 0.9rem; color: #ffffff; white-space: nowrap; display: flex; align-items: center; gap: 10px; box-shadow: 0 0 20px rgba(189,0,255,0.2); }
 
@@ -447,7 +450,7 @@
             <a href="offer.html"><i class="fa-solid fa-envelope-open-text"></i> Offers Wall</a>
             <a href="explore.html"><i class="fa-solid fa-gamepad"></i> All Tournaments</a>
             <a href="refer.html"><i class="fa-solid fa-share-nodes"></i> Refer & Earn</a>
-            <a href="mailto:support@tournyx.com"><i class="fa-solid fa-comments"></i> Help & Support</a>
+            <a href="support.html"><i class="fa-solid fa-comments"></i> Help & Support</a>
             <a href="settings.html"><i class="fa-solid fa-gear"></i> Settings</a>
             <a href="#" onclick="logoutUser()" class="logout-link"><i class="fa-solid fa-power-off"></i> Logout</a>
             
@@ -502,8 +505,13 @@
                 <div class="game-pill"><i class="fa-solid fa-crosshairs" style="color:yellow"></i> BGMI</div>
                 <div class="game-pill"><i class="fa-solid fa-v" style="color:red"></i> Valorant Mobile</div>
                 <div class="game-pill"><i class="fa-solid fa-skull" style="color:green"></i> COD: MOBILE</div>
+                <div class="game-pill"><i class="fa-solid fa-gamepad" style="color:cyan"></i> PUBG NEW STATE</div>
+                
                 <div class="game-pill"><i class="fa-solid fa-fire" style="color:orange"></i> FREE FIRE</div>
                 <div class="game-pill"><i class="fa-solid fa-crosshairs" style="color:yellow"></i> BGMI</div>
+                <div class="game-pill"><i class="fa-solid fa-v" style="color:red"></i> Valorant Mobile</div>
+                <div class="game-pill"><i class="fa-solid fa-skull" style="color:green"></i> COD: MOBILE</div>
+                <div class="game-pill"><i class="fa-solid fa-gamepad" style="color:cyan"></i> PUBG NEW STATE</div>
             </div>
         </div>
     </section>
@@ -566,7 +574,7 @@
         <div class="slider-header">
             <h2 class="section-title" style="margin:0; text-align:left; font-size:1.4rem;">Daily <span>Quests</span></h2>
         </div>
-        <div class="quests-wrapper">
+        <div class="quests-wrapper" id="dynamicQuestsWrapper">
             <div class="quest-card" id="quest_play">
                 <div>
                     <div class="quest-info-title">Play 3 Tournaments</div>
@@ -632,6 +640,7 @@
         <div class="tourney-slider" id="featuredSlider">
             <div class="tourney-card skeleton" style="height:250px; background:rgba(255,255,255,0.05); border:none;"></div>
             <div class="tourney-card skeleton" style="height:250px; background:rgba(255,255,255,0.05); border:none;"></div>
+            <div class="tourney-card skeleton" style="height:250px; background:rgba(255,255,255,0.05); border:none;"></div>
         </div>
     </section>
 
@@ -663,32 +672,32 @@
         </p>
 
         <div class="footer-socials">
-            <a href="#" class="footer-social-btn"><i class="fa-brands fa-youtube"></i></a>
-            <a href="#" class="footer-social-btn"><i class="fa-brands fa-instagram"></i></a>
-            <a href="#" class="footer-social-btn"><i class="fa-brands fa-discord"></i></a>
+            <a href="youtube.html" class="footer-social-btn"><i class="fa-brands fa-youtube"></i></a>
+            <a href="instagram.html" class="footer-social-btn"><i class="fa-brands fa-instagram"></i></a>
+            <a href="discord.html" class="footer-social-btn"><i class="fa-brands fa-discord"></i></a>
         </div>
 
         <div class="footer-grid">
             <div class="footer-col">
                 <h4>PLATFORM</h4>
-                <a href="#">Organizations</a>
+                <a href="organizations.html">Organizations</a>
                 <a href="clans.html">Clans</a>
             </div>
             <div class="footer-col">
                 <h4>COMMUNITY</h4>
-                <a href="#">Discord</a>
-                <a href="#">Instagram</a>
-                <a href="#">Blogs</a>
+                <a href="discord.html">Discord</a>
+                <a href="instagram.html">Instagram</a>
+                <a href="blogs.html">Blogs</a>
             </div>
             <div class="footer-col">
                 <h4>SUPPORT</h4>
-                <a href="mailto:support@tournyx.com">Contact</a>
-                <a href="#">Feedback</a>
+                <a href="support.html">Contact</a>
+                <a href="feedback.html">Feedback</a>
             </div>
             <div class="footer-col">
                 <h4>LEGAL</h4>
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Service</a>
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="terms.html">Terms of Service</a>
             </div>
         </div>
 
@@ -752,10 +761,13 @@
             fetchNextMatch(user);
             loadFeaturedTournaments();
             syncLiveWalletPoints(user); 
-            renderQuests(); 
+            
+            // Dynamic Sheets Loading
+            loadQuestsFromSheets(); 
+            loadLeaderboard(); 
+
             initScrollAnimations(); 
             typeWriterEffect();
-            loadLeaderboard(); // Automatically pull leaderboard from AppScript!
 
             // Force loader to vanish gracefully
             setTimeout(() => {
@@ -813,18 +825,17 @@
                     if (entry.isIntersecting) {
                         entry.target.classList.add('visible');
                         
-                        // Count Up Animation Trigger
                         if(entry.target.classList.contains('stats-area')) {
                             document.querySelectorAll('.count-up').forEach(counter => {
                                 let target = +counter.getAttribute('data-target');
                                 let count = 0;
-                                let speed = target / 30; // 30 frames
+                                let speed = target / 30;
                                 let int = setInterval(() => {
                                     count += speed;
                                     if(count >= target) { counter.innerText = target; clearInterval(int); }
                                     else { counter.innerText = Math.floor(count); }
                                 }, 30);
-                                counter.classList.remove('count-up'); // run once
+                                counter.classList.remove('count-up'); 
                             });
                         }
                     }
@@ -837,7 +848,6 @@
         // --- 4. LIVE NEXT MATCH FETCHING (AUTO-VANISH IF LEFT) ---
         async function fetchNextMatch(user) {
             try {
-                // Fetch Global + Personal data safely
                 const [tRes, mRes] = await Promise.all([
                     fetch(API_URL + "?action=get_tournaments").then(r=>r.json()),
                     fetch(API_URL + "?action=get_matches&email=" + encodeURIComponent(user.email)).then(r=>r.json())
@@ -847,7 +857,6 @@
                 let myMatches = mRes.data || [];
                 let activeMatches = [];
 
-                // Re-map to check if user is still inside and it's not completed
                 myMatches.forEach(entry => {
                     let t = allTourneys.find(x => x.id === entry.match_id || x.title === entry.tournament_title);
                     if(t && t.status && !t.status.toLowerCase().includes('completed')) {
@@ -857,7 +866,7 @@
 
                 const widget = document.getElementById('nextMatchWidget');
                 if(activeMatches.length > 0) {
-                    let next = activeMatches[0]; // Gets the most relevant upcoming match
+                    let next = activeMatches[0]; 
                     document.getElementById('nmTitle').innerText = next.title;
                     
                     let sColor = next.status.toLowerCase().includes('live') ? 'var(--accent-green)' : 'var(--accent-cyan)';
@@ -866,16 +875,15 @@
                     document.getElementById('nmBtn').onclick = () => window.location.href = `explore.html?tournament=${next.id}`;
                     widget.style.display = 'block';
                 } else {
-                    // Vanishes if user left the match or it completed
                     widget.style.display = 'none';
                 }
             } catch(e) { console.log("Next match check failed silently."); }
         }
 
-        // --- 5. LIVE FEATURED TOURNAMENTS (BASE64 BUG FIX APPLIED) ---
+        // --- 5. LIGHTNING FAST FEATURED TOURNAMENTS WITH CACHE ---
         function formatImageUrl(url) {
             if (!url) return 'https://via.placeholder.com/600x300/15062e/00f2ff?text=Tournament+Banner';
-            if (url.startsWith('data:image')) return url; // Exact fix for newly created base64 images
+            if (url.startsWith('data:image')) return url;
             if (url.includes('drive.google.com/file/d/')) {
                 let id = url.split('/d/')[1].split('/')[0];
                 return `https://drive.google.com/uc?export=view&id=${id}`;
@@ -883,40 +891,47 @@
             return url;
         }
 
+        function renderFeaturedTournaments(featuredArray) {
+            const slider = document.getElementById('featuredSlider');
+            slider.innerHTML = "";
+            featuredArray.forEach(t => {
+                const bg = formatImageUrl(t.banner);
+                const prize = (!t.prize || t.prize == 0) ? "Glory" : "₹" + t.prize;
+                const feeText = (!t.fee || t.fee == "0" || t.fee == "Free") ? "Free Entry" : "₹" + t.fee;
+                
+                let btnState = `onclick="window.location.href='explore.html?tournament=${t.id}'"`;
+                slider.innerHTML += `
+                    <div class="tourney-card">
+                        <div class="t-img-box" ${btnState} style="cursor:pointer;">
+                            <img src="${bg}" class="t-img" loading="lazy">
+                            <div class="t-tag">${t.game || 'Esports'}</div>
+                        </div>
+                        <div class="t-content">
+                            <div class="t-title">${t.title}</div>
+                            <div class="t-meta"><span><i class="fa-solid fa-ticket" style="color:var(--accent-purple);"></i> ${feeText}</span><span class="t-prize">${prize}</span></div>
+                            <button class="t-btn" ${btnState}>View Details</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
         function loadFeaturedTournaments() {
+            // Instant load from memory if exists
+            let cached = sessionStorage.getItem('tournyx_featured_cache');
+            if (cached) { renderFeaturedTournaments(JSON.parse(cached)); }
+
+            // Fetch fresh in background
             fetch(API_URL + "?action=get_tournaments")
             .then(res => res.json())
             .then(data => {
                 if (data.status === "success" && data.data.length > 0) {
-                    const slider = document.getElementById('featuredSlider');
-                    slider.innerHTML = "";
-                    let featured = data.data.slice(0, 6); // Grab 6 latest
-                    
-                    featured.forEach(t => {
-                        const bg = formatImageUrl(t.banner);
-                        const prize = (!t.prize || t.prize == 0) ? "Glory" : "₹" + t.prize;
-                        const feeText = (!t.fee || t.fee == "0" || t.fee == "Free") ? "Free Entry" : "₹" + t.fee;
-                        
-                        let btnState = `onclick="window.location.href='explore.html?tournament=${t.id}'"`;
-                        let btnText = 'View Details';
-
-                        slider.innerHTML += `
-                            <div class="tourney-card">
-                                <div class="t-img-box" ${btnState} style="cursor:pointer;">
-                                    <img src="${bg}" class="t-img">
-                                    <div class="t-tag">${t.game || 'Esports'}</div>
-                                </div>
-                                <div class="t-content">
-                                    <div class="t-title">${t.title}</div>
-                                    <div class="t-meta"><span><i class="fa-solid fa-ticket" style="color:var(--accent-purple);"></i> ${feeText}</span><span class="t-prize">${prize}</span></div>
-                                    <button class="t-btn" ${btnState}>${btnText}</button>
-                                </div>
-                            </div>
-                        `;
-                    });
+                    let featured = data.data.slice(0, 6);
+                    sessionStorage.setItem('tournyx_featured_cache', JSON.stringify(featured));
+                    renderFeaturedTournaments(featured);
                 }
             })
-            .catch(err => console.log("Featured loading failed."));
+            .catch(err => console.log("Featured loading fallback."));
         }
 
         // --- 6. USER, WALLET, & TOGGLES ---
@@ -928,8 +943,6 @@
                 .then(res => res.json())
                 .then(data => {
                     if (data.status === 'success') {
-                        // SECURE FIX: ONLY overwrite the wallet variables, NOT the whole user object.
-                        // This prevents the "Ghost Avatar" bug from overwriting your local profile picture!
                         user.points = data.data.points || user.points; 
                         user.rupees = data.data.rupees || user.rupees;
                         localStorage.setItem('tournyx_user', JSON.stringify(user));
@@ -956,13 +969,40 @@
             }
         }
 
-        // FIXED: Menu logic to prevent accidental disappearing
         function toggleMenu() { 
             document.getElementById('overlayMenu').classList.toggle('active'); 
             document.getElementById('menuBackdrop').classList.toggle('active');
         }
 
-        // --- 7. QUESTS & UI LOGIC ---
+        // --- 7. DYNAMIC QUESTS & STRICT VERIFICATION LOGIC ---
+        // Expected AppScript Return: { status: "success", data: [ { id: "q1", title: "Play 5 matches", reward: 100, reqType: "matches", reqVal: 5, redirect: "explore.html" } ] }
+        async function loadQuestsFromSheets() {
+            try {
+                const res = await fetch(API_URL + "?action=get_quests");
+                const result = await res.json();
+                
+                if (result.status === "success" && result.data && result.data.length > 0) {
+                    const wrapper = document.getElementById('dynamicQuestsWrapper');
+                    wrapper.innerHTML = "";
+                    
+                    result.data.forEach(q => {
+                        wrapper.innerHTML += `
+                            <div class="quest-card" id="${q.id}">
+                                <div>
+                                    <div class="quest-info-title">${q.title}</div>
+                                    <div class="quest-info-sub"><i class="fa-solid fa-coins"></i> Reward: ${q.reward} PTS</div>
+                                </div>
+                                <button class="quest-btn" onclick="claimQuest('${q.id}', ${q.reward}, '${q.reqType}', ${q.reqVal}, '${q.redirect}')">CLAIM</button>
+                            </div>
+                        `;
+                    });
+                }
+            } catch(e) { console.log("Loading fallback default quests."); }
+            
+            // Re-render state after dynamic load or fallback
+            setTimeout(renderQuests, 500); 
+        }
+
         function renderQuests() {
             let claimed = JSON.parse(localStorage.getItem('tournyx_quests')) || [];
             claimed.forEach(id => {
@@ -980,9 +1020,15 @@
             if(!user) return;
 
             let claimed = JSON.parse(localStorage.getItem('tournyx_quests')) || [];
-            if(claimed.includes(questId)) return;
+            if(claimed.includes(questId)) {
+                showToast("You have already claimed this quest!", true);
+                return;
+            }
 
+            // Strict Verification Logic
             let currentVal = 0;
+            reqVal = parseInt(reqVal) || 0; // Strict parse
+
             if(reqType === 'matches') currentVal = parseInt(user.matches) || 0;
             if(reqType === 'hosted') currentVal = parseInt(user.hosted) || 0;
             if(reqType === 'clan') {
@@ -990,13 +1036,13 @@
                 currentVal = clans.length > 0 ? 1 : 0;
             }
             if(reqType === 'share') {
-                // Instantly opens share API, automatically rewards them for effort
                 if(navigator.share) { navigator.share({ title: 'Join Tournyx', url: window.location.href }); }
                 currentVal = 1; 
             }
 
-            if(currentVal >= reqVal) {
-                user.points = (parseInt(user.points) || 0) + rewardPts;
+            // Strictly verify before claiming
+            if(currentVal >= reqVal && reqVal > 0) {
+                user.points = (parseInt(user.points) || 0) + parseInt(rewardPts);
                 localStorage.setItem('tournyx_user', JSON.stringify(user));
                 
                 claimed.push(questId);
@@ -1004,19 +1050,21 @@
 
                 document.getElementById('homeWalletBalance').innerText = user.points;
                 let btn = document.querySelector(`#${questId} .quest-btn`);
-                btn.innerText = "CLAIMED";
-                btn.classList.add("claimed");
-                btn.onclick = null;
-
-                triggerConfetti(btn);
-                showToast(`+${rewardPts} PTS added to Wallet!`);
+                if(btn) {
+                    btn.innerText = "CLAIMED";
+                    btn.classList.add("claimed");
+                    btn.onclick = null;
+                    triggerConfetti(btn);
+                }
+                
+                showToast(`+${rewardPts} PTS verified & added to Wallet!`);
 
                 fetch(API_URL, {
                     method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ action: "update_wallet", email: user.email, points: user.points })
                 });
             } else {
-                showToast(`Task Incomplete! Finish it first.`, true);
+                showToast(`Verification Failed: Task Incomplete!`, true);
                 setTimeout(() => { window.location.href = redirectUrl; }, 1500);
             }
         }
@@ -1046,7 +1094,6 @@
         }
 
         // --- 8. LEADERBOARD FETCH LOGIC (DYNAMIC FROM GOOGLE SHEETS) ---
-        // Your AppScript should return: { status: "success", data: { organizers: [{name, image, value}], teams: [...], contributors: [...] } }
         async function loadLeaderboard() {
             try {
                 const res = await fetch(API_URL + "?action=get_leaderboard");
@@ -1065,7 +1112,6 @@
             const container = document.getElementById(containerId);
             let html = '';
             
-            // Loop through up to 6 results and build the layout programmatically
             list.slice(0, 6).forEach((item, i) => {
                 let rankClass = ''; let medal = ''; let borderClass = '';
                 
@@ -1086,7 +1132,7 @@
             container.innerHTML = html;
         }
 
-        // --- HARDWARE ACCELERATED CANVAS PARTICLES (OPTIMIZED FOR LOW-END 60FPS) ---
+        // --- HARDWARE ACCELERATED CANVAS PARTICLES ---
         const canvas = document.getElementById('particles-canvas');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
@@ -1094,10 +1140,8 @@
         class P {
             constructor(){ this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.s=Math.random()*2; this.vx=Math.random()*0.5-0.25; this.vy=Math.random()*0.5-0.25; }
             u(){ this.x+=this.vx; this.y+=this.vy; if(this.x<0||this.x>canvas.width)this.vx*=-1; if(this.y<0||this.y>canvas.height)this.vy*=-1; }
-            // Using Math.floor for faster sub-pixel rendering on mobile GPUs
             d(){ ctx.fillStyle='rgba(189,0,255,0.4)'; ctx.beginPath(); ctx.arc(Math.floor(this.x),Math.floor(this.y),this.s,0,Math.PI*2); ctx.fill(); }
         }
-        // Dropped to 25 particles to save massive CPU resources on cheap phones
         for(let i=0;i<25;i++) particles.push(new P());
         function anim(){ ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.u();p.d()}); requestAnimationFrame(anim); }
         anim();
