@@ -116,6 +116,12 @@
         .app-logo { width: 30px; height: 30px; border-radius: 50%; object-fit: contain; box-shadow: 0 0 15px var(--accent-purple); }
         .app-title { font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
+        /* --- NEW DESKTOP NAV MENU --- */
+        .desktop-nav { display: none; align-items: center; gap: 25px; }
+        .desktop-nav a { color: var(--text-muted); text-decoration: none; font-family: var(--font-head); font-size: 0.95rem; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: 1px;}
+        .desktop-nav a:hover, .desktop-nav a.active { color: var(--accent-cyan); text-shadow: 0 0 10px rgba(0,242,255,0.4); }
+        @media (min-width: 850px) { .desktop-nav { display: flex; } }
+
         .header-right { display: flex; align-items: center; gap: 12px; }
         .header-balance { background: linear-gradient(90deg, #ff9900, #ff5e00); padding: 6px 14px; border-radius: 20px; display: flex; align-items: center; gap: 6px; font-family: var(--font-head); font-size: 0.95rem; font-weight: bold; color: #ffffff; text-decoration: none; transition: 0.3s; box-shadow: 0 2px 15px rgba(255, 153, 0, 0.5); will-change: transform;}
         .header-balance:hover { box-shadow: 0 4px 20px rgba(255, 153, 0, 0.8); transform: scale(1.05); }
@@ -393,6 +399,14 @@
                 <div class="app-title" id="welcomeText">TOURNYX</div>
             </div>
             
+            <nav class="desktop-nav">
+                <a href="index.html" class="active"><i class="fa-solid fa-house"></i> Home</a>
+                <a href="explore.html"><i class="fa-solid fa-compass"></i> Explore</a>
+                <a href="matches.html"><i class="fa-solid fa-trophy"></i> Matches</a>
+                <a href="clans.html"><i class="fa-solid fa-shield-halved"></i> Clan</a>
+                <a href="tournament.html" style="color:var(--accent-cyan);"><i class="fa-solid fa-plus"></i> Create</a>
+            </nav>
+
             <div class="header-right">
                 <a href="wallet.html" class="header-balance">
                     <i class="fa-solid fa-wallet"></i> <span id="homeWalletBalance">0</span>
@@ -741,6 +755,7 @@
             renderQuests(); 
             initScrollAnimations(); 
             typeWriterEffect();
+            loadLeaderboard(); // Automatically pull leaderboard from AppScript!
 
             // Force loader to vanish gracefully
             setTimeout(() => {
@@ -1028,6 +1043,47 @@
             document.querySelectorAll('.lb-tab').forEach(el => el.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
             tabElement.classList.add('active');
+        }
+
+        // --- 8. LEADERBOARD FETCH LOGIC (DYNAMIC FROM GOOGLE SHEETS) ---
+        // Your AppScript should return: { status: "success", data: { organizers: [{name, image, value}], teams: [...], contributors: [...] } }
+        async function loadLeaderboard() {
+            try {
+                const res = await fetch(API_URL + "?action=get_leaderboard");
+                const result = await res.json();
+                
+                if (result.status === "success" && result.data) {
+                    renderLeaderboardList('organizers', result.data.organizers, 'Tournaments Hosted', '', 'var(--accent-cyan)');
+                    renderLeaderboardList('teams', result.data.teams, 'Won', '₹ ', 'var(--accent-purple)');
+                    renderLeaderboardList('contributors', result.data.contributors, 'Contributions', '', '#ffd700');
+                }
+            } catch(e) { console.log("Leaderboard loaded from initial HTML placeholders."); }
+        }
+
+        function renderLeaderboardList(containerId, list, roleText, prefix, colorStr) {
+            if (!list || list.length === 0) return;
+            const container = document.getElementById(containerId);
+            let html = '';
+            
+            // Loop through up to 6 results and build the layout programmatically
+            list.slice(0, 6).forEach((item, i) => {
+                let rankClass = ''; let medal = ''; let borderClass = '';
+                
+                if (i === 0) { rankClass = 'rank-1'; medal = `<div class="rank-medal rank-1"><i class="fa-solid fa-medal"></i></div>`; borderClass = 'rank-1-border'; }
+                if (i === 1) { rankClass = 'rank-2'; medal = `<div class="rank-medal rank-2"><i class="fa-solid fa-medal"></i></div>`; borderClass = 'rank-2-border'; }
+                if (i === 2) { rankClass = 'rank-3'; medal = `<div class="rank-medal rank-3"><i class="fa-solid fa-medal"></i></div>`; borderClass = 'rank-3-border'; }
+                
+                html += `
+                <div class="person-row ${borderClass}">
+                    ${medal}
+                    <img src="${item.image || 'https://via.placeholder.com/100'}" class="person-img-small" style="border-color:${colorStr}">
+                    <div class="person-info">
+                        <div class="person-name">${item.name || 'Unknown'}</div>
+                        <div class="person-role" style="color:${colorStr}">${prefix}${item.value || 0} ${roleText}</div>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
         }
 
         // --- HARDWARE ACCELERATED CANVAS PARTICLES (OPTIMIZED FOR LOW-END 60FPS) ---
