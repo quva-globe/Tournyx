@@ -331,7 +331,7 @@
                 <div class="row">
                     <div class="col">
                         <label class="input-label">Max Slots * <i class="fa-solid fa-circle-info tooltip-icon" onclick="showToast('Total number of teams/players allowed')"></i></label>
-                        <input type="number" name="slots" class="form-control" placeholder="e.g. 48" required>
+                        <input type="number" name="slots" class="form-control" placeholder="e.g. 48" required onkeyup="updateCalc()">
                     </div>
                     <div class="col">
                         <label class="input-label">Region</label>
@@ -362,6 +362,18 @@
                         </div>
                     </div>
                     <div class="col">
+                        <label class="input-label"><i class="fa-solid fa-coins" style="color:var(--accent-cyan); margin-right:4px;"></i> Entry Fee (PTS)</label>
+                        <input type="number" name="entry_fee_pts" id="inpFeePts" class="form-control" placeholder="0 for Free" value="0" onkeyup="updateCalc()">
+                        <div class="preset-row">
+                            <span class="preset-badge" onclick="applyPreset('inpFeePts', 0)">Free</span>
+                            <span class="preset-badge" onclick="applyPreset('inpFeePts', 500)">500</span>
+                            <span class="preset-badge" onclick="applyPreset('inpFeePts', 2500)">2.5k</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col">
                         <label class="input-label">Prize Pool (Rs.) *</label>
                         <input type="number" name="prize_pool" id="inpPrize" class="form-control" placeholder="e.g. 5000" required onkeyup="updateCalc()">
                         <div class="preset-row">
@@ -377,7 +389,10 @@
                         <div class="calc-lbl">Estimated Max Revenue</div>
                         <div class="input-sublabel" style="margin:0;">Fee × Slots</div>
                     </div>
-                    <div class="calc-val" id="calcRev">0 Rs.</div>
+                    <div style="text-align: right;">
+                        <div class="calc-val" id="calcRev">0 Rs.</div>
+                        <div class="calc-val" id="calcRevPts" style="font-size: 0.95rem; color: var(--accent-cyan); text-shadow: none; margin-top: 2px;">0 PTS</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -577,15 +592,21 @@
 
         // --- 4. CALCULATORS & VALIDATORS ---
         function updateCalc() {
-            let fee = parseInt(document.getElementById('inpFee').value) || 0;
+            let feeRs = parseInt(document.getElementById('inpFee').value) || 0;
+            let feePts = parseInt(document.getElementById('inpFeePts').value) || 0;
             let slots = parseInt(document.querySelector('input[name="slots"]').value) || 0;
-            let rev = fee * slots;
             
-            let calcEl = document.getElementById('calcRev');
-            calcEl.innerText = rev.toLocaleString('en-IN') + " Rs.";
+            let revRs = feeRs * slots;
+            let revPts = feePts * slots;
             
-            calcEl.style.transform = 'scale(1.1)';
-            setTimeout(() => calcEl.style.transform = 'scale(1)', 200);
+            let calcRsEl = document.getElementById('calcRev');
+            let calcPtsEl = document.getElementById('calcRevPts');
+            
+            calcRsEl.innerText = revRs.toLocaleString('en-IN') + " Rs.";
+            calcPtsEl.innerText = revPts.toLocaleString('en-IN') + " PTS";
+            
+            calcRsEl.parentElement.style.transform = 'scale(1.05)';
+            setTimeout(() => calcRsEl.parentElement.style.transform = 'scale(1)', 200);
         }
 
         function validateStreamUrl() {
@@ -689,6 +710,7 @@
                 document.getElementById('createForm').reset();
                 document.getElementById('editor').innerHTML = "";
                 removeImage('bannerInput', 'bannerBase64', 'bannerArea', 'bannerPreview', 'removeBanner');
+                updateCalc();
                 calculateProgress();
                 showToast("Form cleared.");
             }
@@ -741,7 +763,7 @@
             const rawData = Object.fromEntries(formData);
             let useOrg = document.getElementById('orgToggle').classList.contains('active');
 
-                        const payload = {
+            const payload = {
                 action: 'create_tournament',
                 organizer_email: currentUser.email, // MATCHED TO SHEET
                 organizer_username: useOrg ? currentUser.username : "Verified Organizer", // MATCHED TO SHEET
@@ -751,7 +773,8 @@
                 slots: rawData.slots,
                 date: rawData.date, 
                 match_period: rawData.match_period, 
-                fee: (!rawData.entry_fee || rawData.entry_fee == "0") ? "Free" : rawData.entry_fee,
+                fee: (!rawData.entry_fee || rawData.entry_fee == "0") ? "0" : rawData.entry_fee,
+                fee_pts: (!rawData.entry_fee_pts || rawData.entry_fee_pts == "0") ? "0" : rawData.entry_fee_pts,
                 prize: rawData.prize_pool,
                 rules: rawData.rules, 
                 banner: rawData.banner_base64 || 'https://via.placeholder.com/1200x380/15062e/00f2ff?text=Tournament+Banner',
