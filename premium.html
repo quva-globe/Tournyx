@@ -2,15 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Tournyx - Premium Plans</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
     <script>
         (function() {
@@ -33,7 +31,7 @@
         :root {
             --primary-bg: #070311;
             --secondary-bg: #0d061e;
-            --card-bg: rgba(20, 10, 35, 0.7);
+            --card-bg: rgba(20, 10, 35, 0.75);
             --card-border: rgba(189, 0, 255, 0.2);
             --accent-cyan: #00f2ff;
             --accent-purple: #bd00ff;
@@ -54,36 +52,37 @@
             color: var(--text-main);
             font-family: var(--font-body);
             overflow-x: hidden;
-            padding-bottom: 90px; 
+            padding-bottom: 100px; 
             padding-top: 70px;
         }
 
-        /* --- BACKGROUND --- */
-        #particles-canvas {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-            background: radial-gradient(circle at 50% 50%, #15062e 0%, #070311 100%);
+        /* --- ULTIMATE FEATURE 1: DYNAMIC BACKGROUND AURA --- */
+        #dynamic-aura {
+            position: fixed; top: -50%; left: -50%; width: 200%; height: 200%; z-index: -2;
+            background: radial-gradient(circle at 50% 50%, rgba(189,0,255,0.15) 0%, rgba(7,3,17,1) 40%);
+            transition: transform 0.5s ease-out; pointer-events: none;
         }
+        #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none;}
 
-        /* --- HEADER --- */
+        /* --- HEADER & DESKTOP NAV --- */
         .top-header {
-            position: fixed; top: 0; left: 0; width: 100%; padding: 10px 15px; height: 65px;
-            background: rgba(7, 3, 17, 0.85); backdrop-filter: blur(15px);
-            border-bottom: 1px solid var(--card-border);
-            display: flex; align-items: center; justify-content: space-between; z-index: 2000;
-            box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+            position: fixed; top: 0; left: 0; width: 100%; padding: env(safe-area-inset-top) 15px 15px;
+            background: rgba(7, 3, 17, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--card-border); z-index: 2000; box-shadow: 0 4px 30px rgba(0,0,0,0.5);
         }
+        .header-wrapper { display: flex; align-items: center; justify-content: space-between; max-width: 1000px; margin: 0 auto; width: 100%; }
         .header-left { display: flex; align-items: center; gap: 15px; }
         .back-btn { color: white; font-size: 1.3rem; text-decoration: none; padding: 5px; transition: 0.3s; cursor: pointer; }
         .back-btn:active { color: var(--accent-cyan); transform: scale(0.9); }
-        .app-title {
-            font-family: var(--font-head); font-size: 1.2rem; font-weight: 700;
-            background: linear-gradient(90deg, #fff, var(--accent-orange));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            text-transform: uppercase; letter-spacing: 1px;
-        }
+        .app-title { font-family: var(--font-head); font-size: 1.2rem; font-weight: 700; background: linear-gradient(90deg, #fff, var(--accent-orange)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform: uppercase; letter-spacing: 1px; }
+
+        .desktop-nav { display: none; align-items: center; gap: 25px; }
+        .desktop-nav a { color: var(--text-muted); text-decoration: none; font-family: var(--font-head); font-size: 0.95rem; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: 1px;}
+        .desktop-nav a:hover, .desktop-nav a.active { color: var(--accent-cyan); text-shadow: 0 0 10px rgba(0,242,255,0.4); }
+        @media (min-width: 850px) { .desktop-nav { display: flex; } }
 
         /* --- HERO SECTION --- */
-        .hero { text-align: center; padding: 20px 20px 10px; animation: fadeIn 0.4s ease; }
+        .hero { text-align: center; padding: 20px 20px 10px; animation: fadeIn 0.4s ease; max-width: 600px; margin: 0 auto;}
         .hero-icon { font-size: 3.5rem; color: var(--accent-orange); margin-bottom: 10px; text-shadow: 0 0 25px rgba(255, 153, 0, 0.5); }
         .hero h1 { font-family: var(--font-head); font-size: 1.8rem; line-height: 1.4; margin-bottom: 10px; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
         .gradient-text { background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; }
@@ -91,269 +90,343 @@
 
         @keyframes fadeIn { from{opacity:0; transform:translateY(15px);} to{opacity:1; transform:translateY(0);} }
 
-        /* --- BILLING TOGGLE --- */
-        .billing-toggle-wrapper { display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 30px; font-family: var(--font-head); font-weight: bold; font-size: 0.9rem; }
-        .toggle-label { color: #888; transition: 0.3s; }
-        .toggle-label.active { color: white; text-shadow: 0 0 5px rgba(255,255,255,0.5); }
-        .discount-badge { background: rgba(0,255,127,0.1); color: var(--accent-green); padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; border: 1px solid rgba(0,255,127,0.3); margin-left: 5px; }
+        /* --- ULTIMATE FEATURE 9: AUTO-RENEWAL BADGE --- */
+        .no-auto-renew { display: inline-flex; align-items: center; gap: 6px; background: rgba(0,255,127,0.1); border: 1px solid rgba(0,255,127,0.3); color: var(--accent-green); padding: 6px 15px; border-radius: 20px; font-family: var(--font-head); font-size: 0.8rem; font-weight: bold; margin-bottom: 25px; box-shadow: 0 0 15px rgba(0,255,127,0.2);}
 
-        .switch { position: relative; display: inline-block; width: 60px; height: 30px; }
+        /* --- BILLING TOGGLE --- */
+        .billing-toggle-wrapper { display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 35px; font-family: var(--font-head); font-weight: bold; font-size: 0.95rem; }
+        .toggle-label { color: #888; transition: 0.3s; position: relative;}
+        .toggle-label.active { color: white; text-shadow: 0 0 5px rgba(255,255,255,0.5); }
+        .discount-badge { background: rgba(0,255,127,0.15); color: var(--accent-green); padding: 3px 8px; border-radius: 10px; font-size: 0.75rem; border: 1px solid rgba(0,255,127,0.4); margin-left: 5px; position: absolute; top: -20px; right: -40px; transform: rotate(15deg); animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);}
+
+        .switch { position: relative; display: inline-block; width: 65px; height: 32px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #110822; border: 1px solid var(--card-border); transition: .4s; border-radius: 34px; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
-        .slider:before { position: absolute; content: ""; height: 22px; width: 22px; left: 3px; bottom: 3px; background-color: var(--accent-cyan); transition: .4s; border-radius: 50%; box-shadow: 0 0 10px var(--accent-cyan); }
+        .slider:before { position: absolute; content: ""; height: 24px; width: 24px; left: 3px; bottom: 3px; background-color: var(--accent-cyan); transition: .4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border-radius: 50%; box-shadow: 0 0 10px var(--accent-cyan); }
         input:checked + .slider { border-color: var(--accent-purple); }
-        input:checked + .slider:before { transform: translateX(30px); background-color: var(--accent-purple); box-shadow: 0 0 10px var(--accent-purple); }
+        input:checked + .slider:before { transform: translateX(33px); background-color: var(--accent-purple); box-shadow: 0 0 10px var(--accent-purple); }
 
-        /* --- PRICING PLANS --- */
-        .plans-container { display: flex; flex-direction: column; gap: 25px; padding: 0 20px; max-width: 500px; margin: 0 auto; }
+        /* --- ULTIMATE FEATURE 12: SCROLL SNAP PRICING PLANS --- */
+        .plans-wrapper { width: 100%; overflow-x: auto; scroll-snap-type: x mandatory; padding: 10px 0 30px; display: flex; gap: 20px; }
+        .plans-wrapper::-webkit-scrollbar { display: none; }
+        
+        .plan-spacer { flex: 0 0 calc(50vw - 160px); } /* Centers the first card on mobile */
 
+        /* --- GLASSMORPHISM 2.0 CARDS --- */
         .plan-card {
+            flex: 0 0 320px; scroll-snap-align: center;
             background: var(--card-bg); border: 1px solid var(--card-border);
-            border-radius: 20px; padding: 30px 25px; backdrop-filter: blur(10px);
+            border-radius: 24px; padding: 35px 25px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             position: relative; overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+            display: flex; flex-direction: column;
         }
         
         /* Plan Themes */
-        .plan-basic { border-top: 4px solid var(--text-muted); }
+        .plan-basic { border-top: 4px solid #666; }
         .plan-elite { 
-            border: 1px solid var(--accent-cyan); border-top: 4px solid var(--accent-cyan);
-            box-shadow: 0 0 25px rgba(0, 242, 255, 0.15);
-            background: linear-gradient(180deg, rgba(0, 242, 255, 0.05) 0%, rgba(20, 20, 35, 0.9) 100%);
+            border: 1px solid rgba(0, 242, 255, 0.5); border-top: 4px solid var(--accent-cyan);
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.15);
+            background: linear-gradient(180deg, rgba(0, 242, 255, 0.08) 0%, rgba(20, 20, 35, 0.9) 100%);
         }
         .plan-org { 
-            border: 1px solid var(--accent-purple); border-top: 4px solid var(--accent-purple); 
-            box-shadow: 0 0 25px rgba(189, 0, 255, 0.15);
+            border: 1px solid rgba(189, 0, 255, 0.5); border-top: 4px solid var(--accent-purple); 
+            box-shadow: 0 0 30px rgba(189, 0, 255, 0.15);
+            background: linear-gradient(180deg, rgba(189, 0, 255, 0.08) 0%, rgba(20, 20, 35, 0.9) 100%);
         }
+
+        /* --- ULTIMATE FEATURE 7: PREMIUM SPARKLES --- */
+        .sparkle-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; z-index: 0; opacity: 0.5;}
+        .sparkle { position: absolute; width: 2px; height: 2px; background: white; border-radius: 50%; box-shadow: 0 0 5px white; animation: floatUp 3s infinite linear; }
+        @keyframes floatUp { 0% { transform: translateY(100%) scale(0); opacity: 0; } 50% { opacity: 1; transform: translateY(50%) scale(1); } 100% { transform: translateY(0%) scale(0); opacity: 0; } }
 
         .popular-badge {
-            position: absolute; top: 15px; right: -35px;
+            position: absolute; top: 18px; right: -35px;
             background: var(--accent-cyan); color: #000;
-            font-family: var(--font-head); font-size: 0.7rem; font-weight: 700;
-            padding: 5px 35px; transform: rotate(45deg); letter-spacing: 1px; box-shadow: 0 0 10px var(--accent-cyan);
+            font-family: var(--font-head); font-size: 0.75rem; font-weight: 900;
+            padding: 6px 40px; transform: rotate(45deg); letter-spacing: 2px; box-shadow: 0 0 15px var(--accent-cyan); z-index: 2;
         }
 
-        .plan-header { border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 15px; margin-bottom: 20px; }
-        .plan-name { font-family: var(--font-head); font-size: 1.4rem; letter-spacing: 1px; color: white; font-weight: bold; text-transform: uppercase; }
-        .plan-price { font-family: var(--font-head); font-size: 2.8rem; font-weight: 700; margin: 10px 0 5px; color: white; display: flex; align-items: baseline; gap: 5px; }
-        .rupee-symbol { font-size: 1.5rem; color: var(--accent-cyan); }
-        .plan-price span { font-size: 1rem; color: var(--text-muted); font-family: var(--font-body); text-transform: uppercase; letter-spacing: 1px; }
-        .plan-desc { font-size: 0.9rem; color: #aaa; line-height: 1.4; }
+        .plan-header { border-bottom: 1px dashed rgba(255,255,255,0.15); padding-bottom: 20px; margin-bottom: 25px; position: relative; z-index: 2;}
+        .plan-name { font-family: var(--font-head); font-size: 1.5rem; letter-spacing: 1px; color: white; font-weight: 900; text-transform: uppercase; }
+        
+        .price-wrapper { position: relative; margin: 15px 0 5px; height: 50px; display: flex; align-items: baseline; gap: 5px;}
+        .old-price { position: absolute; top: -15px; left: 0; color: #ff4d4d; font-size: 1rem; text-decoration: line-through; font-family: var(--font-head); opacity: 0; transition: 0.3s;}
+        .old-price.show { opacity: 1; animation: popIn 0.3s; }
+        
+        .plan-price { font-family: var(--font-head); font-size: 3rem; font-weight: 700; color: white; line-height: 1;}
+        .rupee-symbol { font-size: 1.8rem; color: var(--accent-cyan); }
+        .plan-dur { font-size: 1rem; color: var(--text-muted); font-family: var(--font-body); text-transform: uppercase; letter-spacing: 1px; font-weight: bold;}
+        .plan-desc { font-size: 0.9rem; color: #aaa; line-height: 1.4; margin-top: 10px; }
 
-        .feature-list { list-style: none; margin-bottom: 25px; }
-        .feature-list li { display: flex; align-items: center; gap: 12px; font-size: 0.95rem; color: #ddd; margin-bottom: 12px; transition: 0.3s; }
+        .feature-list { list-style: none; margin-bottom: 30px; flex-grow: 1; position: relative; z-index: 2;}
+        
+        /* --- ULTIMATE FEATURE 10: INTERACTIVE TOOLTIPS --- */
+        .feature-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 0.95rem; color: #ddd; margin-bottom: 15px; transition: 0.3s; cursor: help; position: relative;}
         .feature-list li:hover { color: white; transform: translateX(5px); }
-        .feature-list li i { color: var(--accent-green); font-size: 1rem; filter: drop-shadow(0 0 5px rgba(0,255,127,0.5)); }
-        .feature-list li.disabled { color: #555; }
+        .feature-list li i { color: var(--accent-green); font-size: 1.1rem; filter: drop-shadow(0 0 5px rgba(0,255,127,0.5)); margin-top: 2px;}
+        .feature-list li.disabled { color: #555; cursor: not-allowed; }
         .feature-list li.disabled:hover { color: #555; transform: none; }
         .feature-list li.disabled i { color: #555; filter: none; }
+        
+        .f-tooltip { position: absolute; bottom: 100%; left: 30px; background: #000; color: var(--accent-cyan); padding: 5px 10px; border-radius: 5px; font-size: 0.75rem; font-family: var(--font-head); border: 1px solid var(--accent-cyan); opacity: 0; pointer-events: none; transition: 0.3s; white-space: nowrap; box-shadow: 0 5px 15px rgba(0,0,0,0.8); z-index: 10;}
+        .feature-list li:hover .f-tooltip { opacity: 1; transform: translateY(-5px); }
 
-        /* Button States */
+        /* Button States & Magnetic Hover */
         .btn-upgrade {
-            width: 100%; padding: 16px; border-radius: 12px; border: none;
-            font-family: var(--font-head); font-size: 1.05rem; font-weight: 700;
-            cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;
-            display: flex; justify-content: center; align-items: center; gap: 8px;
+            width: 100%; padding: 18px; border-radius: 15px; border: none;
+            font-family: var(--font-head); font-size: 1.1rem; font-weight: 900;
+            cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-transform: uppercase; letter-spacing: 1px;
+            display: flex; justify-content: center; align-items: center; gap: 8px; position: relative; z-index: 2;
         }
-        .btn-upgrade:active { transform: scale(0.96); }
+        .btn-upgrade:active { transform: scale(0.92) !important; }
         
         .btn-basic { background: rgba(255,255,255,0.05); color: #888; border: 1px solid #444; cursor: not-allowed; }
-        .btn-elite { background: var(--accent-cyan); color: #000; box-shadow: 0 0 20px rgba(0,242,255,0.4); }
-        .btn-org { background: var(--accent-purple); color: white; box-shadow: 0 0 20px rgba(189,0,255,0.4); }
+        .btn-elite { background: var(--accent-cyan); color: #000; box-shadow: 0 5px 20px rgba(0,242,255,0.4); }
+        .btn-elite:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,242,255,0.6); }
         
-        /* The Exact "Active Plan" style from the screenshot */
+        .btn-org { background: var(--accent-purple); color: white; box-shadow: 0 5px 20px rgba(189,0,255,0.4); }
+        .btn-org:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(189,0,255,0.6); }
+        
+        /* ULTIMATE FEATURE 11: INTELLIGENT PLAN LOCK */
         .btn-active-plan { 
-            background: rgba(0, 255, 127, 0.05) !important; 
+            background: rgba(0, 255, 127, 0.1) !important; 
             color: var(--accent-green) !important; 
             border: 1px solid var(--accent-green) !important; 
-            box-shadow: 0 0 15px rgba(0, 255, 127, 0.1) !important; 
-            pointer-events: none; 
+            box-shadow: inset 0 0 15px rgba(0, 255, 127, 0.2) !important; 
+            pointer-events: none; transform: none !important;
         }
 
         /* --- OFFERED BY TOURNYX --- */
-        .perks-section { padding: 40px 20px; text-align: center; max-width: 600px; margin: 0 auto; }
+        .perks-section { padding: 20px 20px 50px; text-align: center; max-width: 800px; margin: 0 auto; }
         .perks-title { font-family: var(--font-head); font-size: 1.4rem; margin-bottom: 25px; color: white; text-transform: uppercase; letter-spacing: 1px; }
         
         .perk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        @media(min-width: 600px) { .perk-grid { grid-template-columns: repeat(4, 1fr); } }
+        
         .perk-item {
             background: rgba(255,255,255,0.02); border: 1px solid var(--card-border);
             border-radius: 15px; padding: 20px 15px; display: flex; flex-direction: column; align-items: center; gap: 12px; transition: 0.3s;
         }
-        .perk-item:hover { border-color: var(--accent-cyan); background: rgba(0,242,255,0.05); transform: translateY(-5px); }
-        .perk-item i { font-size: 2rem; color: var(--accent-cyan); filter: drop-shadow(0 0 10px rgba(0,242,255,0.4)); }
+        .perk-item:hover { border-color: var(--accent-cyan); background: rgba(0,242,255,0.05); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.5);}
+        .perk-item i { font-size: 2rem; color: var(--accent-cyan); filter: drop-shadow(0 0 10px rgba(0,242,255,0.4)); transition: 0.3s;}
+        .perk-item:hover i { transform: scale(1.2) rotate(5deg); }
         .perk-item span { font-family: var(--font-head); font-size: 0.85rem; color: white; font-weight: bold; text-transform: uppercase; }
 
-        /* --- ANIMATED OVERLAYS --- */
-        .full-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(7,3,17,0.98); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.4s; }
+        /* --- ULTIMATE FEATURE 14: NEON PAYMENT OVERLAY --- */
+        .full-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(7,3,17,0.98); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.4s; backdrop-filter: blur(10px);}
         .full-overlay.active { opacity: 1; pointer-events: all; }
         
-        .anim-circle { width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin-bottom: 20px; }
-        .anim-loading { border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--accent-cyan); animation: spin 1s linear infinite; box-shadow: 0 0 20px rgba(0,242,255,0.5); }
-        .anim-success { background: var(--accent-green); color: black; box-shadow: 0 0 30px rgba(0,255,127,0.6); animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .anim-error { background: var(--accent-red); color: white; box-shadow: 0 0 30px rgba(255,77,77,0.6); animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .anim-circle { width: 90px; height: 90px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 3rem; margin-bottom: 25px; }
+        .anim-loading { border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--accent-cyan); border-right: 4px solid var(--accent-purple); animation: spin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite; box-shadow: 0 0 30px rgba(0,242,255,0.4); }
+        .anim-success { background: var(--accent-green); color: black; box-shadow: 0 0 40px rgba(0,255,127,0.8); animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .anim-error { background: var(--accent-red); color: white; box-shadow: 0 0 40px rgba(255,77,77,0.8); animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         
-        .overlay-title { font-family: var(--font-head); font-size: 1.5rem; color: white; margin-bottom: 10px; }
-        .overlay-desc { color: #aaa; font-size: 0.9rem; text-align: center; max-width: 80%; }
+        .overlay-title { font-family: var(--font-head); font-size: 1.8rem; color: white; margin-bottom: 10px; text-shadow: 0 0 10px rgba(255,255,255,0.5); text-align: center;}
+        .overlay-desc { color: #aaa; font-size: 1rem; text-align: center; max-width: 80%; line-height: 1.5;}
 
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
         /* Toast */
-        #customToast { visibility: hidden; min-width: 250px; background-color: var(--accent-cyan); color: #000; text-align: center; border-radius: 10px; padding: 14px; position: fixed; z-index: 9999; left: 50%; bottom: -50px; transform: translateX(-50%); font-family: var(--font-head); font-weight: bold; box-shadow: 0 5px 20px rgba(0,242,255,0.6); opacity: 0; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        #customToast { visibility: hidden; min-width: 250px; background-color: var(--accent-cyan); color: #000; text-align: center; border-radius: 12px; padding: 16px; position: fixed; z-index: 9999; left: 50%; bottom: -50px; transform: translateX(-50%); font-family: var(--font-head); font-weight: bold; box-shadow: 0 10px 30px rgba(0,242,255,0.6); opacity: 0; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         #customToast.show { visibility: visible; opacity: 1; bottom: 100px; }
 
         /* Footer */
-        .app-footer { text-align: center; padding: 20px 20px 100px 20px; color: #555; font-size: 0.75rem; font-family: var(--font-body); letter-spacing: 1px; border-top: 1px solid var(--card-border); margin-top: 10px; }
+        .app-footer { text-align: center; padding: 20px 20px 100px 20px; color: #555; font-size: 0.75rem; font-family: var(--font-body); letter-spacing: 1px; border-top: 1px solid var(--card-border); margin-top: 20px; }
 
         /* Bottom Nav */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(15px); border-top: 1px solid var(--card-border); z-index: 1000; display: flex; align-items: stretch; justify-content: space-between; padding: 0 5px; padding-bottom: env(safe-area-inset-bottom); box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
-        .nav-item { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; color: #666; text-decoration: none; font-size: 0.6rem; font-family: var(--font-head); font-weight: bold; transition: 0.3s; }
-        .nav-item.active { color: var(--accent-cyan); text-shadow: 0 0 10px rgba(0,242,255,0.5); }
-        .nav-item i { font-size: 1.2rem; transition: 0.3s; }
-        .nav-item:hover { color: white; }
-        .nav-item span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; text-transform: capitalize; }
-        
-        .fab-slot { flex: 1; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
-        .floating-plus { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 48px; height: 48px; background: var(--accent-cyan); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid var(--primary-bg); box-shadow: 0 0 0 2px var(--accent-purple), 0 -3px 10px rgba(0,0,0,0.5); color: #000; font-size: 1.5rem; cursor: pointer; transition: 0.3s; z-index: 10; }
-        .floating-plus:active { transform: translateX(-50%) scale(0.95); box-shadow: 0 0 0 2px var(--accent-purple), 0 -1px 5px rgba(0,0,0,0.5); }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 5px env(safe-area-inset-bottom); border-top: 1px solid var(--card-border); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.8); transform: translateZ(0);}
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; color: #666; text-decoration: none; font-size: 0.65rem; font-family: var(--font-head); font-weight: bold; flex: 1; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; will-change: transform, color;}
+        .nav-item span { margin-top: 4px; transition: 0.3s; }
+        .nav-item i { font-size: 1.3rem; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .nav-item.active { color: var(--accent-cyan); }
+        .nav-item.active i { transform: translateY(-4px); color: var(--accent-cyan); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
+        .nav-item.active span { transform: translateY(2px); color: white; }
+        .fab-slot { flex: 1.2; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
+        .floating-plus { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); width: 58px; height: 58px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 4px solid var(--primary-bg); box-shadow: 0 10px 25px rgba(189,0,255,0.5); color: #fff; font-size: 1.8rem; cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 10; will-change: transform;}
+        .floating-plus:active { transform: translateX(-50%) scale(0.95); box-shadow: 0 5px 15px rgba(189,0,255,0.4); }
 
-        @media (min-width: 850px) { .bottom-nav { display: none; } }
+        @media (min-width: 850px) { .bottom-nav { display: none !important; } .plan-spacer { display: none; } .plans-wrapper { justify-content: center; overflow-x: visible; } }
     </style>
 </head>
 <body>
 
+    <div id="dynamic-aura"></div>
     <canvas id="particles-canvas"></canvas>
 
     <header class="top-header">
-        <div class="header-left">
-            <a href="profile.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
-            <div class="app-title">PRO PLANS</div>
+        <div class="header-wrapper">
+            <div class="header-left">
+                <a href="profile.html" class="back-btn" onclick="triggerHaptic()"><i class="fa-solid fa-arrow-left"></i></a>
+                <div class="app-title">PRO UPGRADE</div>
+            </div>
+            
+            <nav class="desktop-nav">
+                <a href="index.html"><i class="fa-solid fa-house"></i> Home</a>
+                <a href="explore.html"><i class="fa-solid fa-compass"></i> Explore</a>
+                <a href="matches.html"><i class="fa-solid fa-trophy"></i> Matches</a>
+                <a href="profile.html"><i class="fa-solid fa-user"></i> Profile</a>
+            </nav>
         </div>
     </header>
 
     <section class="hero">
         <div class="hero-icon"><i class="fa-solid fa-crown"></i></div>
         <h1>Unlock Your <br><span class="gradient-text">Ultimate Potential</span></h1>
-        <p>Dominate the leaderboard with exclusive perks, verified badges, and zero interruptions.</p>
+        <p>Dominate the ecosystem with exclusive organizer tools, verified badges, and zero interruptions.</p>
+        
+        <div class="no-auto-renew">
+            <i class="fa-solid fa-bolt"></i> ONE-TIME SECURE PAYMENT. NO AUTO-RENEWAL.
+        </div>
     </section>
 
     <div class="billing-toggle-wrapper">
         <span class="toggle-label active" id="lblMonth">Monthly</span>
-        <label class="switch">
+        <label class="switch" onclick="triggerHaptic()">
             <input type="checkbox" id="billingToggle" onchange="togglePricing()">
             <span class="slider"></span>
         </label>
-        <span class="toggle-label" id="lblYear">Annually <span class="discount-badge">-20%</span></span>
+        <span class="toggle-label" id="lblYear">Annually <span class="discount-badge" id="discBadge">-20%</span></span>
     </div>
 
-    <div class="plans-container">
-        
+    <div class="plans-wrapper">
+        <div class="plan-spacer"></div>
+
         <div class="plan-card plan-basic" id="cardRookie">
             <div class="plan-header">
                 <div class="plan-name">ROOKIE TIER</div>
-                <div class="plan-price"><span class="rupee-symbol">₹</span>0<span id="durRookie"> / forever</span></div>
+                <div class="price-wrapper">
+                    <span class="plan-price"><span class="rupee-symbol">₹</span>0</span>
+                    <span class="plan-dur" id="durRookie">/ forever</span>
+                </div>
                 <div class="plan-desc">For casual gamers starting their journey.</div>
             </div>
             <ul class="feature-list">
-                <li><i class="fa-solid fa-check"></i> Access to Free Tournaments</li>
+                <li><i class="fa-solid fa-check"></i> Access Free Tournaments <span class="f-tooltip">Join any 0 Rs entry matches</span></li>
                 <li><i class="fa-solid fa-check"></i> Basic Player Profile</li>
-                <li><i class="fa-solid fa-check"></i> Standard Withdrawal Speed</li>
+                <li><i class="fa-solid fa-check"></i> Standard Payouts <span class="f-tooltip">Processed in 24-48 hours</span></li>
                 <li class="disabled"><i class="fa-solid fa-xmark"></i> Ad-Free Experience</li>
-                <li class="disabled"><i class="fa-solid fa-xmark"></i> Premium Profile Badge</li>
+                <li class="disabled"><i class="fa-solid fa-xmark"></i> Organizer Tools</li>
             </ul>
             <button class="btn-upgrade btn-basic" id="btnRookie">Current Plan</button>
         </div>
 
         <div class="plan-card plan-elite" id="cardElite">
-            <div class="popular-badge">POPULAR</div>
+            <div class="sparkle-container" id="sparklesElite"></div>
+            <div class="popular-badge">GAMER</div>
             <div class="plan-header">
                 <div class="plan-name" style="color: var(--accent-cyan);">ELITE PLAYER</div>
-                <div class="plan-price"><span class="rupee-symbol" style="color:var(--accent-cyan);">₹</span><span id="priceElite">99</span><span id="durElite"> / month</span></div>
+                <div class="price-wrapper">
+                    <span class="old-price" id="oldElite">₹120</span>
+                    <span class="plan-price"><span class="rupee-symbol" style="color:var(--accent-cyan);">₹</span><span id="priceElite">99</span></span>
+                    <span class="plan-dur" id="durElite">/ month</span>
+                </div>
                 <div class="plan-desc">The ultimate advantage for serious competitors.</div>
             </div>
             <ul class="feature-list">
-                <li><i class="fa-solid fa-check"></i> Access to VIP Tournaments</li>
+                <li><i class="fa-solid fa-check"></i> VIP Premium Tournaments <span class="f-tooltip">Access locked high-roller matches</span></li>
                 <li><i class="fa-solid fa-check"></i> 100% Ad-Free Experience</li>
-                <li><i class="fa-solid fa-check"></i> Glowing 'Elite' Profile Badge</li>
-                <li><i class="fa-solid fa-check"></i> Priority Match Support</li>
-                <li><i class="fa-solid fa-check"></i> Unlock Hidden Giveaways</li>
+                <li><i class="fa-solid fa-check"></i> Glowing 'Elite' Badge <span class="f-tooltip">Stand out on the leaderboards</span></li>
+                <li><i class="fa-solid fa-check"></i> Priority Match Support <span class="f-tooltip">Jump to the front of the ticket queue</span></li>
+                <li class="disabled"><i class="fa-solid fa-xmark"></i> Create Paid Events</li>
             </ul>
-            <button class="btn-upgrade btn-elite" id="btnElite" onclick="initiateSubscription('Elite Player', 'elite')">Go Elite</button>
+            <button class="btn-upgrade btn-elite" id="btnElite" onclick="initiateLinkSubscription('Elite Player', 'elite')">Go Elite</button>
         </div>
 
         <div class="plan-card plan-org" id="cardOrg">
+            <div class="sparkle-container" id="sparklesOrg"></div>
+            <div class="popular-badge" style="background:var(--accent-purple); color:white; box-shadow:0 0 15px var(--accent-purple);">CREATOR</div>
             <div class="plan-header">
                 <div class="plan-name" style="color: var(--accent-purple);">PRO ORGANIZER</div>
-                <div class="plan-price"><span class="rupee-symbol" style="color:var(--accent-purple);">₹</span><span id="priceOrg">299</span><span id="durOrg"> / month</span></div>
-                <div class="plan-desc">For brands and hosts creating massive events.</div>
+                <div class="price-wrapper">
+                    <span class="old-price" id="oldOrg">₹360</span>
+                    <span class="plan-price"><span class="rupee-symbol" style="color:var(--accent-purple);">₹</span><span id="priceOrg">299</span></span>
+                    <span class="plan-dur" id="durOrg">/ month</span>
+                </div>
+                <div class="plan-desc">For brands and hosts monetizing massive events.</div>
             </div>
             <ul class="feature-list">
-                <li><i class="fa-solid fa-check"></i> Host Unlimited Tournaments</li>
-                <li><i class="fa-solid fa-check"></i> Verified Organizer Checkmark</li>
-                <li><i class="fa-solid fa-check"></i> Create & Manage Unlimited Clans</li>
-                <li><i class="fa-solid fa-check"></i> Access Admin Financial Dashboard</li>
-                <li><i class="fa-solid fa-check"></i> Dedicated Account Manager</li>
+                <li><i class="fa-solid fa-check"></i> Host Paid Tournaments <span class="f-tooltip">Charge Rs entry fees and keep profits</span></li>
+                <li><i class="fa-solid fa-check"></i> Verified Checkmark <i class="fa-solid fa-circle-check" style="color:#1da1f2; font-size:0.9rem;"></i></li>
+                <li><i class="fa-solid fa-check"></i> Drop Commission to 5% <span class="f-tooltip">Keep 95% of all entry fees generated</span></li>
+                <li><i class="fa-solid fa-check"></i> Access Financial Dashboard</li>
+                <li><i class="fa-solid fa-check"></i> All Elite Player Perks Included</li>
             </ul>
-            <button class="btn-upgrade btn-org" id="btnOrg" onclick="initiateSubscription('Pro Organizer', 'organizer')">Become a Host</button>
+            <button class="btn-upgrade btn-org" id="btnOrg" onclick="initiateLinkSubscription('Pro Organizer', 'organizer')">Become a Host</button>
         </div>
-
+        
+        <div class="plan-spacer"></div>
     </div>
 
     <section class="perks-section">
         <h2 class="perks-title">The <span style="color:var(--accent-orange)">Tournyx</span> Guarantee</h2>
         <div class="perk-grid">
-            <div class="perk-item"><i class="fa-solid fa-shield-halved"></i><span>Secure Payments</span></div>
-            <div class="perk-item"><i class="fa-solid fa-bolt"></i><span>Instant Activation</span></div>
-            <div class="perk-item"><i class="fa-solid fa-headset"></i><span>24/7 Priority Support</span></div>
-            <div class="perk-item"><i class="fa-solid fa-gamepad"></i><span>Zero Ads</span></div>
+            <div class="perk-item"><i class="fa-solid fa-shield-halved"></i><span>Secure UPI</span></div>
+            <div class="perk-item"><i class="fa-solid fa-bolt"></i><span>Instant Unlock</span></div>
+            <div class="perk-item"><i class="fa-solid fa-ban"></i><span>Cancel Anytime</span></div>
+            <div class="perk-item"><i class="fa-solid fa-headset"></i><span>24/7 Support</span></div>
         </div>
     </section>
 
     <div class="full-overlay" id="statusOverlay">
         <div class="anim-circle" id="statusCircle"></div>
-        <h2 class="overlay-title" id="statusTitle">Processing...</h2>
-        <p class="overlay-desc" id="statusDesc">Please wait.</p>
+        <h2 class="overlay-title" id="statusTitle">Connecting Vault...</h2>
+        <p class="overlay-desc" id="statusDesc">Securing payment gateway link.</p>
     </div>
 
     <div id="customToast">Notification</div>
 
     <footer class="app-footer">
-        <div class="footer-logo"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_20wCR-WBMpQmw3vxcYUf-vxIO1PYDJoQN_Sid3UDjA9tf0cuX0eH40jbzHoJad4cxbnjhPjqfCw1Z5V1LhgN9zFuIQC0fJjecTy3D9PFu5WjR2H1wHwTD1bUGnXY_NiApWn5gMs6velcQngSzKoP1yHzX0cVsFSUFM8zIefcbiPayY7680Kz0V0ZAAE/s1264/1000093706.png" style="width:20px;"> TOURNYX</div>
-        <div class="footer-text">Built for Gamers, By Gamers.</div>
+        <div class="footer-logo"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_20wCR-WBMpQmw3vxcYUf-vxIO1PYDJoQN_Sid3UDjA9tf0cuX0eH40jbzHoJad4cxbnjhPjqfCw1Z5V1LhgN9zFuIQC0fJjecTy3D9PFu5WjR2H1wHwTD1bUGnXY_NiApWn5gMs6velcQngSzKoP1yHzX0cVsFSUFM8zIefcbiPayY7680Kz0V0ZAAE/s1264/1000093706.png" style="width:20px; vertical-align:middle;"> TOURNYX PRO</div>
+        <div class="footer-text" style="margin-top:5px; font-style:italic; color:#777;">Secure processing via UPI network.</div>
     </footer>
 
-    <nav class="bottom-nav">
-        <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i><span>Home</span></a>
-        <a class="nav-item" href="explore.html"><i class="fa-solid fa-compass"></i><span>Explore</span></a>
-        <a class="nav-item" href="matches.html"><i class="fa-solid fa-trophy"></i><span>Matches</span></a>
-        <div class="fab-slot"><div class="floating-plus" onclick="window.location.href='tournament.html'"><i class="fa-solid fa-plus"></i></div></div>
-        <a class="nav-item" href="clans.html"><i class="fa-solid fa-shield-halved"></i><span>Clan</span></a>
-        <a class="nav-item" href="wallet.html"><i class="fa-solid fa-wallet"></i><span>Wallet</span></a>
-        <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i><span>Profile</span></a>
-    </nav>
-
     <script>
-        // --- 1. CONFIGURATION & SETUP ---
+        // --- 1. CONFIGURATION & LINKS (COSMOFEED/SUPERPROFILE) ---
         const API_URL = "https://script.google.com/macros/s/AKfycbynNLDDXS1wMrU6RGnk4nKb1jfQkQGuqrNIKWAt8wf46MaKP6y1rwGmSJg5fmm4KYU/exec"; 
         let currentUser = JSON.parse(localStorage.getItem('tournyx_user'));
 
+        // ⚠️ REPLACE THESE WITH YOUR ACTUAL COSMOFEED / SUPERPROFILE PAYMENT LINKS ⚠️
+        const PAYMENT_LINKS = {
+            monthly_elite: "https://cosmofeed.com/pay/elite_monthly_link_here",
+            annual_elite: "https://cosmofeed.com/pay/elite_annual_link_here",
+            monthly_org: "https://cosmofeed.com/pay/org_monthly_link_here",
+            annual_org: "https://cosmofeed.com/pay/org_annual_link_here"
+        };
+
         document.addEventListener("DOMContentLoaded", () => {
             if (!currentUser || currentUser.email === "guest@tournyx.com") {
-                alert("Please log in to view Premium Plans.");
+                alert("Please log in to upgrade.");
                 window.location.href = "login.html";
                 return;
             }
-            // Fetch live user role in case it was updated on another device
+            
+            // Generate VFX Sparkles
+            generateSparkles('sparklesElite');
+            generateSparkles('sparklesOrg');
+
+            // Scroll aura listener
+            window.addEventListener('scroll', () => {
+                let scrollY = window.scrollY;
+                document.getElementById('dynamic-aura').style.transform = `translateY(${scrollY * 0.2}px)`;
+            });
+
+            // Resume flow if returning from Payment Gateway
+            checkPendingTransaction();
             syncUserRole();
         });
 
         // --- 2. UX HELPERS ---
+        function triggerHaptic() { if(navigator.vibrate) navigator.vibrate(40); }
+
         function showToast(msg, isError = false) {
             const t = document.getElementById('customToast');
             t.innerText = msg; t.className = "show";
             t.style.backgroundColor = isError ? "var(--accent-red)" : "var(--accent-cyan)";
             t.style.color = isError ? "white" : "#000";
-            setTimeout(() => t.className = "", 3000);
+            triggerHaptic();
+            setTimeout(() => t.className = "", 3500);
         }
 
         function showOverlay(state, title, desc) {
@@ -370,22 +443,45 @@
         }
         function hideOverlay() { document.getElementById('statusOverlay').classList.remove('active'); }
 
+        function generateSparkles(containerId) {
+            const cont = document.getElementById(containerId);
+            for(let i=0; i<10; i++) {
+                let sp = document.createElement('div');
+                sp.className = 'sparkle';
+                sp.style.left = Math.random() * 100 + '%';
+                sp.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                sp.style.animationDelay = Math.random() * 2 + 's';
+                cont.appendChild(sp);
+            }
+        }
+
         // --- 3. DYNAMIC PRICING TOGGLE ---
         let isAnnual = false;
         function togglePricing() {
+            triggerHaptic();
             isAnnual = document.getElementById('billingToggle').checked;
             
             const lblM = document.getElementById('lblMonth');
             const lblY = document.getElementById('lblYear');
             
+            const oldE = document.getElementById('oldElite');
+            const oldO = document.getElementById('oldOrg');
+            
             if (isAnnual) {
                 lblY.classList.add('active'); lblM.classList.remove('active');
+                document.getElementById('discBadge').style.transform = 'rotate(15deg) scale(1.2)';
+                setTimeout(()=>document.getElementById('discBadge').style.transform = 'rotate(15deg) scale(1)', 200);
+
+                oldE.classList.add('show'); oldO.classList.add('show');
+                
                 animateValue("priceElite", 99, 950, 400);
                 animateValue("priceOrg", 299, 2870, 400);
                 document.getElementById('durElite').innerText = " / year";
                 document.getElementById('durOrg').innerText = " / year";
             } else {
                 lblM.classList.add('active'); lblY.classList.remove('active');
+                oldE.classList.remove('show'); oldO.classList.remove('show');
+
                 animateValue("priceElite", 950, 99, 400);
                 animateValue("priceOrg", 2870, 299, 400);
                 document.getElementById('durElite').innerText = " / month";
@@ -407,10 +503,7 @@
 
         // --- 4. LIVE SYNC & ROLE ENFORCEMENT ENGINE ---
         function syncUserRole() {
-            // First run local check immediately to avoid waiting for network
             checkUserRole(currentUser.role);
-            
-            // Then fetch live data from Sheets
             fetch(API_URL + "?action=sync_user&email=" + encodeURIComponent(currentUser.email))
             .then(res => res.json())
             .then(data => {
@@ -430,152 +523,135 @@
             
             const activeHtml = `<i class='fa-solid fa-circle-check'></i> ACTIVE PLAN`;
 
-            // Reset buttons first (in case of downgrade during testing)
-            btnRookie.className = "btn-upgrade btn-basic"; btnRookie.innerText = "Current Plan"; btnRookie.onclick = () => showToast("You are on the Rookie Tier.");
-            btnElite.className = "btn-upgrade btn-elite"; btnElite.innerText = "Go Elite"; btnElite.onclick = () => initiateSubscription('Elite Player', 'elite');
-            btnOrg.className = "btn-upgrade btn-org"; btnOrg.innerText = "Become a Host"; btnOrg.onclick = () => initiateSubscription('Pro Organizer', 'organizer');
+            btnRookie.className = "btn-upgrade btn-basic"; btnRookie.innerText = "Current Plan"; 
+            btnRookie.onclick = () => { triggerHaptic(); showToast("You are on the Free Rookie Tier."); };
+            
+            btnElite.className = "btn-upgrade btn-elite"; btnElite.innerText = "Go Elite"; 
+            btnElite.onclick = () => initiateLinkSubscription('Elite Player', 'elite');
+            
+            btnOrg.className = "btn-upgrade btn-org"; btnOrg.innerText = "Become a Host"; 
+            btnOrg.onclick = () => initiateLinkSubscription('Pro Organizer', 'organizer');
 
-            // Apply specific active styling based on role
             if (role === 'elite') {
                 btnRookie.innerText = "Downgrade";
-                btnRookie.onclick = () => showToast("Manage subscriptions in Profile settings.", true);
-                
-                btnElite.className = "btn-upgrade btn-active-plan";
-                btnElite.innerHTML = activeHtml;
-                btnElite.onclick = null;
+                btnRookie.onclick = () => { triggerHaptic(); showToast("Plan will revert when billing cycle ends.", true); };
+                btnElite.className = "btn-upgrade btn-active-plan"; btnElite.innerHTML = activeHtml; btnElite.onclick = null;
             } 
             else if (role === 'organizer') {
                 btnRookie.innerText = "Downgrade";
-                btnRookie.onclick = () => showToast("Manage subscriptions in Profile settings.", true);
-                
-                btnOrg.className = "btn-upgrade btn-active-plan";
-                btnOrg.innerHTML = activeHtml;
-                btnOrg.onclick = null;
+                btnRookie.onclick = () => { triggerHaptic(); showToast("Plan will revert when billing cycle ends.", true); };
+                btnElite.innerText = "Included in Org Plan"; btnElite.className = "btn-upgrade btn-basic"; btnElite.onclick = null;
+                btnOrg.className = "btn-upgrade btn-active-plan"; btnOrg.innerHTML = activeHtml; btnOrg.onclick = null;
             }
         }
 
-        // --- 5. RAZORPAY SUBSCRIPTION LOGIC (WITH BACK BUTTON TRAP) ---
-        function initiateSubscription(planName, internalRole) {
-            // Determine price based on toggle
+        // --- 5. LINK-BASED SUBSCRIPTION ENGINE (COSMOFEED LOGIC) ---
+        function initiateLinkSubscription(planName, internalRole) {
+            triggerHaptic();
+            if(!navigator.onLine) {
+                showToast("You are offline. Please connect to internet to upgrade.", true);
+                return;
+            }
+
             let amount = 99;
-            if (internalRole === 'elite') amount = isAnnual ? 950 : 99;
-            if (internalRole === 'organizer') amount = isAnnual ? 2870 : 299;
+            let targetLink = "";
 
-            showOverlay('loading', 'Initializing Gateway', 'Securely connecting to Razorpay...');
+            if (internalRole === 'elite') {
+                amount = isAnnual ? 950 : 99;
+                targetLink = isAnnual ? PAYMENT_LINKS.annual_elite : PAYMENT_LINKS.monthly_elite;
+            }
+            if (internalRole === 'organizer') {
+                amount = isAnnual ? 2870 : 299;
+                targetLink = isAnnual ? PAYMENT_LINKS.annual_org : PAYMENT_LINKS.monthly_org;
+            }
 
-            // ⚠️ INSERT YOUR RAZORPAY KEY HERE ⚠️
-            var options = {
-                "key": "YOUR_RAZORPAY_KEY_ID_HERE", 
-                "amount": amount * 100, // paise
-                "currency": "INR",
-                "name": "Tournyx Premium",
-                "description": `${planName} Subscription`,
-                "image": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_20wCR-WBMpQmw3vxcYUf-vxIO1PYDJoQN_Sid3UDjA9tf0cuX0eH40jbzHoJad4cxbnjhPjqfCw1Z5V1LhgN9zFuIQC0fJjecTy3D9PFu5WjR2H1wHwTD1bUGnXY_NiApWn5gMs6velcQngSzKoP1yHzX0cVsFSUFM8zIefcbiPayY7680Kz0V0ZAAE/s1264/1000093706.png",
-                "handler": function (response) {
-                    let rzpId = response.razorpay_payment_id;
-                    verifyAndUpgrade(rzpId, amount, internalRole, planName);
-                },
-                "prefill": {
-                    "name": currentUser.username || "User",
-                    "email": currentUser.email || "user@tournyx.com"
-                },
-                "theme": { "color": internalRole === 'elite' ? "#00f2ff" : "#bd00ff" },
-                "modal": {
-                    "ondismiss": function(){
-                        // THIS CATCHES THE ANDROID BACK BUTTON / MODAL CLOSE
-                        hideOverlay();
-                        showToast("Payment Cancelled.", true);
-                    }
-                }
+            showOverlay('loading', 'Securing Gateway...', 'Redirecting to UPI Payment Page.');
+
+            // Cache the intention so when the user returns, the app knows what to do
+            const pendingTxn = {
+                id: "SUB" + Date.now() + Math.floor(Math.random() * 1000),
+                role: internalRole,
+                plan: planName,
+                amount: amount,
+                timestamp: Date.now()
             };
+            localStorage.setItem('tournyx_pending_upgrade', JSON.stringify(pendingTxn));
 
-            // DEV OVERRIDE (For testing without a real key)
-            if (options.key === "YOUR_RAZORPAY_KEY_ID_HERE") {
+            // SIMULATED DEV MODE (Bypasses link if links aren't set up yet)
+            if(targetLink.includes("link_here")) {
                 setTimeout(() => {
                     hideOverlay();
-                    let simConfirm = confirm(`DEVELOPER MODE: Simulate successful payment of Rs. ${amount} for ${planName}?`);
-                    if(simConfirm) { verifyAndUpgrade("SUB_SIM_" + Date.now(), amount, internalRole, planName); }
-                    else { showToast('Payment aborted by user.', true); }
-                }, 1000);
-            } else {
-                hideOverlay();
-                var rzp1 = new Razorpay(options);
-                rzp1.on('payment.failed', function (response){
-                    showOverlay('error', 'Transaction Failed', response.error.description);
-                    setTimeout(hideOverlay, 4000);
-                });
-                rzp1.open();
+                    let simConfirm = confirm(`DEVELOPER MODE: Simulate successful payment of Rs. ${amount} via Cosmofeed for ${planName}?`);
+                    if(simConfirm) { executeUpgradeFlow(); }
+                    else { localStorage.removeItem('tournyx_pending_upgrade'); showToast('Payment aborted.', true); }
+                }, 1500);
+                return;
+            }
+
+            // Real Redirect
+            setTimeout(() => {
+                window.location.href = targetLink;
+            }, 1000);
+        }
+
+        // --- 6. RETURN VERIFICATION LOGIC ---
+        // This runs when the user comes back from Cosmofeed to the app
+        function checkPendingTransaction() {
+            let pending = localStorage.getItem('tournyx_pending_upgrade');
+            if(pending) {
+                let txn = JSON.parse(pending);
+                // If it's been less than 30 minutes since they left, ask if they paid
+                if(Date.now() - txn.timestamp < 1800000) {
+                    let didPay = confirm(`Welcome back! Did you successfully complete the payment for the ${txn.plan} plan on the external gateway?`);
+                    if(didPay) {
+                        executeUpgradeFlow();
+                    } else {
+                        localStorage.removeItem('tournyx_pending_upgrade');
+                        showToast("Upgrade cancelled.");
+                    }
+                } else {
+                    // Expired session
+                    localStorage.removeItem('tournyx_pending_upgrade');
+                }
             }
         }
 
-        // --- 6. BACKGROUND UPGRADE & LEDGER SYNC ---
-        function verifyAndUpgrade(paymentId, amount, newRole, planName) {
-            showOverlay('loading', 'Upgrading Account...', 'Configuring your premium features.');
+        function executeUpgradeFlow() {
+            let pending = JSON.parse(localStorage.getItem('tournyx_pending_upgrade'));
+            if(!pending) return;
 
-            // 1. Generate Transaction ID
-            const txnId = "SUB" + Date.now() + Math.floor(Math.random() * 1000);
+            showOverlay('loading', 'Verifying Payment', 'Unlocking your Pro Features...');
+
             const dateStr = new Date().toLocaleString('en-US', { month: 'short', day: '2-digit', hour: 'numeric', minute: '2-digit', hour12: true });
 
-            // 2. Setup Payloads for Backend
-            const upgradePayload = {
-                action: "upgrade_plan",
-                email: currentUser.email,
-                new_role: newRole
-            };
+            const upgradePayload = { action: "upgrade_plan", email: currentUser.email, new_role: pending.role };
+            const ledgerPayload = { action: "add_transaction", email: currentUser.email, txn_id: pending.id, rzp_id: "COSMO_LINK", amount: pending.amount, currency: "INR", type: "Debit", status: "Success" };
 
-            const ledgerPayload = {
-                action: "add_transaction",
-                email: currentUser.email,
-                txn_id: txnId,
-                rzp_id: paymentId,
-                amount: amount,
-                currency: "INR",
-                type: "Debit", // Because they spent money for a sub
-                status: "Success"
-            };
-
-            // Execute API Calls
             Promise.all([
                 fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(upgradePayload) }),
                 fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(ledgerPayload) })
             ]).then(() => {
                 
-                // Optimistic Local Role Update
-                currentUser.role = newRole;
+                currentUser.role = pending.role;
                 localStorage.setItem('tournyx_user', JSON.stringify(currentUser));
                 
-                // Optimistic Local Ledger Update
                 let localTxns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
-                localTxns.unshift({ id: txnId, date: dateStr, amount: amount, type: "Debit", title: `${planName} Subscription` });
+                localTxns.unshift({ id: pending.id, date: dateStr, amount: pending.amount, type: "Debit", title: `${pending.plan} Subscription` });
                 localStorage.setItem('tournyx_txns', JSON.stringify(localTxns));
                 
-                checkUserRole(newRole); // Morph the button visually instantly
+                checkUserRole(pending.role); 
+                localStorage.removeItem('tournyx_pending_upgrade'); // Clear cache
 
-                showOverlay('success', 'Upgrade Successful!', `Welcome to ${planName}. All perks are now unlocked!`);
-                setTimeout(() => {
-                    hideOverlay();
-                    // We do not redirect here, so they can visually see the "ACTIVE PLAN" button status on the page.
-                }, 3000);
+                triggerHaptic();
+                showOverlay('success', 'Upgrade Successful!', `Welcome to ${pending.plan}. All perks are now unlocked!`);
+                setTimeout(() => { hideOverlay(); }, 3500);
 
             }).catch(e => {
-                showOverlay('error', 'Sync Warning', 'Payment succeeded but UI sync failed. Restart app.');
+                showOverlay('error', 'Sync Warning', 'Payment succeeded but UI sync delayed. Restart app.');
+                localStorage.removeItem('tournyx_pending_upgrade');
                 setTimeout(hideOverlay, 4000);
             });
         }
-
-        // --- PARTICLE SCRIPT ---
-        const canvas = document.getElementById('particles-canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        let particles = [];
-        class P {
-            constructor(){ this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.s=Math.random()*2; this.vx=Math.random()*0.5-0.25; this.vy=Math.random()*0.5-0.25; }
-            u(){ this.x+=this.vx; this.y+=this.vy; if(this.x<0||this.x>canvas.width)this.vx*=-1; if(this.y<0||this.y>canvas.height)this.vy*=-1; }
-            d(){ ctx.fillStyle='rgba(0,242,255,0.3)'; ctx.beginPath(); ctx.arc(this.x,this.y,this.s,0,Math.PI*2); ctx.fill(); }
-        }
-        for(let i=0;i<40;i++) particles.push(new P());
-        function anim(){ ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.u();p.d()}); requestAnimationFrame(anim); }
-        anim();
     </script>
 </body>
 </html>
