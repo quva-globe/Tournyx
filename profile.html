@@ -1273,7 +1273,15 @@
         }
         function closeMatchStatusModal() { document.getElementById('matchStatusModal').classList.remove('active'); }
 
-        function switchRole(role) {
+                function switchRole(role) {
+            // --- NEW: BLOCK UNAUTHORIZED PLAYERS FROM ORGANIZER HUB ---
+            if (role === 'organizer' && userData.role !== 'organizer') {
+                showToast("Access Denied: Register as an Organizer to access this hub!", true);
+                // Optional: You can trigger a modal here later if you want to show them how to apply
+                return; 
+            }
+            // ----------------------------------------------------------
+
             const s = document.getElementById('roleSlider');
             const dashP = document.getElementById('playerDash');
             const dashO = document.getElementById('organizerDash');
@@ -1292,6 +1300,8 @@
                 dashO.classList.add('active'); dashP.classList.remove('active');
                 if(!isGuestMode) fetchMyTournaments(); 
             }
+        }
+
         }
 
         function openAllTourneysModal() {
