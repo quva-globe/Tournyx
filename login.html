@@ -13,9 +13,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
-
     <style>
         /* --- GLOBAL VARIABLES --- */
         :root {
@@ -45,7 +42,7 @@
             justify-content: center;
             overflow: hidden; 
             position: relative;
-            padding: 20px;
+            padding: 15px;
         }
 
         /* --- BACKGROUND --- */
@@ -57,227 +54,275 @@
 
         /* --- LANDING HERO SECTION --- */
         .landing-container {
-            text-align: center; z-index: 10; padding: 20px;
-            animation: fadeIn 1s ease-out forwards; width: 100%; max-width: 600px;
+            text-align: center; z-index: 10; padding: 15px;
+            animation: fadeIn 1s ease-out forwards; width: 100%; max-width: 500px;
         }
 
-        /* ULTIMATE ESPORTS LOGO SHAPE */
+        /* NORMAL APP ICON SHAPE */
         .logo-wrapper {
             position: relative;
-            width: 140px;
-            height: 140px;
-            margin: 0 auto 20px;
+            width: 110px; height: 110px; margin: 0 auto 12px;
             background: linear-gradient(135deg, rgba(189, 0, 255, 0.15), rgba(0, 242, 255, 0.15));
-            border-radius: 35%; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border-radius: 28%; /* Classic App Icon Squircle */
+            display: flex; align-items: center; justify-content: center;
             border: 2px solid rgba(0, 242, 255, 0.6);
-            box-shadow: 0 0 30px rgba(189, 0, 255, 0.5), inset 0 0 20px rgba(0, 242, 255, 0.3);
+            box-shadow: 0 0 25px rgba(189, 0, 255, 0.5), inset 0 0 15px rgba(0, 242, 255, 0.3);
             animation: floatLogo 3.5s ease-in-out infinite;
+            overflow: hidden; /* Slices the image perfectly to the rounded borders */
         }
-
-        .brand-logo {
-            width: 95px; height: 95px; object-fit: contain;
-            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
-        }
+        .brand-logo { width: 100%; height: 100%; object-fit: cover; }
 
         @keyframes floatLogo {
-            0%, 100% { transform: translateY(0); box-shadow: 0 0 30px rgba(189, 0, 255, 0.5), inset 0 0 20px rgba(0, 242, 255, 0.3); }
-            50% { transform: translateY(-10px); box-shadow: 0 0 50px rgba(189, 0, 255, 0.8), inset 0 0 35px rgba(0, 242, 255, 0.6); }
+            0%, 100% { transform: translateY(0); box-shadow: 0 0 25px rgba(189, 0, 255, 0.5), inset 0 0 15px rgba(0, 242, 255, 0.3); }
+            50% { transform: translateY(-8px); box-shadow: 0 0 35px rgba(189, 0, 255, 0.8), inset 0 0 25px rgba(0, 242, 255, 0.6); }
         }
 
         .app-name { 
-            font-family: var(--font-head); font-size: 2.2rem; letter-spacing: 4px; font-weight: 900;
+            font-family: var(--font-head); font-size: 2rem; letter-spacing: 3px; font-weight: 900;
             background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            margin-bottom: 5px;
+            margin-bottom: 2px; text-shadow: 0 0 15px rgba(0,242,255,0.3);
         }
 
-        .app-tagline { color: #aaa; font-size: 1.1rem; margin-bottom: 25px; font-weight: 500; letter-spacing: 1px; }
-
-        .features-row {
-            display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; flex-wrap: wrap;
+        /* SHIMMERING TAGLINE */
+        .app-tagline { 
+            font-size: 1rem; margin-bottom: 10px; font-weight: 600; letter-spacing: 1px; 
+            background: linear-gradient(90deg, #888, #fff, #888, #fff);
+            background-size: 300% auto;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: shineText 4s linear infinite;
         }
+        @keyframes shineText { to { background-position: 300% center; } }
+
+        /* INSTANT STATIC DESCRIPTION */
+        .static-desc {
+            font-size: 0.9rem; color: #00f2ff; font-family: var(--font-body);
+            margin-bottom: 20px; padding: 0 10px; line-height: 1.4;
+            text-shadow: 0 0 8px rgba(0, 242, 255, 0.5); font-weight: 500;
+        }
+
+        /* FLOATING FEATURE BADGES */
+        .features-row { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
         .feature-badge {
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-            padding: 6px 15px; border-radius: 20px; font-size: 0.85rem; color: var(--accent-cyan);
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(0, 242, 255, 0.3);
+            padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; color: var(--accent-cyan);
             font-family: var(--font-head); letter-spacing: 1px;
-            box-shadow: inset 0 0 10px rgba(0,242,255,0.1);
+            box-shadow: inset 0 0 10px rgba(0,242,255,0.15);
+            transition: 0.3s;
         }
+        .feature-badge:nth-child(1) { animation: floatBadge 3s ease-in-out infinite 0s; }
+        .feature-badge:nth-child(2) { animation: floatBadge 3s ease-in-out infinite 0.5s; }
+        .feature-badge:nth-child(3) { animation: floatBadge 3s ease-in-out infinite 1s; }
+        @keyframes floatBadge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); box-shadow: inset 0 0 15px rgba(0,242,255,0.3); border-color: var(--accent-cyan); } }
 
-        /* Action Buttons */
+        /* LIQUID SUBMIT BUTTONS (COMPACT) */
         .action-btn {
-            width: 100%; max-width: 320px; margin: 0 auto 15px; padding: 18px;
-            border-radius: 15px; font-family: var(--font-head); font-size: 1.1rem; font-weight: bold; letter-spacing: 1px;
-            cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px;
-            text-transform: uppercase;
+            width: 100%; max-width: 300px; margin: 0 auto 10px; padding: 14px;
+            border-radius: 12px; font-family: var(--font-head); font-size: 1.05rem; font-weight: bold; letter-spacing: 1px;
+            cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px;
+            text-transform: uppercase; position: relative; overflow: hidden; z-index: 1;
         }
+        .action-btn::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transform: skewX(-25deg); transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: -1;
+        }
+        .action-btn:hover::before { left: 150%; }
         
-        .btn-primary {
-            background: var(--accent-gradient); color: white; border: none;
-            box-shadow: 0 5px 20px rgba(189,0,255,0.4);
-        }
-        .btn-primary:active { transform: scale(0.96); box-shadow: 0 2px 10px rgba(189,0,255,0.4); }
+        .btn-primary { background: var(--accent-gradient); color: white; border: none; box-shadow: 0 5px 20px rgba(189,0,255,0.4); }
+        .btn-primary:hover { box-shadow: 0 5px 25px rgba(0,242,255,0.7); transform: scale(1.02); }
+        .btn-primary:active { transform: scale(0.96); }
 
-        .btn-secondary {
-            background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--accent-cyan);
-            box-shadow: inset 0 0 15px rgba(0,242,255,0.1);
-        }
-        .btn-secondary:hover { background: rgba(0,242,255,0.1); box-shadow: 0 0 20px rgba(0,242,255,0.3); }
+        .btn-secondary { background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--accent-cyan); box-shadow: inset 0 0 15px rgba(0,242,255,0.1); }
+        .btn-secondary:hover { background: rgba(0,242,255,0.15); box-shadow: 0 0 20px rgba(0,242,255,0.5); transform: scale(1.02); }
         .btn-secondary:active { transform: scale(0.96); }
 
-        .btn-ghost {
-            background: transparent; color: #888; border: none; margin-top: 10px;
-            font-size: 0.9rem; text-decoration: underline; font-family: var(--font-body);
-        }
+        .btn-ghost { background: transparent; color: #888; border: none; margin-top: 2px; font-size: 0.85rem; text-decoration: underline; font-family: var(--font-body); transition: 0.3s; }
+        .btn-ghost:hover { color: var(--accent-orange); text-shadow: 0 0 15px rgba(255,153,0,0.6); transform: scale(1.05); }
 
         /* --- MODALS --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.4); z-index: 50; display: none;
-            align-items: center; justify-content: center; backdrop-filter: blur(3px);
+            background: rgba(0, 0, 0, 0.5); z-index: 50; display: none;
+            align-items: center; justify-content: center; backdrop-filter: blur(5px);
             opacity: 0; transition: opacity 0.3s ease; padding: 15px;
         }
         .modal-overlay.active { display: flex; opacity: 1; }
 
         .modal-card {
             background: var(--card-bg); border: 1px solid var(--card-border);
-            width: 100%; max-width: 420px; border-radius: 20px; padding: 25px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.9), inset 0 0 20px rgba(189,0,255,0.1);
+            width: 100%; max-width: 400px; border-radius: 18px; padding: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9), 0 0 15px rgba(189,0,255,0.3), inset 0 0 30px rgba(0,242,255,0.15);
             transform: translateY(50px) scale(0.95); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            max-height: 85vh; overflow-y: auto; 
-            position: relative;
+            max-height: 88vh; overflow-y: auto; position: relative;
         }
         .modal-overlay.active .modal-card { transform: translateY(0) scale(1); }
 
         .close-modal {
-            position: absolute; top: 15px; right: 20px; font-size: 1.5rem; color: #666;
+            position: absolute; top: 12px; right: 18px; font-size: 1.4rem; color: #aaa;
             cursor: pointer; transition: 0.3s; z-index: 10;
         }
-        .close-modal:hover { color: white; transform: rotate(90deg); text-shadow: 0 0 10px var(--accent-cyan); }
+        .close-modal:hover { color: var(--accent-cyan); transform: rotate(90deg) scale(1.2); text-shadow: 0 0 15px var(--accent-cyan); }
 
-        .modal-title { font-family: var(--font-head); font-size: 1.4rem; color: white; margin-bottom: 10px; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
+        .modal-title { font-family: var(--font-head); font-size: 1.3rem; color: white; margin-bottom: 15px; text-align: center; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 0 15px currentColor; }
 
-        /* --- PROGRESS BAR ANIMATION --- */
-        .form-progress-bg {
-            width: 100%; height: 4px; background: rgba(255,255,255,0.1);
-            border-radius: 4px; margin-bottom: 20px; overflow: hidden;
-            box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
-        }
-        .form-progress-bar {
-            height: 100%; width: 0%; background: var(--accent-gradient);
-            transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 0 15px var(--accent-cyan);
-        }
+        /* COMET PROGRESS BAR */
+        .progress-wrapper { width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; margin-bottom: 20px; overflow: hidden; position: relative; }
+        .progress-bar { height: 100%; width: 0%; background: var(--accent-gradient); transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 10px var(--accent-cyan); position: relative; }
+        .progress-bar::after { content:''; position: absolute; top:0; right:0; width: 20px; height: 100%; background: #fff; box-shadow: 0 0 10px #fff; filter: blur(2px); }
+
+        /* STAGGERED MODAL ENTRY */
+        .input-wrapper { opacity: 0; transform: translateX(-20px); margin-bottom: 15px; }
+        .modal-overlay.active .input-wrapper { animation: slideInRight 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .modal-overlay.active .input-wrapper:nth-child(1) { animation-delay: 0.1s; }
+        .modal-overlay.active .input-wrapper:nth-child(2) { animation-delay: 0.15s; }
+        .modal-overlay.active .input-wrapper:nth-child(3) { animation-delay: 0.2s; }
+        .modal-overlay.active .input-wrapper:nth-child(4) { animation-delay: 0.25s; }
+        .modal-overlay.active .input-wrapper:nth-child(5) { animation-delay: 0.3s; }
+        .modal-overlay.active .input-wrapper:nth-child(6) { animation-delay: 0.35s; }
+        .modal-overlay.active .input-wrapper:nth-child(7) { animation-delay: 0.4s; }
+        .modal-overlay.active .custom-checkbox-container { opacity: 0; animation: fadeUp 0.4s ease 0.5s forwards; }
+        .modal-overlay.active .submit-btn { opacity: 0; animation: fadeUp 0.4s ease 0.6s forwards; }
+        
+        @keyframes slideInRight { to { opacity: 1; transform: translateX(0); } }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* --- FORMS & INPUTS --- */
-        .input-group { position: relative; margin-bottom: 15px; }
-        .input-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #666; transition: 0.3s; }
+        .input-group { position: relative; }
+        .input-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #666; transition: 0.3s; pointer-events: none; }
         
         .form-control {
             width: 100%; background: var(--input-bg);
-            border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;
-            padding: 14px 15px 14px 45px; color: white;
-            font-family: var(--font-body); font-size: 1rem; outline: none; transition: 0.3s;
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
+            padding: 12px 14px 12px 40px; color: white;
+            font-family: var(--font-body); font-size: 0.95rem; outline: none; transition: 0.3s;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
         }
         .form-control:focus { 
+            transform: scale(1.02);
             border-color: var(--accent-cyan); 
-            box-shadow: 0 0 20px rgba(0, 242, 255, 0.2), inset 0 0 10px rgba(0,0,0,0.5); 
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.4), inset 0 0 10px rgba(0,0,0,0.5); 
         }
-        .form-control:focus + .input-icon, .form-control:not(:placeholder-shown) + .input-icon { color: var(--accent-cyan); text-shadow: 0 0 10px var(--accent-cyan); }
+        .form-control:focus + .input-icon, .form-control:not(:placeholder-shown) + .input-icon { 
+            color: var(--accent-cyan); filter: drop-shadow(0 0 5px var(--accent-cyan)); transform: translateY(-50%) scale(1.1);
+        }
         input:-webkit-autofill { -webkit-box-shadow: 0 0 0 30px var(--input-bg) inset !important; -webkit-text-fill-color: white !important; }
 
-        /* Mandatory Verification Glow */
-        .verify-alert {
-            font-size: 0.8rem; color: var(--accent-green); 
-            margin-top: 5px; margin-bottom: 15px; padding-left: 5px; 
-            font-family: var(--font-body); font-weight: 600;
-            animation: pulseText 2s infinite;
-            display: flex; align-items: center; gap: 5px;
+        /* EYE ICON FLASH */
+        .pwd-toggle {
+            position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+            color: #888; cursor: pointer; transition: 0.3s; font-size: 1rem;
         }
+        .pwd-toggle:hover { color: var(--accent-cyan); text-shadow: 0 0 15px var(--accent-cyan); transform: translateY(-50%) scale(1.1); }
 
-        @keyframes pulseText {
-            0%, 100% { opacity: 0.7; text-shadow: 0 0 5px transparent; }
-            50% { opacity: 1; text-shadow: 0 0 10px var(--accent-green); }
+        /* INFO BOX PULSES */
+        .info-box {
+            background: rgba(0, 242, 255, 0.08); border-left: 3px solid var(--accent-cyan);
+            color: #ccc; font-size: 0.75rem; padding: 8px 10px; margin-top: 6px; border-radius: 0 6px 6px 0;
+            text-align: left; font-family: var(--font-body); font-weight: 500;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); animation: infoBreathing 3s infinite alternate;
+            display: flex; align-items: flex-start; gap: 8px; line-height: 1.3;
         }
+        .info-box.purple { border-left-color: var(--accent-purple); background: rgba(189, 0, 255, 0.08); animation: infoBreathingPurple 3s infinite alternate; }
+        .info-box i { margin-top: 2px; text-shadow: 0 0 8px currentColor; font-size: 0.9rem; }
+        @keyframes infoBreathing { from { box-shadow: 0 4px 10px rgba(0,0,0,0.2); } to { box-shadow: 0 4px 15px rgba(0,242,255,0.2); border-left-color: #fff; } }
+        @keyframes infoBreathingPurple { from { box-shadow: 0 4px 10px rgba(0,0,0,0.2); } to { box-shadow: 0 4px 15px rgba(189,0,255,0.2); border-left-color: #fff; } }
 
-        /* Terms Checkbox */
-        .terms-group {
-            display: flex; align-items: center; gap: 10px; margin-bottom: 15px;
-            font-size: 0.85rem; color: #aaa; padding: 5px;
-            background: rgba(0, 0, 0, 0.3); border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);
+        /* TERMS LINK & SPRING-LOADED CHECKBOX */
+        .custom-checkbox-container {
+            display: flex; align-items: flex-start; gap: 10px; margin-bottom: 18px;
+            cursor: pointer; font-size: 0.8rem; color: #aaa; text-align: left;
+            user-select: none; transition: 0.3s; line-height: 1.4;
         }
-        .terms-group input[type="checkbox"] {
-            appearance: none; width: 18px; height: 18px;
-            background: var(--input-bg); border: 1px solid var(--accent-cyan);
-            border-radius: 4px; cursor: pointer; position: relative;
-            transition: 0.3s; box-shadow: inset 0 0 5px rgba(0,242,255,0.2);
+        .custom-checkbox-container:hover { color: #fff; }
+        .custom-checkbox-container input { display: none; }
+        .checkmark {
+            min-width: 18px; height: 18px; border: 2px solid #555; border-radius: 4px;
+            display: flex; align-items: center; justify-content: center; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: rgba(0,0,0,0.5); margin-top: 2px; position: relative;
         }
-        .terms-group input[type="checkbox"]:checked {
-            background: var(--accent-cyan); box-shadow: 0 0 15px rgba(0,242,255,0.5);
+        .custom-checkbox-container input:checked + .checkmark {
+            border-color: var(--accent-green); background: rgba(0, 255, 127, 0.15);
+            box-shadow: 0 0 15px rgba(0, 255, 127, 0.5); transform: scale(1.1) rotate(5deg);
         }
-        .terms-group input[type="checkbox"]:checked::after {
-            content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
-            color: #000; position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%); font-size: 0.7rem;
+        .custom-checkbox-container input:checked + .checkmark::after {
+            content: '\f00c'; font-family: "Font Awesome 6 Free"; font-weight: 900;
+            color: var(--accent-green); font-size: 10px; text-shadow: 0 0 8px var(--accent-green);
         }
-        .terms-group a { color: var(--accent-cyan); text-decoration: none; font-weight: bold; }
-        .terms-group a:hover { text-decoration: underline; text-shadow: 0 0 10px var(--accent-cyan); }
+        
+        .terms-link {
+            color: var(--accent-cyan); text-decoration: none; font-weight: 700; position: relative;
+            text-shadow: 0 0 8px rgba(0,242,255,0.3); transition: 0.3s;
+        }
+        .terms-link::after {
+            content: ''; position: absolute; bottom: -2px; left: 0; width: 0%; height: 2px;
+            background: var(--accent-cyan); transition: width 0.3s ease; box-shadow: 0 0 5px var(--accent-cyan);
+        }
+        .terms-link:hover { text-shadow: 0 0 15px var(--accent-cyan); color: #fff; }
+        .terms-link:hover::after { width: 100%; }
 
         .submit-btn {
-            width: 100%; padding: 15px; background: var(--accent-gradient);
-            border: none; border-radius: 12px; color: white;
-            font-family: var(--font-head); font-size: 1.05rem; font-weight: 700; letter-spacing: 1px;
+            width: 100%; padding: 14px; background: var(--accent-gradient);
+            border: none; border-radius: 10px; color: white;
+            font-family: var(--font-head); font-size: 1.05rem; font-weight: 800; letter-spacing: 1px;
             cursor: pointer; transition: 0.3s; margin-top: 5px;
             box-shadow: 0 5px 20px rgba(189,0,255,0.4); text-transform: uppercase;
+            position: relative; overflow: hidden; z-index: 1;
         }
-        .submit-btn:hover { box-shadow: 0 5px 30px rgba(0, 242, 255, 0.6); transform: translateY(-2px); }
-        .submit-btn:active { transform: scale(0.96); }
+        .submit-btn::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+            transform: skewX(-25deg); transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: -1;
+        }
+        .submit-btn:hover { box-shadow: 0 5px 30px rgba(0,242,255,0.7); transform: translateY(-2px); }
+        .submit-btn:hover::before { left: 150%; }
+        .submit-btn:active { transform: scale(0.95); }
 
-        /* --- THE ULTIMATE ARENA ANIMATION --- */
+        /* CINEMATIC ARENA ENTRY (Matches Video) */
         .arena-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% 50%, #070311, #000); z-index: 9999;
+            background: #040108; /* Pure dark cinematic background */
+            z-index: 9999;
             display: none; flex-direction: column; align-items: center; justify-content: center;
         }
-        .arena-overlay.active { display: flex; animation: bgFlash 2s forwards ease-in; }
+        .arena-overlay.active { display: flex; animation: fadeInBg 0.3s forwards; }
 
         .arena-text {
-            font-family: var(--font-head); font-size: 2.5rem; color: var(--accent-cyan);
-            font-weight: 900; letter-spacing: 5px; text-shadow: 0 0 30px var(--accent-cyan);
-            text-align: center; animation: zoomOutText 1.8s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-family: var(--font-head); font-size: 2.2rem; color: #fff;
+            font-weight: 900; letter-spacing: 6px; 
+            text-shadow: 0 0 25px rgba(0, 242, 255, 0.8), 0 0 50px rgba(189, 0, 255, 0.6);
+            text-align: center; text-transform: uppercase;
+            animation: cinematicEntry 2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
         }
 
-        @keyframes zoomOutText {
-            0% { transform: scale(2); opacity: 0; filter: blur(10px); }
-            30% { transform: scale(1); opacity: 1; filter: blur(0); }
-            80% { transform: scale(0.8); opacity: 1; filter: blur(0); color: white; text-shadow: 0 0 50px white; }
-            100% { transform: scale(3); opacity: 0; filter: blur(20px); }
-        }
-        @keyframes bgFlash {
-            0% { background: #000; }
-            80% { background: #000; }
-            100% { background: #fff; } 
+        @keyframes fadeInBg { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes cinematicEntry {
+            0% { transform: scale(0.8); opacity: 0; filter: blur(15px); }
+            20% { transform: scale(1); opacity: 1; filter: blur(0); letter-spacing: 6px; }
+            80% { transform: scale(1.05); opacity: 1; filter: blur(0); letter-spacing: 8px; }
+            100% { transform: scale(1.5); opacity: 0; filter: blur(20px); letter-spacing: 12px; }
         }
 
         .error-msg { 
-            background: rgba(255, 77, 77, 0.1); border: 1px solid rgba(255, 77, 77, 0.3);
-            color: #ff4d4d; text-align: center; padding: 10px; border-radius: 10px;
-            margin-bottom: 15px; font-size: 0.85rem; display: none; font-family: var(--font-body); font-weight: bold;
+            background: rgba(255, 77, 77, 0.1); border: 1px solid rgba(255, 77, 77, 0.4);
+            color: #ff4d4d; text-align: center; padding: 10px; border-radius: 8px;
+            margin-bottom: 12px; font-size: 0.85rem; display: none; font-family: var(--font-body); font-weight: 700;
+            box-shadow: 0 0 15px rgba(255, 77, 77, 0.2); animation: shake 0.4s ease;
         }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* RESPONSIVE DESIGN FOR ALL DEVICES */
+        /* RESPONSIVE DESIGN (Compact Fixes) */
         @media (max-width: 480px) {
-            .app-name { font-size: 1.8rem; }
-            .logo-wrapper { width: 110px; height: 110px; }
-            .brand-logo { width: 75px; height: 75px; }
-            .action-btn { font-size: 1rem; padding: 15px; }
-            .modal-card { padding: 20px; border-radius: 15px; }
-            .form-control { font-size: 0.95rem; padding: 12px 15px 12px 40px; }
+            .app-name { font-size: 1.7rem; letter-spacing: 2px; margin-bottom: 0px; }
+            .logo-wrapper { width: 95px; height: 95px; margin-bottom: 10px; }
+            .action-btn { font-size: 0.95rem; padding: 12px; max-width: 280px; margin-bottom: 8px; }
+            .modal-card { padding: 20px 18px; border-radius: 15px; }
+            .form-control { font-size: 0.9rem; padding: 12px 14px 12px 38px; }
             .input-icon { left: 12px; }
-            .arena-text { font-size: 1.8rem; }
+            .arena-text { font-size: 1.6rem; letter-spacing: 3px; }
+            .static-desc { font-size: 0.85rem; margin-bottom: 15px; }
+            .features-row { margin-bottom: 20px; }
+            .app-tagline { font-size: 0.9rem; margin-bottom: 8px; }
         }
     </style>
 </head>
@@ -286,11 +331,17 @@
     <canvas id="particles-canvas"></canvas>
 
     <div class="landing-container" id="landingView">
+        
         <div class="logo-wrapper">
             <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEipVmqyUEA22VpntZdPCHuXoO_Rjco_cRaNl5CyFa-eehdtgXnHe6JoD8a5svxJRJYZfv_yXwww10T2cL2PHTiXLK-J-nWC1swmMs5RDxGVM8FBSlJORaRiX4YiD8gL8SyM4X1tRyQn_v8MsqQvbU4uEyHEU0qaySP1STWHaBEYuWKyF3-6QovSqJR-8xU/s1024/1000093705.png" alt="Tournyx Logo" class="brand-logo">
         </div>
+        
         <h1 class="app-name">TOURNYX</h1>
         <p class="app-tagline">The Ultimate Esports Arena</p>
+        
+        <div class="static-desc">
+            Join the elite. Compete in daily scrims, climb the leaderboard, and withdraw real cash directly to your wallet.
+        </div>
 
         <div class="features-row">
             <span class="feature-badge"><i class="fa-solid fa-trophy"></i> Compete</span>
@@ -317,18 +368,23 @@
             <div class="error-msg" id="loginError"></div>
             
             <form id="playerLoginForm">
-                <div class="input-group">
-                    <input type="email" name="email" class="form-control" placeholder="Player Email" required>
-                    <i class="fa-solid fa-envelope input-icon"></i>
+                <div class="input-wrapper">
+                    <div class="input-group">
+                        <input type="email" name="email" class="form-control" placeholder="Player Email" required>
+                        <i class="fa-solid fa-envelope input-icon"></i>
+                    </div>
                 </div>
-                <div class="input-group">
-                    <input type="password" name="password" class="form-control" placeholder="Password" required>
-                    <i class="fa-solid fa-lock input-icon"></i>
+                <div class="input-wrapper">
+                    <div class="input-group">
+                        <input type="password" name="password" id="loginPwd" class="form-control" placeholder="Password" required>
+                        <i class="fa-solid fa-lock input-icon"></i>
+                        <i class="fa-solid fa-eye pwd-toggle" onclick="togglePwd('loginPwd', this)"></i>
+                    </div>
                 </div>
                 <button type="submit" class="submit-btn" id="btnLogin">LOGIN TO ARENA</button>
             </form>
-            <div style="text-align:center; margin-top:15px; font-size:0.9rem; color:#888;">
-                New here? <span style="color:var(--accent-cyan); cursor:pointer; text-decoration:underline;" onclick="openModal('signupModal')">Sign Up</span>
+            <div style="text-align:center; margin-top:20px; font-size:0.85rem; color:#888;">
+                New here? <span class="terms-link" style="cursor:pointer;" onclick="openModal('signupModal')">Sign Up</span>
             </div>
         </div>
     </div>
@@ -338,59 +394,74 @@
             <i class="fa-solid fa-xmark close-modal" onclick="closeModals()"></i>
             <h2 class="modal-title" style="color:var(--accent-purple)">Register</h2>
             
-            <div class="form-progress-bg">
-                <div class="form-progress-bar" id="regProgressBar"></div>
+            <div class="progress-wrapper">
+                <div class="progress-bar" id="signupProgress"></div>
             </div>
 
             <div class="error-msg" id="signupError"></div>
 
             <form id="playerSignupForm">
-                <div class="input-group">
-                    <input type="text" name="username" class="form-control reg-input" placeholder="Display Name" required>
-                    <i class="fa-solid fa-user input-icon"></i>
+                <div class="input-wrapper">
+                    <div class="input-group">
+                        <input type="text" name="username" class="form-control req-field" placeholder="Display Name" required>
+                        <i class="fa-solid fa-user input-icon"></i>
+                    </div>
                 </div>
-                <div class="input-group">
-                    <input type="text" name="ign" class="form-control reg-input" placeholder="In-Game Name (IGN)" required>
-                    <i class="fa-solid fa-gamepad input-icon"></i>
+                <div class="input-wrapper">
+                    <div class="input-group">
+                        <input type="text" name="ign" class="form-control req-field" placeholder="In-Game Name (IGN)" required>
+                        <i class="fa-solid fa-gamepad input-icon"></i>
+                    </div>
                 </div>
-                <div class="input-group">
-                    <input type="text" name="uid" class="form-control reg-input" placeholder="Game UID" required>
-                    <i class="fa-solid fa-id-card input-icon"></i>
+                <div class="input-wrapper">
+                    <div class="input-group">
+                        <input type="text" name="uid" class="form-control req-field" placeholder="Game UID" required>
+                        <i class="fa-solid fa-id-card input-icon"></i>
+                    </div>
                 </div>
                 
-                <div>
-                    <div class="input-group" style="margin-bottom: 5px;">
-                        <input type="tel" name="phone" class="form-control reg-input" placeholder="Phone Number" value="+91 " required>
+                <div class="input-wrapper">
+                    <div class="input-group">
+                        <input type="tel" name="phone" class="form-control req-field" placeholder="Phone Number" value="+91 " required>
                         <i class="fa-solid fa-mobile-screen input-icon"></i>
                     </div>
-                    <div class="verify-alert">
-                        <i class="fa-solid fa-circle-check"></i> Mandatory: Enter valid number for Prize Payouts.
+                    <div class="info-box">
+                        <i class="fa-solid fa-circle-check" style="color:var(--accent-cyan)"></i> 
+                        <span>Ensure this number is active to receive tournament entry alerts and real cash prize payouts.</span>
                     </div>
                 </div>
 
-                <div>
-                    <div class="input-group" style="margin-bottom: 5px;">
-                        <input type="email" name="email" class="form-control reg-input" placeholder="Email Address" required>
+                <div class="input-wrapper">
+                    <div class="input-group">
+                        <input type="email" name="email" class="form-control req-field" placeholder="Email Address" required>
                         <i class="fa-solid fa-envelope input-icon"></i>
                     </div>
-                    <div class="verify-alert" style="color: var(--accent-cyan);">
-                        <i class="fa-solid fa-shield-halved"></i> Secure: Required for Account Recovery.
+                    <div class="info-box purple">
+                        <i class="fa-solid fa-shield-halved" style="color:var(--accent-purple)"></i> 
+                        <span>Your email serves as your primary account recovery and receipt method.</span>
                     </div>
                 </div>
 
-                <div class="input-group">
-                    <input type="password" name="password" class="form-control reg-input" placeholder="Create Password" required>
-                    <i class="fa-solid fa-lock input-icon"></i>
+                <div class="input-wrapper">
+                    <div class="input-group">
+                        <input type="password" name="password" id="regPwd" class="form-control req-field" placeholder="Create Password" required>
+                        <i class="fa-solid fa-lock input-icon"></i>
+                        <i class="fa-solid fa-eye pwd-toggle" onclick="togglePwd('regPwd', this)"></i>
+                    </div>
                 </div>
-                <div class="input-group">
-                    <input type="text" name="referral" id="refInput" class="form-control" placeholder="Referral Code (Optional)">
-                    <i class="fa-solid fa-gift input-icon"></i>
+                
+                <div class="input-wrapper">
+                    <div class="input-group">
+                        <input type="text" name="referral" id="refInput" class="form-control" placeholder="Referral Code (Optional)">
+                        <i class="fa-solid fa-gift input-icon"></i>
+                    </div>
                 </div>
 
-                <div class="terms-group">
-                    <input type="checkbox" id="termsCheck" required>
-                    <label for="termsCheck">I agree to the <a href="#">Terms & Conditions</a></label>
-                </div>
+                <label class="custom-checkbox-container">
+                    <input type="checkbox" class="req-field" required>
+                    <span class="checkmark"></span>
+                    <span>I confirm my details are correct and I agree to the <a href="terms.html" target="_blank" class="terms-link">Tournyx Terms & Conditions</a> and Fair Play rules.</span>
+                </label>
 
                 <button type="submit" class="submit-btn" id="btnSignup">CREATE ACCOUNT</button>
             </form>
@@ -398,25 +469,30 @@
     </div>
 
     <div class="modal-overlay" id="orgModal">
-        <div class="modal-card" style="border-color:var(--accent-orange); box-shadow: 0 20px 50px rgba(0,0,0,0.9), inset 0 0 20px rgba(255,153,0,0.1);">
+        <div class="modal-card" style="border-color:var(--accent-orange); box-shadow: 0 20px 50px rgba(0,0,0,0.9), inset 0 0 30px rgba(255,153,0,0.15);">
             <i class="fa-solid fa-xmark close-modal" onclick="closeModals()"></i>
             <h2 class="modal-title" style="color:var(--accent-orange)"><i class="fa-solid fa-crown"></i> Organizer Hub</h2>
             <div class="error-msg" id="orgError"></div>
 
             <form id="organizerLoginForm">
-                <div class="input-group">
-                    <input type="email" name="email" class="form-control" placeholder="Organizer Email" required>
-                    <i class="fa-solid fa-envelope input-icon" style="color:var(--accent-orange)"></i>
+                <div class="input-wrapper">
+                    <div class="input-group">
+                        <input type="email" name="email" class="form-control" placeholder="Organizer Email" required>
+                        <i class="fa-solid fa-envelope input-icon" style="color:var(--accent-orange)"></i>
+                    </div>
                 </div>
-                <div class="input-group">
-                    <input type="password" name="password" class="form-control" placeholder="Access Key" required>
-                    <i class="fa-solid fa-key input-icon" style="color:var(--accent-orange)"></i>
+                <div class="input-wrapper">
+                    <div class="input-group">
+                        <input type="password" name="password" id="orgPwd" class="form-control" placeholder="Access Key" required>
+                        <i class="fa-solid fa-key input-icon" style="color:var(--accent-orange)"></i>
+                        <i class="fa-solid fa-eye pwd-toggle" onclick="togglePwd('orgPwd', this)" style="color:var(--accent-orange)"></i>
+                    </div>
                 </div>
                 <button type="submit" class="submit-btn" id="btnOrgLogin" style="background:linear-gradient(90deg, #ff9900, #ff4d4d); box-shadow: 0 5px 20px rgba(255,153,0,0.4);">VERIFY ADMIN</button>
             </form>
 
             <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); text-align: center;">
-                <a href="https://docs.google.com/forms/d/e/1FAIpQLSe6k-ejzzvmEdYU6ynHlMIyr_PgQibH5ViBV5_v3HBpCdIbjw/viewform?usp=dialog" target="_blank" style="color:#aaa; text-decoration:none; font-size:0.85rem;"><i class="fa-solid fa-file-signature"></i> Apply to Host Tournaments</a>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSe6k-ejzzvmEdYU6ynHlMIyr_PgQibH5ViBV5_v3HBpCdIbjw/viewform?usp=dialog" target="_blank" class="terms-link" style="color:#aaa;"><i class="fa-solid fa-file-signature"></i> Apply to Host Tournaments</a>
             </div>
         </div>
     </div>
@@ -428,6 +504,49 @@
     <script>
         // --- GOOGLE APPS SCRIPT CONFIG ---
         const API_URL = 'https://script.google.com/macros/s/AKfycbynNLDDXS1wMrU6RGnk4nKb1jfQkQGuqrNIKWAt8wf46MaKP6y1rwGmSJg5fmm4KYU/exec';
+
+        // --- SHOW/HIDE PASSWORD TOGGLE ---
+        function togglePwd(inputId, icon) {
+            const input = document.getElementById(inputId);
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+                icon.style.color = "var(--accent-cyan)";
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+                if (inputId === 'orgPwd') { icon.style.color = "var(--accent-orange)"; } 
+                else { icon.style.color = "#888"; }
+            }
+        }
+
+        // --- PROGRESS BAR LOGIC ---
+        const signupForm = document.getElementById('playerSignupForm');
+        const reqFields = signupForm.querySelectorAll('.req-field');
+        const progressBar = document.getElementById('signupProgress');
+
+        signupForm.addEventListener('input', () => {
+            let filledCount = 0;
+            reqFields.forEach(field => {
+                if (field.type === 'checkbox') {
+                    if (field.checked) filledCount++;
+                } else {
+                    if (field.value.trim().length > 0 && field.value.trim() !== "+91") filledCount++;
+                }
+            });
+            const progress = (filledCount / reqFields.length) * 100;
+            progressBar.style.width = progress + '%';
+            
+            if(progress === 100) {
+                progressBar.style.boxShadow = "0 0 20px var(--accent-green)";
+                progressBar.style.background = "var(--accent-green)";
+            } else {
+                progressBar.style.boxShadow = "0 0 10px var(--accent-cyan)";
+                progressBar.style.background = "var(--accent-gradient)";
+            }
+        });
 
         // --- PARTICLES ENGINE ---
         const canvas = document.getElementById('particles-canvas');
@@ -453,36 +572,10 @@
             if (tabParam === 'organizer') openModal('orgModal');
         });
 
-        // --- PROGRESS BAR LOGIC ---
-        const regInputs = document.querySelectorAll('.reg-input');
-        const termsCheck = document.getElementById('termsCheck');
-        const progressBar = document.getElementById('regProgressBar');
-        
-        function updateProgress() {
-            let filled = 0;
-            regInputs.forEach(input => { if(input.value.trim() !== '' && input.value.trim() !== '+91') filled++; });
-            if(termsCheck.checked) filled++;
-            
-            // 6 text inputs + 1 checkbox = 7 mandatory items
-            let percentage = (filled / 7) * 100;
-            progressBar.style.width = percentage + '%';
-            if(percentage === 100) {
-                progressBar.style.background = "var(--accent-green)";
-                progressBar.style.boxShadow = "0 0 20px var(--accent-green)";
-            } else {
-                progressBar.style.background = "var(--accent-gradient)";
-                progressBar.style.boxShadow = "0 0 15px var(--accent-cyan)";
-            }
-        }
-        
-        regInputs.forEach(input => input.addEventListener('input', updateProgress));
-        termsCheck.addEventListener('change', updateProgress);
-
         // --- MODAL LOGIC ---
         function openModal(id) {
             closeModals(); 
             document.getElementById(id).classList.add('active');
-            if(id === 'signupModal') updateProgress();
         }
         function closeModals() {
             document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
@@ -498,7 +591,7 @@
             
             setTimeout(() => {
                 window.location.href = redirectUrl;
-            }, 1800); 
+            }, 1900); // Waits for cinematic animation to finish
         }
 
         // --- AUTH LOGIC ---
@@ -514,7 +607,7 @@
             btn.disabled = false;
         }
 
-        // PLAYER SIGNUP (No OTP Version)
+        // PLAYER SIGNUP 
         document.getElementById('playerSignupForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const errBox = document.getElementById('signupError');
@@ -523,7 +616,6 @@
             btnLoading('btnSignup', 'CREATING ACCOUNT...');
 
             try {
-                // Directly capture and send data since OTP is removed
                 const formData = new FormData(e.target);
                 const rawData = Object.fromEntries(formData);
                 
