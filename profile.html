@@ -105,7 +105,7 @@
         .user-ign { color: var(--accent-cyan); font-size: 0.85rem; font-weight: bold; cursor: pointer; background: rgba(0,242,255,0.1); padding: 5px 12px; border-radius: 8px; display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(0,242,255,0.3); transition: 0.3s; will-change: transform;}
         .user-ign:active { background: var(--accent-cyan); color: black; transform: scale(0.95);}
         
-        .user-extras { display: flex; align-items: center; gap: 10px; margin-top: 8px; font-size: 0.75rem; color: #a0a0b0; font-family: var(--font-head);}
+        .user-extras { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 8px; font-size: 0.75rem; color: #a0a0b0; font-family: var(--font-head);}
         .game-tag { background: rgba(255,255,255,0.05); padding: 3px 8px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.1); }
         .yt-link { color: #ff0000; font-size: 1rem; cursor: pointer; transition: 0.3s;}
         .yt-link:hover { filter: drop-shadow(0 0 5px #ff0000); }
@@ -133,7 +133,8 @@
         @keyframes slideInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         /* --- GAMIFIED MILESTONE TRACKERS --- */
-        .milestone-box { background: linear-gradient(145deg, rgba(0,242,255,0.05), rgba(189,0,255,0.05)); border: 1px solid var(--card-border); border-radius: 18px; padding: 20px; margin-bottom: 25px; position: relative; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.4); }
+        .milestone-box { background: linear-gradient(145deg, rgba(0,242,255,0.05), rgba(189,0,255,0.05)); border: 1px solid var(--card-border); border-radius: 18px; padding: 20px; margin-bottom: 25px; position: relative; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.4); cursor: pointer; transition: transform 0.2s; }
+        .milestone-box:active { transform: scale(0.98); }
         .ms-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-family: var(--font-head); }
         .ms-header h4 { font-size: 1.05rem; color: white; display: flex; align-items: center; gap: 8px; text-shadow: 0 0 5px rgba(255,255,255,0.3);}
         
@@ -147,7 +148,7 @@
         .ms-progress-fill::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; left: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent); animation: shimmer 2s infinite linear; }
         .ms-footer { display: flex; justify-content: space-between; font-size: 0.8rem; color: #a0a0b0; font-family: var(--font-head); font-weight: bold; text-transform: uppercase;}
 
-        /* Stats Grid (With 3D Tilt CSS structure) */
+        /* Stats Grid */
         .stats-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 25px; perspective: 1000px;}
         .stat-card { background: var(--secondary-bg); border: 1px solid var(--card-border); padding: 20px 15px; border-radius: 18px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); transition: transform 0.1s ease-out, border-color 0.3s; will-change: transform; transform-style: preserve-3d; overflow: hidden;}
         .stat-card:active { transform: scale(0.95) !important; border-color: var(--accent-cyan); }
@@ -155,8 +156,6 @@
         .stat-val { font-family: var(--font-head); font-size: 1.8rem; display: flex; justify-content: center; margin-bottom: 5px; font-weight: bold; text-shadow: 0 0 15px rgba(255,255,255,0.2); }
         .stat-label { font-size: 0.8rem; color: #888; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px; }
         
-        .win-rate-badge { display: inline-block; font-size: 0.7rem; background: rgba(0,255,127,0.15); color: var(--accent-green); border: 1px solid var(--accent-green); padding: 2px 6px; border-radius: 6px; margin-top: 5px; font-family: var(--font-head); font-weight: bold;}
-
         /* Quick Action Cards */
         .action-card { background: linear-gradient(135deg, rgba(0,242,255,0.1), rgba(0,0,0,0)); border: 1px solid rgba(0,242,255,0.3); border-radius: 18px; padding: 25px 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; cursor: pointer; text-decoration: none; color: white; transition: 0.3s; box-shadow: 0 5px 20px rgba(0,0,0,0.3); will-change: transform;}
         .action-card:active { transform: scale(0.98); border-color: var(--accent-cyan); box-shadow: 0 10px 30px rgba(0,242,255,0.2);}
@@ -194,7 +193,7 @@
         .setting-arrow { color: #555; font-size: 1rem; transition: 0.3s; }
         .setting-item:hover .setting-arrow { color: white; transform: translateX(5px); }
 
-        /* --- MODALS (Bottom Sheets) --- */
+        /* --- MODALS --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 5000; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); opacity: 0; transition: 0.4s; }
         .modal-overlay.active { display: flex; opacity: 1; }
         .modal-card { width: 100%; max-width: 800px; background: var(--secondary-bg); border-radius: 25px 25px 0 0; border-top: 1px solid var(--card-border); padding: 30px 20px calc(20px + env(safe-area-inset-bottom)); transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 90vh; overflow-y: auto; box-shadow: 0 -10px 40px rgba(0,0,0,0.8); }
@@ -220,17 +219,11 @@
         .delete-btn { width: 100%; padding: 18px; background: rgba(255,77,77,0.1); border: 1px solid rgba(255,77,77,0.4); color: var(--accent-danger); font-family: var(--font-head); font-weight: bold; font-size: 1.1rem; border-radius: 12px; cursor: pointer; text-transform: uppercase; transition: 0.3s; letter-spacing: 1px;}
         .delete-btn:active { background: var(--accent-danger); color: white; transform: scale(0.96); }
 
-        /* QR Code Modal Box Styling */
         .qr-box { background: white; padding: 20px; border-radius: 15px; text-align: center; width: max-content; margin: 0 auto 20px; border: 5px solid var(--accent-cyan); box-shadow: 0 0 30px rgba(0,242,255,0.4);}
-
         #avatarUploadInp { display: none; }
-
-        /* Skeleton Loaders */
         .skeleton { background: linear-gradient(90deg, #110822 25%, #1a0a3a 50%, #110822 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite linear; border-radius: 8px; transform: translateZ(0);}
         @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Confetti Effect */
         .confetti { position: absolute; width: 8px; height: 16px; opacity: 0; z-index: 9999; border-radius: 4px; pointer-events: none;}
         @keyframes fall { 0% { opacity: 1; transform: translateY(-50px) rotate(0deg); } 100% { opacity: 0; transform: translateY(150px) rotate(720deg); } }
 
@@ -238,10 +231,8 @@
         #customToast { visibility: hidden; min-width: 250px; background-color: var(--accent-cyan); color: #000; text-align: center; border-radius: 12px; padding: 16px; position: fixed; z-index: 9999; left: 50%; bottom: -50px; transform: translateX(-50%); font-family: var(--font-head); font-weight: bold; box-shadow: 0 8px 25px rgba(0,242,255,0.6); opacity: 0; transition: opacity 0.4s, bottom 0.4s; }
         #customToast.show { visibility: visible; opacity: 1; bottom: 100px; }
 
-        /* Footer */
         .app-footer { text-align: center; padding: 20px 20px 110px 20px; color: #555; font-size: 0.75rem; font-family: var(--font-body); letter-spacing: 1px; }
 
-        /* PERFECTLY ALIGNED 7-TAB BOTTOM NAVIGATION */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 5px env(safe-area-inset-bottom); border-top: 1px solid var(--card-border); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.8); transform: translateZ(0);}
         .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; color: #666; text-decoration: none; font-size: 0.65rem; font-family: var(--font-head); font-weight: bold; flex: 1; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; will-change: transform, color;}
         .nav-item span { margin-top: 4px; transition: 0.3s; }
@@ -254,6 +245,24 @@
         .floating-plus:active { transform: translateX(-50%) scale(0.95); box-shadow: 0 5px 15px rgba(189,0,255,0.4); }
 
         @media (min-width: 850px) { .bottom-nav { display: none !important; } }
+        
+        .tier-list { margin-top: 15px; }
+        .tier-item { display: flex; align-items: center; justify-content: space-between; padding: 15px; border-radius: 12px; background: rgba(255,255,255,0.03); margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.05); }
+        .tier-item.current { border-color: var(--accent-cyan); background: rgba(0,242,255,0.05); box-shadow: inset 0 0 10px rgba(0,242,255,0.1); }
+        .tier-item.locked { opacity: 0.6; }
+        .tier-info h5 { font-family: var(--font-head); font-size: 1.1rem; margin-bottom: 3px; color: white;}
+        .tier-info p { font-size: 0.8rem; color: #aaa; }
+        .tier-reward { text-align: right; }
+        .tier-reward span { display: block; font-family: var(--font-head); font-weight: bold; font-size: 0.9rem; color: var(--accent-green); }
+        
+        .premium-promo { background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,153,0,0.1)); border: 1px solid #FFD700; border-radius: 15px; padding: 20px; text-align: center; margin-top: 20px; box-shadow: 0 5px 20px rgba(255,215,0,0.2); }
+        .premium-promo h4 { color: #FFD700; font-family: var(--font-head); font-size: 1.2rem; margin-bottom: 10px; text-shadow: 0 0 10px rgba(255,215,0,0.5); }
+        .premium-promo p { font-size: 0.9rem; color: #ddd; margin-bottom: 15px; }
+        .premium-btn { background: linear-gradient(90deg, #FFD700, #FF8C00); color: black; padding: 12px 25px; border-radius: 10px; font-family: var(--font-head); font-weight: bold; text-decoration: none; display: inline-block; box-shadow: 0 5px 15px rgba(255,215,0,0.4); transition: 0.3s; border: none; cursor: pointer; text-transform: uppercase; letter-spacing: 1px;}
+        .premium-btn:active { transform: scale(0.95); }
+        
+        .claim-btn { background: var(--accent-green); color: black; border: none; padding: 8px 15px; border-radius: 8px; font-family: var(--font-head); font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 0 10px rgba(0,255,127,0.4); text-transform: uppercase; font-size: 0.8rem; margin-top: 5px;}
+        .claim-btn:active { transform: scale(0.95); }
     </style>
     
     <script>
@@ -324,6 +333,7 @@
             
             <div class="user-extras" id="userExtras">
                 <span class="game-tag" id="mainGameTag"><i class="fa-solid fa-crosshairs"></i> Game: N/A</span>
+                <span class="game-tag" id="mainGameUid"><i class="fa-solid fa-id-card"></i> UID: N/A</span>
             </div>
         </div>
         <div class="logout-btn" onclick="logout(); triggerHaptic();">
@@ -350,10 +360,10 @@
     </div>
 
     <div id="playerDash" class="dashboard-section active">
-        <div class="milestone-box" id="playerMilestoneBox">
+        <div class="milestone-box" id="playerMilestoneBox" onclick="openMilestoneModal('player'); triggerHaptic();">
             <div class="ms-header">
                 <h4><i class="fa-solid fa-medal"></i> Player Rank</h4>
-                <span class="ms-fee-badge" id="playerRankBadge" onclick="window.location.href='premium.html'; triggerHaptic();" title="Upgrade Plan">Scout</span>
+                <span class="ms-fee-badge" id="playerRankBadge">Scout</span>
             </div>
             <div class="ms-progress-wrap">
                 <div class="ms-progress-fill" id="playerProgressFill"></div>
@@ -390,6 +400,14 @@
                 </div>
             </div>
         </div>
+        
+        <div class="action-card ac-green" onclick="openMatchStatusModal(); triggerHaptic();">
+            <div class="action-text">
+                <h4>My Match Status</h4>
+                <p>Check played matches and verification status.</p>
+            </div>
+            <div class="action-icon"><i class="fa-solid fa-list-check"></i></div>
+        </div>
 
         <a href="explore.html" class="action-card" onclick="triggerHaptic();">
             <div class="action-text">
@@ -408,10 +426,10 @@
     </div>
 
     <div id="organizerDash" class="dashboard-section">
-        <div class="milestone-box" id="orgMilestoneBox">
+        <div class="milestone-box" id="orgMilestoneBox" onclick="openMilestoneModal('organizer'); triggerHaptic();">
             <div class="ms-header">
                 <h4><i class="fa-solid fa-chart-line"></i> Organizer Milestone</h4>
-                <span class="ms-fee-badge" id="orgFeeBadge" onclick="window.location.href='premium.html'; triggerHaptic();" title="Upgrade Plan">15% Comm.</span>
+                <span class="ms-fee-badge" id="orgFeeBadge">15% Comm.</span>
             </div>
             <div class="ms-progress-wrap">
                 <div class="ms-progress-fill" id="orgProgressFill"></div>
@@ -536,17 +554,49 @@
         </button>
     </div>
     
+    <div class="modal-overlay" id="milestoneModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title" id="msModalTitle"><i class="fa-solid fa-medal" style="color:var(--accent-cyan);"></i> Milestones</div>
+                <i class="fa-solid fa-xmark close-modal" onclick="closeMilestoneModal(); triggerHaptic();"></i>
+            </div>
+            
+            <p style="font-size: 0.9rem; color: #aaa; margin-bottom: 15px;" id="msModalDesc">Progress through the ranks to unlock better commission rates, cash bonuses, and exclusive rewards.</p>
+            
+            <div class="tier-list" id="tierListContainer"></div>
+            
+            <div class="premium-promo">
+                <h4><i class="fa-solid fa-crown"></i> Go Premium</h4>
+                <p>Skip the grind. Get instant Legend status, 0% commission fees, and priority support.</p>
+                <button class="premium-btn" onclick="window.location.href='premium.html'; triggerHaptic();">Upgrade Now</button>
+            </div>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="editModal">
         <div class="modal-card">
             <div class="modal-header">
                 <div class="modal-title"><i class="fa-solid fa-user-pen" style="color:var(--accent-purple);"></i> Edit Profile</div>
                 <i class="fa-solid fa-xmark close-modal" onclick="closeEditModal(); triggerHaptic();"></i>
             </div>
+
+            <label class="form-label">Registered Email</label>
+            <div style="display:flex; gap:10px; margin-bottom: 20px;">
+                <input type="email" id="editEmailInfo" class="form-control" disabled style="opacity: 0.6; padding: 12px 15px;">
+                <button class="mi-btn" onclick="window.open('https://forms.gle/YOUR_GOOGLE_FORM_LINK_HERE', '_blank'); triggerHaptic();" style="white-space:nowrap;">Change</button>
+            </div>
+
             <label class="form-label">Display Name</label>
             <input type="text" id="editName" class="form-control" placeholder="Enter name" style="margin-bottom: 20px;">
             
             <label class="form-label">In-Game Name (IGN)</label>
             <input type="text" id="editIgn" class="form-control" placeholder="Enter IGN" style="margin-bottom: 20px;">
+
+            <label class="form-label">Game UID</label>
+            <input type="text" id="editUid" class="form-control" placeholder="Enter Character UID" style="margin-bottom: 20px;">
+
+            <label class="form-label">Phone Number (For Payouts)</label>
+            <input type="tel" id="editPhone" class="form-control" placeholder="e.g. 9876543210" style="margin-bottom: 20px;">
 
             <label class="form-label">Primary Game</label>
             <input type="text" id="editMainGame" class="form-control" placeholder="e.g. Free Fire, BGMI, Valorant" style="margin-bottom: 20px;">
@@ -555,6 +605,24 @@
             <input type="url" id="editYtLink" class="form-control" placeholder="https://youtube.com/..." style="margin-bottom: 20px;">
             
             <button class="save-btn" id="saveBtn" onclick="saveProfile(); triggerHaptic();">Save Changes</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay full-screen-modal" id="matchStatusModal">
+        <div class="modal-card">
+            <div class="modal-header" style="margin-bottom: 10px;">
+                <div class="modal-title"><i class="fa-solid fa-list-check" style="color:var(--accent-green);"></i> Match Status</div>
+                <i class="fa-solid fa-xmark close-modal" onclick="closeMatchStatusModal(); triggerHaptic();"></i>
+            </div>
+            
+            <div class="org-list-header" style="border:none; padding-top:0;">
+                <span>Recent History</span>
+                <i class="fa-solid fa-rotate-right" id="refreshMatchesBtn" style="color:var(--accent-cyan); font-size:1.1rem; cursor:pointer; padding:5px; transition:0.3s;" onclick="fetchMyMatchStatus(); triggerHaptic();"></i>
+            </div>
+            
+            <div class="fs-content" id="playerMatchList">
+                <div style="text-align:center; padding:30px 20px; color:#888; font-size:0.95rem;"><i class="fa-solid fa-spinner fa-spin" style="color:var(--accent-purple); font-size:1.5rem; margin-bottom:10px; display:block;"></i> Fetching matches by email...</div>
+            </div>
         </div>
     </div>
 
@@ -606,7 +674,8 @@
             </div>
             
             <div class="fs-content" id="orgTourneysList">
-                </div>
+                <div style="text-align:center; padding:30px 20px; color:#888; font-size:0.95rem;"><i class="fa-solid fa-spinner fa-spin" style="color:var(--accent-purple); font-size:1.5rem; margin-bottom:10px; display:block;"></i> Fetching your events...</div>
+            </div>
         </div>
     </div>
 
@@ -669,7 +738,6 @@
     </nav>
 
     <script>
-        // --- 1. BACKGROUND ANIMATION & POWER SAVING ---
         const canvas = document.getElementById('particles-canvas');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
@@ -711,7 +779,6 @@
             }
         }
 
-        // --- FEATURE 5: 3D Tilt Effect on Stat Cards ---
         document.querySelectorAll('.stat-card').forEach(card => {
             card.addEventListener('mousemove', e => {
                 let rect = card.getBoundingClientRect();
@@ -728,15 +795,16 @@
             });
         });
 
-        // --- 2. CONFIGURATION & VIRAL GUEST MODE ENFORCEMENT ---
         const API_URL = 'https://script.google.com/macros/s/AKfycbynNLDDXS1wMrU6RGnk4nKb1jfQkQGuqrNIKWAt8wf46MaKP6y1rwGmSJg5fmm4KYU/exec'; 
         
         let userData = JSON.parse(localStorage.getItem('tournyx_user'));
         let myHostedEvents = []; 
         let isGuestMode = false;
         
+        // Ensure claimed_ms array exists
+        if(userData && !userData.claimed_ms) userData.claimed_ms = [];
+
         const urlParams = new URLSearchParams(window.location.search);
-        
         if (!userData || userData.email === "guest@tournyx.com" || urlParams.has('user')) {
             if(urlParams.has('user')) {
                 isGuestMode = true;
@@ -750,16 +818,15 @@
                 
                 try {
                     let targetUserEmail = atob(decodeURIComponent(urlParams.get('user')));
-                    userData = { email: targetUserEmail, username: "Player", ign: "", matches: 0, wins: 0, points: 0, hosted: 0, earnings: 0 };
+                    userData = { email: targetUserEmail, username: "Player", ign: "", matches: 0, wins: 0, points: 0, hosted: 0, earnings: 0, claimed_ms: [] };
                 } catch(e) {
-                    userData = { email: "error", username: "Pro Gamer", ign: "Unknown", matches: 0, wins: 0, points: 0, hosted: 0, earnings: 0 };
+                    userData = { email: "error", username: "Pro Gamer", ign: "Unknown", matches: 0, wins: 0, points: 0, hosted: 0, earnings: 0, claimed_ms: [] };
                 }
             } else {
                 window.location.href = 'login.html';
             }
         }
 
-        // Daily Streak Logic
         let lastLogin = localStorage.getItem('tournyx_last_login');
         let streak = parseInt(localStorage.getItem('tournyx_streak')) || 1;
         let today = new Date().toDateString();
@@ -771,7 +838,6 @@
         }
         document.getElementById('streakCount').innerText = streak;
 
-        // --- 3. UX HELPERS ---
         function triggerHaptic() { if(navigator.vibrate) navigator.vibrate(40); }
 
         function showToast(msg, isError = false) {
@@ -892,7 +958,6 @@
             return isNaN(p) ? fallback : p;
         }
 
-        // --- 4. SECURE DATA RENDERING & SMART CACHE ---
         document.addEventListener("DOMContentLoaded", () => {
             let hr = new Date().getHours();
             let greet = "Good Evening,";
@@ -906,14 +971,12 @@
         async function initProfile(isManual = false) {
             let localUser = userData;
             
-            // HYPER-RESILIENT CACHE CLEANER: Prevents the "Loading" glitch from ever breaking your profile again!
             try {
                 let cacheStr = localStorage.getItem('tournyx_user');
                 if(cacheStr && cacheStr !== "undefined") {
                     localUser = JSON.parse(cacheStr);
                 }
             } catch(e) {
-                console.log("Wiped corrupted cache");
                 localStorage.removeItem('tournyx_user');
             }
 
@@ -930,6 +993,8 @@
                     userData.username = data.data.username || localUser.username || "Player";
                     userData.ign = data.data.ign || localUser.ign || "";
                     userData.avatar = data.data.avatar || localUser.avatar || "";
+                    userData.uid = data.data.uid || localUser.uid || ""; 
+                    userData.phone = data.data.phone || localUser.phone || ""; 
                     
                     userData.points = safeParseNum(data.data.points, localUser.points || 0);
                     userData.rupees = safeParseNum(data.data.rupees, localUser.rupees || 0);
@@ -942,6 +1007,9 @@
                     userData.main_game = data.data.main_game || localUser.main_game || "N/A";
                     userData.yt_link = data.data.yt_link || localUser.yt_link || "";
                     
+                    // Keep claimed milestones intact from local if backend doesn't overwrite
+                    userData.claimed_ms = userData.claimed_ms || localUser.claimed_ms || [];
+
                     if(!isGuestMode) { localStorage.setItem('tournyx_user', JSON.stringify(userData)); }
                     renderUserInfo(userData, true); 
                     
@@ -963,9 +1031,10 @@
             }
 
             let completeness = 0;
-            if(data.ign && data.ign !== "Unknown" && data.ign !== "Fetching Live Data...") completeness += 33;
-            if(data.main_game && data.main_game !== "N/A") completeness += 33;
-            if(data.avatar && data.avatar.length > 5) completeness += 34;
+            if(data.ign && data.ign !== "Unknown" && data.ign !== "Fetching Live Data...") completeness += 25;
+            if(data.main_game && data.main_game !== "N/A") completeness += 25;
+            if(data.uid && data.uid !== "") completeness += 25;
+            if(data.avatar && data.avatar.length > 5) completeness += 25;
             let offset = 283 - (283 * (completeness / 100));
             document.getElementById('avatarRing').style.strokeDashoffset = offset;
 
@@ -1023,8 +1092,9 @@
             setTimeout(() => { document.getElementById('tierProgress').style.width = pct + "%"; }, 100);
 
             document.getElementById('mainGameTag').innerHTML = `<i class="fa-solid fa-crosshairs"></i> Game: ${data.main_game || 'N/A'}`;
+            document.getElementById('mainGameUid').innerHTML = `<i class="fa-solid fa-id-card"></i> UID: ${data.uid || 'Not Set'}`;
             let ytHtml = data.yt_link ? `<a href="${data.yt_link}" target="_blank" class="yt-link" title="Visit Channel"><i class="fa-brands fa-youtube"></i></a>` : "";
-            document.getElementById('userExtras').innerHTML = `<span class="game-tag" id="mainGameTag"><i class="fa-solid fa-crosshairs"></i> Game: ${data.main_game || 'N/A'}</span> ${ytHtml}`;
+            document.getElementById('userExtras').innerHTML = `<span class="game-tag" id="mainGameTag"><i class="fa-solid fa-crosshairs"></i> Game: ${data.main_game || 'N/A'}</span> <span class="game-tag" id="mainGameUid"><i class="fa-solid fa-id-card"></i> UID: ${data.uid || 'Not Set'}</span> ${ytHtml}`;
 
             updateMilestones(data, doAnimate);
 
@@ -1033,19 +1103,37 @@
             }
         }
 
+        // --- NEW: MILESTONE DATA WITHOUT "N/A" ---
+        const milestones = {
+            organizer: [
+                { tier: "Rookie", req: 0, benefit: "15% Commission", reward: "Active Tier" },
+                { tier: "Amateur", req: 5, benefit: "12% Commission", reward: "₹100 Bonus" },
+                { tier: "Pro", req: 10, benefit: "10% Commission", reward: "₹250 + 1000 PTS" },
+                { tier: "Elite", req: 15, benefit: "8% Commission", reward: "₹500 + 2500 PTS" },
+                { tier: "Legend", req: 20, benefit: "5% Commission", reward: "₹1000 + 5000 PTS" }
+            ],
+            player: [ 
+                { tier: "Scout", req: 0, benefit: "Basic Access", reward: "Active Tier" },
+                { tier: "Veteran", req: 10, benefit: "Priority Support", reward: "₹50 + 500 PTS" },
+                { tier: "Gladiator", req: 25, benefit: "Profile Badge", reward: "₹100 + 1000 PTS" },
+                { tier: "Champion", req: 50, benefit: "Discounted Entries", reward: "₹200 + 2500 PTS" },
+                { tier: "Mythic", req: 100, benefit: "VIP Status", reward: "₹500 + 5000 PTS" }
+            ]
+        };
+
         function updateMilestones(data, isFullSync) {
             let hosted = parseInt(data.hosted) || 0;
             let matches = parseInt(data.matches) || 0;
             
+            // Setup Organizer
             let orgTier = "Rookie"; let orgFee = "15% Comm."; let orgNext = 5; let orgPct = 0;
             let oBadge = document.getElementById('orgFeeBadge');
             oBadge.classList.remove('elite');
 
-            if(hosted >= 20) { 
-                orgTier = "Pro Elite"; orgFee = "5% Comm."; orgNext = hosted; orgPct = 100; 
-                oBadge.classList.add('elite');
-            }
-            else if(hosted >= 5) { orgTier = "Pro Level"; orgFee = "10% Comm."; orgNext = 20; orgPct = (hosted/20)*100; }
+            if(hosted >= 20) { orgTier = "Legend"; orgFee = "5% Comm."; orgNext = hosted; orgPct = 100; oBadge.classList.add('elite'); }
+            else if(hosted >= 15) { orgTier = "Elite"; orgFee = "8% Comm."; orgNext = 20; orgPct = ((hosted-15)/5)*100; oBadge.classList.add('elite'); }
+            else if(hosted >= 10) { orgTier = "Pro"; orgFee = "10% Comm."; orgNext = 15; orgPct = ((hosted-10)/5)*100; }
+            else if(hosted >= 5) { orgTier = "Amateur"; orgFee = "12% Comm."; orgNext = 10; orgPct = ((hosted-5)/5)*100; }
             else { orgPct = (hosted/5)*100; }
             
             oBadge.innerText = orgFee;
@@ -1053,26 +1141,165 @@
             document.getElementById('orgNextGoal').innerText = hosted >= 20 ? "Max Tier Reached!" : `${hosted}/${orgNext} to Next Tier`;
             setTimeout(()=> { document.getElementById('orgProgressFill').style.width = orgPct + '%'; }, 300);
 
-            let pTier = "Level 1"; let pBadgeText = "Scout"; let pNext = 10; let pPct = 0;
+            // Setup Player
+            let pTier = "Scout"; let pBadgeText = "Level 1"; let pNext = 10; let pPct = 0;
             let pBadge = document.getElementById('playerRankBadge');
             pBadge.classList.remove('elite');
 
-            if(matches >= 50) { 
-                pTier = "Max Level"; pBadgeText = "Legend"; pNext = matches; pPct = 100; 
-                pBadge.classList.add('elite');
-            }
-            else if(matches >= 10) { pTier = "Level 2"; pBadgeText = "Veteran"; pNext = 50; pPct = (matches/50)*100; }
+            if(matches >= 100) { pTier = "Mythic"; pBadgeText = "Max Level"; pNext = matches; pPct = 100; pBadge.classList.add('elite'); }
+            else if(matches >= 50) { pTier = "Champion"; pBadgeText = "Level 4"; pNext = 100; pPct = ((matches-50)/50)*100; pBadge.classList.add('elite');}
+            else if(matches >= 25) { pTier = "Gladiator"; pBadgeText = "Level 3"; pNext = 50; pPct = ((matches-25)/25)*100; }
+            else if(matches >= 10) { pTier = "Veteran"; pBadgeText = "Level 2"; pNext = 25; pPct = ((matches-10)/15)*100; }
             else { pPct = (matches/10)*100; }
             
-            pBadge.innerText = pBadgeText;
-            document.getElementById('playerTierText').innerText = pTier;
-            document.getElementById('playerNextGoal').innerText = matches >= 50 ? "Legend Reached!" : `${matches}/${pNext} Matches`;
+            pBadge.innerText = pTier;
+            document.getElementById('playerTierText').innerText = pBadgeText;
+            document.getElementById('playerNextGoal').innerText = matches >= 100 ? "Legend Reached!" : `${matches}/${pNext} Matches`;
             setTimeout(()=> { document.getElementById('playerProgressFill').style.width = pPct + '%'; }, 300);
+        }
 
-            if(isFullSync && !isGuestMode && (hosted === 5 || hosted === 20 || matches === 10 || matches === 50)) {
-                setTimeout(fireConfetti, 1000);
-                showToast("🏆 Milestone Reached! Rank Upgraded!");
-            }
+        // --- NEW: DYNAMIC CLAIM RENDERER ---
+        function openMilestoneModal(type) {
+            let val = type === 'organizer' ? (parseInt(userData.hosted) || 0) : (parseInt(userData.matches) || 0);
+            let icon = type === 'organizer' ? '<i class="fa-solid fa-chart-line" style="color:var(--accent-cyan);"></i> Organizer Milestones' : '<i class="fa-solid fa-medal" style="color:var(--accent-cyan);"></i> Player Milestones';
+            document.getElementById('msModalTitle').innerHTML = icon;
+            
+            let list = milestones[type];
+            let html = '';
+
+            list.forEach((t, i) => {
+                let msId = type + '_' + i;
+                let isUnlocked = val >= t.req;
+                let isClaimed = userData.claimed_ms && userData.claimed_ms.includes(msId);
+                
+                let statusClass = isUnlocked ? "current" : "locked"; 
+                let checkIcon = isUnlocked ? '<i class="fa-solid fa-check-circle" style="color:var(--accent-green);"></i> ' : '<i class="fa-solid fa-lock" style="color:#555;"></i> ';
+                
+                let claimBtn = "";
+                // If unlocked, not tier 0, and not already claimed: SHOW BUTTON!
+                if (isUnlocked && i > 0 && !isClaimed) {
+                    claimBtn = `<button class="claim-btn" onclick="claimMilestoneReward('${type}', ${i}, this); triggerHaptic();">Claim ${t.reward}</button>`;
+                } else if (isClaimed) {
+                    claimBtn = `<span style="color:var(--accent-green); font-size: 0.8rem; font-family: var(--font-head); font-weight:bold; margin-top:5px; display:inline-block;"><i class="fa-solid fa-check"></i> Claimed</span>`;
+                }
+
+                html += `
+                    <div class="tier-item ${statusClass}">
+                        <div class="tier-info">
+                            <h5>${checkIcon}${t.tier}</h5>
+                            <p>Req: ${t.req} ${type === 'organizer'?'Hosted':'Matches'} • ${t.benefit}</p>
+                            ${claimBtn}
+                        </div>
+                        <div class="tier-reward">
+                            <span style="color:${isUnlocked ? 'var(--accent-green)' : '#555'}">${t.reward}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('tierListContainer').innerHTML = html;
+            document.getElementById('milestoneModal').classList.add('active');
+        }
+
+        function closeMilestoneModal() { document.getElementById('milestoneModal').classList.remove('active'); }
+
+        // --- NEW: INSTANT WALLET ADDITION & BACKEND SYNC ---
+        function claimMilestoneReward(type, levelIndex, btn) {
+            if(isGuestMode) { showToast("Login to claim rewards!", true); return; }
+
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+            btn.disabled = true;
+            
+            let tier = milestones[type][levelIndex];
+            
+            // Extract numbers safely from string like "₹50 + 500 PTS"
+            let rMatch = tier.reward.match(/₹(\d+)/);
+            let pMatch = tier.reward.match(/(\d+)\s*PTS/);
+            
+            let rupeesToAdd = rMatch ? parseInt(rMatch[1]) : 0;
+            let pointsToAdd = pMatch ? parseInt(pMatch[1]) : 0;
+            
+            // 1. Instant Optimistic UI Update
+            userData.rupees = (parseInt(userData.rupees) || 0) + rupeesToAdd;
+            userData.points = (parseInt(userData.points) || 0) + pointsToAdd;
+            
+            // Save claim history locally so it doesn't show button again
+            let msId = type + '_' + levelIndex;
+            if(!userData.claimed_ms) userData.claimed_ms = [];
+            userData.claimed_ms.push(msId);
+            
+            localStorage.setItem('tournyx_user', JSON.stringify(userData));
+            
+            // Update Dashboard Visuals immediately
+            renderUserInfo(userData, true);
+
+            // 2. Send request to Backend to physically add money
+            fetch(API_URL, {
+                method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify({ 
+                    action: 'claim_milestone', 
+                    email: userData.email, 
+                    rupees: rupeesToAdd,
+                    points: pointsToAdd,
+                    ms_id: msId
+                })
+            }).then(() => {
+                fireConfetti();
+                showToast(`Claimed! ${rupeesToAdd ? '₹'+rupeesToAdd : ''} ${pointsToAdd ? '& '+pointsToAdd+' PTS' : ''} added to Wallet.`);
+                btn.outerHTML = `<span style="color:var(--accent-green); font-size: 0.8rem; font-family: var(--font-head); font-weight:bold; margin-top:5px; display:inline-block;"><i class="fa-solid fa-check"></i> Claimed</span>`;
+            }).catch(() => {
+                showToast("Added to Wallet. Syncing in background.", false);
+                btn.outerHTML = `<span style="color:var(--accent-green); font-size: 0.8rem; font-family: var(--font-head); font-weight:bold; margin-top:5px; display:inline-block;"><i class="fa-solid fa-check"></i> Claimed</span>`;
+            });
+        }
+
+        function fetchMyMatchStatus() {
+            const container = document.getElementById('playerMatchList');
+            const refBtn = document.getElementById('refreshMatchesBtn');
+            container.innerHTML = `<div style="text-align:center; padding:30px 20px; color:#888; font-size:0.95rem;"><i class="fa-solid fa-spinner fa-spin" style="color:var(--accent-purple); font-size:1.5rem; margin-bottom:10px; display:block;"></i> Fetching matches for ${userData.email}...</div>`;
+            
+            if(refBtn) { refBtn.classList.add('fa-spin'); setTimeout(()=>refBtn.classList.remove('fa-spin'), 1000); }
+
+            fetch(API_URL + "?action=get_my_matches&email=" + encodeURIComponent(userData.email))
+            .then(res => res.json())
+            .then(data => {
+                container.innerHTML = "";
+                if(data.status === "success" && data.data && data.data.length > 0) {
+                    data.data.forEach(match => {
+                        let isSuccess = String(match.status).toLowerCase().includes("success");
+                        let sColor = isSuccess ? 'var(--accent-green)' : 'var(--accent-orange)';
+                        container.innerHTML += `
+                            <div class="managed-item">
+                                <div class="mi-info">
+                                    <h5>${match.title || "Tournament Match"}</h5>
+                                    <p>${match.date || "Recent"} • Score: ${match.score || "N/A"}</p>
+                                </div>
+                                <div class="mi-btn-group">
+                                    <span style="background: rgba(255,255,255,0.1); padding: 5px 12px; border-radius: 8px; font-weight: bold; color: ${sColor}; border: 1px solid ${sColor};">${isSuccess ? 'Success' : 'Pending'}</span>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    container.innerHTML = `
+                        <div style='text-align:center; padding:30px 20px; color:#666; background:rgba(0,0,0,0.3); border-radius:15px; border:1px dashed var(--card-border);'>
+                            <i class="fa-solid fa-gamepad" style="font-size:2rem; margin-bottom:10px; opacity:0.5;"></i><br>
+                            No recent match data found for this email. Keep playing!
+                        </div>`;
+                }
+            }).catch(() => {
+                container.innerHTML = "<div style='text-align:center; padding:30px 20px; color:#ff4d4d;'><i class='fa-solid fa-triangle-exclamation' style='font-size:2rem; margin-bottom:10px;'></i><br>Failed to connect to database. Try again.</div>";
+            });
+        }
+
+        function openMatchStatusModal() {
+            if(isGuestMode) { showToast("Login to view Match History", true); return; }
+            document.getElementById('matchStatusModal').classList.add('active');
+            fetchMyMatchStatus();
+        }
+
+        function closeMatchStatusModal() {
+            document.getElementById('matchStatusModal').classList.remove('active');
         }
 
         function switchRole(role) {
@@ -1096,7 +1323,6 @@
             }
         }
 
-        // --- 6. SMART TOURNAMENT MANAGER (CRASH-PROOF) ---
         function openAllTourneysModal() {
             if(isGuestMode) { showToast("Login to view details", true); return; }
             document.getElementById('allTourneysModal').classList.add('active');
@@ -1142,26 +1368,10 @@
             const container = document.getElementById('orgTourneysList');
             const refBtn = document.getElementById('refreshTourneysBtn');
             
-            // Force the loader to show up while we work
             container.innerHTML = `<div style="text-align:center; padding:30px 20px; color:#888; font-size:0.95rem;"><i class="fa-solid fa-spinner fa-spin" style="color:var(--accent-purple); font-size:1.5rem; margin-bottom:10px; display:block;"></i> Fetching your events...</div>`;
             
             if(refBtn) { refBtn.classList.add('fa-spin'); setTimeout(()=>refBtn.classList.remove('fa-spin'), 1000); }
             
-            // INDESTRUCTIBLE CACHE READ
-            try {
-                let cacheStr = localStorage.getItem('tournyx_my_tournaments');
-                if(cacheStr && cacheStr !== "undefined") {
-                    let cached = JSON.parse(cacheStr);
-                    if (Array.isArray(cached) && cached.length > 0) {
-                        myHostedEvents = cached;
-                        renderTournamentsList(container);
-                    }
-                }
-            } catch(e) {
-                console.log("Wiped corrupted tournament cache");
-                localStorage.removeItem('tournyx_my_tournaments');
-            }
-
             fetch(API_URL + "?action=get_tournaments")
             .then(res => res.json())
             .then(data => {
@@ -1169,15 +1379,13 @@
                     let myEmailStr = String(userData.email).toLowerCase().trim();
                     let rawEvents = Array.isArray(data.data) ? data.data : [];
                     
-                    // SAFE MATCHING: Checks all possible email variable names from backend
                     myHostedEvents = rawEvents.filter(t => {
                         if(!t) return false;
                         let backendEmail = String(t.org_email || t.organizer_email || t.email || "").toLowerCase().trim();
                         return backendEmail === myEmailStr;
                     });
                     
-                    localStorage.setItem('tournyx_my_tournaments', JSON.stringify(myHostedEvents));
-                    renderTournamentsList(container); // Guaranteed to stop the spinner!
+                    renderTournamentsList(container); 
                     
                     if (myHostedEvents.length >= 0) { 
                         document.getElementById('valHosted').innerHTML = myHostedEvents.length;
@@ -1185,16 +1393,9 @@
                         localStorage.setItem('tournyx_user', JSON.stringify(userData));
                         updateMilestones(userData, false);
                     }
-                } else {
-                    throw new Error("Backend response invalid");
                 }
             }).catch(() => { 
-                // IF SERVER FAILS: Safely stop the spinner and show cache or empty state
-                if(!myHostedEvents || myHostedEvents.length === 0) {
-                    container.innerHTML = "<div style='text-align:center; padding:30px 20px; color:#ff4d4d;'><i class='fa-solid fa-triangle-exclamation' style='font-size:2rem; margin-bottom:10px;'></i><br>Failed to connect to database.</div>"; 
-                } else {
-                    renderTournamentsList(container);
-                }
+                container.innerHTML = "<div style='text-align:center; padding:30px 20px; color:#ff4d4d;'><i class='fa-solid fa-triangle-exclamation' style='font-size:2rem; margin-bottom:10px;'></i><br>Failed to connect to database.</div>"; 
             });
         }
 
@@ -1239,50 +1440,38 @@
                 closeManageModal();
                 btn.innerText = "Update Tournament"; btn.disabled = false;
                 setTimeout(() => { fetchMyTournaments(); }, 1000);
-            }).catch(() => {
-                showToast("Saved locally. Background sync pending.", false);
-                closeManageModal();
-                btn.innerText = "Update Tournament"; btn.disabled = false;
             });
         }
 
         function deleteTournament() {
             if(!confirm("⚠️ WARNING: Are you sure you want to completely DELETE this tournament? This action cannot be undone.")) return;
-
             const btn = document.getElementById('deleteTourneyBtn');
             btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Deleting...";
             btn.disabled = true;
 
-            const payload = {
-                action: 'delete_tournament',
-                id: document.getElementById('editTourneyId').value,
-                email: userData.email
-            };
-
             fetch(API_URL, {
                 method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify(payload)
+                body: JSON.stringify({ action: 'delete_tournament', id: document.getElementById('editTourneyId').value, email: userData.email })
             }).then(() => {
                 showToast("Tournament Deleted!");
                 closeManageModal();
                 btn.innerHTML = "<i class='fa-solid fa-trash-can'></i> Delete Tournament"; 
                 btn.disabled = false;
                 setTimeout(() => { fetchMyTournaments(); }, 1000);
-            }).catch(() => {
-                showToast("Saved locally. Background sync pending.", false);
-                closeManageModal();
-                btn.innerHTML = "<i class='fa-solid fa-trash-can'></i> Delete Tournament"; 
-                btn.disabled = false;
             });
         }
 
-        // --- 7. EDIT PROFILE LOGIC ---
         function openEditModal() {
             document.getElementById('editModal').classList.add('active');
+            // Populating new Email disabled field
+            document.getElementById('editEmailInfo').value = userData.email || "";
+
             document.getElementById('editName').value = userData.username || "";
             document.getElementById('editIgn').value = userData.ign || "";
             document.getElementById('editMainGame').value = userData.main_game || "";
             document.getElementById('editYtLink').value = userData.yt_link || "";
+            document.getElementById('editUid').value = userData.uid || ""; 
+            document.getElementById('editPhone').value = userData.phone || ""; 
         }
         function closeEditModal() { document.getElementById('editModal').classList.remove('active'); }
 
@@ -1295,7 +1484,9 @@
                 username: document.getElementById('editName').value, 
                 ign: document.getElementById('editIgn').value,
                 main_game: document.getElementById('editMainGame').value,
-                yt_link: document.getElementById('editYtLink').value
+                yt_link: document.getElementById('editYtLink').value,
+                uid: document.getElementById('editUid').value, 
+                phone: document.getElementById('editPhone').value 
             };
 
             const merged = { ...userData, ...updates };
@@ -1306,7 +1497,16 @@
             try {
                 fetch(API_URL, {
                     method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' },
-                    body: JSON.stringify({ action: 'update_profile', email: userData.email, username: updates.username, ign: updates.ign, main_game: updates.main_game, yt_link: updates.yt_link })
+                    body: JSON.stringify({ 
+                        action: 'update_profile', 
+                        email: userData.email, 
+                        username: updates.username, 
+                        ign: updates.ign, 
+                        main_game: updates.main_game, 
+                        yt_link: updates.yt_link,
+                        uid: updates.uid,       
+                        phone: updates.phone    
+                    })
                 }).then(() => {
                     closeEditModal(); 
                     showToast("Profile Updated Successfully!");
@@ -1319,7 +1519,6 @@
             }
         }
 
-        // --- 8. BASE64 AVATAR UPLOADER ---
         function handleAvatarUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -1342,13 +1541,11 @@
                     method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' },
                     body: JSON.stringify({ action: 'update_profile', email: userData.email, avatar: b64 })
                 });
-                
                 showToast("Avatar Updated Successfully!");
             };
             reader.readAsDataURL(file);
         }
 
-        // --- 9. SECURITY / PASSWORD ---
         function openPassModal() {
             document.getElementById('passModal').classList.add('active');
             document.getElementById('oldPass').value = "";
@@ -1378,13 +1575,9 @@
             });
         }
 
-        // --- 10. LOGOUT ---
         function logout() {
             if(confirm("Are you sure you want to log out?")) { 
-                localStorage.removeItem('tournyx_user'); 
-                localStorage.removeItem('tournyx_my_clans_cache');
-                localStorage.removeItem('tournyx_txns');
-                localStorage.removeItem('tournyx_my_tournaments');
+                localStorage.clear();
                 window.location.href = 'login.html'; 
             }
         }
