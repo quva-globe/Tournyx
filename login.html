@@ -2,144 +2,164 @@
 <html lang="en">
 <head>
     <link rel="icon" href="https://tournyx.in/favicon.ico" sizes="any">
-<link rel="icon" href="https://tournyx.in/favicon.png" type="image/png" sizes="192x192">
-<link rel="apple-touch-icon" href="https://tournyx.in/apple-touch-icon.png">
+    <link rel="icon" href="https://tournyx.in/favicon.png" type="image/png" sizes="192x192">
+    <link rel="apple-touch-icon" href="https://tournyx.in/apple-touch-icon.png">
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Login - Tournyx</title>
+    <title>Login - Tournyx Esports</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+
     <style>
         /* --- GLOBAL VARIABLES --- */
         :root {
             --primary-bg: #070311;
-            --card-bg: rgba(20, 10, 35, 0.7);
-            --input-bg: rgba(10, 5, 20, 0.8);
+            --card-bg: rgba(20, 10, 35, 0.85);
+            --input-bg: rgba(10, 5, 20, 0.9);
             --card-border: rgba(189, 0, 255, 0.3);
             --accent-cyan: #00f2ff;
             --accent-purple: #bd00ff;
+            --accent-green: #00ff7f;
             --accent-gradient: linear-gradient(90deg, #bd00ff, #00f2ff);
             --text-main: #ffffff;
-            --text-muted: #a0a0b0;
             --font-head: 'Orbitron', sans-serif;
             --font-body: 'Rajdhani', sans-serif;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        *::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; background: transparent !important; }
 
         body {
             background-color: var(--primary-bg);
             color: var(--text-main);
             font-family: var(--font-body);
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
+            overflow: hidden; 
             position: relative;
+            padding: 20px;
         }
 
         /* --- BACKGROUND --- */
         #particles-canvas {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1;
-            background: radial-gradient(circle at 50% 50%, #15062e 0%, #070311 100%);
+            background: radial-gradient(circle at 50% 30%, #15062e 0%, #070311 100%);
         }
 
-        /* --- AUTH CARD --- */
-        .auth-container { width: 100%; max-width: 420px; padding: 20px; z-index: 10; animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-
-        @keyframes popIn {
-            0% { transform: scale(0.9) translateY(20px); opacity: 0; }
-            100% { transform: scale(1) translateY(0); opacity: 1; }
+        /* --- LANDING HERO SECTION --- */
+        .landing-container {
+            text-align: center; z-index: 10; padding: 20px;
+            animation: fadeIn 1s ease-out forwards; width: 100%; max-width: 600px;
         }
 
-        .auth-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 30px;
-            backdrop-filter: blur(15px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.8), inset 0 0 20px rgba(189,0,255,0.1);
+        /* ULTIMATE ESPORTS LOGO SHAPE */
+        .logo-wrapper {
             position: relative;
-            overflow: hidden;
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, rgba(189, 0, 255, 0.15), rgba(0, 242, 255, 0.15));
+            border-radius: 35%; /* Smooth Squircle Shape */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(0, 242, 255, 0.6);
+            box-shadow: 0 0 30px rgba(189, 0, 255, 0.5), inset 0 0 20px rgba(0, 242, 255, 0.3);
+            animation: floatLogo 3.5s ease-in-out infinite;
         }
 
-        .auth-card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px;
-            background: var(--accent-gradient);
-            box-shadow: 0 0 15px var(--accent-purple);
-        }
-
-        /* --- LOGO AREA --- */
-        .logo-area { text-align: center; margin-bottom: 25px; }
-        
         .brand-logo {
-            width: 100px; height: 100px;
-            object-fit: contain;
-            margin-bottom: 5px;
-            animation: floatLogo 3s ease-in-out infinite;
-            filter: drop-shadow(0 0 15px rgba(189, 0, 255, 0.6));
+            width: 95px; height: 95px; object-fit: contain;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
         }
 
         @keyframes floatLogo {
-            0%, 100% { transform: translateY(0); filter: drop-shadow(0 0 15px rgba(189, 0, 255, 0.6)); }
-            50% { transform: translateY(-8px); filter: drop-shadow(0 0 25px rgba(189, 0, 255, 0.9)); }
+            0%, 100% { transform: translateY(0); box-shadow: 0 0 30px rgba(189, 0, 255, 0.5), inset 0 0 20px rgba(0, 242, 255, 0.3); }
+            50% { transform: translateY(-10px); box-shadow: 0 0 50px rgba(189, 0, 255, 0.8), inset 0 0 35px rgba(0, 242, 255, 0.6); }
         }
 
         .app-name { 
-            font-family: var(--font-head); font-size: 1.6rem; letter-spacing: 3px; font-weight: 900;
+            font-family: var(--font-head); font-size: 2.2rem; letter-spacing: 4px; font-weight: 900;
             background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 10px rgba(255,255,255,0.1);
+            margin-bottom: 5px;
         }
 
-        /* --- TABS --- */
-        .role-tabs { display: flex; gap: 10px; margin-bottom: 25px; }
+        .app-tagline { color: #aaa; font-size: 1.1rem; margin-bottom: 25px; font-weight: 500; letter-spacing: 1px; }
+
+        .features-row {
+            display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; flex-wrap: wrap;
+        }
+        .feature-badge {
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            padding: 6px 15px; border-radius: 20px; font-size: 0.85rem; color: var(--accent-cyan);
+            font-family: var(--font-head); letter-spacing: 1px;
+            box-shadow: inset 0 0 10px rgba(0,242,255,0.1);
+        }
+
+        /* Action Buttons */
+        .action-btn {
+            width: 100%; max-width: 320px; margin: 0 auto 15px; padding: 18px;
+            border-radius: 15px; font-family: var(--font-head); font-size: 1.1rem; font-weight: bold; letter-spacing: 1px;
+            cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px;
+            text-transform: uppercase;
+        }
         
-        .role-tab-btn {
-            flex: 1; padding: 12px; text-align: center; cursor: pointer;
-            font-family: var(--font-head); font-size: 0.95rem; font-weight: bold;
-            color: #888; border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px; transition: 0.3s; background: rgba(0,0,0,0.4);
+        .btn-primary {
+            background: var(--accent-gradient); color: white; border: none;
+            box-shadow: 0 5px 20px rgba(189,0,255,0.4);
+        }
+        .btn-primary:active { transform: scale(0.96); box-shadow: 0 2px 10px rgba(189,0,255,0.4); }
+
+        .btn-secondary {
+            background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--accent-cyan);
+            box-shadow: inset 0 0 15px rgba(0,242,255,0.1);
+        }
+        .btn-secondary:hover { background: rgba(0,242,255,0.1); box-shadow: 0 0 20px rgba(0,242,255,0.3); }
+        .btn-secondary:active { transform: scale(0.96); }
+
+        .btn-ghost {
+            background: transparent; color: #888; border: none; margin-top: 10px;
+            font-size: 0.9rem; text-decoration: underline; font-family: var(--font-body);
         }
 
-        .role-tab-btn.active {
-            background: rgba(189, 0, 255, 0.15);
-            border-color: var(--accent-purple); color: white;
-            box-shadow: 0 0 15px rgba(189, 0, 255, 0.3); text-shadow: 0 0 5px rgba(255,255,255,0.5);
+        /* --- MODALS --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            /* Lowered opacity and blur so background animations shine through */
+            background: rgba(0, 0, 0, 0.35); z-index: 50; display: none;
+            align-items: center; justify-content: center; backdrop-filter: blur(2px);
+            opacity: 0; transition: opacity 0.3s ease; padding: 15px;
         }
-        
-        .role-tab-btn.active.org-btn {
-            background: rgba(0, 242, 255, 0.15);
-            border-color: var(--accent-cyan);
-            box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
-        }
+        .modal-overlay.active { display: flex; opacity: 1; }
 
-        /* --- SUB TABS --- */
-        .sub-tabs { display: flex; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .sub-tab {
-            flex: 1; text-align: center; padding-bottom: 10px;
-            font-size: 0.95rem; color: #666; cursor: pointer; position: relative; font-family: var(--font-head); font-weight: bold; transition: 0.3s;
+        .modal-card {
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            width: 100%; max-width: 420px; border-radius: 20px; padding: 25px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9), inset 0 0 20px rgba(189,0,255,0.1);
+            transform: translateY(50px) scale(0.95); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-height: 85vh; overflow-y: auto; 
+            position: relative;
         }
-        .sub-tab.active { color: white; text-shadow: 0 0 5px rgba(255,255,255,0.3); }
-        .sub-tab.active::after {
-            content: ''; position: absolute; bottom: -1px; left: 0; width: 100%; height: 3px;
-            background: var(--accent-purple); box-shadow: 0 -2px 10px var(--accent-purple); border-radius: 2px 2px 0 0;
+        .modal-overlay.active .modal-card { transform: translateY(0) scale(1); }
+
+        .close-modal {
+            position: absolute; top: 15px; right: 20px; font-size: 1.5rem; color: #666;
+            cursor: pointer; transition: 0.3s; z-index: 10;
         }
+        .close-modal:hover { color: white; transform: rotate(90deg); }
+
+        .modal-title { font-family: var(--font-head); font-size: 1.4rem; color: white; margin-bottom: 20px; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
 
         /* --- FORMS & INPUTS --- */
-        .form-section { display: none; animation: fadeSlideUp 0.4s ease-out forwards; }
-        .form-section.active { display: block; }
-
-        @keyframes fadeSlideUp { 
-            from { opacity: 0; transform: translateY(10px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
-
         .input-group { position: relative; margin-bottom: 15px; }
         .input-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #666; transition: 0.3s; }
         
@@ -151,160 +171,234 @@
             box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
         }
         .form-control:focus { 
-            border-color: var(--accent-purple); 
-            box-shadow: 0 0 15px rgba(189, 0, 255, 0.2), inset 0 0 10px rgba(0,0,0,0.5); 
+            border-color: var(--accent-cyan); 
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.2), inset 0 0 10px rgba(0,0,0,0.5); 
         }
         .form-control:focus + .input-icon, .form-control:not(:placeholder-shown) + .input-icon { color: var(--accent-cyan); }
-        
-        /* Auto-fill style fix */
         input:-webkit-autofill { -webkit-box-shadow: 0 0 0 30px var(--input-bg) inset !important; -webkit-text-fill-color: white !important; }
+
+        .otp-btn {
+            background: rgba(0, 242, 255, 0.1); color: var(--accent-cyan);
+            border: 1px solid var(--accent-cyan); border-radius: 12px;
+            padding: 0 20px; font-family: var(--font-head); font-weight: bold; font-size: 0.85rem;
+            cursor: pointer; transition: 0.3s; white-space: nowrap; box-shadow: 0 0 10px rgba(0,242,255,0.1);
+        }
+        .otp-btn:active { transform: scale(0.95); }
+        .otp-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
         .submit-btn {
             width: 100%; padding: 15px; background: var(--accent-gradient);
             border: none; border-radius: 12px; color: white;
             font-family: var(--font-head); font-size: 1.05rem; font-weight: 700; letter-spacing: 1px;
             cursor: pointer; transition: 0.3s; margin-top: 10px;
-            box-shadow: 0 5px 20px rgba(189,0,255,0.4); position: relative; overflow: hidden;
+            box-shadow: 0 5px 20px rgba(189,0,255,0.4); text-transform: uppercase;
         }
-        .submit-btn::after {
-            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent);
-            animation: shimmerBtn 2.5s infinite;
-        }
-        @keyframes shimmerBtn { 100% { left: 200%; } }
-        .submit-btn:active { transform: scale(0.96); box-shadow: 0 2px 10px rgba(189,0,255,0.4); }
+        .submit-btn:active { transform: scale(0.96); }
 
-        /* Organizer Apply Link */
-        .org-apply-box { margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; }
-        .org-apply-btn {
-            display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px;
-            border: 1px solid var(--accent-cyan); border-radius: 20px; background: rgba(0,242,255,0.05);
-            color: var(--accent-cyan); text-decoration: none; font-size: 0.85rem; font-family: var(--font-head); font-weight: bold; transition: 0.3s;
+        /* --- THE ULTIMATE ARENA ANIMATION --- */
+        .arena-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, #070311, #000); z-index: 9999;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
         }
-        .org-apply-btn:hover { background: var(--accent-cyan); color: #000; box-shadow: 0 0 15px rgba(0,242,255,0.4); }
+        .arena-overlay.active { display: flex; animation: bgFlash 2s forwards ease-in; }
 
-        /* Loading & Errors */
-        .loading-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5,3,15,0.95); z-index: 20; display: none;
-            flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(5px);
+        .arena-text {
+            font-family: var(--font-head); font-size: 2.5rem; color: var(--accent-cyan);
+            font-weight: 900; letter-spacing: 5px; text-shadow: 0 0 30px var(--accent-cyan);
+            text-align: center; animation: zoomOutText 1.8s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .loading-overlay.active { display: flex; animation: fadeIn 0.3s; }
-        .spinner {
-            width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.1);
-            border-top: 4px solid var(--accent-cyan); border-radius: 50%;
-            animation: spin 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite; margin-bottom: 15px; box-shadow: 0 0 15px rgba(0,242,255,0.5);
+
+        @keyframes zoomOutText {
+            0% { transform: scale(2); opacity: 0; filter: blur(10px); }
+            30% { transform: scale(1); opacity: 1; filter: blur(0); }
+            80% { transform: scale(0.8); opacity: 1; filter: blur(0); color: white; text-shadow: 0 0 50px white; }
+            100% { transform: scale(3); opacity: 0; filter: blur(20px); }
         }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        
+        @keyframes bgFlash {
+            0% { background: #000; }
+            80% { background: #000; }
+            100% { background: #fff; } 
+        }
+
         .error-msg { 
             background: rgba(255, 77, 77, 0.1); border: 1px solid rgba(255, 77, 77, 0.3);
             color: #ff4d4d; text-align: center; padding: 10px; border-radius: 10px;
             margin-bottom: 15px; font-size: 0.85rem; display: none; font-family: var(--font-body); font-weight: bold;
-            animation: fadeSlideUp 0.3s;
         }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+        /* RESPONSIVE DESIGN FOR ALL DEVICES */
+        @media (max-width: 480px) {
+            .app-name { font-size: 1.8rem; }
+            .logo-wrapper { width: 110px; height: 110px; }
+            .brand-logo { width: 75px; height: 75px; }
+            .action-btn { font-size: 1rem; padding: 15px; }
+            .modal-card { padding: 20px; border-radius: 15px; }
+            .form-control { font-size: 0.95rem; padding: 12px 15px 12px 40px; }
+            .input-icon { left: 12px; }
+            .arena-text { font-size: 1.8rem; }
+        }
     </style>
 </head>
 <body>
 
     <canvas id="particles-canvas"></canvas>
 
-    <div class="auth-container">
-        <div class="auth-card">
+    <div class="landing-container" id="landingView">
+        <div class="logo-wrapper">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEipVmqyUEA22VpntZdPCHuXoO_Rjco_cRaNl5CyFa-eehdtgXnHe6JoD8a5svxJRJYZfv_yXwww10T2cL2PHTiXLK-J-nWC1swmMs5RDxGVM8FBSlJORaRiX4YiD8gL8SyM4X1tRyQn_v8MsqQvbU4uEyHEU0qaySP1STWHaBEYuWKyF3-6QovSqJR-8xU/s1024/1000093705.png" alt="Tournyx Logo" class="brand-logo">
+        </div>
+        <h1 class="app-name">TOURNYX</h1>
+        <p class="app-tagline">The Ultimate Esports Arena</p>
+
+        <div class="features-row">
+            <span class="feature-badge"><i class="fa-solid fa-trophy"></i> Compete</span>
+            <span class="feature-badge"><i class="fa-solid fa-wallet"></i> Earn Cash</span>
+            <span class="feature-badge"><i class="fa-solid fa-shield-halved"></i> Build Clans</span>
+        </div>
+
+        <button class="action-btn btn-primary" onclick="openModal('loginModal')">
+            <i class="fa-solid fa-right-to-bracket"></i> Player Login
+        </button>
+        <button class="action-btn btn-secondary" onclick="openModal('signupModal')">
+            <i class="fa-solid fa-user-plus"></i> Create Account
+        </button>
+        
+        <button class="action-btn btn-ghost" onclick="openModal('orgModal')">
+            <i class="fa-solid fa-crown" style="color:var(--accent-orange)"></i> Organizer Portal
+        </button>
+    </div>
+
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-card">
+            <i class="fa-solid fa-xmark close-modal" onclick="closeModals()"></i>
+            <h2 class="modal-title" style="color:var(--accent-cyan)">Welcome Back</h2>
+            <div class="error-msg" id="loginError"></div>
             
-            <div class="logo-area">
-                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEipVmqyUEA22VpntZdPCHuXoO_Rjco_cRaNl5CyFa-eehdtgXnHe6JoD8a5svxJRJYZfv_yXwww10T2cL2PHTiXLK-J-nWC1swmMs5RDxGVM8FBSlJORaRiX4YiD8gL8SyM4X1tRyQn_v8MsqQvbU4uEyHEU0qaySP1STWHaBEYuWKyF3-6QovSqJR-8xU/s1024/1000093705.png" alt="Tournyx Logo" class="brand-logo">
-                <div class="app-name">TOURNYX</div>
-            </div>
-
-            <div class="role-tabs">
-                <div class="role-tab-btn active" id="btnRolePlayer" onclick="switchRole('player')">
-                    <i class="fa-solid fa-user"></i> PLAYER
+            <form id="playerLoginForm">
+                <div class="input-group">
+                    <input type="email" name="email" class="form-control" placeholder="Player Email" required>
+                    <i class="fa-solid fa-envelope input-icon"></i>
                 </div>
-                <div class="role-tab-btn org-btn" id="btnRoleOrg" onclick="switchRole('organizer')">
-                    <i class="fa-solid fa-crown"></i> ORGANIZER
+                <div class="input-group">
+                    <input type="password" name="password" class="form-control" placeholder="Password" required>
+                    <i class="fa-solid fa-lock input-icon"></i>
                 </div>
+                <button type="submit" class="submit-btn" id="btnLogin">LOGIN TO ARENA</button>
+            </form>
+            <div style="text-align:center; margin-top:15px; font-size:0.9rem; color:#888;">
+                New here? <span style="color:var(--accent-cyan); cursor:pointer; text-decoration:underline;" onclick="openModal('signupModal')">Sign Up</span>
             </div>
-
-            <div class="error-msg" id="errorMsg"><i class="fa-solid fa-triangle-exclamation"></i> Invalid Credentials</div>
-
-            <div id="playerSection" class="form-section active">
-                <div class="sub-tabs">
-                    <div class="sub-tab active" onclick="switchPlayerSub('login')">LOGIN</div>
-                    <div class="sub-tab" onclick="switchPlayerSub('signup')">SIGN UP</div>
-                </div>
-
-                <form id="playerLoginForm" style="display:block;">
-                    <div class="input-group">
-                        <input type="email" name="email" class="form-control" placeholder="Player Email" required>
-                        <i class="fa-solid fa-envelope input-icon"></i>
-                    </div>
-                    <div class="input-group">
-                        <input type="password" name="password" class="form-control" placeholder="Password" required>
-                        <i class="fa-solid fa-lock input-icon"></i>
-                    </div>
-                    <button type="submit" class="submit-btn">ENTER BATTLEGROUND</button>
-                </form>
-
-                <form id="playerSignupForm" style="display:none;">
-                    <div class="input-group">
-                        <input type="text" name="username" class="form-control" placeholder="Username" required>
-                        <i class="fa-solid fa-user input-icon"></i>
-                    </div>
-                    <div class="input-group">
-                        <input type="text" name="ign" class="form-control" placeholder="In-Game Name (IGN)" required>
-                        <i class="fa-solid fa-gamepad input-icon"></i>
-                    </div>
-                    <div class="input-group">
-                        <input type="email" name="email" class="form-control" placeholder="Email Address" required>
-                        <i class="fa-solid fa-envelope input-icon"></i>
-                    </div>
-                    <div class="input-group">
-                        <input type="password" name="password" class="form-control" placeholder="Create Password" required>
-                        <i class="fa-solid fa-lock input-icon"></i>
-                    </div>
-                    <div class="input-group">
-                        <input type="text" name="referral" id="refInput" class="form-control" placeholder="Referral Code (Optional)">
-                        <i class="fa-solid fa-gift input-icon"></i>
-                    </div>
-                    <button type="submit" class="submit-btn">CREATE ACCOUNT</button>
-                </form>
-            </div>
-
-            <div id="organizerSection" class="form-section">
-                <p style="text-align:center; color:#aaa; font-size:0.85rem; margin-bottom:20px; line-height: 1.4;">
-                    <i class="fa-solid fa-shield-halved" style="color:var(--accent-cyan);"></i> Restricted Access.<br>Admin Approval Required.
-                </p>
-                <form id="organizerLoginForm">
-                    <div class="input-group">
-                        <input type="email" name="email" class="form-control" placeholder="Organizer Email" required>
-                        <i class="fa-solid fa-envelope input-icon" style="color:var(--accent-cyan)"></i>
-                    </div>
-                    <div class="input-group">
-                        <input type="password" name="password" class="form-control" placeholder="Access Key" required>
-                        <i class="fa-solid fa-key input-icon" style="color:var(--accent-cyan)"></i>
-                    </div>
-                    <button type="submit" class="submit-btn" style="background:var(--accent-cyan); color:black; box-shadow: 0 5px 20px rgba(0,242,255,0.4);">ORGANIZER LOGIN</button>
-                </form>
-
-                <div class="org-apply-box">
-                    <p style="font-size:0.8rem; color:#888; margin-bottom:12px;">Want to host tournaments & monetize?</p>
-                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSe6k-ejzzvmEdYU6ynHlMIyr_PgQibH5ViBV5_v3HBpCdIbjw/viewform?usp=dialog" target="_blank" class="org-apply-btn">
-                        Apply for Access <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                    </a>
-                </div>
-            </div>
-
-            <div class="loading-overlay" id="loader">
-                <div class="spinner"></div>
-                <div style="font-family: var(--font-head); font-weight: bold; color:white; letter-spacing: 1px;" id="loadingText">AUTHENTICATING...</div>
-            </div>
-
         </div>
     </div>
 
+    <div class="modal-overlay" id="signupModal">
+        <div class="modal-card">
+            <i class="fa-solid fa-xmark close-modal" onclick="closeModals()"></i>
+            <h2 class="modal-title" style="color:var(--accent-purple)">Register</h2>
+            <div class="error-msg" id="signupError"></div>
+
+            <form id="playerSignupForm">
+                <div class="input-group">
+                    <input type="text" name="username" class="form-control" placeholder="Display Name" required>
+                    <i class="fa-solid fa-user input-icon"></i>
+                </div>
+                <div class="input-group">
+                    <input type="text" name="ign" class="form-control" placeholder="In-Game Name (IGN)" required>
+                    <i class="fa-solid fa-gamepad input-icon"></i>
+                </div>
+                <div class="input-group">
+                    <input type="text" name="uid" class="form-control" placeholder="Game UID" required>
+                    <i class="fa-solid fa-id-card input-icon"></i>
+                </div>
+
+                <div id="recaptcha-container"></div>
+                
+                <div class="input-group" style="display: flex; gap: 8px;">
+                    <div style="position: relative; flex: 1;">
+                        <input type="tel" name="phone" id="regPhone" class="form-control" placeholder="Phone Number" value="+91 " required>
+                        <i class="fa-solid fa-mobile-screen input-icon"></i>
+                    </div>
+                    <button type="button" class="otp-btn" id="btnSendOtp" onclick="sendFirebaseOTP()">Get OTP</button>
+                </div>
+                
+                <div class="input-group" id="otpGroup" style="display:none; animation: fadeIn 0.3s forwards;">
+                    <input type="text" name="otp" id="regOtp" class="form-control" placeholder="Enter 6-Digit OTP">
+                    <i class="fa-solid fa-message-sms input-icon" style="color:var(--accent-green)"></i>
+                </div>
+
+                <div class="input-group">
+                    <input type="email" name="email" class="form-control" placeholder="Email Address" required>
+                    <i class="fa-solid fa-envelope input-icon"></i>
+                </div>
+                <div class="input-group">
+                    <input type="password" name="password" class="form-control" placeholder="Create Password" required>
+                    <i class="fa-solid fa-lock input-icon"></i>
+                </div>
+                <div class="input-group">
+                    <input type="text" name="referral" id="refInput" class="form-control" placeholder="Referral Code (Optional)">
+                    <i class="fa-solid fa-gift input-icon"></i>
+                </div>
+                <button type="submit" class="submit-btn" id="btnSignup">CREATE ACCOUNT</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="orgModal">
+        <div class="modal-card" style="border-color:var(--accent-orange); box-shadow: 0 20px 50px rgba(0,0,0,0.9), inset 0 0 20px rgba(255,153,0,0.1);">
+            <i class="fa-solid fa-xmark close-modal" onclick="closeModals()"></i>
+            <h2 class="modal-title" style="color:var(--accent-orange)"><i class="fa-solid fa-crown"></i> Organizer Hub</h2>
+            <div class="error-msg" id="orgError"></div>
+
+            <form id="organizerLoginForm">
+                <div class="input-group">
+                    <input type="email" name="email" class="form-control" placeholder="Organizer Email" required>
+                    <i class="fa-solid fa-envelope input-icon" style="color:var(--accent-orange)"></i>
+                </div>
+                <div class="input-group">
+                    <input type="password" name="password" class="form-control" placeholder="Access Key" required>
+                    <i class="fa-solid fa-key input-icon" style="color:var(--accent-orange)"></i>
+                </div>
+                <button type="submit" class="submit-btn" id="btnOrgLogin" style="background:linear-gradient(90deg, #ff9900, #ff4d4d); box-shadow: 0 5px 20px rgba(255,153,0,0.4);">VERIFY ADMIN</button>
+            </form>
+
+            <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); text-align: center;">
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSe6k-ejzzvmEdYU6ynHlMIyr_PgQibH5ViBV5_v3HBpCdIbjw/viewform?usp=dialog" target="_blank" style="color:#aaa; text-decoration:none; font-size:0.85rem;"><i class="fa-solid fa-file-signature"></i> Apply to Host Tournaments</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="arenaLoader" class="arena-overlay">
+        <div class="arena-text">ENTERING THE ARENA</div>
+    </div>
+
     <script>
+        // --- GOOGLE APPS SCRIPT CONFIG ---
+        const API_URL = 'https://script.google.com/macros/s/AKfycbynNLDDXS1wMrU6RGnk4nKb1jfQkQGuqrNIKWAt8wf46MaKP6y1rwGmSJg5fmm4KYU/exec';
+        
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+          apiKey: "AIzaSyDxExv9OHnk6EF9Cw-48mXCs42qEQUI41U",
+          authDomain: "tournyx.firebaseapp.com",
+          projectId: "tournyx",
+          storageBucket: "tournyx.firebasestorage.app",
+          messagingSenderId: "615157779725",
+          appId: "1:615157779725:web:e05a0f94e89053f91e7444",
+          measurementId: "G-82B6NVX15E"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        
+        // Setup Invisible reCAPTCHA
+        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+            'size': 'invisible',
+            'callback': (response) => {
+                // reCAPTCHA solved
+            }
+        });
+
         // --- PARTICLES ENGINE ---
         const canvas = document.getElementById('particles-canvas');
         const ctx = canvas.getContext('2d');
@@ -313,168 +407,211 @@
         class P {
             constructor(){ this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.vx=Math.random()*0.5-0.25; this.vy=Math.random()*0.5-0.25; this.size=Math.random()*2+0.5; }
             u(){ this.x+=this.vx; this.y+=this.vy; if(this.x<0||this.x>canvas.width)this.vx=-this.vx; if(this.y<0||this.y>canvas.height)this.vy=-this.vy; }
-            d(){ ctx.fillStyle='rgba(189,0,255,0.4)'; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); }
+            d(){ ctx.fillStyle='rgba(0,242,255,0.3)'; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); }
         }
         for(let i=0;i<50;i++) particles.push(new P());
         function anim(){ ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.u();p.d()}); requestAnimationFrame(anim); }
         anim();
         window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
 
-        // --- GOOGLE APPS SCRIPT CONFIG ---
-        const API_URL = 'https://script.google.com/macros/s/AKfycbynNLDDXS1wMrU6RGnk4nKb1jfQkQGuqrNIKWAt8wf46MaKP6y1rwGmSJg5fmm4KYU/exec';
-        
-        // --- SMART URL PARAMETER CATCHER (For Referrals) ---
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const refCode = urlParams.get('ref');
             const tabParam = urlParams.get('tab');
 
-            if (refCode) {
-                // Auto-switch to signup and fill code
-                switchPlayerSub('signup');
-                document.getElementById('refInput').value = refCode;
-            }
-
-            if (tabParam === 'organizer') {
-                switchRole('organizer');
-            }
+            if (refCode) { openModal('signupModal'); document.getElementById('refInput').value = refCode; }
+            if (tabParam === 'organizer') openModal('orgModal');
         });
 
-        // --- TABS LOGIC ---
-        const playerSec = document.getElementById('playerSection');
-        const orgSec = document.getElementById('organizerSection');
-        const btnPlayer = document.getElementById('btnRolePlayer');
-        const btnOrg = document.getElementById('btnRoleOrg');
-        const errorMsg = document.getElementById('errorMsg');
-
-        function switchRole(role) {
-            errorMsg.style.display = 'none';
-            if(role === 'player') {
-                btnPlayer.classList.add('active'); btnOrg.classList.remove('active');
-                playerSec.classList.add('active'); orgSec.classList.remove('active');
-            } else {
-                btnOrg.classList.add('active'); btnPlayer.classList.remove('active');
-                orgSec.classList.add('active'); playerSec.classList.remove('active');
-            }
+        // --- MODAL LOGIC ---
+        function openModal(id) {
+            closeModals(); 
+            document.getElementById(id).classList.add('active');
+        }
+        function closeModals() {
+            document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
+            document.querySelectorAll('.error-msg').forEach(e => e.style.display = 'none');
         }
 
-        function switchPlayerSub(sub) {
-            const tabs = document.querySelectorAll('.sub-tab');
-            const pLogin = document.getElementById('playerLoginForm');
-            const pSignup = document.getElementById('playerSignupForm');
-            errorMsg.style.display = 'none';
-
-            if(sub === 'login') {
-                tabs[0].classList.add('active'); tabs[1].classList.remove('active');
-                pLogin.style.display = 'block'; pSignup.style.display = 'none';
-            } else {
-                tabs[1].classList.add('active'); tabs[0].classList.remove('active');
-                pSignup.style.display = 'block'; pLogin.style.display = 'none';
+        // --- FIREBASE OTP FUNCTION ---
+        function sendFirebaseOTP() {
+            const phoneInput = document.getElementById('regPhone').value.trim();
+            const errBox = document.getElementById('signupError');
+            
+            if (!phoneInput.startsWith('+')) {
+                errBox.innerText = "Please include country code (e.g., +91)."; 
+                errBox.style.display = 'block'; 
+                return;
             }
+            
+            errBox.style.display = 'none';
+            const btn = document.getElementById('btnSendOtp');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending';
+            btn.disabled = true;
+
+            firebase.auth().signInWithPhoneNumber(phoneInput, window.recaptchaVerifier)
+                .then((confirmationResult) => {
+                    window.confirmationResult = confirmationResult;
+                    
+                    btn.innerHTML = '<i class="fa-solid fa-check"></i> Sent';
+                    btn.style.background = "var(--accent-green)";
+                    btn.style.borderColor = "var(--accent-green)";
+                    btn.style.color = "#000";
+                    
+                    document.getElementById('otpGroup').style.display = "block";
+                    document.getElementById('regOtp').setAttribute('required', 'true');
+                }).catch((error) => {
+                    console.error(error);
+                    errBox.innerText = "Failed to send OTP. Try again."; 
+                    errBox.style.display = 'block';
+                    btn.innerHTML = 'Get OTP';
+                    btn.disabled = false;
+                    
+                    if (window.recaptchaVerifier) {
+                        window.recaptchaVerifier.render().then(function(widgetId) {
+                            grecaptcha.reset(widgetId);
+                        });
+                    }
+                });
+        }
+
+        // --- ANIMATION OVERLAY LOGIC ---
+        function triggerArenaEntry(user, redirectUrl) {
+            closeModals();
+            localStorage.setItem('tournyx_user', JSON.stringify(user));
+            const loader = document.getElementById('arenaLoader');
+            loader.classList.add('active');
+            
+            setTimeout(() => {
+                window.location.href = redirectUrl;
+            }, 1800); 
         }
 
         // --- AUTH LOGIC ---
-        const loader = document.getElementById('loader');
-        const loadingText = document.getElementById('loadingText');
+        function btnLoading(btnId, text) {
+            const btn = document.getElementById(btnId);
+            btn.dataset.original = btn.innerHTML;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> ${text}`;
+            btn.disabled = true;
+        }
+        function btnReset(btnId) {
+            const btn = document.getElementById(btnId);
+            btn.innerHTML = btn.dataset.original;
+            btn.disabled = false;
+        }
 
-        // PLAYER SIGNUP
+        // PLAYER SIGNUP (With Firebase OTP Check)
         document.getElementById('playerSignupForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            startLoad("CREATING ACCOUNT...");
+            const errBox = document.getElementById('signupError');
+            errBox.style.display = 'none';
             
-            const formData = new FormData(e.target);
-            const rawData = Object.fromEntries(formData);
-            
-            const payload = {
-                action: 'signup',
-                username: rawData.username,
-                ign: rawData.ign,
-                email: rawData.email,
-                password: rawData.password,
-                referral: rawData.referral || "", 
-                role: 'player'
-            };
+            const enteredOtp = document.getElementById('regOtp').value.trim();
+            if(document.getElementById('otpGroup').style.display === "block" && enteredOtp.length !== 6) {
+                errBox.innerText = "Please enter the 6-Digit OTP."; errBox.style.display = 'block'; return;
+            }
+
+            btnLoading('btnSignup', 'VERIFYING OTP...');
 
             try {
-                const res = await fetch(API_URL, { 
-                    method: 'POST', 
-                    body: JSON.stringify(payload) 
-                });
+                // 1. Verify OTP with Firebase
+                if (window.confirmationResult) {
+                    await window.confirmationResult.confirm(enteredOtp);
+                } else {
+                    throw new Error("Please request an OTP first.");
+                }
+
+                // 2. OTP Valid - Save to Google Sheets
+                btnLoading('btnSignup', 'CREATING ACCOUNT...');
+                
+                const formData = new FormData(e.target);
+                const rawData = Object.fromEntries(formData);
+                
+                const payload = {
+                    action: 'signup',
+                    username: rawData.username,
+                    ign: rawData.ign,
+                    uid: rawData.uid,       
+                    phone: rawData.phone,   
+                    email: rawData.email,
+                    password: rawData.password,
+                    referral: rawData.referral || "", 
+                    role: 'player'
+                };
+
+                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
                 const result = await res.json();
                 
                 if(result.status === 'success') {
-                    alert("Account Created Successfully! Please Login to continue.");
-                    switchPlayerSub('login');
-                    loader.classList.remove('active');
+                    alert("Account Created! You can now Login.");
+                    openModal('loginModal');
                 } else {
-                    showError("Signup Failed: " + result.data);
+                    errBox.innerText = result.data; errBox.style.display = 'block';
                 }
-            } catch (err) { showError("Connection Error. Try again."); console.error(err); }
+            } catch (err) { 
+                console.error(err);
+                if (err.code === 'auth/invalid-verification-code') {
+                    errBox.innerText = "Invalid OTP. Please check the code and try again.";
+                } else if (err.message === "Please request an OTP first.") {
+                     errBox.innerText = err.message;
+                } else {
+                    errBox.innerText = "Connection Error or OTP failed."; 
+                }
+                errBox.style.display = 'block'; 
+            } finally { 
+                btnReset('btnSignup'); 
+            }
         });
 
         // PLAYER LOGIN
         document.getElementById('playerLoginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            startLoad("VERIFYING CREDENTIALS...");
+            const errBox = document.getElementById('loginError');
+            errBox.style.display = 'none';
+            btnLoading('btnLogin', 'AUTHENTICATING...');
+
             const email = e.target.email.value;
             const password = e.target.password.value;
             
             try {
                 const res = await fetch(API_URL, { 
-                    method: 'POST', 
-                    body: JSON.stringify({ action: 'login', email: email, password: password }) 
+                    method: 'POST', body: JSON.stringify({ action: 'login', email: email, password: password }) 
                 });
                 const result = await res.json();
                 
                 if (result.status === 'success') {
-                    loginSuccess(result.data, 'index.html');
+                    triggerArenaEntry(result.data, 'index.html');
                 } else { 
-                    showError("Invalid Credentials"); 
+                    errBox.innerText = "Invalid Credentials"; errBox.style.display = 'block'; 
                 }
-            } catch (err) { showError("Network Error. Check your connection."); console.error(err); }
+            } catch (err) { errBox.innerText = "Network Error."; errBox.style.display = 'block'; }
+            finally { btnReset('btnLogin'); }
         });
 
         // ORGANIZER LOGIN
         document.getElementById('organizerLoginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            startLoad("VERIFYING ADMIN ACCESS...");
+            const errBox = document.getElementById('orgError');
+            errBox.style.display = 'none';
+            btnLoading('btnOrgLogin', 'VERIFYING...');
+
             const email = e.target.email.value;
             const password = e.target.password.value;
             
             try {
                 const res = await fetch(API_URL, { 
-                    method: 'POST', 
-                    body: JSON.stringify({ action: 'login', email: email, password: password }) 
+                    method: 'POST', body: JSON.stringify({ action: 'login', email: email, password: password }) 
                 });
                 const result = await res.json();
                 
-                if (result.status === 'success') {
-                    if(result.data.role === 'organizer') {
-                        loginSuccess(result.data, 'profile.html');
-                    } else {
-                        showError("Access Denied. Not an Authorized Organizer.");
-                    }
+                if (result.status === 'success' && result.data.role === 'organizer') {
+                    triggerArenaEntry(result.data, 'profile.html');
                 } else { 
-                    showError("Invalid Organizer Credentials"); 
+                    errBox.innerText = "Invalid Admin Credentials"; errBox.style.display = 'block'; 
                 }
-            } catch (err) { showError("System Error."); console.error(err); }
+            } catch (err) { errBox.innerText = "System Error."; errBox.style.display = 'block'; }
+            finally { btnReset('btnOrgLogin'); }
         });
-
-        // Helpers
-        function startLoad(msg) { 
-            loader.classList.add('active'); 
-            loadingText.innerText = msg; 
-            errorMsg.style.display = 'none'; 
-        }
-        function showError(msg) { 
-            loader.classList.remove('active'); 
-            errorMsg.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${msg}`; 
-            errorMsg.style.display = 'block'; 
-        }
-        function loginSuccess(user, redirectUrl) {
-            localStorage.setItem('tournyx_user', JSON.stringify(user));
-            window.location.href = redirectUrl;
-        }
     </script>
 </body>
 </html>
