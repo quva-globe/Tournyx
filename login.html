@@ -68,7 +68,7 @@
             height: 140px;
             margin: 0 auto 20px;
             background: linear-gradient(135deg, rgba(189, 0, 255, 0.15), rgba(0, 242, 255, 0.15));
-            border-radius: 35%; /* Smooth Squircle Shape */
+            border-radius: 35%; 
             display: flex;
             align-items: center;
             justify-content: center;
@@ -134,9 +134,8 @@
         /* --- MODALS --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            /* Lowered opacity and blur so background animations shine through */
-            background: rgba(0, 0, 0, 0.35); z-index: 50; display: none;
-            align-items: center; justify-content: center; backdrop-filter: blur(2px);
+            background: rgba(0, 0, 0, 0.4); z-index: 50; display: none;
+            align-items: center; justify-content: center; backdrop-filter: blur(3px);
             opacity: 0; transition: opacity 0.3s ease; padding: 15px;
         }
         .modal-overlay.active { display: flex; opacity: 1; }
@@ -155,9 +154,21 @@
             position: absolute; top: 15px; right: 20px; font-size: 1.5rem; color: #666;
             cursor: pointer; transition: 0.3s; z-index: 10;
         }
-        .close-modal:hover { color: white; transform: rotate(90deg); }
+        .close-modal:hover { color: white; transform: rotate(90deg); text-shadow: 0 0 10px var(--accent-cyan); }
 
-        .modal-title { font-family: var(--font-head); font-size: 1.4rem; color: white; margin-bottom: 20px; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
+        .modal-title { font-family: var(--font-head); font-size: 1.4rem; color: white; margin-bottom: 10px; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* --- PROGRESS BAR ANIMATION --- */
+        .form-progress-bg {
+            width: 100%; height: 4px; background: rgba(255,255,255,0.1);
+            border-radius: 4px; margin-bottom: 20px; overflow: hidden;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
+        }
+        .form-progress-bar {
+            height: 100%; width: 0%; background: var(--accent-gradient);
+            transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 0 15px var(--accent-cyan);
+        }
 
         /* --- FORMS & INPUTS --- */
         .input-group { position: relative; margin-bottom: 15px; }
@@ -172,27 +183,56 @@
         }
         .form-control:focus { 
             border-color: var(--accent-cyan); 
-            box-shadow: 0 0 15px rgba(0, 242, 255, 0.2), inset 0 0 10px rgba(0,0,0,0.5); 
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.2), inset 0 0 10px rgba(0,0,0,0.5); 
         }
-        .form-control:focus + .input-icon, .form-control:not(:placeholder-shown) + .input-icon { color: var(--accent-cyan); }
+        .form-control:focus + .input-icon, .form-control:not(:placeholder-shown) + .input-icon { color: var(--accent-cyan); text-shadow: 0 0 10px var(--accent-cyan); }
         input:-webkit-autofill { -webkit-box-shadow: 0 0 0 30px var(--input-bg) inset !important; -webkit-text-fill-color: white !important; }
 
-        .otp-btn {
-            background: rgba(0, 242, 255, 0.1); color: var(--accent-cyan);
-            border: 1px solid var(--accent-cyan); border-radius: 12px;
-            padding: 0 20px; font-family: var(--font-head); font-weight: bold; font-size: 0.85rem;
-            cursor: pointer; transition: 0.3s; white-space: nowrap; box-shadow: 0 0 10px rgba(0,242,255,0.1);
+        /* Mandatory Verification Glow */
+        .verify-alert {
+            font-size: 0.8rem; color: var(--accent-green); 
+            margin-top: 5px; margin-bottom: 15px; padding-left: 5px; 
+            font-family: var(--font-body); font-weight: 600;
+            animation: pulseText 2s infinite;
+            display: flex; align-items: center; gap: 5px;
         }
-        .otp-btn:active { transform: scale(0.95); }
-        .otp-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        @keyframes pulseText {
+            0%, 100% { opacity: 0.7; text-shadow: 0 0 5px transparent; }
+            50% { opacity: 1; text-shadow: 0 0 10px var(--accent-green); }
+        }
+
+        /* Terms Checkbox */
+        .terms-group {
+            display: flex; align-items: center; gap: 10px; margin-bottom: 15px;
+            font-size: 0.85rem; color: #aaa; padding: 5px;
+            background: rgba(0, 0, 0, 0.3); border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);
+        }
+        .terms-group input[type="checkbox"] {
+            appearance: none; width: 18px; height: 18px;
+            background: var(--input-bg); border: 1px solid var(--accent-cyan);
+            border-radius: 4px; cursor: pointer; position: relative;
+            transition: 0.3s; box-shadow: inset 0 0 5px rgba(0,242,255,0.2);
+        }
+        .terms-group input[type="checkbox"]:checked {
+            background: var(--accent-cyan); box-shadow: 0 0 15px rgba(0,242,255,0.5);
+        }
+        .terms-group input[type="checkbox"]:checked::after {
+            content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
+            color: #000; position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); font-size: 0.7rem;
+        }
+        .terms-group a { color: var(--accent-cyan); text-decoration: none; font-weight: bold; }
+        .terms-group a:hover { text-decoration: underline; text-shadow: 0 0 10px var(--accent-cyan); }
 
         .submit-btn {
             width: 100%; padding: 15px; background: var(--accent-gradient);
             border: none; border-radius: 12px; color: white;
             font-family: var(--font-head); font-size: 1.05rem; font-weight: 700; letter-spacing: 1px;
-            cursor: pointer; transition: 0.3s; margin-top: 10px;
+            cursor: pointer; transition: 0.3s; margin-top: 5px;
             box-shadow: 0 5px 20px rgba(189,0,255,0.4); text-transform: uppercase;
         }
+        .submit-btn:hover { box-shadow: 0 5px 30px rgba(0, 242, 255, 0.6); transform: translateY(-2px); }
         .submit-btn:active { transform: scale(0.96); }
 
         /* --- THE ULTIMATE ARENA ANIMATION --- */
@@ -297,49 +337,61 @@
         <div class="modal-card">
             <i class="fa-solid fa-xmark close-modal" onclick="closeModals()"></i>
             <h2 class="modal-title" style="color:var(--accent-purple)">Register</h2>
+            
+            <div class="form-progress-bg">
+                <div class="form-progress-bar" id="regProgressBar"></div>
+            </div>
+
             <div class="error-msg" id="signupError"></div>
 
             <form id="playerSignupForm">
                 <div class="input-group">
-                    <input type="text" name="username" class="form-control" placeholder="Display Name" required>
+                    <input type="text" name="username" class="form-control reg-input" placeholder="Display Name" required>
                     <i class="fa-solid fa-user input-icon"></i>
                 </div>
                 <div class="input-group">
-                    <input type="text" name="ign" class="form-control" placeholder="In-Game Name (IGN)" required>
+                    <input type="text" name="ign" class="form-control reg-input" placeholder="In-Game Name (IGN)" required>
                     <i class="fa-solid fa-gamepad input-icon"></i>
                 </div>
                 <div class="input-group">
-                    <input type="text" name="uid" class="form-control" placeholder="Game UID" required>
+                    <input type="text" name="uid" class="form-control reg-input" placeholder="Game UID" required>
                     <i class="fa-solid fa-id-card input-icon"></i>
                 </div>
-
-                <div id="recaptcha-container"></div>
                 
-                <div class="input-group" style="display: flex; gap: 8px;">
-                    <div style="position: relative; flex: 1;">
-                        <input type="tel" name="phone" id="regPhone" class="form-control" placeholder="Phone Number" value="+91 " required>
+                <div>
+                    <div class="input-group" style="margin-bottom: 5px;">
+                        <input type="tel" name="phone" class="form-control reg-input" placeholder="Phone Number" value="+91 " required>
                         <i class="fa-solid fa-mobile-screen input-icon"></i>
                     </div>
-                    <button type="button" class="otp-btn" id="btnSendOtp" onclick="sendFirebaseOTP()">Get OTP</button>
+                    <div class="verify-alert">
+                        <i class="fa-solid fa-circle-check"></i> Mandatory: Enter valid number for Prize Payouts.
+                    </div>
                 </div>
-                
-                <div class="input-group" id="otpGroup" style="display:none; animation: fadeIn 0.3s forwards;">
-                    <input type="text" name="otp" id="regOtp" class="form-control" placeholder="Enter 6-Digit OTP">
-                    <i class="fa-solid fa-message-sms input-icon" style="color:var(--accent-green)"></i>
+
+                <div>
+                    <div class="input-group" style="margin-bottom: 5px;">
+                        <input type="email" name="email" class="form-control reg-input" placeholder="Email Address" required>
+                        <i class="fa-solid fa-envelope input-icon"></i>
+                    </div>
+                    <div class="verify-alert" style="color: var(--accent-cyan);">
+                        <i class="fa-solid fa-shield-halved"></i> Secure: Required for Account Recovery.
+                    </div>
                 </div>
 
                 <div class="input-group">
-                    <input type="email" name="email" class="form-control" placeholder="Email Address" required>
-                    <i class="fa-solid fa-envelope input-icon"></i>
-                </div>
-                <div class="input-group">
-                    <input type="password" name="password" class="form-control" placeholder="Create Password" required>
+                    <input type="password" name="password" class="form-control reg-input" placeholder="Create Password" required>
                     <i class="fa-solid fa-lock input-icon"></i>
                 </div>
                 <div class="input-group">
                     <input type="text" name="referral" id="refInput" class="form-control" placeholder="Referral Code (Optional)">
                     <i class="fa-solid fa-gift input-icon"></i>
                 </div>
+
+                <div class="terms-group">
+                    <input type="checkbox" id="termsCheck" required>
+                    <label for="termsCheck">I agree to the <a href="#">Terms & Conditions</a></label>
+                </div>
+
                 <button type="submit" class="submit-btn" id="btnSignup">CREATE ACCOUNT</button>
             </form>
         </div>
@@ -376,28 +428,6 @@
     <script>
         // --- GOOGLE APPS SCRIPT CONFIG ---
         const API_URL = 'https://script.google.com/macros/s/AKfycbynNLDDXS1wMrU6RGnk4nKb1jfQkQGuqrNIKWAt8wf46MaKP6y1rwGmSJg5fmm4KYU/exec';
-        
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-        const firebaseConfig = {
-          apiKey: "AIzaSyDxExv9OHnk6EF9Cw-48mXCs42qEQUI41U",
-          authDomain: "tournyx.firebaseapp.com",
-          projectId: "tournyx",
-          storageBucket: "tournyx.firebasestorage.app",
-          messagingSenderId: "615157779725",
-          appId: "1:615157779725:web:e05a0f94e89053f91e7444",
-          measurementId: "G-82B6NVX15E"
-        };
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        
-        // Setup Invisible reCAPTCHA
-        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-            'size': 'invisible',
-            'callback': (response) => {
-                // reCAPTCHA solved
-            }
-        });
 
         // --- PARTICLES ENGINE ---
         const canvas = document.getElementById('particles-canvas');
@@ -423,56 +453,40 @@
             if (tabParam === 'organizer') openModal('orgModal');
         });
 
+        // --- PROGRESS BAR LOGIC ---
+        const regInputs = document.querySelectorAll('.reg-input');
+        const termsCheck = document.getElementById('termsCheck');
+        const progressBar = document.getElementById('regProgressBar');
+        
+        function updateProgress() {
+            let filled = 0;
+            regInputs.forEach(input => { if(input.value.trim() !== '' && input.value.trim() !== '+91') filled++; });
+            if(termsCheck.checked) filled++;
+            
+            // 6 text inputs + 1 checkbox = 7 mandatory items
+            let percentage = (filled / 7) * 100;
+            progressBar.style.width = percentage + '%';
+            if(percentage === 100) {
+                progressBar.style.background = "var(--accent-green)";
+                progressBar.style.boxShadow = "0 0 20px var(--accent-green)";
+            } else {
+                progressBar.style.background = "var(--accent-gradient)";
+                progressBar.style.boxShadow = "0 0 15px var(--accent-cyan)";
+            }
+        }
+        
+        regInputs.forEach(input => input.addEventListener('input', updateProgress));
+        termsCheck.addEventListener('change', updateProgress);
+
         // --- MODAL LOGIC ---
         function openModal(id) {
             closeModals(); 
             document.getElementById(id).classList.add('active');
+            if(id === 'signupModal') updateProgress();
         }
         function closeModals() {
             document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
             document.querySelectorAll('.error-msg').forEach(e => e.style.display = 'none');
-        }
-
-        // --- FIREBASE OTP FUNCTION ---
-        function sendFirebaseOTP() {
-            const phoneInput = document.getElementById('regPhone').value.trim();
-            const errBox = document.getElementById('signupError');
-            
-            if (!phoneInput.startsWith('+')) {
-                errBox.innerText = "Please include country code (e.g., +91)."; 
-                errBox.style.display = 'block'; 
-                return;
-            }
-            
-            errBox.style.display = 'none';
-            const btn = document.getElementById('btnSendOtp');
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending';
-            btn.disabled = true;
-
-            firebase.auth().signInWithPhoneNumber(phoneInput, window.recaptchaVerifier)
-                .then((confirmationResult) => {
-                    window.confirmationResult = confirmationResult;
-                    
-                    btn.innerHTML = '<i class="fa-solid fa-check"></i> Sent';
-                    btn.style.background = "var(--accent-green)";
-                    btn.style.borderColor = "var(--accent-green)";
-                    btn.style.color = "#000";
-                    
-                    document.getElementById('otpGroup').style.display = "block";
-                    document.getElementById('regOtp').setAttribute('required', 'true');
-                }).catch((error) => {
-                    console.error(error);
-                    errBox.innerText = "Failed to send OTP. Try again."; 
-                    errBox.style.display = 'block';
-                    btn.innerHTML = 'Get OTP';
-                    btn.disabled = false;
-                    
-                    if (window.recaptchaVerifier) {
-                        window.recaptchaVerifier.render().then(function(widgetId) {
-                            grecaptcha.reset(widgetId);
-                        });
-                    }
-                });
         }
 
         // --- ANIMATION OVERLAY LOGIC ---
@@ -500,30 +514,16 @@
             btn.disabled = false;
         }
 
-        // PLAYER SIGNUP (With Firebase OTP Check)
+        // PLAYER SIGNUP (No OTP Version)
         document.getElementById('playerSignupForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const errBox = document.getElementById('signupError');
             errBox.style.display = 'none';
-            
-            const enteredOtp = document.getElementById('regOtp').value.trim();
-            if(document.getElementById('otpGroup').style.display === "block" && enteredOtp.length !== 6) {
-                errBox.innerText = "Please enter the 6-Digit OTP."; errBox.style.display = 'block'; return;
-            }
 
-            btnLoading('btnSignup', 'VERIFYING OTP...');
+            btnLoading('btnSignup', 'CREATING ACCOUNT...');
 
             try {
-                // 1. Verify OTP with Firebase
-                if (window.confirmationResult) {
-                    await window.confirmationResult.confirm(enteredOtp);
-                } else {
-                    throw new Error("Please request an OTP first.");
-                }
-
-                // 2. OTP Valid - Save to Google Sheets
-                btnLoading('btnSignup', 'CREATING ACCOUNT...');
-                
+                // Directly capture and send data since OTP is removed
                 const formData = new FormData(e.target);
                 const rawData = Object.fromEntries(formData);
                 
@@ -550,13 +550,7 @@
                 }
             } catch (err) { 
                 console.error(err);
-                if (err.code === 'auth/invalid-verification-code') {
-                    errBox.innerText = "Invalid OTP. Please check the code and try again.";
-                } else if (err.message === "Please request an OTP first.") {
-                     errBox.innerText = err.message;
-                } else {
-                    errBox.innerText = "Connection Error or OTP failed."; 
-                }
+                errBox.innerText = "Connection Error or system unavailable."; 
                 errBox.style.display = 'block'; 
             } finally { 
                 btnReset('btnSignup'); 
