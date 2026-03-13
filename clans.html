@@ -491,7 +491,6 @@
             if(!user.username) { window.location.href="login.html"; return; }
             if(user.avatar) document.getElementById('headerProfilePic').src = user.avatar;
             
-            // Pre-fetch global clans silently to power rejection notifications in Inbox
             fetchAllClansSilent();
 
             if (userLiveClans.length > 0) {
@@ -617,7 +616,6 @@
             
             let rBadge = document.getElementById('dashRecruit');
             rBadge.innerText = clan.status || "OPEN"; rBadge.className = `recruit-badge ${clan.status === 'CLOSED' ? 'closed' : 'open'}`;
-            document.getElementById('reqBadge').innerText = clan.requests ? clan.requests.length : 0;
 
             let notifHtml = "";
             if(clan.notifications && clan.notifications.length > 0) {
@@ -633,7 +631,7 @@
             document.querySelectorAll('.edit-owner').forEach(el => el.style.display = isOwner ? 'block' : 'none');
             document.querySelectorAll('.edit-player-only').forEach(el => el.style.display = isOwner ? 'none' : 'block');
             
-            // FULL CLAN LOGIC (Hide Invite & Share)
+            // FULL CLAN LOGIC (Hide Invite & Share dynamically)
             let inviteBtn = document.getElementById('btnInviteLink');
             if (inviteBtn) inviteBtn.style.display = (isAdmin && !isFull) ? 'inline-block' : 'none';
             let shareBtn = document.getElementById('btnShareClan');
@@ -717,16 +715,29 @@
             } catch(e) {}
         }
 
-        // --- UPDATE LOGIC ---
+        // --- UPDATE LOGIC WITH JSON STRIPPING FOR IMAGES ---
         function pushUpdateToLive(field, value) {
-            activeClan[field] = value;
+            if (field !== 'FULL_UPDATE') { activeClan[field] = value; } 
+            else { activeClan = value; }
+
             let index = userLiveClans.findIndex(c => c.clanId === activeClan.clanId);
             if(index !== -1) userLiveClans[index] = activeClan;
             localStorage.setItem('tournyx_my_clans_cache', JSON.stringify(userLiveClans));
             
             renderDashboard(activeClan); triggerSyncIndicator();
 
-            let payload = { action: "update_clan", clan_id: activeClan.clanId, field: field, value: value };
+            let payloadValue = value;
+            // STRIP IMAGES BEFORE SENDING TO AVOID JSON BLOAT
+            if (field === 'FULL_UPDATE') {
+                let cleanClan = JSON.parse(JSON.stringify(activeClan));
+                delete cleanClan.logo;
+                delete cleanClan.banner;
+                payloadValue = JSON.stringify(cleanClan);
+            } else if (field !== 'logo' && field !== 'banner') {
+                payloadValue = typeof value === 'object' ? JSON.stringify(value) : value;
+            }
+
+            let payload = { action: "update_clan", clan_id: activeClan.clanId, field: field, value: payloadValue };
             fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
         }
 
@@ -754,7 +765,7 @@
             pushUpdateToLive('autoAccept', state); showToast(state ? "Auto-Accept Enabled" : "Manual Review Enabled");
         }
 
-        // FRONTEND IMAGE COMPRESSOR (FIX FOR DISAPPEARING IMAGES)
+        // PERFECT COMPRESSOR - NEVER FAILS GOOGLE SHEETS
         function triggerUpload(type) { document.getElementById(type === 'banner' ? 'liveBannerInp' : 'liveLogoInp').click(); }
         function processImageUpload(e, field) {
             const file = e.target.files[0]; if(!file) return;
@@ -763,14 +774,15 @@
                 const img = new Image();
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 600; // Compresses perfectly for Google Sheets
-                    const scaleSize = MAX_WIDTH / img.width;
-                    canvas.width = MAX_WIDTH;
+                    let MAX_WIDTH = field === 'logo' ? 150 : 500;
+                    let scaleSize = MAX_WIDTH / img.width;
+                    if(scaleSize > 1) scaleSize = 1; 
+                    canvas.width = img.width * scaleSize;
                     canvas.height = img.height * scaleSize;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.5); // 50% Quality JPEG
                     
+                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.5); 
                     pushUpdateToLive(field, compressedBase64); 
                     showToast("Image Saved Perfectly!"); playSuccessSound();
                 };
@@ -823,7 +835,10 @@
                 activeClan.notifications.push({ msg: `<b style='color:#ff4d4d'>${user.username}</b> has left the clan.` });
                 
                 triggerSyncIndicator();
-                fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "update_clan", clan_id: activeClan.clanId, field: "FULL_UPDATE", value: JSON.stringify(activeClan) }) });
+                
+                let cleanClan = JSON.parse(JSON.stringify(activeClan));
+                delete cleanClan.logo; delete cleanClan.banner;
+                fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "update_clan", clan_id: activeClan.clanId, field: "FULL_UPDATE", value: JSON.stringify(cleanClan) }) });
                 
                 showToast("You left the clan."); 
                 userLiveClans = userLiveClans.filter(c => c.clanId !== activeClan.clanId);
@@ -846,15 +861,12 @@
             }
         }
 
-        // --- OPTIMISTIC UI CLAN CREATION (NO MANUAL DATA INPUT) ---
+        // --- OPTIMISTIC UI CLAN CREATION ---
         function submitClanCreation(e) {
             e.preventDefault();
             const name = document.getElementById('inpCName').value; const tag = document.getElementById('inpCTag').value; const game = document.getElementById('inpCGame').value;
             
-            const phone = user.phone || ""; 
-            const ign = user.gameName || user.username || ""; 
-            const uid = user.uid || "";
-            
+            const phone = user.phone || ""; const ign = user.gameName || user.username || ""; const uid = user.uid || "";
             if(userLiveClans.some(c => c.game === game)) { showToast(`You are already in a ${game} clan!`, true); return; }
 
             const id = "TX-" + Math.random().toString(36).substr(2, 6).toUpperCase();
@@ -867,28 +879,18 @@
                 requests: [], notifications: [{msg: `Clan founded by ${user.username}!`}]
             };
 
-            // OPTIMISTIC UI: Renders instantly before server responds!
             userLiveClans.push(newObj);
             localStorage.setItem('tournyx_my_clans_cache', JSON.stringify(userLiveClans));
-            
             document.getElementById('createClanForm').reset();
             document.getElementById('btnCreateClan').innerText = "Create Clan";
             
-            returnToHub(); 
-            renderHub(); 
-            showToast("Clan Created Successfully!"); 
-            playSuccessSound();
+            returnToHub(); renderHub(); showToast("Clan Created Successfully!"); playSuccessSound();
 
-            fetch(API_URL, { 
-                method: 'POST', mode: 'no-cors', 
-                body: JSON.stringify({ action: "create_clan", username: user.username, data: JSON.stringify(newObj) }) 
-            });
-
-            // Refresh silently in background after 5s to let Google Sheets catch up
+            fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "create_clan", username: user.username, data: JSON.stringify(newObj) }) });
             setTimeout(() => { fetchLiveClanData(true); }, 5000);
         }
 
-        // --- FIND & JOIN LOGIC (PERFECT EXCLUSION & FULL CLAN HIDING) ---
+        // --- FIND & JOIN LOGIC (HIDES FULL CLANS) ---
         function fetchAllClans() {
             document.getElementById('globalClansList').innerHTML = "<div style='text-align:center; color:#888; padding:20px;'><i class='fa-solid fa-spinner fa-spin'></i> Loading servers...</div>";
             fetch(API_URL + "?action=get_all_clans").then(r=>r.text()).then(text => {
@@ -901,11 +903,11 @@
                             if(cObj && cObj.clanId) allParsed.push(cObj);
                         } catch(e){}
                     });
-                    
                     globalClans = allParsed;
+                    
                     let filteredClans = allParsed.filter(gClan => {
                         let notMine = !userLiveClans.some(myClan => myClan.clanId === gClan.clanId);
-                        let notFull = !gClan.roster || gClan.roster.length < 6; // Hides Full Clans!
+                        let notFull = !gClan.roster || gClan.roster.length < 6; 
                         return notMine && notFull;
                     });
                     renderClans(filteredClans); 
@@ -915,7 +917,6 @@
 
         function searchGlobalClans(q) {
             let availableClans = globalClans.filter(gClan => !userLiveClans.some(myClan => myClan.clanId === gClan.clanId) && (!gClan.roster || gClan.roster.length < 6));
-            
             if(!q) renderClans(availableClans);
             else renderClans(availableClans.filter(c => {
                 if(!c.name) return false; let cGame = c.game || ""; let cTag = c.tag || "";
@@ -959,52 +960,50 @@
         function closeJoinModal() { document.getElementById('joinDataModal').classList.remove('active'); pendingJoinData = {}; }
 
         function processJoinRequest(e) {
-            let phone = user.phone || ""; 
-            let ign = user.gameName || user.username || ""; 
-            let uid = user.uid || "";
+            let phone = user.phone || ""; let ign = user.gameName || user.username || ""; let uid = user.uid || "";
             let playerObj = { name: user.username, role: "Player", phone: phone, gameName: ign, uid: uid };
             
             document.getElementById('btnFinalJoin').innerText = "Processing..."; document.getElementById('btnFinalJoin').disabled = true;
 
             let payload = { 
-                action: "leave_and_join", 
-                username: user.username, 
-                old_clan_id: pendingJoinData.oldClanId, 
-                new_clan_id: pendingJoinData.newClanId, 
-                player_data: playerObj,
-                is_auto: pendingJoinData.isAuto
+                action: "leave_and_join", username: user.username, old_clan_id: pendingJoinData.oldClanId, 
+                new_clan_id: pendingJoinData.newClanId, player_data: playerObj, is_auto: pendingJoinData.isAuto
             };
 
             fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
             
             closeJoinModal(); showToast(pendingJoinData.isAuto ? "Clan Swapped & Joined successfully!" : "Request Sent! Check Inbox.");
             document.getElementById('btnFinalJoin').innerText = "Confirm Request"; document.getElementById('btnFinalJoin').disabled = false;
-            playSuccessSound(); 
-            
-            setTimeout(() => { fetchLiveClanData(true); }, 5000);
+            playSuccessSound(); setTimeout(() => { fetchLiveClanData(true); }, 5000);
         }
 
-        // --- INBOX & REJECTION ALERTS ---
+        // --- INBOX DYNAMIC COUNT & REJECTIONS ---
         function dismissRejection(clanId) {
             let dismissed = JSON.parse(localStorage.getItem('tournyx_dismissed_rejects')) || [];
             dismissed.push(clanId);
             localStorage.setItem('tournyx_dismissed_rejects', JSON.stringify(dismissed));
-            renderRequests(); // refresh UI
+            renderRequests(); 
         }
 
         function renderRequests() {
             let reqs = [];
+            let totalBadgeCount = 0;
+
+            // Admin incoming requests
             userLiveClans.forEach(clan => {
                 let myRole = clan.roster.find(r => String(r.name).toLowerCase() === String(user.username).toLowerCase())?.role;
-                if((myRole === 'Owner' || myRole === 'Admin') && clan.requests) { clan.requests.forEach(r => reqs.push({ reqData: r, clan: clan })); }
+                if((myRole === 'Owner' || myRole === 'Admin') && clan.requests) { 
+                    clan.requests.forEach(r => reqs.push({ reqData: r, clan: clan })); 
+                }
             });
-            document.getElementById('reqBadge').innerText = reqs.length;
+            totalBadgeCount += reqs.length;
 
-            // Rejection Alerts
+            // My rejections
             let rejectionsHtml = "";
             let dismissed = JSON.parse(localStorage.getItem('tournyx_dismissed_rejects')) || [];
             globalClans.forEach(c => {
                 if(c.rejected && c.rejected.includes(user.username) && !dismissed.includes(c.clanId)) {
+                    totalBadgeCount++;
                     rejectionsHtml += `
                     <div style="background:rgba(255,77,77,0.1); border:1px solid var(--accent-red); padding:10px; border-radius:10px; margin-bottom:15px; display:flex; justify-content:space-between; align-items:center;">
                         <div style="font-size:0.85rem; color:white;"><i class="fa-solid fa-triangle-exclamation" style="color:var(--accent-red);"></i> The clan <strong style="color:var(--accent-cyan);">${c.name}</strong> rejected your join request.</div>
@@ -1012,6 +1011,8 @@
                     </div>`;
                 }
             });
+
+            document.getElementById('reqBadge').innerText = totalBadgeCount;
             document.getElementById('myRejectionsArea').innerHTML = rejectionsHtml;
 
             let html = "";
@@ -1056,7 +1057,11 @@
             }
             
             triggerSyncIndicator();
-            fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "update_clan", clan_id: cId, field: "FULL_UPDATE", value: JSON.stringify(targetClan) }) });
+            
+            let cleanClan = JSON.parse(JSON.stringify(targetClan));
+            delete cleanClan.logo; delete cleanClan.banner;
+            fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "update_clan", clan_id: cId, field: "FULL_UPDATE", value: JSON.stringify(cleanClan) }) });
+            
             renderRequests();
         }
     </script>
