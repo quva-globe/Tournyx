@@ -976,6 +976,8 @@
                     userData.main_game = data.data.main_game || localUser.main_game || "N/A";
                     userData.yt_link = data.data.yt_link || localUser.yt_link || "";
                     
+                    userData.role = data.data.role || localUser.role || "player";
+                    
                     // Prioritize backend claimed array if exists
                     if(data.data.claimed_ms && Array.isArray(data.data.claimed_ms)) {
                         userData.claimed_ms = data.data.claimed_ms;
@@ -1273,14 +1275,12 @@
         }
         function closeMatchStatusModal() { document.getElementById('matchStatusModal').classList.remove('active'); }
 
-                function switchRole(role) {
+        function switchRole(role) {
             // --- NEW: BLOCK UNAUTHORIZED PLAYERS FROM ORGANIZER HUB ---
             if (role === 'organizer' && userData.role !== 'organizer') {
-                showToast("Access Denied: Register as an Organizer to access this hub!", true);
-                // Optional: You can trigger a modal here later if you want to show them how to apply
+                showToast("Access Denied: Register as an Organizer to host events!", true);
                 return; 
             }
-            // ----------------------------------------------------------
 
             const s = document.getElementById('roleSlider');
             const dashP = document.getElementById('playerDash');
@@ -1300,8 +1300,6 @@
                 dashO.classList.add('active'); dashP.classList.remove('active');
                 if(!isGuestMode) fetchMyTournaments(); 
             }
-        }
-
         }
 
         function openAllTourneysModal() {
