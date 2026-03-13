@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="https://tournyx.in/favicon.ico" sizes="any">
+    <link rel="icon" href="https://tournyx.in/favicon.png" type="image/png" sizes="192x192">
+    <link rel="apple-touch-icon" href="https://tournyx.in/apple-touch-icon.png">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tournyx - Organizer Profit Structure</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- GLOBAL VARIABLES & RESET --- */
+        :root {
+            --bg-dark: #05010a;
+            --panel-bg: rgba(15, 8, 30, 0.7);
+            --panel-border: rgba(189, 0, 255, 0.4);
+            --accent-cyan: #00f2ff;
+            --accent-purple: #bd00ff;
+            --accent-green: #00ff7f;
+            --accent-gold: #ffcc00;
+            --gradient-main: linear-gradient(90deg, #bd00ff, #00f2ff);
+            --text-light: #ffffff;
+            --text-muted: #a0a0b0;
+            --font-head: 'Orbitron', sans-serif;
+            --font-body: 'Rajdhani', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            padding-bottom: 50px;
+        }
+
+        /* --- ESPORTS ANIMATED BACKGROUND --- */
+        #particles-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2; background: radial-gradient(circle at 50% 50%, #100524 0%, #030106 100%);
+        }
+        
+        .bg-glow {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none;
+        }
+        .bg-glow::before, .bg-glow::after {
+            content: ''; position: absolute; width: 150vw; height: 30vh;
+            background: linear-gradient(90deg, transparent, rgba(189,0,255,0.1), rgba(0,242,255,0.1), transparent);
+            filter: blur(50px); transform: rotate(-15deg); top: -10vh; left: -25vw;
+            animation: pulseBg 6s infinite alternate ease-in-out;
+        }
+        .bg-glow::after { top: auto; bottom: -10vh; transform: rotate(15deg); animation-delay: 3s; }
+
+        @keyframes pulseBg {
+            0% { opacity: 0.5; filter: blur(40px); }
+            100% { opacity: 1; filter: blur(60px); }
+        }
+
+        /* --- HEADER --- */
+        .header { text-align: center; padding: 40px 20px 20px; animation: fadeInDown 0.8s ease-out forwards; }
+        .logo { width: 100px; filter: drop-shadow(0 0 20px var(--accent-purple)); animation: floatLogo 3.5s infinite ease-in-out; }
+        
+        @keyframes floatLogo { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); filter: drop-shadow(0 0 30px var(--accent-cyan)); } }
+
+        .title-main { font-family: var(--font-head); font-size: clamp(1.8rem, 5vw, 2.8rem); font-weight: 900; letter-spacing: 2px; margin-top: 15px; }
+        .title-highlight { background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 20px rgba(0,242,255,0.4); }
+        .subtitle { font-size: clamp(0.9rem, 3vw, 1.2rem); color: var(--text-muted); font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-top: 8px; }
+
+        /* --- DASHBOARD GRID (Desktop vs Mobile) --- */
+        .dashboard-container {
+            width: 100%; max-width: 1200px; margin: 0 auto; padding: 15px;
+            display: flex; flex-direction: column; gap: 30px;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+        @media (min-width: 992px) {
+            .dashboard-container { flex-direction: row; align-items: stretch; }
+            .left-column { flex: 1; position: sticky; top: 30px; }
+            .right-column { flex: 1.8; }
+        }
+
+        /* --- GLOWING GLASS PANELS --- */
+        .glass-panel {
+            background: var(--panel-bg); border-radius: 24px; padding: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8), inset 0 0 0 1px var(--panel-border);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            position: relative; overflow: hidden;
+            animation: panelGlow 4s infinite alternate;
+        }
+        @keyframes panelGlow {
+            0% { box-shadow: 0 15px 35px rgba(0,0,0,0.8), inset 0 0 15px rgba(189,0,255,0.1), inset 0 0 0 1px var(--panel-border); }
+            100% { box-shadow: 0 15px 35px rgba(0,0,0,0.8), inset 0 0 30px rgba(0,242,255,0.2), inset 0 0 0 1px rgba(0,242,255,0.5); }
+        }
+
+        .panel-title {
+            font-family: var(--font-head); font-size: clamp(1.1rem, 4vw, 1.4rem); font-weight: bold;
+            margin-bottom: 25px; display: flex; align-items: center; gap: 10px;
+            text-transform: uppercase; letter-spacing: 1px;
+            border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;
+        }
+
+        /* --- PROFIT SPLIT BARS (FIXED OVERFLOW) --- */
+        .split-card { display: flex; justify-content: space-around; align-items: flex-end; height: 320px; padding-top: 20px; }
+        .bar-container { display: flex; flex-direction: column; align-items: center; gap: 12px; width: 45%; max-width: 120px; }
+        
+        .bar-label { font-family: var(--font-head); font-size: clamp(0.75rem, 2.5vw, 0.9rem); font-weight: bold; text-align: center; color: var(--text-light); text-shadow: 0 0 10px rgba(255,255,255,0.3); }
+        .bar-label span { font-size: 0.7rem; color: var(--text-muted); font-family: var(--font-body); display: block; margin-top: 3px; }
+        
+        .bar-wrapper { 
+            width: 100%; max-width: 70px; height: 200px; 
+            background: rgba(0,0,0,0.6); border-radius: 12px; 
+            border: 1px solid rgba(255,255,255,0.1); position: relative; 
+            overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+        
+        .bar-segment { 
+            width: 100%; display: flex; align-items: center; justify-content: center; 
+            font-family: var(--font-head); font-weight: 900; font-size: 0.9rem; 
+            color: #000; transition: height 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+        }
+        .bar-player { background: linear-gradient(180deg, #00f2ff, #0088ff); box-shadow: inset 0 0 10px rgba(255,255,255,0.5); }
+        .bar-org { background: linear-gradient(180deg, #ffcc00, #ff8800); box-shadow: inset 0 0 10px rgba(255,255,255,0.5); }
+        .bar-admin { background: linear-gradient(180deg, #00ff7f, #00aa55); box-shadow: inset 0 0 10px rgba(255,255,255,0.5); color: #fff !important; text-shadow: 0 0 5px #000; }
+
+        .bar-footer { font-size: clamp(0.75rem, 2.5vw, 0.85rem); font-weight: bold; text-align: center; }
+
+        /* --- ORGANIZER TIER LIST (RESPONSIVE CARDS) --- */
+        .tier-list { display: flex; flex-direction: column; gap: 15px; }
+        
+        .tier-row {
+            display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+            background: rgba(0,0,0,0.4); padding: 18px; border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; position: relative;
+        }
+        .tier-row:hover { background: rgba(0,242,255,0.05); border-color: var(--accent-cyan); transform: translateX(5px); box-shadow: 0 5px 15px rgba(0,242,255,0.1); }
+        
+        .t-level { flex: 1 1 40%; font-family: var(--font-head); font-weight: bold; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+        .t-level span { background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; color: var(--accent-cyan); }
+        
+        .t-req { flex: 1 1 20%; font-size: 0.9rem; color: var(--text-muted); font-weight: 600; display: flex; align-items: center; gap: 5px; }
+        
+        .t-reward { flex: 1 1 40%; font-family: var(--font-head); font-size: 1.1rem; font-weight: bold; color: var(--accent-green); text-align: right; text-shadow: 0 0 10px rgba(0,255,127,0.3);}
+        
+        .t-perk-row { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(255,255,255,0.1); }
+        .t-perk { font-size: 0.85rem; color: #ddd; }
+        .t-comm { background: rgba(255,153,0,0.15); color: var(--accent-gold); padding: 5px 10px; border-radius: 8px; font-weight: bold; font-size: 0.85rem; border: 1px solid rgba(255,153,0,0.4); font-family: var(--font-head); letter-spacing: 1px;}
+
+        /* Icon Colors */
+        .i-rookie { color: #a0a0b0; } .i-amateur { color: #cd7f32; } .i-pro { color: #c0c0c0; } 
+        .i-expert { color: #ffd700; } .i-master { color: var(--accent-cyan); filter: drop-shadow(0 0 5px var(--accent-cyan));} 
+        .i-elite { color: var(--accent-purple); filter: drop-shadow(0 0 5px var(--accent-purple));} 
+        .i-legend { color: #ff4d4d; filter: drop-shadow(0 0 8px #ff4d4d); }
+
+        /* Legend Tier Special Highlight */
+        .tier-legend {
+            background: linear-gradient(135deg, rgba(189,0,255,0.15), rgba(0,242,255,0.15));
+            border: 1px solid var(--accent-cyan);
+            box-shadow: inset 0 0 20px rgba(0,242,255,0.1);
+        }
+
+        /* --- CTA & FOOTER --- */
+        .cta-container { text-align: center; margin-top: 40px; padding: 0 20px; animation: fadeInUp 1s ease-out 0.6s both; }
+        .cta-btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 12px;
+            background: var(--gradient-main); color: white; text-decoration: none;
+            padding: 18px 40px; border-radius: 30px; font-family: var(--font-head);
+            font-size: 1.1rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;
+            box-shadow: 0 10px 30px rgba(189,0,255,0.4); transition: 0.3s;
+            width: 100%; max-width: 350px;
+        }
+        .cta-btn:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 15px 40px rgba(0,242,255,0.6); color: #fff; }
+        .cta-btn:active { transform: scale(0.95); }
+
+        .disclaimer-box {
+            margin-top: 25px; padding: 15px; background: rgba(255,77,77,0.05); border: 1px dashed rgba(255,77,77,0.3);
+            border-radius: 12px; display: inline-block; max-width: 600px;
+        }
+        .disclaimer-text { font-size: 0.85rem; color: #ff8888; font-weight: 500; line-height: 1.5; }
+
+        /* Animations */
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Mobile specific fixes */
+        @media (max-width: 600px) {
+            .t-level { flex: 1 1 100%; margin-bottom: 5px; }
+            .t-req { flex: 1 1 100%; margin-bottom: 5px; }
+            .t-reward { flex: 1 1 100%; text-align: left; margin-bottom: 5px; }
+            .t-perk-row { flex-direction: column; align-items: flex-start; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow"></div>
+    <canvas id="particles-canvas"></canvas>
+
+    <header class="header">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEipVmqyUEA22VpntZdPCHuXoO_Rjco_cRaNl5CyFa-eehdtgXnHe6JoD8a5svxJRJYZfv_yXwww10T2cL2PHTiXLK-J-nWC1swmMs5RDxGVM8FBSlJORaRiX4YiD8gL8SyM4X1tRyQn_v8MsqQvbU4uEyHEU0qaySP1STWHaBEYuWKyF3-6QovSqJR-8xU/s1024/1000093705.png" alt="Tournyx Logo" class="logo">
+        <h1 class="title-main">TOURNYX <span class="title-highlight">ORGANIZERS</span></h1>
+        <div class="subtitle">Ecosystem & Profit Pathway</div>
+    </header>
+
+    <div class="dashboard-container">
+        
+        <div class="left-column">
+            <div class="glass-panel">
+                <div class="panel-title" style="color: var(--accent-gold);">
+                    <i class="fa-solid fa-trophy"></i> Platform Profit Split
+                </div>
+                <p style="color:#aaa; font-size:0.9rem; text-align:center; line-height:1.5;">Maximized Prize Pools & Organizer Cuts during launch to rapidly grow your audience!</p>
+                
+                <div class="split-card">
+                    <div class="bar-container">
+                        <div class="bar-label" style="color:var(--accent-cyan);">LAUNCH PHASE<br><span>(Opening Offer)</span></div>
+                        <div class="bar-wrapper">
+                            <div class="bar-segment bar-admin" style="height: 0%; opacity:0;" title="Admin: 0%"></div>
+                            <div class="bar-segment bar-org" style="height: 0%;" id="animOrg1" title="Organizer: 15%">15%</div>
+                            <div class="bar-segment bar-player" style="height: 0%;" id="animPly1" title="Players: 85%">85%</div>
+                        </div>
+                        <div class="bar-footer" style="color:var(--accent-cyan);">0% Admin Fee</div>
+                    </div>
+
+                    <div class="bar-container">
+                        <div class="bar-label">STANDARD PHASE<br><span>(Long-Term)</span></div>
+                        <div class="bar-wrapper">
+                            <div class="bar-segment bar-admin" style="height: 0%;" id="animAdm2" title="Admin: 10%">10%</div>
+                            <div class="bar-segment bar-org" style="height: 0%;" id="animOrg2" title="Organizer: 15%">15%</div>
+                            <div class="bar-segment bar-player" style="height: 0%;" id="animPly2" title="Players: 75%">75%</div>
+                        </div>
+                        <div class="bar-footer" style="color:var(--text-muted);">Sustainable</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-column">
+            <div class="glass-panel" style="border-color: rgba(0,242,255,0.4);">
+                <div class="panel-title" style="color: var(--accent-cyan);">
+                    <i class="fa-solid fa-chart-line"></i> Organizer Commissions & Milestones
+                </div>
+                
+                <div class="tier-list">
+                    <div class="tier-row">
+                        <div class="t-level"><i class="fa-solid fa-circle-up i-rookie"></i> 1. Rookie</div>
+                        <div class="t-req"><i class="fa-solid fa-rocket" style="color:#555;"></i> 0 Hosted</div>
+                        <div class="t-reward" style="color:#888;">Standard</div>
+                        <div class="t-perk-row">
+                            <div class="t-perk"><i class="fa-solid fa-wrench"></i> Organizer Tools</div>
+                            <div class="t-comm">15% Comm.</div>
+                        </div>
+                    </div>
+
+                    <div class="tier-row">
+                        <div class="t-level"><i class="fa-solid fa-medal i-amateur"></i> 2. Amateur</div>
+                        <div class="t-req"><i class="fa-solid fa-rocket" style="color:var(--accent-gold);"></i> 10 Hosted</div>
+                        <div class="t-reward">₹500 Bonus</div>
+                        <div class="t-perk-row">
+                            <div class="t-perk"><i class="fa-solid fa-users"></i> Clan Hub</div>
+                            <div class="t-comm">12% Comm.</div>
+                        </div>
+                    </div>
+
+                    <div class="tier-row">
+                        <div class="t-level"><i class="fa-solid fa-shield-halved i-pro"></i> 3. Pro</div>
+                        <div class="t-req"><i class="fa-solid fa-rocket" style="color:var(--accent-cyan);"></i> 25 Hosted</div>
+                        <div class="t-reward">₹1,500 + 500 PTS</div>
+                        <div class="t-perk-row">
+                            <div class="t-perk"><i class="fa-solid fa-star"></i> Featured Tournaments</div>
+                            <div class="t-comm">10% Comm.</div>
+                        </div>
+                    </div>
+
+                    <div class="tier-row">
+                        <div class="t-level"><i class="fa-solid fa-user-astronaut i-expert"></i> 4. Expert</div>
+                        <div class="t-req"><i class="fa-solid fa-rocket" style="color:var(--accent-purple);"></i> 40 Hosted</div>
+                        <div class="t-reward">₹2,500 + 750 PTS</div>
+                        <div class="t-perk-row">
+                            <div class="t-perk"><i class="fa-solid fa-chart-pie"></i> Analytic Reports</div>
+                            <div class="t-comm">9% Comm.</div>
+                        </div>
+                    </div>
+
+                    <div class="tier-row">
+                        <div class="t-level"><i class="fa-solid fa-gear i-master"></i> 5. Master</div>
+                        <div class="t-req"><i class="fa-solid fa-rocket" style="color:var(--accent-green);"></i> 50 Hosted</div>
+                        <div class="t-reward">₹4,000 + 1000 PTS</div>
+                        <div class="t-perk-row">
+                            <div class="t-perk"><i class="fa-solid fa-ticket"></i> Custom Promo Codes</div>
+                            <div class="t-comm">8% Comm.</div>
+                        </div>
+                    </div>
+
+                    <div class="tier-row">
+                        <div class="t-level"><i class="fa-solid fa-chess-queen i-elite"></i> 6. Elite</div>
+                        <div class="t-req"><i class="fa-solid fa-rocket" style="color:#ff4d4d;"></i> 75 Hosted</div>
+                        <div class="t-reward">₹6,000 + 1500 PTS</div>
+                        <div class="t-perk-row">
+                            <div class="t-perk"><i class="fa-solid fa-handshake"></i> Event Sponsorship</div>
+                            <div class="t-comm">6.5% Comm.</div>
+                        </div>
+                    </div>
+
+                    <div class="tier-row tier-legend">
+                        <div class="t-level"><i class="fa-solid fa-trophy i-legend"></i> 7. Legend</div>
+                        <div class="t-req"><i class="fa-solid fa-rocket" style="color:#ffea00;"></i> 100 Hosted</div>
+                        <div class="t-reward" style="text-shadow: 0 0 15px var(--accent-green);">₹10,000 + 2000 PTS</div>
+                        <div class="t-perk-row">
+                            <div class="t-perk" style="color:white; font-weight:bold;"><i class="fa-solid fa-certificate" style="color:var(--accent-cyan);"></i> Verified Status</div>
+                            <div class="t-comm" style="background:var(--accent-gold); color:black; box-shadow:0 0 10px rgba(255,204,0,0.5);">5% Comm.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="cta-container">
+        <a href="login.html?tab=organizer" class="cta-btn">
+            Apply as Organizer <i class="fa-solid fa-arrow-right"></i>
+        </a>
+        
+        <br>
+        <div class="disclaimer-box">
+            <p class="disclaimer-text"><i class="fa-solid fa-triangle-exclamation"></i> *Note: This commission structure, reward scaling, and platform profit split may be subject to change at any time for platform quality assurance and long-term ecosystem growth purposes.</p>
+        </div>
+    </div>
+
+    <script>
+        // --- PARTICLES ENGINE ---
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particles = [];
+        class P {
+            constructor(){ this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.vx=Math.random()*0.5-0.25; this.vy=Math.random()*0.5-0.25; this.size=Math.random()*2+0.5; }
+            u(){ this.x+=this.vx; this.y+=this.vy; if(this.x<0||this.x>canvas.width)this.vx=-this.vx; if(this.y<0||this.y>canvas.height)this.vy=-this.vy; }
+            d(){ ctx.fillStyle='rgba(189,0,255,0.3)'; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); }
+        }
+        for(let i=0;i<40;i++) particles.push(new P());
+        function anim(){ ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.u();p.d()}); requestAnimationFrame(anim); }
+        anim();
+        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+
+        // --- BAR ANIMATION ON LOAD ---
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                document.getElementById('animOrg1').style.height = '15%';
+                document.getElementById('animPly1').style.height = '85%';
+                
+                document.getElementById('animAdm2').style.height = '10%';
+                document.getElementById('animOrg2').style.height = '15%';
+                document.getElementById('animPly2').style.height = '75%';
+            }, 500);
+        });
+    </script>
+</body>
+</html>
