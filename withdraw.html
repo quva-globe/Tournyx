@@ -24,7 +24,7 @@
                     document.documentElement.style.setProperty('--accent-purple', THEMES[tIndex].purple);
                     document.documentElement.style.setProperty('--accent-gradient', `linear-gradient(90deg, ${THEMES[tIndex].purple}, ${THEMES[tIndex].cyan})`);
                 }
-            } catch(e) {}
+            } catch(e) { }
         })();
     </script>
     <style>
@@ -63,7 +63,7 @@
         @keyframes slideUpGlow { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
         .delay-1 { animation-delay: 0.1s; } .delay-2 { animation-delay: 0.2s; } .delay-3 { animation-delay: 0.3s; } .delay-4 { animation-delay: 0.4s; }
 
-        /* --- HEADER WITH REFRESH BTN --- */
+        /* --- HEADER --- */
         .top-header { 
             position: fixed; top: 0; left: 0; width: 100%; 
             padding: calc(15px + env(safe-area-inset-top)) 15px 15px; 
@@ -173,6 +173,7 @@
         .txn-amt { font-family: var(--font-head); font-size: 1.15rem; font-weight: bold; }
         .amt-debit { color: var(--accent-red); text-shadow: 0 0 10px rgba(255,77,77,0.3); }
         .txn-status { font-size: 0.7rem; color: #aaa; text-transform: uppercase; margin-top: 3px; background: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 6px; display: inline-block; font-weight:bold;}
+        
         .empty-history { text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 30px 20px; border: 1px dashed var(--card-border); border-radius: 12px; background: rgba(0,0,0,0.3); }
 
         /* --- SUPPORT MODALS (Bottom Sheets) --- */
@@ -206,7 +207,7 @@
         #customToast.show { visibility: visible; opacity: 1; bottom: 100px; }
 
         /* NAV */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 5px env(safe-area-inset-bottom); border-top: 1px solid rgba(189, 0, 255, 0.2); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.8); transform: translateZ(0);}
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 5px env(safe-area-inset-bottom); border-top: 1px solid rgba(189, 0, 255, 0.2); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.8); transform: translateZ(0); transition: 0.3s;}
         .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; color: #666; text-decoration: none; font-size: 0.65rem; font-family: var(--font-head); font-weight: bold; flex: 1; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative;}
         .nav-item span { margin-top: 4px; transition: 0.3s; }
         .nav-item i { font-size: 1.3rem; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -379,21 +380,13 @@
     </nav>
 
     <script>
-        // --- 1. BACKGROUND ANIMATION & SETUP ---
-        const canvas = document.getElementById('particles-canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        let pArray = [];
-        class P { constructor(){ this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.s=Math.random()*2; this.c=Math.random()>0.5?'#bd00ff':'#00f2ff'; } u(){ this.y-=0.5; if(this.y<0)this.y=canvas.height; } d(){ ctx.fillStyle=this.c; ctx.globalAlpha=0.3; ctx.beginPath(); ctx.arc(this.x,this.y,this.s,0,Math.PI*2); ctx.fill(); } }
-        for(let i=0; i<30; i++) pArray.push(new P());
-        function anim(){ ctx.clearRect(0,0,canvas.width,canvas.height); pArray.forEach(p=>{p.u();p.d()}); requestAnimationFrame(anim); }
-        anim();
-
-        const orbs = document.querySelectorAll('.orb');
-        document.addEventListener('mousemove', (e) => {
-            const x = e.clientX / window.innerWidth; const y = e.clientY / window.innerHeight;
-            orbs[0].style.transform = `translate(${x * 30}px, ${y * 30}px)`;
-            orbs[1].style.transform = `translate(-${x * 40}px, -${y * 40}px)`;
+        // --- 1. MOBILE KEYBOARD NAVIGATION FIX ---
+        // Smoothly hide bottom navigation when typing so it doesn't float over the UI
+        const inputs = document.querySelectorAll('input, select, textarea');
+        const bNav = document.querySelector('.bottom-nav');
+        inputs.forEach(inp => {
+            inp.addEventListener('focus', () => { if(bNav) bNav.style.display = 'none'; });
+            inp.addEventListener('blur', () => { if(bNav) bNav.style.display = 'flex'; });
         });
 
         // --- 2. GOOGLE APPS SCRIPT CONFIG ---
@@ -537,8 +530,7 @@
                 else if (grossAmount >= 5000) currentFeePct += 0.02;
             } else { currentFeePct = 0.05; } // PRO Lock
 
-            // Fee is subtracted FROM the gross amount. 
-            // e.g., Withdrawing 10000 at 13% = 1300 fee. Net payout = 8700. Wallet deduction = 10000.
+            // Gross is deducted from wallet. Net Payout is sent to Bank.
             let fee = Math.ceil(grossAmount * currentFeePct);
             let netPayout = grossAmount - fee;
 
@@ -575,7 +567,25 @@
         }
         function clearSavedData() { localStorage.removeItem('tournyx_saved_upi'); document.getElementById('paymentDetails').value = ""; document.getElementById('paymentDetails2').value = ""; showToast("Saved details cleared."); }
 
-        // --- 6. FETCH STATUS HISTORY (STRICTLY MONEY OUT LEDGER) ---
+        // --- 6. SMART DATE PARSER (Fixes Google Sheets DD/MM/YYYY Bug) ---
+        function isTransactionToday(dateStr) {
+            if(!dateStr) return false;
+            let today = new Date();
+            
+            // Format 1: Direct Parsing
+            let d1 = new Date(dateStr);
+            if (!isNaN(d1) && d1.toDateString() === today.toDateString()) return true;
+            
+            // Format 2: Google Sheets Default DD/MM/YYYY
+            let match = dateStr.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+            if (match) {
+                let d2 = new Date(`${match[2]}/${match[1]}/${match[3]}`); // Flip to MM/DD/YYYY
+                if (!isNaN(d2) && d2.toDateString() === today.toDateString()) return true;
+            }
+            return false;
+        }
+
+        // --- 7. FETCH STATUS HISTORY (STRICTLY MONEY OUT LEDGER) ---
         function syncLiveTransactions(manual = false) {
             if(manual) { let icon = document.getElementById('syncIcon'); if(icon) icon.classList.add('fa-spin'); }
             
@@ -602,12 +612,12 @@
         }
 
         function calculateDailyLimits(txns) {
-            let today = new Date().toDateString();
             let dailyTotal = 0;
             txns.forEach(t => {
-                let parsedDate = new Date(t.date);
-                if (!isNaN(parsedDate)) {
-                    if(t.type === "Debit" && t.title.toLowerCase().includes("withdraw") && parsedDate.toDateString() === today && t.status !== "Failed" && t.status !== "Refunded" && t.status !== "Cancelled") {
+                let stat = String(t.status || "").toLowerCase().trim();
+                // Skip if failed, refunded, or cancelled
+                if (t.type === "Debit" && t.title.toLowerCase().includes("withdraw") && isTransactionToday(t.date)) {
+                    if(!["failed", "refunded", "cancelled"].includes(stat)) {
                         dailyTotal += parseInt(t.amount) || 0;
                     }
                 }
@@ -627,18 +637,25 @@
             historyList.innerHTML = ""; 
             if (withdrawals.length > 0) {
                 withdrawals.slice(0, 15).forEach((item, delay) => {
-                    let isPending = item.status === "Pending";
-                    let isFailed = item.status === "Failed" || item.status === "Refunded" || item.status === "Cancelled";
-                    let statusColor = isPending ? "#ff9900" : (isFailed ? "var(--accent-red)" : "var(--accent-green)");
-                    let mainIcon = isFailed ? "fa-xmark" : (isPending ? "fa-clock" : "fa-check");
+                    let stat = String(item.status || "Pending").toLowerCase().trim();
+                    let isFailed = ["failed", "refunded", "cancelled"].includes(stat);
+                    let isSuccess = ["success", "completed"].includes(stat);
+                    let isPending = !isFailed && !isSuccess;
+                    
+                    let statusColor = isSuccess ? "var(--accent-green)" : (isFailed ? "var(--accent-red)" : "#ff9900");
+                    let iconClass = "icon-debit"; // Always debit icon for withdrawals
+                    let mainIcon = isFailed ? "fa-xmark" : (isSuccess ? "fa-check" : "fa-clock");
+
+                    // Safely print date
+                    let displayDate = item.date.includes(',') ? item.date.split(',')[0] : item.date.split(' ')[0];
 
                     historyList.innerHTML += `
-                        <div class="txn-item glow-hover" style="animation-delay:${delay*0.1}s" onclick="openSupportModal(); triggerHaptic();">
+                        <div class="txn-item glow-hover" style="animation-delay:${delay*0.1}s" onclick="openMessageInput('${item.id}', '${item.amount}', '${displayDate}', '${item.status || 'Pending'}'); triggerHaptic();">
                             <div class="txn-left">
                                 <div class="txn-icon icon-debit"><i class="fa-solid ${mainIcon}"></i></div>
                                 <div class="txn-info">
                                     <h4>${item.title}</h4>
-                                    <p><span class="cat-tag"><i class="fa-solid fa-money-bill-transfer"></i> Payout</span> ${item.date.split(',')[0]}</p>
+                                    <p><span class="cat-tag"><i class="fa-solid fa-money-bill-transfer"></i> Payout</span> ${displayDate}</p>
                                 </div>
                             </div>
                             <div class="txn-right">
@@ -653,7 +670,7 @@
             }
         }
 
-        // --- 7. PROCESS WITHDRAWAL (Cloud Integration) ---
+        // --- 8. PROCESS WITHDRAWAL (Cloud Integration) ---
         function processWithdrawal() {
             const grossAmount = parseFloat(document.getElementById('withdrawAmount').value);
             const method = document.getElementById('paymentMethod').value;
@@ -723,7 +740,7 @@
             }, 2000);
         }
 
-        // --- 8. CUSTOM SUPPORT ROUTER LOGIC ---
+        // --- 9. CUSTOM SUPPORT ROUTER LOGIC ---
         let currentSupportTxn = {};
 
         function openSupportModal() {
@@ -736,13 +753,18 @@
                 container.innerHTML = `<div style="text-align:center; padding:10px; color:#666; font-size:0.8rem;">No recent withdrawals available.</div>`;
             } else {
                 withdrawals.forEach(t => {
-                    let isFailed = t.status === "Failed" || t.status === "Refunded" || t.status === "Cancelled";
-                    let color = isFailed ? "var(--accent-red)" : (t.status === "Pending" ? "var(--accent-orange)" : "var(--accent-green)");
+                    let stat = String(t.status || "Pending").toLowerCase().trim();
+                    let isFailed = ["failed", "refunded", "cancelled"].includes(stat);
+                    let isSuccess = ["success", "completed"].includes(stat);
+                    let color = isSuccess ? "var(--accent-green)" : (isFailed ? "var(--accent-red)" : "#ff9900");
+                    
+                    let displayDate = t.date.includes(',') ? t.date.split(',')[0] : t.date.split(' ')[0];
+
                     container.innerHTML += `
-                        <div class="sup-txn-item" onclick="openMessageInput('${t.id}', '${t.amount}', '${t.date}', '${t.status || 'Pending'}')">
+                        <div class="sup-txn-item" onclick="openMessageInput('${t.id}', '${t.amount}', '${displayDate}', '${t.status || 'Pending'}')">
                             <div>
                                 <h5>${t.title}</h5>
-                                <p>ID: ${t.id} • ${t.date.split(',')[0]}</p>
+                                <p>ID: ${t.id} • ${displayDate}</p>
                             </div>
                             <div style="text-align:right;">
                                 <div style="color:var(--accent-cyan); font-family:var(--font-head); font-weight:bold; margin-bottom:4px;">₹${t.amount}</div>
