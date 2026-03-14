@@ -524,14 +524,38 @@
             if(cached.length > 0) {
                 renderTransactions();
                 calculateMilestones(cached);
-                updateWalletDisplay(); 
-            } else {
-                updateWalletDisplay();
             }
             
+            // FETCH FRESH USER DATA IMMEDIATELY
+            syncUserData();
             setTimeout(() => { syncLiveTransactions(); }, 1000);
             initParticles();
         });
+
+        // --- NEW DATA SYNC FUNCTION ---
+        function syncUserData() {
+            fetch(API_URL + "?action=sync_user&email=" + encodeURIComponent(currentUser.email))
+            .then(response => response.json())
+            .then(data => {
+                if(data.status === "success") {
+                    // Extracting fresh values from your backend
+                    let freshRupees = data.rupees !== undefined ? data.rupees : (data.data && data.data.rupees ? data.data.rupees : 0);
+                    let freshPoints = data.points !== undefined ? data.points : (data.data && data.data.points ? data.data.points : 0);
+                    
+                    // Update current session and local storage
+                    currentUser.rupees = freshRupees;
+                    currentUser.points = freshPoints;
+                    localStorage.setItem('tournyx_user', JSON.stringify(currentUser));
+                    
+                    // Update UI instantly
+                    updateWalletDisplay();
+                }
+            })
+            .catch(error => {
+                console.error("Wallet Sync Failed:", error);
+                updateWalletDisplay(); // Fallback to local storage if offline
+            });
+        }
 
         function triggerHaptic() { if(navigator.vibrate) navigator.vibrate(40); }
         function triggerError(id) { let el = document.getElementById(id); el.classList.add('input-error'); triggerHaptic(); setTimeout(()=>el.classList.remove('input-error'),500); }
