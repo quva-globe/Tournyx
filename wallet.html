@@ -48,11 +48,9 @@
 
         .content-container, .app-footer, .top-header .header-wrapper { max-width: 1000px; margin-left: auto !important; margin-right: auto !important; width: 100%; }
 
-        /* --- CLASSIC TOURNYX BACKGROUND --- */
         #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; transform: translateZ(0); }
         .bg-gradient { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; background: radial-gradient(circle at 50% 0%, #15062e 0%, #070311 100%); pointer-events: none;}
 
-        /* --- BULLETPROOF ENTRANCE ANIMATIONS (FIXES INVISIBLE BUG) --- */
         .animate-section { animation: slideUpGlow 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
         @keyframes slideUpGlow { 
             0% { opacity: 0; transform: translateY(30px); }
@@ -151,7 +149,7 @@
         .txn-amt { font-family: var(--font-head); font-size: 1.15rem; font-weight: bold; }
         .amt-credit { color: var(--accent-green); text-shadow: 0 0 10px rgba(0,255,127,0.3); }
         .amt-debit { color: var(--accent-red); text-shadow: 0 0 10px rgba(255,77,77,0.3); }
-        .txn-status { font-size: 0.7rem; color: #aaa; text-transform: uppercase; margin-top: 3px; background: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 6px; display: inline-block; font-weight:bold;}
+        .txn-status { font-size: 0.7rem; text-transform: uppercase; margin-top: 3px; background: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 6px; display: inline-block; font-weight:bold;}
 
         /* --- BOTTOM SHEETS --- */
         .bottom-sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 5000; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(5px); opacity: 0; transition: 0.4s; }
@@ -495,7 +493,7 @@
     <script>
         // --- CONSTANTS & STATE ---
         const API_URL = 'https://script.google.com/macros/s/AKfycbynNLDDXS1wMrU6RGnk4nKb1jfQkQGuqrNIKWAt8wf46MaKP6y1rwGmSJg5fmm4KYU/exec';
-        const OFFICIAL_UPI = "8608159825-2@ybl"; // Replace with your actual UPI
+        const OFFICIAL_UPI = "8608159825-2@ybl"; 
         let currentUser = JSON.parse(localStorage.getItem('tournyx_user'));
         let activeReceiptId = "";
         let qrTimerInterval;
@@ -526,35 +524,26 @@
                 calculateMilestones(cached);
             }
             
-            // FETCH FRESH USER DATA IMMEDIATELY
             syncUserData();
             setTimeout(() => { syncLiveTransactions(); }, 1000);
             initParticles();
         });
 
-        // --- NEW DATA SYNC FUNCTION ---
         function syncUserData() {
             fetch(API_URL + "?action=sync_user&email=" + encodeURIComponent(currentUser.email))
             .then(response => response.json())
             .then(data => {
                 if(data.status === "success") {
-                    // Extracting fresh values from your backend
                     let freshRupees = data.rupees !== undefined ? data.rupees : (data.data && data.data.rupees ? data.data.rupees : 0);
                     let freshPoints = data.points !== undefined ? data.points : (data.data && data.data.points ? data.data.points : 0);
                     
-                    // Update current session and local storage
                     currentUser.rupees = freshRupees;
                     currentUser.points = freshPoints;
                     localStorage.setItem('tournyx_user', JSON.stringify(currentUser));
                     
-                    // Update UI instantly
                     updateWalletDisplay();
                 }
-            })
-            .catch(error => {
-                console.error("Wallet Sync Failed:", error);
-                updateWalletDisplay(); // Fallback to local storage if offline
-            });
+            }).catch(e => console.error("Wallet Sync Failed:", e));
         }
 
         function triggerHaptic() { if(navigator.vibrate) navigator.vibrate(40); }
@@ -567,7 +556,6 @@
         }
         function formatNum(num) { return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
 
-        // --- BACKGROUND PARTICLES ---
         function initParticles() {
             const canvas = document.getElementById('particles-canvas');
             const ctx = canvas.getContext('2d');
@@ -583,7 +571,6 @@
             anim();
         }
 
-        // --- ANIMATIONS ---
         function animateValue(obj, start, end, duration, prefix = "", suffix = "") {
             if (start === end) { obj.innerHTML = prefix + formatNum(end) + suffix; return; }
             let startTimestamp = null;
@@ -597,13 +584,11 @@
             window.requestAnimationFrame(step);
         }
 
-        // --- WALLET, VIP & MILESTONES ---
         function setDynamicGreeting() {
             const hr = new Date().getHours(); let greet = "Welcome,";
             if (hr < 12) greet = "Good Morning,"; else if (hr < 18) greet = "Good Afternoon,"; else greet = "Good Evening,";
             let name = currentUser.username ? currentUser.username.split(" ")[0] : "Player";
             
-            // Premium Exact Level Tag
             let isPremium = currentUser.isPremium || currentUser.premium || false;
             let tagHTML = isPremium ? '<span style="background:var(--accent-purple); color:white; padding:2px 6px; border-radius:4px; font-size:0.6rem; margin-left:8px; font-family:var(--font-head); font-weight:bold; box-shadow:0 0 10px rgba(189,0,255,0.4);">PRO</span>' : '<span style="background:rgba(255,255,255,0.1); color:#ccc; padding:2px 6px; border-radius:4px; font-size:0.6rem; margin-left:8px; font-family:var(--font-head); font-weight:bold;">NORMAL</span>';
             
@@ -657,7 +642,6 @@
                 if(totalLifetimeDeposits >= MILESTONES[i]) userCurrentLevel = i; else break;
             }
             
-            // --- AUTO CLAIM ENGINE ---
             let claimedMs = JSON.parse(localStorage.getItem('tournyx_ms_claimed')) || [];
             let newlyClaimed = 0;
             let claimsMade = [];
@@ -686,7 +670,6 @@
                 
                 document.getElementById('celebReward').innerText = `+ Rs. ${newlyClaimed} Bonus Auto-Claimed!`;
                 document.getElementById('celebrationModal').classList.add('active');
-                playSuccessSound();
                 
                 fetch(API_URL, {
                     method: 'POST', mode: 'no-cors',
@@ -709,7 +692,6 @@
             setTimeout(() => { document.getElementById('msBar').style.width = progressPct + "%"; }, 800);
         }
 
-        // --- MILESTONE MODAL UI ---
         function openMilestoneModal() {
             let container = document.getElementById('milestoneListContainer');
             container.innerHTML = "";
@@ -751,7 +733,6 @@
         }
         function closeMilestoneModal() { document.getElementById('milestoneModalOverlay').classList.remove('active'); }
 
-        // --- UTR PAYMENT SYSTEM ---
         function openAddMoney() { 
             document.getElementById('addMoneyOverlay').classList.add('active'); 
             document.getElementById('officialUPI').innerText = OFFICIAL_UPI;
@@ -846,7 +827,7 @@
             }, 3000);
         }
 
-        // --- LEDGER RENDERING ENGINE ---
+        // --- NEW HISTORY RENDERING LOGIC WITH GLOWING COLORS ---
         function renderTransactions() {
             const container = document.getElementById('txnListContainer');
             let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
@@ -865,21 +846,40 @@
         function closeAllTxns() { document.getElementById('ledgerModal').classList.remove('active'); }
 
         function buildTxnHtml(t, delay) {
-            let isCredit = t.type === "Credit"; let isPending = t.status === "Pending";
+            let isCredit = t.type === "Credit"; 
             
+            let stat = String(t.status || "Pending").toLowerCase().trim();
+            let isSuccess = ["success", "completed"].includes(stat);
+            let isCancelled = ["cancelled", "failed"].includes(stat);
+            let isRefunded = ["refunded"].includes(stat);
+
+            let statusColor = "#ff9900"; // Pending default
+            let statusGlow = "none";
+            let mainIcon = isCredit ? "fa-arrow-down" : "fa-arrow-up";
+
+            if (isSuccess) { 
+                statusColor = "var(--accent-green)"; 
+                statusGlow = "0 0 10px rgba(0, 255, 127, 0.6)"; 
+            } else if (isCancelled) { 
+                statusColor = "var(--accent-red)"; 
+                mainIcon = "fa-xmark";
+            } else if (isRefunded) { 
+                statusColor = "var(--accent-cyan)"; 
+                mainIcon = "fa-rotate-left";
+            } else {
+                mainIcon = "fa-clock"; // Pending
+            }
+
             let cat = t.category || "General"; let catIcon = "fa-money-bill";
-            let iconClass = isCredit ? "icon-credit" : "icon-debit"; let mainIcon = isCredit ? "fa-arrow-down" : "fa-arrow-up";
+            let iconClass = isCredit ? "icon-credit" : "icon-debit";
             
             let titleLower = t.title.toLowerCase();
-            if(titleLower.includes('tournament') || titleLower.includes('entry') || titleLower.includes('register')) { cat = "Entry Fee"; catIcon = "fa-gamepad"; iconClass = "icon-entry"; mainIcon = "fa-gamepad"; }
-            if(titleLower.includes('prize') || titleLower.includes('won')) { cat = "Prize Won"; catIcon = "fa-trophy"; iconClass = "icon-prize"; mainIcon = "fa-trophy"; }
+            if(titleLower.includes('tournament') || titleLower.includes('entry') || titleLower.includes('register')) { cat = "Entry Fee"; catIcon = "fa-gamepad"; iconClass = "icon-entry"; if(isSuccess) mainIcon = "fa-gamepad"; }
+            if(titleLower.includes('prize') || titleLower.includes('won')) { cat = "Prize Won"; catIcon = "fa-trophy"; iconClass = "icon-prize"; if(isSuccess) mainIcon = "fa-trophy"; }
             if(titleLower.includes('deposit') || titleLower.includes('upi')) { cat = "Deposit"; catIcon = "fa-wallet"; }
-            if(titleLower.includes('bonus')) { cat = "Bonus"; catIcon = "fa-bolt"; iconClass = "icon-bonus"; mainIcon = "fa-bolt"; }
-            
-            if(isPending) { iconClass = "icon-debit"; mainIcon = "fa-clock"; }
+            if(titleLower.includes('bonus')) { cat = "Bonus"; catIcon = "fa-bolt"; iconClass = "icon-bonus"; if(isSuccess) mainIcon = "fa-bolt"; }
 
             let amtClass = isCredit ? "amt-credit" : "amt-debit";
-            let statusColor = isPending ? "#ff9900" : (isCredit ? "var(--accent-green)" : "var(--accent-red)");
             let inOutLabel = isCredit ? `<div class="in-out-label in-label">MONEY IN</div>` : `<div class="in-out-label out-label">MONEY OUT</div>`;
 
             return `
@@ -894,7 +894,7 @@
                     <div class="txn-right">
                         ${inOutLabel}
                         <div class="txn-amt ${amtClass}">${isCredit?'+':'-'} Rs.${formatNum(t.amount)}</div>
-                        <div class="txn-status" style="color:${statusColor};">${t.status}</div>
+                        <div class="txn-status" style="color:${statusColor}; text-shadow:${statusGlow};">${t.status}</div>
                     </div>
                 </div>`;
         }
@@ -913,21 +913,51 @@
             });
         }
 
-        // --- RECEIPT ENGINE ---
+        // --- RECEIPT MODAL LOGIC UPDATED FOR NEW STATUSES ---
         function openReceipt(id) {
             let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
             let t = txns.find(x => x.id === id); if(!t) return;
             activeReceiptId = id;
             
-            let isCredit = t.type === "Credit"; let isPending = t.status === "Pending";
+            let isCredit = t.type === "Credit"; 
+            let stat = String(t.status || "Pending").toLowerCase().trim();
+            let isSuccess = ["success", "completed"].includes(stat);
+            let isCancelled = ["cancelled", "failed"].includes(stat);
+            let isRefunded = ["refunded"].includes(stat);
+
             let catStr = `<i class="fa-solid fa-gamepad"></i> General`;
             if (t.category === "Deposit") catStr = `<i class="fa-solid fa-wallet"></i> Deposit`;
             else if (t.category === "Bonus") catStr = `<i class="fa-solid fa-bolt"></i> Bonus`;
             else if (t.category === "Prize Won") catStr = `<i class="fa-solid fa-trophy"></i> Prize Won`;
             
             let iconEl = document.getElementById('rcptIcon');
-            iconEl.innerHTML = `<i class="fa-solid ${isPending ? 'fa-clock' : (isCredit ? 'fa-check' : 'fa-arrow-up')}"></i>`;
-            iconEl.className = `rcpt-icon ${isPending ? 'icon-debit' : (isCredit ? 'icon-credit' : 'icon-debit')}`;
+            let sEl = document.getElementById('rcptStatusVal');
+            
+            if (isSuccess) {
+                iconEl.innerHTML = `<i class="fa-solid ${isCredit ? 'fa-check' : 'fa-arrow-up'}"></i>`;
+                iconEl.className = `rcpt-icon ${isCredit ? 'icon-credit' : 'icon-debit'}`;
+                sEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> Successful`;
+                sEl.style.color = "var(--accent-green)";
+                sEl.style.textShadow = "0 0 10px rgba(0, 255, 127, 0.6)";
+            } else if (isCancelled) {
+                iconEl.innerHTML = `<i class="fa-solid fa-xmark"></i>`;
+                iconEl.className = `rcpt-icon icon-debit`;
+                sEl.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Cancelled`;
+                sEl.style.color = "var(--accent-red)";
+                sEl.style.textShadow = "none";
+            } else if (isRefunded) {
+                iconEl.innerHTML = `<i class="fa-solid fa-rotate-left"></i>`;
+                iconEl.className = `rcpt-icon icon-credit`;
+                sEl.innerHTML = `<i class="fa-solid fa-rotate-left"></i> Refunded`;
+                sEl.style.color = "var(--accent-cyan)";
+                sEl.style.textShadow = "none";
+            } else {
+                iconEl.innerHTML = `<i class="fa-solid fa-clock"></i>`;
+                iconEl.className = `rcpt-icon icon-debit`; // pending is mostly money out or waiting money in
+                sEl.innerHTML = `<i class="fa-solid fa-clock"></i> Pending`;
+                sEl.style.color = "#ff9900";
+                sEl.style.textShadow = "none";
+            }
             
             document.getElementById('rcptAmt').innerText = `${isCredit?'+':'-'} Rs. ${formatNum(t.amount)}`;
             document.getElementById('rcptAmt').className = `rcpt-amt ${isCredit ? 'amt-credit' : 'amt-debit'}`;
@@ -935,10 +965,6 @@
             document.getElementById('rcptCat').innerHTML = catStr;
             document.getElementById('rcptDate').innerText = t.date;
             document.getElementById('rcptId').innerText = t.id;
-            
-            let sEl = document.getElementById('rcptStatusVal');
-            sEl.innerHTML = isPending ? `<i class="fa-solid fa-clock"></i> Pending` : `<i class="fa-solid fa-circle-check"></i> Successful`;
-            sEl.style.color = isPending ? "#ff9900" : "var(--accent-green)";
 
             document.getElementById('receiptOverlay').classList.add('active');
         }
@@ -946,7 +972,7 @@
         function copyTxnId() { navigator.clipboard.writeText(activeReceiptId); showToast("TXN ID Copied!"); }
 
         function shareReceipt() {
-            let msg = `🧾 Tournyx Receipt\nID: ${activeReceiptId}\nStatus: Verified\nAmount: Rs. ${document.getElementById('rcptAmt').innerText}`;
+            let msg = `🧾 Tournyx Receipt\nID: ${activeReceiptId}\nAmount: Rs. ${document.getElementById('rcptAmt').innerText}\nStatus: ${document.getElementById('rcptStatusVal').innerText}`;
             if(navigator.share) navigator.share({title: 'Receipt', text: msg});
             else { navigator.clipboard.writeText(msg); showToast("Receipt Copied!"); }
         }
