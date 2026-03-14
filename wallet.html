@@ -26,71 +26,85 @@
                         document.documentElement.style.setProperty('--accent-purple', THEMES[tIndex].purple);
                         document.documentElement.style.setProperty('--accent-gradient', `linear-gradient(90deg, ${THEMES[tIndex].purple}, ${THEMES[tIndex].cyan})`);
                     }
-                } catch(e) {
-                    console.log("Theme setting bypassed - strict browser settings.");
-                }
+                } catch(e) { console.log("Theme bypassed."); }
             })();
         </script>
     <style>
-        /* --- GLOBAL VARIABLES --- */
         :root {
-            --primary-bg: #070311;
-            --secondary-bg: #0d061e;
-            --card-bg: rgba(20, 10, 35, 0.7);
-            --card-border: rgba(189, 0, 255, 0.2);
-            --accent-cyan: #00f2ff;
-            --accent-purple: #bd00ff;
-            --accent-orange: #ff9900;
-            --accent-green: #00ff7f;
-            --accent-red: #ff4d4d;
+            --primary-bg: #070311; --secondary-bg: #0d061e;
+            --card-bg: rgba(20, 10, 35, 0.7); --card-border: rgba(189, 0, 255, 0.2);
+            --accent-cyan: #00f2ff; --accent-purple: #bd00ff;
+            --accent-orange: #ff9900; --accent-green: #00ff7f; --accent-red: #ff4d4d;
             --accent-gradient: linear-gradient(90deg, #7b2cbf, #bd00ff, #00f2ff);
-            --font-head: 'Orbitron', sans-serif;
-            --font-body: 'Rajdhani', sans-serif;
+            --font-head: 'Orbitron', sans-serif; --font-body: 'Rajdhani', sans-serif;
         }
         
-        /* --- ULTIMATE SCROLLBAR KILLER --- */
         * { -ms-overflow-style: none !important; scrollbar-width: none !important; margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         *::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; background: transparent !important; }
 
-        body { background-color: var(--primary-bg); color: white; font-family: var(--font-body); padding-bottom: calc(90px + env(safe-area-inset-bottom)); padding-top: calc(75px + env(safe-area-inset-top)); overflow-x: hidden; }
+        body { background-color: var(--primary-bg); color: white; font-family: var(--font-body); padding-bottom: calc(90px + env(safe-area-inset-bottom)); padding-top: calc(85px + env(safe-area-inset-top)); overflow-x: hidden; }
 
-        /* --- RESPONSIVE WRAPPERS --- */
         .content-container, .app-footer, .top-header .header-wrapper { max-width: 1000px; margin-left: auto !important; margin-right: auto !important; width: 100%; }
 
-        /* --- HARDWARE ACCELERATED BACKGROUND --- */
+        /* --- CLASSIC TOURNYX BACKGROUND --- */
         #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; transform: translateZ(0); }
         .bg-gradient { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; background: radial-gradient(circle at 50% 0%, #15062e 0%, #070311 100%); pointer-events: none;}
 
-        /* --- HEADER (MEDIAN FORCED VISIBLE) --- */
+        /* --- BULLETPROOF ENTRANCE ANIMATIONS (FIXES INVISIBLE BUG) --- */
+        .animate-section { animation: slideUpGlow 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
+        @keyframes slideUpGlow { 
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); } 
+        }
+        .delay-1 { animation-delay: 0.1s; } .delay-2 { animation-delay: 0.2s; } .delay-3 { animation-delay: 0.3s; } .delay-4 { animation-delay: 0.4s; }
+        
+        .glow-hover { transition: 0.4s; }
+        .glow-hover:hover { box-shadow: 0 0 20px var(--accent-cyan); border-color: var(--accent-cyan); transform: translateY(-3px); }
+
         .top-header { position: fixed; top: 0; left: 0; width: 100%; padding: calc(15px + env(safe-area-inset-top)) 15px 15px; background: rgba(7, 3, 17, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-bottom: 1px solid var(--card-border); display: flex; align-items: center; justify-content: space-between; z-index: 2000; box-shadow: 0 4px 30px rgba(0,0,0,0.5); transform: translateZ(0); }
         .header-wrapper { display: flex; align-items: center; justify-content: space-between; }
         .header-left { display: flex; align-items: center; gap: 12px; }
         .app-title { font-family: var(--font-head); font-size: 1.2rem; font-weight: 700; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px; }
-        .header-greeting { font-size: 0.8rem; color: #aaa; margin-bottom: 2px; }
+        .header-greeting { font-size: 0.8rem; color: #aaa; margin-bottom: 2px; display: flex; align-items: center; }
         .header-action-icon { font-size: 1.3rem; color: white; cursor: pointer; transition: 0.3s; }
         .header-action-icon:active { color: var(--accent-cyan); transform: scale(0.9); }
         .header-profile-img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--accent-cyan); object-fit: cover; cursor: pointer; box-shadow: 0 0 10px rgba(0,242,255,0.4); transition: 0.3s; flex-shrink: 0; }
 
-        /* --- MAIN CONTENT --- */
-        .content-container { padding: 15px; animation: fadeIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes fadeIn { from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);} }
+        .live-ticker { position: fixed; top: calc(70px + env(safe-area-inset-top)); left: 0; width: 100%; background: rgba(0,242,255,0.1); border-bottom: 1px solid var(--accent-cyan); color: white; padding: 4px 0; font-family: var(--font-head); font-size: 0.75rem; overflow: hidden; white-space: nowrap; display: flex; align-items: center; z-index: 1999;}
+        .content-container { padding: 15px; }
 
-        /* --- WALLET CARD --- */
-        .wallet-card { background: linear-gradient(135deg, rgba(189,0,255,0.2) 0%, rgba(0,242,255,0.1) 100%); border: 1px solid var(--card-border); border-radius: 20px; padding: 25px 20px; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 20px; animation: borderGlow 4s infinite alternate; }
+        /* --- WALLET CARD & VIP TIER --- */
+        .wallet-card { background: linear-gradient(135deg, rgba(189,0,255,0.2) 0%, rgba(0,242,255,0.1) 100%); border: 1px solid var(--card-border); border-radius: 20px; padding: 25px 20px; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 20px; animation: borderGlow 4s infinite alternate, slideUpGlow 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
         @keyframes borderGlow { from{border-color: rgba(189,0,255,0.3); box-shadow: 0 10px 30px rgba(189,0,255,0.1);} to{border-color: rgba(0,242,255,0.4); box-shadow: 0 10px 30px rgba(0,242,255,0.2);} }
         .wallet-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 60%); transform: rotate(45deg); pointer-events: none; }
         
-        .balance-label { font-size: 0.85rem; color: #ccc; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
+        .vip-badge { position: absolute; top: 15px; right: 15px; background: linear-gradient(45deg, #FFD700, #ff9900); color: #000; padding: 4px 10px; border-radius: 12px; font-family: var(--font-head); font-size: 0.75rem; font-weight: bold; box-shadow: 0 0 15px rgba(255,215,0,0.5); display: flex; align-items: center; gap: 5px;}
+        .vip-bronze { background: linear-gradient(45deg, #cd7f32, #a0522d); color: white; box-shadow: 0 0 15px rgba(205,127,50,0.5); }
+        .vip-silver { background: linear-gradient(45deg, #c0c0c0, #e0e0e0); color: black; box-shadow: 0 0 15px rgba(192,192,192,0.5); }
+        
+        .balance-label { font-size: 0.85rem; color: #ccc; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; display: flex; align-items: center; gap:10px; }
         .balance-amount { font-family: var(--font-head); font-size: 2.5rem; font-weight: bold; color: white; display: flex; align-items: center; gap: 10px; text-shadow: 0 0 15px rgba(255,255,255,0.4); margin-bottom: 15px; transition: 0.4s; }
         
-        .blur-balance { filter: blur(8px); user-select: none; opacity: 0.8; }
+        .blur-balance { filter: blur(10px); user-select: none; opacity: 0.8; }
 
-        .pts-balance { display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.5); padding: 8px 15px; border-radius: 12px; border: 1px solid rgba(0,242,255,0.3); width: fit-content; transition: 0.3s; box-shadow: inset 0 0 10px rgba(0,242,255,0.1); }
-        .pts-balance i { color: var(--accent-cyan); }
+        .pts-balance { display: flex; align-items: center; justify-content:space-between; gap: 8px; background: rgba(0,0,0,0.5); padding: 8px 15px; border-radius: 12px; border: 1px solid rgba(0,242,255,0.3); width: 100%; transition: 0.3s; box-shadow: inset 0 0 10px rgba(0,242,255,0.1); }
         .pts-balance span { font-family: var(--font-head); font-size: 1rem; font-weight: bold; color: var(--accent-cyan); }
+        
+        .vip-progress-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 5px; margin-top: 15px; overflow:hidden;}
+        .vip-progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent-orange), #FFD700); box-shadow: 0 0 10px var(--accent-orange); transition: width 1s ease;}
+
+        /* --- MILESTONE SECTION --- */
+        .milestone-card { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 15px; padding: 15px; margin-bottom: 20px; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); cursor: pointer; }
+        .ms-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .ms-title { font-family: var(--font-head); font-size: 0.9rem; color: var(--accent-cyan); font-weight: bold; display:flex; align-items:center; gap:6px;}
+        .ms-amt { font-size: 0.8rem; color: #aaa; font-weight: bold; font-family: var(--font-body); }
+        .ms-bar-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 5px; overflow: hidden; margin-bottom: 6px; }
+        .ms-bar-fill { height: 100%; background: var(--accent-gradient); width: 0%; border-radius: 5px; box-shadow: 0 0 10px var(--accent-cyan); transition: width 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .ms-desc { font-size: 0.75rem; color: #888; display: flex; justify-content: space-between; align-items:center;}
+        .ms-reward-badge { background: rgba(0,255,127,0.15); color: var(--accent-green); padding: 2px 8px; border-radius: 6px; font-weight: bold; border: 1px solid rgba(0,255,127,0.3); font-family: var(--font-head); }
 
         /* --- QUICK ACTIONS --- */
-        .quick-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 25px; }
+        .quick-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
         .action-btn { background: var(--secondary-bg); border: 1px solid var(--card-border); border-radius: 15px; padding: 18px 5px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.4); text-decoration: none; color: white; }
         .action-btn:active { transform: scale(0.95); }
         .action-btn i { font-size: 1.6rem; }
@@ -100,57 +114,42 @@
         .btn-withdraw { border-color: var(--accent-orange); } .btn-withdraw i { color: var(--accent-orange); text-shadow: 0 0 15px rgba(255,153,0,0.5); } .btn-withdraw:hover { background: rgba(255,153,0,0.1); }
         .btn-redeem { border-color: var(--accent-cyan); } .btn-redeem i { color: var(--accent-cyan); text-shadow: 0 0 15px rgba(0,242,255,0.5); } .btn-redeem:hover { background: rgba(0,242,255,0.1); }
 
-        /* --- SUPPORT SECTION --- */
-        .support-card { background: linear-gradient(90deg, rgba(0,242,255,0.1), rgba(0,0,0,0)); border: 1px solid var(--accent-cyan); border-radius: 15px; padding: 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; cursor: pointer; transition: 0.3s; box-shadow: inset 0 0 15px rgba(0,242,255,0.05); }
-        .support-card:active { transform: scale(0.98); border-color: var(--accent-purple); }
-        .sc-left h4 { font-family: var(--font-head); font-size: 1.05rem; color: white; margin-bottom: 5px; }
-        .sc-left p { font-size: 0.85rem; color: #ccc; max-width: 220px; line-height:1.4;}
-        .sc-icon { width: 55px; height: 55px; background: var(--accent-cyan); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; box-shadow: 0 0 20px rgba(0,242,255,0.5); flex-shrink:0; }
+        .bonus-banner { background: linear-gradient(90deg, rgba(0,255,127,0.1), rgba(0,0,0,0)); border: 1px solid var(--accent-green); border-radius: 12px; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; cursor: pointer; }
+        .bonus-banner:active { transform: scale(0.98); }
+        
+        .first-deposit-banner { background: linear-gradient(90deg, rgba(255,153,0,0.2), rgba(0,0,0,0)); border: 1px solid var(--accent-orange); border-radius: 12px; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; cursor: pointer; animation: pulseGlow 2s infinite alternate; }
+        @keyframes pulseGlow { from{box-shadow: 0 0 10px rgba(255,153,0,0.2);} to{box-shadow: 0 0 20px rgba(255,153,0,0.5);} }
 
         /* --- TRANSACTION HISTORY --- */
         .section-title { font-family: var(--font-head); font-size: 1.15rem; color: white; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
         .section-title span { font-size: 0.8rem; color: var(--accent-cyan); cursor: pointer; text-transform: uppercase; padding: 5px 10px; border-radius: 8px; transition: 0.3s; border: 1px solid transparent;}
-        .section-title span:active { background: rgba(0,242,255,0.1); border-color:var(--accent-cyan);}
         
         .txn-list { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 15px; padding: 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
-        .txn-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.3s; animation: slideInUp 0.4s ease both;}
+        .txn-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.3s; }
         .txn-item:active { background: rgba(255,255,255,0.05); border-color: var(--accent-cyan); transform: scale(0.98); }
+        .txn-item:hover { border-color: var(--accent-cyan); background: rgba(0,242,255,0.05); }
         
         .txn-left { display: flex; align-items: center; gap: 15px; min-width:0; }
         .txn-icon { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink:0;}
-        .icon-credit { background: rgba(0,255,127,0.1); color: var(--accent-green); border: 1px solid rgba(0,255,127,0.3); box-shadow: 0 0 15px rgba(0,255,127,0.1);}
-        .icon-debit { background: rgba(255,77,77,0.1); color: var(--accent-red); border: 1px solid rgba(255,77,77,0.3); box-shadow: 0 0 15px rgba(255,77,77,0.1);}
-        .txn-info h4 { font-family: var(--font-head); font-size: 1rem; color: white; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
-        .txn-info p { font-size: 0.75rem; color: #888; }
+        .icon-credit { background: rgba(0,255,127,0.1); color: var(--accent-green); border: 1px solid rgba(0,255,127,0.3); }
+        .icon-debit { background: rgba(255,77,77,0.1); color: var(--accent-red); border: 1px solid rgba(255,77,77,0.3); }
+        .icon-prize { background: rgba(255,215,0,0.1); color: #FFD700; border: 1px solid rgba(255,215,0,0.3); }
+        .icon-entry { background: rgba(189,0,255,0.1); color: var(--accent-purple); border: 1px solid rgba(189,0,255,0.3); }
+        .icon-bonus { background: rgba(0,242,255,0.1); color: var(--accent-cyan); border: 1px solid rgba(0,242,255,0.3); }
         
-        .txn-right { text-align: right; flex-shrink:0;}
+        .txn-info h4 { font-family: var(--font-head); font-size: 1rem; color: white; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
+        .txn-info p { font-size: 0.75rem; color: #888; display:flex; gap:5px; align-items:center;}
+        .cat-tag { font-size: 0.6rem; padding: 2px 6px; border-radius: 5px; background:rgba(255,255,255,0.1); text-transform:uppercase;}
+        
+        .txn-right { text-align: right; flex-shrink:0; display:flex; flex-direction:column; align-items:flex-end;}
+        .in-out-label { font-size: 0.65rem; text-transform: uppercase; font-family: var(--font-head); font-weight: bold; padding: 2px 6px; border-radius: 4px; margin-bottom: 3px; letter-spacing: 1px; }
+        .in-label { background: rgba(0,255,127,0.15); color: var(--accent-green); border: 1px solid rgba(0,255,127,0.3); }
+        .out-label { background: rgba(255,77,77,0.15); color: var(--accent-red); border: 1px solid rgba(255,77,77,0.3); }
+
         .txn-amt { font-family: var(--font-head); font-size: 1.15rem; font-weight: bold; }
         .amt-credit { color: var(--accent-green); text-shadow: 0 0 10px rgba(0,255,127,0.3); }
         .amt-debit { color: var(--accent-red); text-shadow: 0 0 10px rgba(255,77,77,0.3); }
         .txn-status { font-size: 0.7rem; color: #aaa; text-transform: uppercase; margin-top: 3px; background: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 6px; display: inline-block; font-weight:bold;}
-
-        /* --- SKELETON LOADER --- */
-        .skeleton { background: linear-gradient(90deg, #110822 25%, #1a0a3a 50%, #110822 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite linear; border-radius: 10px;}
-        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
-
-        /* --- FULL LEDGER MODAL --- */
-        .ledger-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary-bg); z-index: 4000; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; overflow: hidden; }
-        .ledger-modal.active { transform: translateX(0); }
-        
-        .lm-header { padding: calc(15px + env(safe-area-inset-top)) 15px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); background: rgba(7,3,17,0.95); backdrop-filter: blur(10px); z-index: 10; }
-        .lm-title { font-family: var(--font-head); font-size: 1.2rem; color: white; font-weight: bold; flex: 1; text-align: center; }
-        
-        .lm-search-bar { margin: 15px; position: relative; }
-        .lm-search-input { width: 100%; background: var(--input-bg); border: 1px solid var(--card-border); padding: 14px 15px 14px 45px; border-radius: 12px; color: white; font-family: var(--font-body); outline: none; transition: 0.3s; font-size:1rem;}
-        .lm-search-input:focus { border-color: var(--accent-cyan); box-shadow: 0 0 15px rgba(0,242,255,0.2);}
-        .lm-search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #888; font-size:1.1rem;}
-
-        .lm-filters { display: flex; gap: 10px; padding: 0 15px 10px; overflow-x: auto; scrollbar-width: none; }
-        .lm-filter-chip { background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); padding: 8px 18px; border-radius: 20px; font-family: var(--font-head); font-size: 0.85rem; font-weight: bold; color: #888; cursor: pointer; transition: 0.3s; white-space: nowrap; }
-        .lm-filter-chip.active { background: rgba(0,242,255,0.15); border-color: var(--accent-cyan); color: var(--accent-cyan); box-shadow: 0 0 15px rgba(0,242,255,0.2);}
-
-        .lm-scroll-area { flex: 1; overflow-y: auto; padding: 0 15px 20px; }
-        .empty-ledger { text-align: center; padding: 60px 20px; color: #666; animation: fadeIn 0.5s; }
 
         /* --- BOTTOM SHEETS --- */
         .bottom-sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 5000; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(5px); opacity: 0; transition: 0.4s; }
@@ -161,126 +160,97 @@
         .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .sheet-title { font-family: var(--font-head); font-size: 1.3rem; color: white; display: flex; align-items: center; gap: 10px; }
         .close-sheet { color: #888; font-size: 1.8rem; cursor: pointer; padding: 5px; transition: 0.3s; }
-        .close-sheet:hover { color:white; transform:rotate(90deg);}
+        
+        /* ADD MONEY MODAL */
+        .add-money-flex { display: flex; flex-direction: column; gap: 20px; }
+        @media (min-width: 850px) {
+            .add-money-flex { flex-direction: row; align-items: stretch; }
+            .add-money-left { flex: 1; }
+            .add-money-right { flex: 1; display: flex; flex-direction: column; justify-content: center; border-left: 1px solid var(--card-border); padding-left: 20px; }
+        }
 
-        /* Add Money UI - WINZO STYLE & TRANSITIONS */
-        .amt-input-wrapper { position: relative; margin-bottom: 20px; }
+        .amt-input-wrapper { position: relative; margin-bottom: 15px; }
         .amt-currency { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); font-family: var(--font-head); font-size: 1.5rem; color: white; font-weight: bold; }
-        .amt-input { width: 100%; background: #070311; border: 2px solid var(--card-border); padding: 20px 20px 20px 60px; border-radius: 15px; color: white; font-family: var(--font-head); font-size: 1.8rem; font-weight: bold; outline: none; transition: border-color 0.3s, box-shadow 0.3s; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+        .amt-input { width: 100%; background: #070311; border: 2px solid var(--card-border); padding: 20px 20px 20px 60px; border-radius: 15px; color: white; font-family: var(--font-head); font-size: 1.8rem; font-weight: bold; outline: none; transition: 0.3s; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
         .amt-input:focus { border-color: var(--accent-purple); box-shadow: 0 0 15px rgba(189,0,255,0.3), inset 0 0 10px rgba(0,0,0,0.5); }
 
-        /* Error Animation Shake */
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-10px); }
-            40%, 80% { transform: translateX(10px); }
-        }
-        .input-error {
-            border-color: var(--accent-red) !important;
-            box-shadow: 0 0 15px rgba(255,77,77,0.4), inset 0 0 10px rgba(0,0,0,0.5) !important;
-            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
-        }
+        @keyframes shake { 0%,100%{transform:translateX(0);} 20%,60%{transform:translateX(-10px);} 40%,80%{transform:translateX(10px);} }
+        .input-error { border-color: var(--accent-red) !important; animation: shake 0.4s both; }
 
         .quick-amt-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 25px; }
-        .quick-amt-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); color: #ccc; padding: 12px 0; text-align: center; border-radius: 10px; font-family: var(--font-head); font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 1rem; }
+        .quick-amt-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); color: #ccc; padding: 12px 0; text-align: center; border-radius: 10px; font-family: var(--font-head); font-weight: bold; cursor: pointer; transition: 0.3s; position: relative;}
         .quick-amt-btn:active { background: rgba(189,0,255,0.2); border-color: var(--accent-purple); color: white; transform:scale(0.95);}
+        .bonus-tag { position: absolute; top: -8px; right: -5px; background: var(--accent-orange); color: black; font-size: 0.6rem; padding: 2px 6px; border-radius: 8px; font-weight: bold; animation: pulseGlow 1.5s infinite alternate; }
 
-        .pay-btn { width: 100%; padding: 18px; background: var(--accent-gradient); border: none; border-radius: 15px; color: white; font-family: var(--font-head); font-size: 1.1rem; font-weight: bold; text-transform: uppercase; cursor: pointer; box-shadow: 0 5px 20px rgba(189,0,255,0.4); transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; letter-spacing:1px; margin-bottom: 10px;}
+        .qr-section { background: rgba(0,0,0,0.5); border: 1px dashed var(--accent-cyan); border-radius: 15px; padding: 20px; text-align: center; margin-bottom: 20px; position: relative; overflow: hidden; display:none; transition: 0.3s;}
+        .qr-section.active { display: block; animation: fadeIn 0.5s; }
+        .qr-img-box { width: 180px; height: 180px; background: white; padding: 10px; border-radius: 10px; margin: 0 auto 15px; position: relative; box-shadow: 0 0 20px rgba(0,242,255,0.3);}
+        .qr-img-box img { width: 100%; height: 100%; }
+        .scan-line { position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--accent-red); box-shadow: 0 0 10px var(--accent-red); animation: scanLineAnim 2s infinite linear; }
+        @keyframes scanLineAnim { 0%{top:0;} 50%{top:100%;} 100%{top:0;} }
+        
+        .upi-copy-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); display: inline-flex; align-items: center; gap: 10px; padding: 8px 15px; border-radius: 20px; font-family: var(--font-body); font-size: 0.9rem; cursor: pointer; margin-bottom:10px;}
+
+        .pay-btn { width: 100%; padding: 18px; background: var(--accent-gradient); border: none; border-radius: 15px; color: white; font-family: var(--font-head); font-size: 1.1rem; font-weight: bold; text-transform: uppercase; cursor: pointer; box-shadow: 0 5px 20px rgba(189,0,255,0.4); display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 10px;}
         .pay-btn:active { transform: scale(0.98); }
 
-        /* UTR Transition Section */
-        .utr-section { 
-            background: rgba(0,0,0,0.4); 
-            border-radius: 15px; 
-            overflow: hidden; 
-            max-height: 0; 
-            opacity: 0; 
-            padding: 0 20px;
-            transition: max-height 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease, padding 0.4s ease, margin-top 0.4s ease;
-            border: 1px solid transparent;
-        }
-        .utr-section.active { 
-            max-height: 400px; 
-            opacity: 1; 
-            padding: 20px; 
-            margin-top: 20px; 
-            border-color: var(--accent-cyan);
-            box-shadow: inset 0 0 20px rgba(0,242,255,0.05);
-        }
-        .utr-title { font-family: var(--font-head); color: white; margin-bottom: 10px; font-size: 1.1rem;}
-        .utr-desc { font-size: 0.85rem; color: #aaa; margin-bottom: 15px; line-height: 1.4; }
-        .utr-input-field { width: 100%; background: #070311; border: 2px solid var(--card-border); padding: 16px; border-radius: 12px; color: white; font-family: var(--font-body); font-size: 1.1rem; outline: none; margin-bottom: 15px; transition: 0.3s; }
-        .utr-input-field:focus { border-color: var(--accent-cyan); box-shadow: 0 0 15px rgba(0,242,255,0.3); }
+        .utr-input-field { width: 100%; background: #070311; border: 2px solid var(--card-border); padding: 16px; border-radius: 12px; color: white; font-family: var(--font-body); font-size: 1.1rem; outline: none; margin-bottom: 15px; transition: 0.3s; letter-spacing: 2px; font-weight:bold; text-align:center;}
+        .utr-input-field:focus { border-color: var(--accent-green); box-shadow: 0 0 15px rgba(0,255,127,0.3); }
 
-        /* Receipt UI */
+        /* MILESTONE LEVELS MODAL */
+        .ms-level-item { display:flex; justify-content:space-between; align-items:center; background:var(--card-bg); border:1px solid var(--card-border); padding:15px; border-radius:12px; margin-bottom:10px;}
+        .ms-level-item.claimed { border-color:var(--accent-green); background:rgba(0,255,127,0.05); opacity:0.7; }
+        .ms-level-item.current { border-color:var(--accent-orange); box-shadow:0 0 15px rgba(255,153,0,0.2); }
+        .ms-level-item.locked { opacity: 0.5; }
+
+        /* CYBER SCANNER LOADER */
+        .cyber-scanner-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:0.4s; backdrop-filter:blur(10px);}
+        .cyber-scanner-overlay.active { opacity:1; pointer-events:all; }
+        .cyber-circle { width: 100px; height: 100px; border: 3px dashed var(--accent-cyan); border-radius: 50%; animation: spin 4s linear infinite; display: flex; align-items: center; justify-content: center; position: relative;}
+        .cyber-inner { width: 60px; height: 60px; background: rgba(0,242,255,0.2); border-radius: 50%; box-shadow: 0 0 30px var(--accent-cyan); animation: pulse 1s infinite alternate; }
+        .cyber-text { font-family: var(--font-head); color: var(--accent-cyan); font-size: 1.2rem; margin-top: 20px; letter-spacing: 2px; text-transform: uppercase; text-shadow: 0 0 10px var(--accent-cyan);}
+
+        /* RECEIPT MODAL */
         .rcpt-icon { width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin: 0 auto 15px; }
         .rcpt-amt { text-align: center; font-family: var(--font-head); font-size: 2.5rem; font-weight: bold; margin-bottom: 5px; }
         .rcpt-title { text-align: center; color: #888; font-size: 1rem; margin-bottom: 30px; }
         .rcpt-row { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px dashed rgba(255,255,255,0.1); font-size: 0.95rem; }
-        .rcpt-row:last-child { border-bottom: none; margin-bottom: 25px; }
-        .rcpt-lbl { color: #888; }
-        .rcpt-val { color: white; font-weight: bold; font-family: var(--font-head); display: flex; align-items: center; gap: 8px; }
-        
-        /* Support Selection Items */
-        .sup-txn-item { background: #070311; border: 1px solid var(--card-border); padding: 15px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.3s; }
-        .sup-txn-item:active { border-color: var(--accent-cyan); background: rgba(0,242,255,0.1); transform:scale(0.98);}
-        .sup-txn-item h5 { font-family: var(--font-head); font-size: 1rem; color: white; margin-bottom: 5px; }
-        .sup-txn-item p { font-size: 0.8rem; color: #888; }
 
-        /* --- ANIMATED OVERLAYS --- */
-        .full-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(7,3,17,0.98); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.4s; backdrop-filter: blur(10px); }
-        .full-overlay.active { opacity: 1; pointer-events: all; }
-        
-        .anim-circle { width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin-bottom: 20px; }
-        .anim-success { background: var(--accent-green); color: black; box-shadow: 0 0 30px rgba(0,255,127,0.6); animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .anim-error { background: var(--accent-red); color: white; box-shadow: 0 0 30px rgba(255,77,77,0.6); animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        
-        /* NEW ATTRACTIVE LOADER FOR SMS VERIFY */
-        .loader-radar { border: 3px solid transparent; border-top-color: var(--accent-purple); border-bottom-color: var(--accent-cyan); border-radius: 50%; width: 70px; height: 70px; animation: spin 1s linear infinite; position: relative; box-shadow: 0 0 20px rgba(0,242,255,0.2); }
-        .loader-radar::before { content: ''; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px; border-radius: 50%; border: 3px solid transparent; border-left-color: var(--accent-cyan); border-right-color: var(--accent-purple); animation: spin 0.5s linear infinite reverse; }
+        /* FULL LEDGER MODAL */
+        .ledger-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary-bg); z-index: 4000; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; overflow: hidden; }
+        .ledger-modal.active { transform: translateX(0); }
+        .lm-header { padding: calc(15px + env(safe-area-inset-top)) 15px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); background: rgba(7,3,17,0.95); backdrop-filter: blur(10px); z-index: 10; }
+        .lm-title { font-family: var(--font-head); font-size: 1.2rem; color: white; font-weight: bold; flex: 1; text-align: center; }
+        .lm-scroll-area { flex: 1; overflow-y: auto; padding: 15px; }
 
-        .overlay-title { font-family: var(--font-head); font-size: 1.6rem; color: white; margin-bottom: 10px; text-shadow: 0 0 10px rgba(255,255,255,0.3);}
-        .overlay-desc { color: #aaa; font-size: 0.95rem; text-align: center; max-width: 80%; line-height:1.5;}
-
-        @keyframes slideInUp { from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);} }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 80% {transform: scale(1.2);} 100% { transform: scale(1); opacity: 1; } }
-
-        /* --- Custom Toast --- */
+        /* --- TOAST --- */
         #customToast { visibility: hidden; min-width: 250px; background-color: var(--accent-green); color: #000; text-align: center; border-radius: 12px; padding: 16px; position: fixed; z-index: 9999; left: 50%; bottom: -50px; transform: translateX(-50%); font-family: var(--font-head); font-weight: bold; box-shadow: 0 8px 25px rgba(0,255,127,0.6); opacity: 0; transition: opacity 0.4s, bottom 0.4s; }
         #customToast.show { visibility: visible; opacity: 1; bottom: 100px; }
 
-        /* --- FOOTER & NAV --- */
-        .app-footer { text-align: center; padding: 40px 20px 110px 20px; color: #555; font-size: 0.75rem; font-family: var(--font-body); letter-spacing: 1px; border-top: 1px solid var(--card-border); margin-top: 20px; }
-
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 5px env(safe-area-inset-bottom); border-top: 1px solid var(--card-border); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.8); transform: translateZ(0);}
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; color: #666; text-decoration: none; font-size: 0.65rem; font-family: var(--font-head); font-weight: bold; flex: 1; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; will-change: transform, color;}
-        .nav-item span { margin-top: 4px; transition: 0.3s; }
-        .nav-item i { font-size: 1.3rem; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        /* NAV */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 5px env(safe-area-inset-bottom); border-top: 1px solid var(--card-border); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.8); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #666; font-size: 0.65rem; font-family: var(--font-head); font-weight: bold; flex: 1; text-decoration: none;}
+        .nav-item i { font-size: 1.3rem; margin-bottom:4px; }
         .nav-item.active { color: var(--accent-cyan); }
-        .nav-item.active i { transform: translateY(-4px); color: var(--accent-cyan); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
-        .nav-item.active span { transform: translateY(2px); color: white; }
-        .fab-slot { flex: 1.2; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
-        .floating-plus { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); width: 58px; height: 58px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 4px solid var(--primary-bg); box-shadow: 0 10px 25px rgba(189,0,255,0.5); color: #fff; font-size: 1.8rem; cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 10; will-change: transform;}
-        .floating-plus:hover { transform: translateX(-50%) scale(1.1) rotate(90deg); box-shadow: 0 15px 35px rgba(0,242,255,0.6); }
-
-        @media (min-width: 850px) { .bottom-nav { display: none !important; } }
+        .nav-item.active i { transform: translateY(-4px); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
         
-        /* OVERRIDE MEDIAN HIDING (Ensures header is always visible) */
+        .fab-slot { flex: 1.2; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
+        .floating-plus { position: absolute; top: -30px; width: 58px; height: 58px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 4px solid var(--primary-bg); box-shadow: 0 10px 25px rgba(189,0,255,0.5); color: #fff; font-size: 1.8rem; z-index: 10; transition: 0.3s;}
+        .floating-plus:hover { transform: translateX(-50%) scale(1.1); box-shadow: 0 15px 35px rgba(0,242,255,0.6); }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes pulse { 0%{transform:scale(0.8); opacity:0.5;} 100%{transform:scale(1.2); opacity:1;} }
+        @media (min-width: 850px) { .bottom-nav { display: none !important; } }
         .median-active .top-header { display: flex !important; visibility: visible !important; }
     </style>
-    
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            if (navigator.userAgent.indexOf('gonative') > -1 || navigator.userAgent.indexOf('median') > -1) {
-                document.body.classList.add('median-active');
-            }
-        });
-    </script>
 </head>
 <body>
     <div class="bg-gradient"></div>
     <canvas id="particles-canvas"></canvas>
+
+    <div class="live-ticker">
+        <marquee scrollamount="6"><i class="fa-solid fa-bolt" style="color:var(--accent-orange)"></i> ESPORTS MARKET: 100 PTS = ₹2.00 | Complete your First Deposit to claim ₹20 Instant Bonus! | 100% Secure UTR Verification Active.</marquee>
+    </div>
 
     <header class="top-header">
         <div class="header-wrapper">
@@ -299,85 +269,165 @@
 
     <div class="content-container">
         
-        <div class="wallet-card">
+        <div class="wallet-card animate-section delay-1">
+            <div class="vip-badge" id="vipBadge"><i class="fa-solid fa-medal"></i> BRONZE TIER</div>
             <div class="balance-label">
-                Total Balance 
-                <i class="fa-solid fa-eye" id="eyeIcon" onclick="togglePrivacy(); triggerHaptic();" style="font-size: 1.2rem; color: #888; cursor: pointer; padding: 5px; transition:0.3s;"></i>
+                <span>Total Balance <i class="fa-solid fa-eye" id="eyeIcon" onclick="togglePrivacy(); triggerHaptic();" style="margin-left:8px; cursor: pointer; color:#888;"></i></span>
             </div>
             <div class="balance-amount" id="balanceWrapper">
                 Rs. <span id="displayRupees">0</span>
             </div>
             
             <div class="pts-balance" id="ptsWrapper">
-                <i class="fa-solid fa-coins"></i>
-                <span id="displayPoints">0 PTS</span>
+                <div style="display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-coins"></i> <span id="displayPoints">0</span> PTS</div>
+                <div style="font-size:0.7rem; color:#888; text-transform:uppercase;">Reward Points</div>
             </div>
+            
+            <div class="vip-progress-bg">
+                <div class="vip-progress-fill" id="vipProgress"></div>
+            </div>
+            <div style="font-size:0.65rem; color:#aaa; margin-top:5px; text-align:right;">Next Tier: <span id="nextTierText">Silver</span></div>
         </div>
 
-        <div class="quick-actions">
-            <div class="action-btn btn-add" onclick="openAddMoney(); triggerHaptic();">
+        <div class="quick-actions animate-section delay-2">
+            <div class="action-btn btn-add glow-hover" onclick="openAddMoney(); triggerHaptic();">
                 <i class="fa-solid fa-circle-plus"></i>
                 <span>Add Cash</span>
             </div>
-            <a href="withdraw.html" class="action-btn btn-withdraw" onclick="triggerHaptic();">
+            <a href="withdraw.html" class="action-btn btn-withdraw glow-hover" onclick="triggerHaptic();">
                 <i class="fa-solid fa-money-bill-transfer"></i>
                 <span>Withdraw</span>
             </a>
-            <a href="redeem.html" class="action-btn btn-redeem" onclick="triggerHaptic();">
+            <a href="redeem.html" class="action-btn btn-redeem glow-hover" onclick="triggerHaptic();">
                 <i class="fa-solid fa-gift"></i>
                 <span>Redeem</span>
             </a>
         </div>
 
-        <div class="support-card" onclick="openSupportModal(); triggerHaptic();">
-            <div class="sc-left">
-                <h4>Need Transaction Help?</h4>
-                <p>Contact 24/7 Support via WhatsApp instantly.</p>
+        <div class="milestone-card animate-section delay-3 glow-hover" onclick="openMilestoneModal(); triggerHaptic();">
+            <div class="ms-header">
+                <span class="ms-title"><i class="fa-solid fa-ranking-star"></i> Deposit Milestone: Lvl <span id="msLevel">1</span>/10</span>
+                <span class="ms-amt">Rs.<span id="msTotal">0</span> / Rs.<span id="msNext">100</span></span>
             </div>
-            <div class="sc-icon">
-                <i class="fa-brands fa-whatsapp"></i>
+            <div class="ms-bar-bg"><div class="ms-bar-fill" id="msBar"></div></div>
+            <div class="ms-desc">
+                <span>Reach next level to unlock reward!</span>
+                <span class="ms-reward-badge" id="msRewardText">Reward: Rs. 10</span>
             </div>
         </div>
 
-        <div class="section-title">
+        <div class="bonus-banner animate-section delay-3 glow-hover" id="dailyBonusBanner" onclick="openAddMoney(); setAmt(500);" style="display:none;">
+            <div>
+                <div style="font-family:var(--font-head); font-weight:bold; color:white;"><i class="fa-solid fa-gift" style="color:var(--accent-green);"></i> Daily Deposit Bonus</div>
+                <div style="font-size:0.75rem; color:#ccc;">Add Rs. 500+ to unlock Exclusive Avatar.</div>
+            </div>
+            <i class="fa-solid fa-chevron-right" style="color:var(--accent-green);"></i>
+        </div>
+        
+        <div class="first-deposit-banner animate-section delay-3 glow-hover" id="firstDepositBanner" onclick="openAddMoney(); setAmt(100);">
+            <div>
+                <div style="font-family:var(--font-head); font-weight:bold; color:var(--accent-orange);"><i class="fa-solid fa-bolt"></i> FIRST DEPOSIT BONUS</div>
+                <div style="font-size:0.75rem; color:#ccc;">Add any amount to instantly claim +Rs. 20 Bonus Cash!</div>
+            </div>
+            <i class="fa-solid fa-chevron-right" style="color:var(--accent-orange);"></i>
+        </div>
+
+        <div class="section-title animate-section delay-4">
             Recent Transactions <span onclick="openAllTxns(); triggerHaptic();">View All <i class="fa-solid fa-chevron-right" style="font-size:0.7rem; margin-left:3px;"></i></span>
         </div>
         
-        <div class="txn-list" id="txnListContainer">
+        <div class="txn-list animate-section delay-4" id="txnListContainer">
             <div style="text-align:center; padding: 30px 20px; color: #888; font-size: 0.95rem;">
-                <i class="fa-solid fa-spinner fa-spin" style="color:var(--accent-cyan); font-size:1.5rem; margin-bottom:10px; display:block;"></i> Fetching secure ledger...
+                <i class="fa-solid fa-spinner fa-spin" style="color:var(--accent-cyan); font-size:1.5rem; margin-bottom:10px; display:block;"></i> Syncing encrypted ledger...
             </div>
         </div>
 
+        <div style="text-align:center; color:#666; font-size:0.75rem; margin-top:20px; display:flex; align-items:center; justify-content:center; gap:8px;">
+            <i class="fa-solid fa-lock"></i> Secured by 256-bit Encryption • RBI Compliant UTR
+        </div>
+    </div>
+
+    <div class="bottom-sheet-overlay" id="addMoneyOverlay">
+        <div class="bottom-sheet">
+            <div class="sheet-header">
+                <div class="sheet-title"><i class="fa-solid fa-wallet" style="color:var(--accent-cyan);"></i> Deposit Funds</div>
+                <i class="fa-solid fa-xmark close-sheet" onclick="closeAddMoney()"></i>
+            </div>
+            
+            <div class="add-money-flex">
+                <div class="add-money-left">
+                    <div class="amt-input-wrapper">
+                        <div class="amt-currency">Rs.</div>
+                        <input type="number" id="addAmtInput" class="amt-input" placeholder="0" oninput="updateQR()">
+                    </div>
+
+                    <div class="quick-amt-grid">
+                        <div class="quick-amt-btn" onclick="setAmt(50); triggerHaptic();">+50 <div class="bonus-tag display-bonus">+20 Bonus</div></div>
+                        <div class="quick-amt-btn" onclick="setAmt(100); triggerHaptic();">+100 <div class="bonus-tag display-bonus">+20 Bonus</div></div>
+                        <div class="quick-amt-btn" onclick="setAmt(250); triggerHaptic();">+250 <div class="bonus-tag display-bonus">+20 Bonus</div></div>
+                        <div class="quick-amt-btn" onclick="setAmt(500); triggerHaptic();">+500 <div class="bonus-tag display-bonus">+20 Bonus</div></div>
+                    </div>
+                    
+                    <div id="mobilePayBtn" style="display:none;">
+                        <button class="pay-btn" onclick="openUPIApp(); triggerHaptic();">
+                            Pay via UPI App <i class="fa-solid fa-bolt"></i>
+                        </button>
+                        <div style="text-align:center; margin:15px 0; color:#888; font-family:var(--font-head); font-size:0.8rem;">OR SCAN QR / SUBMIT UTR</div>
+                    </div>
+
+                    <div style="background:rgba(0,242,255,0.05); border:1px solid rgba(0,242,255,0.2); padding:20px; border-radius:15px; margin-top:20px;">
+                        <div style="font-family:var(--font-head); color:white; margin-bottom:10px; font-size:1.1rem;"><i class="fa-solid fa-shield-halved" style="color:var(--accent-cyan);"></i> Verify Payment</div>
+                        <p style="font-size:0.8rem; color:#aaa; margin-bottom:15px;">After paying via App or QR, paste the exactly 12-digit UTR/Reference No. below to securely add funds.</p>
+                        <input type="number" id="utrInput" placeholder="Enter 12-digit UTR" class="utr-input-field">
+                        <button class="pay-btn" style="background: transparent; border: 1px solid var(--accent-green); color: var(--accent-green); box-shadow:none; margin-bottom:0;" onclick="submitStrictUTR(); triggerHaptic();">
+                            Verify UTR <i class="fa-solid fa-check-double"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="add-money-right">
+                    <div class="qr-section" id="qrContainer">
+                        <div style="font-family:var(--font-head); color:white; margin-bottom:10px;">Scan to Pay <span id="qrAmtText" style="color:var(--accent-green);"></span></div>
+                        <div class="qr-img-box">
+                            <div class="scan-line"></div>
+                            <img id="dynamicQR" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=tournyx">
+                        </div>
+                        <div class="upi-copy-box" onclick="copyUPI()">
+                            <span id="officialUPI">tournyx.esports@ybl</span> <i class="fa-regular fa-copy" style="color:var(--accent-cyan);"></i>
+                        </div>
+                        <div style="font-size:0.7rem; color:#ff9900;"><i class="fa-regular fa-clock"></i> QR Expires in <span id="qrTimer">05:00</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="ledger-modal" id="ledgerModal">
         <div class="lm-header">
             <i class="fa-solid fa-arrow-left header-action-icon" onclick="closeAllTxns(); triggerHaptic();"></i>
-            <div class="lm-title">All Transactions</div>
-            <i class="fa-solid fa-rotate-right header-action-icon" onclick="syncLiveTransactions(true); triggerHaptic();" id="ledgerRefreshIcon"></i>
+            <div class="app-title" style="font-size:1rem;">ALL TRANSACTIONS</div>
+            <i class="fa-solid fa-rotate-right header-action-icon" onclick="syncLiveTransactions(true); triggerHaptic();"></i>
         </div>
-        
-        <div class="lm-search-bar">
-            <i class="fa-solid fa-magnifying-glass lm-search-icon"></i>
-            <input type="text" class="lm-search-input" id="ledgerSearchInp" placeholder="Search by ID or Title..." onkeyup="applyLedgerFilters()">
-        </div>
-
-        <div class="lm-filters">
-            <div class="lm-filter-chip active" onclick="setLedgerFilter('All', this); triggerHaptic();">All History</div>
-            <div class="lm-filter-chip" onclick="setLedgerFilter('Credit', this); triggerHaptic();">Money In (+)</div>
-            <div class="lm-filter-chip" onclick="setLedgerFilter('Debit', this); triggerHaptic();">Money Out (-)</div>
-        </div>
-
         <div class="lm-scroll-area">
-            <div class="txn-list" id="fullTxnListContainer" style="border:none; padding:0; background:transparent; box-shadow:none;"></div>
+            <div class="txn-list" id="fullTxnListContainer" style="border:none; padding:0; background:transparent; box-shadow:none; margin-top:20px;"></div>
+        </div>
+    </div>
+
+    <div class="bottom-sheet-overlay" id="milestoneModalOverlay">
+        <div class="bottom-sheet">
+            <div class="sheet-header">
+                <div class="sheet-title"><i class="fa-solid fa-ranking-star" style="color:var(--accent-orange);"></i> Milestone Rewards</div>
+                <i class="fa-solid fa-xmark close-sheet" onclick="closeMilestoneModal()"></i>
+            </div>
+            <div id="milestoneListContainer" style="display:flex; flex-direction:column; gap:10px; padding-right:5px;">
+                </div>
         </div>
     </div>
 
     <div class="bottom-sheet-overlay" id="receiptOverlay">
         <div class="bottom-sheet">
             <div class="sheet-header">
-                <div class="sheet-title">Transaction Receipt</div>
+                <div class="sheet-title">Secure Receipt</div>
                 <i class="fa-solid fa-xmark close-sheet" onclick="closeReceipt()"></i>
             </div>
             
@@ -386,8 +436,12 @@
             <div class="rcpt-title" id="rcptTitle">Payment</div>
 
             <div class="rcpt-row">
-                <span class="rcpt-lbl">Status</span>
-                <span class="rcpt-val" id="rcptStatusVal" style="color:var(--accent-green);"><i class="fa-solid fa-circle-check"></i> Successful</span>
+                <span class="rcpt-lbl">Transaction Status</span>
+                <span class="rcpt-val" id="rcptStatusVal"></span>
+            </div>
+            <div class="rcpt-row">
+                <span class="rcpt-lbl">Category</span>
+                <span class="rcpt-val" id="rcptCat"><i class="fa-solid fa-gamepad"></i> Entry Fee</span>
             </div>
             <div class="rcpt-row">
                 <span class="rcpt-lbl">Date & Time</span>
@@ -397,522 +451,484 @@
                 <span class="rcpt-lbl">Transaction ID</span>
                 <span class="rcpt-val">
                     <span id="rcptId" style="font-size:0.85rem; color:#ccc;">TXN...</span>
-                    <i class="fa-regular fa-copy" style="color:var(--accent-cyan); cursor:pointer; padding:5px; transition:0.3s;" onclick="copyTxnId(this); triggerHaptic();"></i>
+                    <i class="fa-regular fa-copy" style="color:var(--accent-cyan); cursor:pointer; padding:5px;" onclick="copyTxnId(); triggerHaptic();"></i>
                 </span>
             </div>
-            <button class="btn-secondary" style="width:100%; background:transparent; border:1px solid #444; color:white; padding:16px; border-radius:12px; font-family:var(--font-head); font-weight:bold; margin-top:15px; cursor:pointer;" onclick="contactSupportSpecificReceipt()">Need Help with this?</button>
+            
+            <div style="display:flex; gap:10px; margin-top:20px;">
+                <button class="pay-btn" style="flex:1; background:transparent; border:1px solid var(--accent-cyan); color:var(--accent-cyan); box-shadow:none;" onclick="shareReceipt()"><i class="fa-solid fa-share-nodes"></i> Share</button>
+                <button class="pay-btn" style="flex:1; background:rgba(255,77,77,0.1); border:1px solid var(--accent-red); color:var(--accent-red); box-shadow:none;" onclick="contactSupportSpecificReceipt()"><i class="fa-solid fa-headset"></i> Support</button>
+            </div>
         </div>
     </div>
 
-    <div class="bottom-sheet-overlay" id="addMoneyOverlay">
-        <div class="bottom-sheet">
-            <div class="sheet-header">
-                <div class="sheet-title"><i class="fa-solid fa-wallet" style="color:var(--accent-cyan);"></i> Add Cash to Wallet</div>
-                <i class="fa-solid fa-xmark close-sheet" onclick="closeAddMoney()"></i>
-            </div>
-            
-            <div class="amt-input-wrapper">
-                <div class="amt-currency">Rs.</div>
-                <input type="number" id="addAmtInput" class="amt-input" placeholder="0">
-            </div>
-
-            <div class="quick-amt-grid">
-                <div class="quick-amt-btn" onclick="setAmt(50); triggerHaptic();">+50</div>
-                <div class="quick-amt-btn" onclick="setAmt(100); triggerHaptic();">+100</div>
-                <div class="quick-amt-btn" onclick="setAmt(250); triggerHaptic();">+250</div>
-                <div class="quick-amt-btn" onclick="setAmt(500); triggerHaptic();">+500</div>
-            </div>
-            
-            <button class="pay-btn" onclick="openUPIApp(); triggerHaptic();">
-                Pay via UPI App <i class="fa-solid fa-bolt"></i>
-            </button>
-            <p style="text-align:center; font-size:0.75rem; color:#888; margin-bottom:10px;">0% Gateway Fees. Secured via BHIM UPI.</p>
-
-            <div class="utr-section" id="utrStepBox">
-                <div class="utr-title">Step 2: Verify Payment</div>
-                <p class="utr-desc">After paying in your UPI app, paste the 12-digit UTR/Reference No. below to instantly add the cash to your wallet.</p>
-                <input type="number" id="utrInput" placeholder="Enter 12-digit UTR No." class="utr-input-field">
-                <button class="pay-btn" style="background: var(--card-bg); border: 1px solid var(--accent-cyan); color: var(--accent-cyan); box-shadow:none; margin-bottom:5px;" onclick="submitDirectUTR(); triggerHaptic();">
-                    Submit UTR <i class="fa-solid fa-check"></i>
-                </button>
-            </div>
-
+    <div class="cyber-scanner-overlay" id="cyberScanner">
+        <div class="cyber-circle">
+            <div class="cyber-inner"></div>
         </div>
+        <div class="cyber-text" id="scannerText">Verifying UTR...</div>
+        <div style="color:#888; font-size:0.8rem; margin-top:10px;">Connecting to banking APIs</div>
     </div>
 
-    <div class="bottom-sheet-overlay" id="supportModalOverlay">
-        <div class="bottom-sheet">
-            <div class="sheet-header">
-                <div class="sheet-title"><i class="fa-solid fa-headset" style="color:var(--accent-cyan);"></i> Select Transaction</div>
-                <i class="fa-solid fa-xmark close-sheet" onclick="closeSupportModal()"></i>
-            </div>
-            <p style="font-size:0.9rem; color:#aaa; margin-bottom:15px; line-height:1.5;">Select a recent transaction to attach to your support ticket for faster resolution:</p>
-            
-            <div id="supportTxnList" style="max-height: 40vh; overflow-y:auto; margin-bottom:15px; padding-right:5px;">
-                </div>
-
-            <button style="width:100%; background:transparent; border:1px solid #444; color:white; padding:16px; border-radius:12px; font-family:var(--font-head); font-weight:bold; cursor:pointer;" onclick="contactSupportGeneral()">I have a general inquiry instead</button>
-        </div>
+    <div class="cyber-scanner-overlay" id="celebrationModal" style="background:rgba(7,3,17,0.98);">
+        <i class="fa-solid fa-gift fa-bounce" style="font-size:6rem; color:var(--accent-orange); margin-bottom:20px; text-shadow:0 0 30px rgba(255,153,0,0.8);"></i>
+        <div class="cyber-text" style="color:white; font-size:2rem;" id="celebTitle">Level Up!</div>
+        <div style="color:var(--accent-green); font-size:1.2rem; font-family:var(--font-head); font-weight:bold; margin-top:10px;" id="celebReward">+ Rs. 50 Bonus Claimed!</div>
+        <div style="color:#aaa; font-size:0.9rem; margin-top:15px; max-width:80%; text-align:center;">Your milestone reward has been securely added to your wallet.</div>
+        <button class="pay-btn" style="width:200px; margin-top:30px;" onclick="document.getElementById('celebrationModal').classList.remove('active')">Awesome!</button>
     </div>
 
-    <div class="full-overlay" id="statusOverlay">
-        <div class="anim-circle" id="statusCircle"></div>
-        <h2 class="overlay-title" id="statusTitle">Processing...</h2>
-        <p class="overlay-desc" id="statusDesc">Please do not close this window.</p>
-    </div>
-
-    <div class="app-footer">
-        © 2026 TOURNYX. All rights reserved.<br>
-        <div style="margin-top: 10px; font-style: italic; color: #777; font-size: 0.8rem;">made with ⚡ for gamers worldwide</div>
-    </div>
+    <div id="customToast">Notification</div>
 
     <nav class="bottom-nav">
-        <a class="nav-item" href="index.html">
-            <i class="fa-solid fa-house"></i><span>Home</span>
-        </a>
-        <a class="nav-item" href="explore.html">
-            <i class="fa-solid fa-compass"></i><span>Explore</span>
-        </a>
-        <a class="nav-item" href="matches.html">
-            <i class="fa-solid fa-trophy"></i><span>Matches</span>
-        </a>
-        <div class="fab-slot">
-            <div class="floating-plus" onclick="window.location.href='tournament.html'">
-                <i class="fa-solid fa-plus"></i>
-            </div>
-        </div>
-        <a class="nav-item" href="clans.html">
-            <i class="fa-solid fa-shield-halved"></i><span>Clan</span>
-        </a>
-        <a class="nav-item active" href="wallet.html">
-            <i class="fa-solid fa-wallet"></i><span>Wallet</span>
-        </a>
-        <a class="nav-item" href="profile.html">
-            <i class="fa-solid fa-user"></i><span>Profile</span>
-        </a>
+        <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i><span>Home</span></a>
+        <a class="nav-item" href="explore.html"><i class="fa-solid fa-compass"></i><span>Explore</span></a>
+        <a class="nav-item" href="matches.html"><i class="fa-solid fa-trophy"></i><span>Matches</span></a>
+        <div class="fab-slot"><div class="floating-plus" onclick="window.location.href='tournament.html'"><i class="fa-solid fa-plus"></i></div></div>
+        <a class="nav-item" href="clans.html"><i class="fa-solid fa-shield-halved"></i><span>Clan</span></a>
+        <a class="nav-item active" href="wallet.html"><i class="fa-solid fa-wallet"></i><span>Wallet</span></a>
+        <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i><span>Profile</span></a>
     </nav>
 
     <script>
-        // --- CONFIGURATION ---
+        // --- CONSTANTS & STATE ---
         const API_URL = 'https://script.google.com/macros/s/AKfycbynNLDDXS1wMrU6RGnk4nKb1jfQkQGuqrNIKWAt8wf46MaKP6y1rwGmSJg5fmm4KYU/exec';
+        const OFFICIAL_UPI = "8608159825-2@ybl"; // Replace with your actual UPI
         let currentUser = JSON.parse(localStorage.getItem('tournyx_user'));
+        let activeReceiptId = "";
+        let qrTimerInterval;
+        
+        // 10-LEVEL MILESTONE SYSTEM CONSTANTS
+        const MILESTONES = [0, 100, 500, 1000, 2500, 5000, 10000, 25000, 50000, 100000, 500000];
+        const MS_REWARDS = [0, 10,   25,  50,   100,  250,  500,   1000,  2500,  5000,   10000];
+        let totalLifetimeDeposits = 0;
+        let userCurrentLevel = 0;
 
-        // --- STARTUP LOGIC ---
         document.addEventListener("DOMContentLoaded", function() {
-            if(!currentUser) {
-                alert("Please login to access your Wallet.");
-                window.location.href = "login.html";
-                return;
-            }
-            if(currentUser && currentUser.avatar) { document.getElementById('headerProfilePic').src = currentUser.avatar; }
+            if(!currentUser) { window.location.href = "login.html"; return; }
+            if(currentUser.avatar) document.getElementById('headerProfilePic').src = currentUser.avatar;
             
             setDynamicGreeting();
-            updateWalletDisplay();
+            
+            let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            if(isMobile) { 
+                document.getElementById('mobilePayBtn').style.display = 'block'; 
+            } else {
+                document.getElementById('qrContainer').classList.add('active');
+                setAmt(100); 
+            }
             
             let cached = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
-            if(cached.length > 0) renderTransactions();
+            if(cached.length > 0) {
+                renderTransactions();
+                calculateMilestones(cached);
+                updateWalletDisplay(); 
+            } else {
+                updateWalletDisplay();
+            }
             
-            syncLiveTransactions(false); 
-
-            // Auto-check for verified background SMS payments
-            setInterval(() => syncLiveTransactions(false, true), 8000);
+            setTimeout(() => { syncLiveTransactions(); }, 1000);
+            initParticles();
         });
 
-        function triggerHaptic() {
-            if(navigator.vibrate) navigator.vibrate(40);
+        function triggerHaptic() { if(navigator.vibrate) navigator.vibrate(40); }
+        function triggerError(id) { let el = document.getElementById(id); el.classList.add('input-error'); triggerHaptic(); setTimeout(()=>el.classList.remove('input-error'),500); }
+        function showToast(msg, isError=false) {
+            let t = document.getElementById("customToast"); t.innerText = msg;
+            t.style.backgroundColor = isError ? "#ff4d4d" : "var(--accent-green)";
+            t.style.boxShadow = isError ? "0 8px 25px rgba(255,77,77,0.6)" : "0 8px 25px rgba(0,255,127,0.6)";
+            t.className = "show"; triggerHaptic(); setTimeout(()=>t.className="", 3500);
+        }
+        function formatNum(num) { return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+
+        // --- BACKGROUND PARTICLES ---
+        function initParticles() {
+            const canvas = document.getElementById('particles-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            let particles = [];
+            class P { 
+                constructor(){ this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.s=Math.random()*2; this.vx=Math.random()*0.5-0.25; this.vy=Math.random()*0.5-0.25; } 
+                u(){ this.x+=this.vx; this.y+=this.vy; if(this.x<0||this.x>canvas.width)this.vx*=-1; if(this.y<0||this.y>canvas.height)this.vy*=-1; } 
+                d(){ ctx.fillStyle='rgba(189,0,255,0.4)'; ctx.beginPath(); ctx.arc(Math.floor(this.x),Math.floor(this.y),this.s,0,Math.PI*2); ctx.fill(); } 
+            }
+            for(let i=0;i<30;i++) particles.push(new P());
+            function anim(){ ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.u();p.d()}); requestAnimationFrame(anim); }
+            anim();
         }
 
-        // --- ERROR ANIMATION ENGINE ---
-        function triggerError(inputId) {
-            let el = document.getElementById(inputId);
-            el.classList.add('input-error');
-            triggerHaptic();
-            setTimeout(() => el.classList.remove('input-error'), 500);
-        }
-
-        function showToast(msg, isError = false) {
-            var x = document.getElementById("customToast");
-            x.innerText = msg;
-            x.style.backgroundColor = isError ? "#ff4d4d" : "var(--accent-green)";
-            x.style.color = isError ? "white" : "#000";
-            x.style.boxShadow = isError ? "0 8px 25px rgba(255,77,77,0.6)" : "0 8px 25px rgba(0,255,127,0.6)";
-            x.className = "show";
-            triggerHaptic();
-            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3500);
-        }
-
-        function animateValue(obj, start, end, duration) {
+        // --- ANIMATIONS ---
+        function animateValue(obj, start, end, duration, prefix = "", suffix = "") {
+            if (start === end) { obj.innerHTML = prefix + formatNum(end) + suffix; return; }
             let startTimestamp = null;
             const step = (timestamp) => {
                 if (!startTimestamp) startTimestamp = timestamp;
                 const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                obj.innerHTML = formatNum(Math.floor(progress * (end - start) + start));
+                obj.innerHTML = prefix + formatNum(Math.floor(progress * (end - start) + start)) + suffix;
                 if (progress < 1) { window.requestAnimationFrame(step); }
+                else { obj.innerHTML = prefix + formatNum(end) + suffix; }
             };
             window.requestAnimationFrame(step);
         }
 
-        function formatNum(num) {
-            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        }
-
+        // --- WALLET, VIP & MILESTONES ---
         function setDynamicGreeting() {
-            const hr = new Date().getHours();
-            let greet = "Welcome,";
-            if (hr < 12) greet = "Good Morning,";
-            else if (hr < 18) greet = "Good Afternoon,";
-            else greet = "Good Evening,";
-            
+            const hr = new Date().getHours(); let greet = "Welcome,";
+            if (hr < 12) greet = "Good Morning,"; else if (hr < 18) greet = "Good Afternoon,"; else greet = "Good Evening,";
             let name = currentUser.username ? currentUser.username.split(" ")[0] : "Player";
-            document.getElementById('dynamicGreeting').innerText = `${greet} ${name}`;
+            
+            // Premium Exact Level Tag
+            let isPremium = currentUser.isPremium || currentUser.premium || false;
+            let tagHTML = isPremium ? '<span style="background:var(--accent-purple); color:white; padding:2px 6px; border-radius:4px; font-size:0.6rem; margin-left:8px; font-family:var(--font-head); font-weight:bold; box-shadow:0 0 10px rgba(189,0,255,0.4);">PRO</span>' : '<span style="background:rgba(255,255,255,0.1); color:#ccc; padding:2px 6px; border-radius:4px; font-size:0.6rem; margin-left:8px; font-family:var(--font-head); font-weight:bold;">NORMAL</span>';
+            
+            document.getElementById('dynamicGreeting').innerHTML = `${greet} ${name} ${tagHTML}`;
         }
 
         let isPrivacyOn = false;
         function togglePrivacy() {
             isPrivacyOn = !isPrivacyOn;
-            const rs = document.getElementById('balanceWrapper');
-            const pts = document.getElementById('ptsWrapper');
-            const icon = document.getElementById('eyeIcon');
-            
-            if(isPrivacyOn) {
-                rs.classList.add('blur-balance'); pts.classList.add('blur-balance');
-                icon.classList.replace('fa-eye', 'fa-eye-slash');
-                icon.style.color = "var(--accent-cyan)";
-            } else {
-                rs.classList.remove('blur-balance'); pts.classList.remove('blur-balance');
-                icon.classList.replace('fa-eye-slash', 'fa-eye');
-                icon.style.color = "#888";
-            }
+            document.getElementById('balanceWrapper').classList.toggle('blur-balance');
+            document.getElementById('ptsWrapper').classList.toggle('blur-balance');
+            let eye = document.getElementById('eyeIcon');
+            if(isPrivacyOn) eye.classList.replace('fa-eye', 'fa-eye-slash'); else eye.classList.replace('fa-eye-slash', 'fa-eye');
         }
 
         function updateWalletDisplay() {
-            let uRupees = parseInt(currentUser.rupees) || 0;
-            let uPoints = parseInt(currentUser.points) || 0;
+            let rs = parseInt(currentUser.rupees) || 0;
+            let pts = parseInt(currentUser.points) || 0;
             
-            let rsEl = document.getElementById('displayRupees');
-            animateValue(rsEl, 0, uRupees, 1000);
+            animateValue(document.getElementById('displayRupees'), 0, rs, 1500);
+            animateValue(document.getElementById('displayPoints'), 0, pts, 1500);
             
-            document.getElementById('displayPoints').innerText = formatNum(uPoints) + " PTS";
+            let badge = document.getElementById('vipBadge');
+            let prog = document.getElementById('vipProgress');
+            let nTier = document.getElementById('nextTierText');
+            if (rs >= 5000) { badge.innerHTML = '<i class="fa-solid fa-crown"></i> GOLD TIER'; badge.className = 'vip-badge'; prog.style.width = '100%'; nTier.innerText = "Diamond"; }
+            else if (rs >= 1000) { badge.innerHTML = '<i class="fa-solid fa-star"></i> SILVER TIER'; badge.className = 'vip-badge vip-silver'; prog.style.width = ((rs/5000)*100)+'%'; nTier.innerText = "Gold"; }
+            else { badge.innerHTML = '<i class="fa-solid fa-medal"></i> BRONZE TIER'; badge.className = 'vip-badge vip-bronze'; prog.style.width = ((rs/1000)*100)+'%'; nTier.innerText = "Silver"; }
         }
 
-        // --- ADD MONEY LOGIC & TRANSITIONS ---
+        function calculateMilestones(txns) {
+            totalLifetimeDeposits = 0;
+            txns.forEach(t => {
+                if(t.type === 'Credit' && t.category === 'Deposit' && t.status === 'Success') {
+                    totalLifetimeDeposits += parseInt(t.amount) || 0;
+                }
+            });
+
+            if(totalLifetimeDeposits === 0) {
+                document.getElementById('firstDepositBanner').style.display = 'flex';
+                document.getElementById('dailyBonusBanner').style.display = 'none';
+                document.querySelectorAll('.display-bonus').forEach(el => el.style.display = 'block');
+            } else {
+                document.getElementById('firstDepositBanner').style.display = 'none';
+                document.getElementById('dailyBonusBanner').style.display = 'flex';
+                document.querySelectorAll('.display-bonus').forEach(el => el.style.display = 'none');
+            }
+
+            userCurrentLevel = 0;
+            for(let i=1; i<MILESTONES.length; i++) {
+                if(totalLifetimeDeposits >= MILESTONES[i]) userCurrentLevel = i; else break;
+            }
+            
+            // --- AUTO CLAIM ENGINE ---
+            let claimedMs = JSON.parse(localStorage.getItem('tournyx_ms_claimed')) || [];
+            let newlyClaimed = 0;
+            let claimsMade = [];
+            
+            for(let i=1; i<=userCurrentLevel; i++) {
+                if(!claimedMs.includes(i)) {
+                    newlyClaimed += MS_REWARDS[i];
+                    claimedMs.push(i);
+                    claimsMade.push(i);
+                }
+            }
+
+            if (newlyClaimed > 0) {
+                localStorage.setItem('tournyx_ms_claimed', JSON.stringify(claimedMs));
+                currentUser.rupees = (parseInt(currentUser.rupees) || 0) + newlyClaimed;
+                localStorage.setItem('tournyx_user', JSON.stringify(currentUser));
+                
+                let dateStr = new Date().toLocaleString('en-US', { month:'short', day:'2-digit', hour:'numeric', minute:'2-digit', hour12:true });
+                let bonusTxn = {
+                    id: "MS" + Math.floor(Math.random()*100000),
+                    title: "Level " + claimsMade.join(',') + " Milestone Bonus",
+                    amount: newlyClaimed, type: "Credit", status: "Success", category: "Bonus", date: dateStr
+                };
+                txns.unshift(bonusTxn);
+                localStorage.setItem('tournyx_txns', JSON.stringify(txns));
+                
+                document.getElementById('celebReward').innerText = `+ Rs. ${newlyClaimed} Bonus Auto-Claimed!`;
+                document.getElementById('celebrationModal').classList.add('active');
+                playSuccessSound();
+                
+                fetch(API_URL, {
+                    method: 'POST', mode: 'no-cors',
+                    body: JSON.stringify({ action: "claim_offer", email: currentUser.email, offerName: "Milestone Auto-Claim Levels: " + claimsMade.join(','), reward: newlyClaimed })
+                });
+
+                updateWalletDisplay();
+                renderTransactions();
+            }
+
+            let nextVal = MILESTONES[userCurrentLevel + 1] || MILESTONES[10];
+            let nextReward = MS_REWARDS[userCurrentLevel + 1] || 0;
+            let progressPct = (totalLifetimeDeposits / nextVal) * 100;
+            if(progressPct > 100) progressPct = 100;
+
+            document.getElementById('msLevel').innerText = userCurrentLevel + 1;
+            document.getElementById('msTotal').innerText = formatNum(totalLifetimeDeposits);
+            document.getElementById('msNext').innerText = formatNum(nextVal);
+            document.getElementById('msRewardText').innerText = `Reward: Rs. ${formatNum(nextReward)}`;
+            setTimeout(() => { document.getElementById('msBar').style.width = progressPct + "%"; }, 800);
+        }
+
+        // --- MILESTONE MODAL UI ---
+        function openMilestoneModal() {
+            let container = document.getElementById('milestoneListContainer');
+            container.innerHTML = "";
+            let claimedMs = JSON.parse(localStorage.getItem('tournyx_ms_claimed')) || [];
+
+            for(let i=1; i<MILESTONES.length; i++) {
+                let target = MILESTONES[i];
+                let reward = MS_REWARDS[i];
+                let isClaimed = claimedMs.includes(i);
+                let isCurrentTarget = (i === userCurrentLevel + 1);
+                
+                let statusHtml = "";
+                let itemClass = "ms-level-item";
+                
+                if (isClaimed) {
+                    statusHtml = `<span style="color:var(--accent-green); font-size:0.8rem; font-weight:bold;"><i class="fa-solid fa-check-circle"></i> Claimed</span>`;
+                    itemClass += " claimed";
+                } else if (isCurrentTarget) {
+                    statusHtml = `<span style="color:var(--accent-orange); font-size:0.8rem; font-weight:bold;"><i class="fa-solid fa-lock-open"></i> Next Goal</span>`;
+                    itemClass += " current";
+                } else {
+                    statusHtml = `<span style="color:#888; font-size:0.8rem;"><i class="fa-solid fa-lock"></i> Locked</span>`;
+                    itemClass += " locked";
+                }
+
+                container.innerHTML += `
+                    <div class="${itemClass}">
+                        <div>
+                            <div style="font-family:var(--font-head); color:white; font-size:1.1rem; font-weight:bold;">Level ${i}</div>
+                            <div style="font-size:0.8rem; color:#aaa;">Deposit Rs. ${formatNum(target)}</div>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="color:var(--accent-cyan); font-weight:bold; margin-bottom:3px;">+ Rs. ${formatNum(reward)}</div>
+                            ${statusHtml}
+                        </div>
+                    </div>`;
+            }
+            document.getElementById('milestoneModalOverlay').classList.add('active');
+        }
+        function closeMilestoneModal() { document.getElementById('milestoneModalOverlay').classList.remove('active'); }
+
+        // --- UTR PAYMENT SYSTEM ---
         function openAddMoney() { 
             document.getElementById('addMoneyOverlay').classList.add('active'); 
+            document.getElementById('officialUPI').innerText = OFFICIAL_UPI;
+            startQRTimer();
         }
         function closeAddMoney() { 
             document.getElementById('addMoneyOverlay').classList.remove('active'); 
-            document.getElementById('addAmtInput').value = ""; 
-            document.getElementById('utrInput').value = "";
-            document.getElementById('utrStepBox').classList.remove('active'); // reset transition
+            document.getElementById('addAmtInput').value = ""; document.getElementById('utrInput').value = "";
+            let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            if(isMobile) document.getElementById('qrContainer').classList.remove('active');
+            clearInterval(qrTimerInterval);
         }
-        function setAmt(val) { document.getElementById('addAmtInput').value = val; }
+        function setAmt(val) { document.getElementById('addAmtInput').value = val; updateQR(); }
 
-        function openUPIApp() {
+        function updateQR() {
             let amt = parseInt(document.getElementById('addAmtInput').value);
+            let qrBox = document.getElementById('qrContainer');
             if(isNaN(amt) || amt < 10) { 
-                triggerError('addAmtInput');
-                showToast("Enter a valid amount (Min Rs 10)", true); 
+                let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                if(isMobile) qrBox.classList.remove('active'); 
                 return; 
             }
             
-            // ⚠️ REPLACE THIS WITH YOUR ACTUAL UPI ID ⚠️
-            let yourUpiId = "8608159825-2@ybl"; 
-            
-            let upiLink = `upi://pay?pa=${yourUpiId}&pn=Tournyx Esports&am=${amt}&cu=INR`;
-            window.location.href = upiLink; 
-            
-            // Trigger the transition: Reveal the UTR box smoothly!
-            document.getElementById('utrStepBox').classList.add('active');
+            qrBox.classList.add('active');
+            document.getElementById('qrAmtText').innerText = `Rs. ${amt}`;
+            let upiLink = `upi://pay?pa=${OFFICIAL_UPI}&pn=Tournyx%20Esports&am=${amt}&cu=INR`;
+            document.getElementById('dynamicQR').src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiLink)}`;
         }
 
-        function submitDirectUTR() {
+        function startQRTimer() {
+            let time = 300; 
+            let el = document.getElementById('qrTimer');
+            clearInterval(qrTimerInterval);
+            qrTimerInterval = setInterval(() => {
+                let m = Math.floor(time/60); let s = time % 60;
+                el.innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
+                if(time <= 0) { clearInterval(qrTimerInterval); closeAddMoney(); showToast("QR Session Expired.", true); }
+                time--;
+            }, 1000);
+        }
+
+        function openUPIApp() {
             let amt = parseInt(document.getElementById('addAmtInput').value);
-            let utr = document.getElementById('utrInput').value;
+            if(isNaN(amt) || amt < 10) { triggerError('addAmtInput'); showToast("Enter minimum Rs 10", true); return; }
+            window.location.href = `upi://pay?pa=${OFFICIAL_UPI}&pn=Tournyx%20Esports&am=${amt}&cu=INR`;
+        }
+        function copyUPI() { navigator.clipboard.writeText(OFFICIAL_UPI).then(()=>showToast("UPI ID Copied!")); triggerHaptic(); }
+
+        function submitStrictUTR() {
+            let amt = parseInt(document.getElementById('addAmtInput').value);
+            let utr = document.getElementById('utrInput').value.trim();
             
-            let hasError = false;
-            if(isNaN(amt) || amt < 10) { triggerError('addAmtInput'); hasError = true; }
-            if(utr.length < 12) { triggerError('utrInput'); hasError = true; }
-            
-            if(hasError) {
-                showToast("Please fix the highlighted fields", true);
-                return;
-            }
+            if(isNaN(amt) || amt < 10) { triggerError('addAmtInput'); showToast("Invalid Amount", true); return; }
+            if(!/^\d{12}$/.test(utr)) { triggerError('utrInput'); showToast("UTR must be exactly 12 digits.", true); return; }
 
             closeAddMoney();
 
-            // Setup the Attractive SMS Loader
-            const overlay = document.getElementById('statusOverlay');
-            const circle = document.getElementById('statusCircle');
-            overlay.classList.add('active');
-            document.getElementById('statusTitle').innerText = "Processing UTR...";
-            document.getElementById('statusDesc').innerText = "Listening for Bank SMS auto-verification...";
+            const scanner = document.getElementById('cyberScanner');
+            const txt = document.getElementById('scannerText');
+            scanner.classList.add('active'); txt.innerText = "Analyzing UTR...";
+            setTimeout(() => { txt.innerText = "Checking Bank APIs..."; }, 1500);
             
-            circle.className = 'anim-circle loader-radar'; 
-            circle.innerHTML = '';
-
-            fetch(API_URL, {
-                method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify({ action: "submit_utr", email: currentUser.email, amount: amt, utr: utr })
-            }).then(() => {
-                circle.className = 'anim-circle anim-success';
-                circle.innerHTML = '<i class="fa-solid fa-check"></i>';
-                document.getElementById('statusTitle').innerText = "UTR Submitted!";
-                document.getElementById('statusDesc').innerText = "Wallet will update automatically within seconds.";
-                triggerHaptic();
+            setTimeout(() => {
+                scanner.classList.remove('active');
                 
-                setTimeout(hideOverlay, 3500);
-                setTimeout(() => syncLiveTransactions(false), 2000);
-            }).catch(e => {
-                circle.className = 'anim-circle anim-error';
-                circle.innerHTML = '<i class="fa-solid fa-xmark"></i>';
-                document.getElementById('statusTitle').innerText = "Network Error";
-                document.getElementById('statusDesc').innerText = "Failed to submit. Check your connection.";
-                triggerHaptic();
-                setTimeout(hideOverlay, 3500);
-            });
+                let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
+                let dateStr = new Date().toLocaleString('en-US', { month:'short', day:'2-digit', hour:'numeric', minute:'2-digit', hour12:true });
+                let isFirstDeposit = totalLifetimeDeposits === 0;
+                
+                let newTxn = { id: "TXN" + utr.substring(6), title: "Deposit via UPI", amount: amt, type: "Credit", status: "Pending", category: "Deposit", date: dateStr };
+                txns.unshift(newTxn);
+
+                if(isFirstDeposit) {
+                    let bonusTxn = { id: "BONUS" + Math.floor(Math.random()*10000), title: "First Deposit Bonus", amount: 20, type: "Credit", status: "Success", category: "Bonus", date: dateStr };
+                    txns.unshift(bonusTxn);
+                    
+                    currentUser.rupees = (parseInt(currentUser.rupees) || 0) + 20;
+                    localStorage.setItem('tournyx_user', JSON.stringify(currentUser));
+                    updateWalletDisplay(); 
+                    showToast("UTR Pending. Rs. 20 First Deposit Bonus added instantly!");
+                } else {
+                    showToast("UTR Submitted! Pending Admin/API Verification.");
+                }
+                
+                localStorage.setItem('tournyx_txns', JSON.stringify(txns));
+                renderTransactions();
+                calculateMilestones(txns);
+                
+                fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "submit_utr", email: currentUser.email, amount: amt, utr: utr }) });
+                if(isFirstDeposit) fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "claim_offer", email: currentUser.email, offerName: "First Deposit Bonus", reward: 20 }) });
+
+            }, 3000);
         }
 
-        function hideOverlay() { document.getElementById('statusOverlay').classList.remove('active'); }
-
-        // --- TRANSACTION LEDGER RENDERING ---
+        // --- LEDGER RENDERING ENGINE ---
         function renderTransactions() {
             const container = document.getElementById('txnListContainer');
             let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
-
             container.innerHTML = "";
-            if (txns.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding:30px 20px; color:#666;"><i class="fa-solid fa-ghost" style="font-size:2rem; margin-bottom:10px; opacity:0.5;"></i><br>No transactions found.</div>`;
-                return;
-            }
-
-            txns.slice(0, 4).forEach((t, i) => { container.innerHTML += buildTxnHtml(t, i); });
+            if (txns.length === 0) { container.innerHTML = `<div style="text-align:center; padding:30px; color:#666;">No recent transactions.</div>`; return; }
+            txns.slice(0, 5).forEach((t, i) => { container.innerHTML += buildTxnHtml(t, i); });
         }
 
-        function buildTxnHtml(t, delayIndex) {
-            let isCredit = t.type === "Credit";
-            let isPending = t.status === "Pending";
+        function openAllTxns() {
+            document.getElementById('ledgerModal').classList.add('active');
+            let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
+            const container = document.getElementById('fullTxnListContainer');
+            container.innerHTML = "";
+            txns.forEach((t, i) => { container.innerHTML += buildTxnHtml(t, i); });
+        }
+        function closeAllTxns() { document.getElementById('ledgerModal').classList.remove('active'); }
+
+        function buildTxnHtml(t, delay) {
+            let isCredit = t.type === "Credit"; let isPending = t.status === "Pending";
             
-            let iconClass = isCredit ? "fa-arrow-down icon-credit" : "fa-arrow-up icon-debit";
-            if(isPending) iconClass = "fa-clock icon-debit"; // Pending Look
+            let cat = t.category || "General"; let catIcon = "fa-money-bill";
+            let iconClass = isCredit ? "icon-credit" : "icon-debit"; let mainIcon = isCredit ? "fa-arrow-down" : "fa-arrow-up";
+            
+            let titleLower = t.title.toLowerCase();
+            if(titleLower.includes('tournament') || titleLower.includes('entry') || titleLower.includes('register')) { cat = "Entry Fee"; catIcon = "fa-gamepad"; iconClass = "icon-entry"; mainIcon = "fa-gamepad"; }
+            if(titleLower.includes('prize') || titleLower.includes('won')) { cat = "Prize Won"; catIcon = "fa-trophy"; iconClass = "icon-prize"; mainIcon = "fa-trophy"; }
+            if(titleLower.includes('deposit') || titleLower.includes('upi')) { cat = "Deposit"; catIcon = "fa-wallet"; }
+            if(titleLower.includes('bonus')) { cat = "Bonus"; catIcon = "fa-bolt"; iconClass = "icon-bonus"; mainIcon = "fa-bolt"; }
+            
+            if(isPending) { iconClass = "icon-debit"; mainIcon = "fa-clock"; }
 
             let amtClass = isCredit ? "amt-credit" : "amt-debit";
-            let prefix = isCredit ? "+" : "-";
             let statusColor = isPending ? "#ff9900" : (isCredit ? "var(--accent-green)" : "var(--accent-red)");
+            let inOutLabel = isCredit ? `<div class="in-out-label in-label">MONEY IN</div>` : `<div class="in-out-label out-label">MONEY OUT</div>`;
 
             return `
-                <div class="txn-item" style="animation-delay:${delayIndex * 0.1}s" onclick="openReceipt('${t.id}')">
+                <div class="txn-item glow-hover" style="animation-delay:${delay*0.1}s" onclick="openReceipt('${t.id}')">
                     <div class="txn-left">
-                        <div class="txn-icon ${iconClass.split(' ')[1]}"><i class="fa-solid ${iconClass.split(' ')[0]}"></i></div>
+                        <div class="txn-icon ${iconClass}"><i class="fa-solid ${mainIcon}"></i></div>
                         <div class="txn-info">
                             <h4>${t.title}</h4>
-                            <p>${t.date}</p>
+                            <p><span class="cat-tag"><i class="fa-solid ${catIcon}"></i> ${cat}</span> ${t.date.split(',')[0]}</p>
                         </div>
                     </div>
                     <div class="txn-right">
-                        <div class="txn-amt ${amtClass}">${prefix} Rs. ${formatNum(t.amount)}</div>
+                        ${inOutLabel}
+                        <div class="txn-amt ${amtClass}">${isCredit?'+':'-'} Rs.${formatNum(t.amount)}</div>
                         <div class="txn-status" style="color:${statusColor};">${t.status}</div>
                     </div>
                 </div>`;
         }
 
-        function formatDateTime(dateObj) {
-            const options = { month: 'short', day: '2-digit', hour: 'numeric', minute: '2-digit', hour12: true };
-            return dateObj.toLocaleString('en-US', options);
-        }
-
-        // --- LIVE SYNC ENGINE ---
-        function syncLiveTransactions(manual = false, silent = false) {
-            if(manual) {
-                let icon = document.getElementById('ledgerRefreshIcon');
-                if(icon) icon.classList.add('fa-spin');
-            }
-            
-            fetch(API_URL + "?action=get_transactions&email=" + encodeURIComponent(currentUser.email))
-            .then(res => res.json())
-            .then(data => {
-                if(data.status === "success" && data.data) {
-                    
-                    // Check if any Pending UTRs were just verified by the SMS webhook
-                    let oldTxns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
-                    let newlyVerified = false;
-                    
-                    if(oldTxns.length > 0) {
-                        data.data.forEach(newT => {
-                            let oldT = oldTxns.find(o => o.id === newT.id);
-                            if(oldT && oldT.status === "Pending" && newT.status === "Success") {
-                                currentUser.rupees = (parseInt(currentUser.rupees) || 0) + Number(newT.amount);
-                                newlyVerified = true;
-                            }
-                        });
-                    }
-
-                    if(newlyVerified) {
-                        localStorage.setItem('tournyx_user', JSON.stringify(currentUser));
-                        updateWalletDisplay();
-                        showToast("UTR Verified! Balance Updated.", false);
-                    }
-
-                    localStorage.setItem('tournyx_txns', JSON.stringify(data.data));
-                    if(!silent || newlyVerified) renderTransactions();
-                    if(document.getElementById('ledgerModal').classList.contains('active')) applyLedgerFilters();
-                    if(manual) showToast("Ledger synced successfully.");
+        function syncLiveTransactions(manual = false) {
+            if(manual) { let icon = document.querySelector('.fa-rotate-right'); if(icon) icon.classList.add('fa-spin'); }
+            fetch(API_URL + "?action=get_transactions&email=" + encodeURIComponent(currentUser.email)).then(r=>r.json()).then(d => {
+                if(d.status === "success") {
+                    localStorage.setItem('tournyx_txns', JSON.stringify(d.data));
+                    renderTransactions();
+                    calculateMilestones(d.data);
+                    if(manual) showToast("Ledger Synced.");
                 }
-            }).catch(e => {
-                if(manual) showToast("Offline: Showing cached transactions.", true);
-            }).finally(() => {
-                if(manual) {
-                    let icon = document.getElementById('ledgerRefreshIcon');
-                    if(icon) setTimeout(() => icon.classList.remove('fa-spin'), 500);
-                }
+            }).catch(e=>{}).finally(() => {
+                if(manual) { let icon = document.querySelector('.fa-rotate-right'); if(icon) setTimeout(()=>icon.classList.remove('fa-spin'), 500); }
             });
         }
 
-        // --- FULL LEDGER MODAL (View All) ---
-        let currentLedgerFilter = 'All';
-
-        function openAllTxns() {
-            document.getElementById('ledgerModal').classList.add('active');
-            applyLedgerFilters();
-        }
-        function closeAllTxns() {
-            document.getElementById('ledgerModal').classList.remove('active');
-        }
-        
-        function setLedgerFilter(filter, el) {
-            document.querySelectorAll('.lm-filter-chip').forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
-            currentLedgerFilter = filter;
-            applyLedgerFilters();
-        }
-
-        function applyLedgerFilters() {
-            const container = document.getElementById('fullTxnListContainer');
+        // --- RECEIPT ENGINE ---
+        function openReceipt(id) {
             let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
-            let searchQ = document.getElementById('ledgerSearchInp').value.toLowerCase();
-
-            let filtered = txns;
-            if (currentLedgerFilter !== 'All') { filtered = filtered.filter(t => t.type === currentLedgerFilter); }
-            if (searchQ) { filtered = filtered.filter(t => t.id.toLowerCase().includes(searchQ) || t.title.toLowerCase().includes(searchQ)); }
-
-            container.innerHTML = "";
-            if (filtered.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-ledger">
-                        <i class="fa-solid fa-file-invoice-dollar" style="font-size:3rem; opacity:0.3; margin-bottom:15px; color:var(--accent-purple);"></i>
-                        <h3 style="color:white; font-family:var(--font-head);">No Transactions Found</h3>
-                        <p style="font-size:0.85rem; margin-top:5px;">Try adjusting your search or filters.</p>
-                    </div>`;
-                return;
-            }
-
-            filtered.forEach((t, i) => { container.innerHTML += buildTxnHtml(t, i); });
-        }
-
-        // --- RECEIPT MODAL ---
-        let activeReceiptId = "";
-        function openReceipt(txnId) {
-            let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
-            let t = txns.find(x => x.id === txnId);
-            if(!t) return;
-
-            activeReceiptId = txnId;
-            let isCredit = t.type === "Credit";
-            let isPending = t.status === "Pending";
+            let t = txns.find(x => x.id === id); if(!t) return;
+            activeReceiptId = id;
+            
+            let isCredit = t.type === "Credit"; let isPending = t.status === "Pending";
+            let catStr = `<i class="fa-solid fa-gamepad"></i> General`;
+            if (t.category === "Deposit") catStr = `<i class="fa-solid fa-wallet"></i> Deposit`;
+            else if (t.category === "Bonus") catStr = `<i class="fa-solid fa-bolt"></i> Bonus`;
+            else if (t.category === "Prize Won") catStr = `<i class="fa-solid fa-trophy"></i> Prize Won`;
             
             let iconEl = document.getElementById('rcptIcon');
-            iconEl.innerHTML = `<i class="fa-solid ${isPending ? 'fa-clock' : (isCredit ? 'fa-arrow-down' : 'fa-arrow-up')}"></i>`;
+            iconEl.innerHTML = `<i class="fa-solid ${isPending ? 'fa-clock' : (isCredit ? 'fa-check' : 'fa-arrow-up')}"></i>`;
             iconEl.className = `rcpt-icon ${isPending ? 'icon-debit' : (isCredit ? 'icon-credit' : 'icon-debit')}`;
-            if(!isPending) iconEl.style.boxShadow = isCredit ? "0 0 20px rgba(0,255,127,0.4)" : "0 0 20px rgba(255,77,77,0.4)";
-
-            let prefix = isCredit ? "+" : "-";
-            document.getElementById('rcptAmt').innerText = `${prefix} Rs. ${formatNum(t.amount)}`;
-            document.getElementById('rcptAmt').className = `rcpt-amt ${isCredit ? 'amt-credit' : 'amt-debit'}`;
             
+            document.getElementById('rcptAmt').innerText = `${isCredit?'+':'-'} Rs. ${formatNum(t.amount)}`;
+            document.getElementById('rcptAmt').className = `rcpt-amt ${isCredit ? 'amt-credit' : 'amt-debit'}`;
             document.getElementById('rcptTitle').innerText = t.title;
+            document.getElementById('rcptCat').innerHTML = catStr;
             document.getElementById('rcptDate').innerText = t.date;
             document.getElementById('rcptId').innerText = t.id;
-
-            let statusEl = document.getElementById('rcptStatusVal');
-            if(isPending) {
-                statusEl.innerHTML = `<i class="fa-solid fa-clock"></i> Pending`;
-                statusEl.style.color = "#ff9900";
-            } else {
-                statusEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> Successful`;
-                statusEl.style.color = "var(--accent-green)";
-            }
+            
+            let sEl = document.getElementById('rcptStatusVal');
+            sEl.innerHTML = isPending ? `<i class="fa-solid fa-clock"></i> Pending` : `<i class="fa-solid fa-circle-check"></i> Successful`;
+            sEl.style.color = isPending ? "#ff9900" : "var(--accent-green)";
 
             document.getElementById('receiptOverlay').classList.add('active');
         }
+        function closeReceipt() { document.getElementById('receiptOverlay').classList.remove('active'); }
+        function copyTxnId() { navigator.clipboard.writeText(activeReceiptId); showToast("TXN ID Copied!"); }
 
-        function closeReceipt() { document.getElementById('receiptOverlay').classList.remove('active'); activeReceiptId = ""; }
-        function copyTxnId(iconEl) {
-            navigator.clipboard.writeText(activeReceiptId).then(() => {
-                showToast("Transaction ID Copied!");
-                if(iconEl) {
-                    iconEl.classList.replace('fa-copy', 'fa-check');
-                    setTimeout(()=>iconEl.classList.replace('fa-check', 'fa-copy'), 2000);
-                }
-            });
-        }
-
-        // --- SUPPORT ROUTER LOGIC ---
-        function openSupportModal() {
-            const container = document.getElementById('supportTxnList');
-            let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
-            
-            container.innerHTML = "";
-            if (txns.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding:10px; color:#666; font-size:0.8rem;">No recent transactions available.</div>`;
-            } else {
-                txns.slice(0, 5).forEach(t => {
-                    let color = t.status === "Pending" ? "#ff9900" : (t.type === "Credit" ? "var(--accent-green)" : "var(--accent-red)");
-                    let prefix = t.type === "Credit" ? "+" : "-";
-                    container.innerHTML += `
-                        <div class="sup-txn-item" onclick="contactSupportSpecific('${t.id}', '${t.amount}', '${t.type}', '${t.date}')">
-                            <div style="min-width:0; padding-right:10px;">
-                                <h5 style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${t.title}</h5>
-                                <p>${t.date}</p>
-                            </div>
-                            <div style="color:${color}; font-family:var(--font-head); font-weight:bold; flex-shrink:0;">${prefix}Rs. ${t.amount}</div>
-                        </div>
-                    `;
-                });
-            }
-            document.getElementById('supportModalOverlay').classList.add('active');
-        }
-
-        function closeSupportModal() { document.getElementById('supportModalOverlay').classList.remove('active'); }
-
-        function contactSupportSpecific(txnId, amount, type, date) {
-            let msg = `Hello Tournyx Support, I need help with a transaction.%0A%0A*Transaction ID:* ${txnId}%0A*Amount:* Rs. ${amount}%0A*Type:* ${type}%0A*Date:* ${date}%0A*User Email:* ${currentUser.email}%0A%0APlease assist me with...`;
-            window.open(`https://wa.me/919876543210?text=${msg}`, '_blank');
-            closeSupportModal();
+        function shareReceipt() {
+            let msg = `🧾 Tournyx Receipt\nID: ${activeReceiptId}\nStatus: Verified\nAmount: Rs. ${document.getElementById('rcptAmt').innerText}`;
+            if(navigator.share) navigator.share({title: 'Receipt', text: msg});
+            else { navigator.clipboard.writeText(msg); showToast("Receipt Copied!"); }
         }
 
         function contactSupportSpecificReceipt() {
-            let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
-            let t = txns.find(x => x.id === activeReceiptId);
-            if(t) contactSupportSpecific(t.id, t.amount, t.type, t.date);
-            closeReceipt();
+            let msg = `Help needed for TXN: ${activeReceiptId}. Email: ${currentUser.email}`;
+            window.open(`https://wa.me/919876543210?text=${encodeURIComponent(msg)}`, '_blank');
         }
-
-        function contactSupportGeneral() {
-            let msg = `Hello Tournyx Support, I need some assistance with my account. (%0AUser: ${currentUser.email})`;
-            window.open(`https://wa.me/919876543210?text=${msg}`, '_blank');
-            closeSupportModal();
-        }
-
-        // --- PARTICLES ---
-        const canvas = document.getElementById('particles-canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        let particles = [];
-        class P { constructor(){ this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.s=Math.random()*2; this.vx=Math.random()*0.5-0.25; this.vy=Math.random()*0.5-0.25; } u(){ this.x+=this.vx; this.y+=this.vy; if(this.x<0||this.x>canvas.width)this.vx*=-1; if(this.y<0||this.y>canvas.height)this.vy*=-1; } d(){ ctx.fillStyle='rgba(189,0,255,0.4)'; ctx.beginPath(); ctx.arc(Math.floor(this.x),Math.floor(this.y),this.s,0,Math.PI*2); ctx.fill(); } }
-        for(let i=0;i<25;i++) particles.push(new P());
-        function anim(){ ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.u();p.d()}); requestAnimationFrame(anim); }
-        anim();
-        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
-
     </script>
 </body>
 </html>
