@@ -85,7 +85,7 @@
         .out-label { background: rgba(255,77,77,0.15); color: var(--accent-red); border: 1px solid rgba(255,77,77,0.3); }
         .txn-amt { font-family: var(--font-head); font-size: 1.15rem; font-weight: bold; }
         .amt-debit { color: var(--accent-red); text-shadow: 0 0 10px rgba(255,77,77,0.3); }
-        .txn-status { font-size: 0.7rem; color: #aaa; text-transform: uppercase; margin-top: 3px; background: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 6px; display: inline-block; font-weight:bold;}
+        .txn-status { font-size: 0.7rem; text-transform: uppercase; margin-top: 3px; background: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 6px; display: inline-block; font-weight:bold;}
         .empty-history { text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 30px 20px; border: 1px dashed var(--card-border); border-radius: 12px; background: rgba(0,0,0,0.3); }
         .bottom-sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 5000; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(5px); opacity: 0; transition: 0.4s; }
         .bottom-sheet-overlay.active { display: flex; opacity: 1; }
@@ -146,7 +146,7 @@
         <div class="balance-card animate-section delay-1">
             <div class="balance-label">Available to Withdraw</div>
             <div class="balance-amount"><span style="font-size:1.5rem; color:var(--accent-cyan);">Rs.</span> <span id="displayBalance"><i class="fa-solid fa-spinner fa-spin" style="font-size:1.5rem;"></i></span></div>
-            <div id="etaDisplay" style="margin-top:10px; font-size:0.75rem; color:var(--accent-green); font-family:var(--font-head); font-weight:bold; background:rgba(0,255,127,0.1); padding:4px 10px; border-radius:10px; display:inline-block; border:1px solid rgba(0,255,127,0.3);"><i class="fa-solid fa-bolt"></i> Payout ETA: 24 Hrs</div>
+            <div id="etaDisplay" style="margin-top:10px; font-size:0.75rem; color:var(--accent-green); font-family:var(--font-head); font-weight:bold; background:rgba(0,255,127,0.1); padding:4px 10px; border-radius:10px; display:inline-block; border:1px solid rgba(0,255,127,0.3);"><i class="fa-solid fa-bolt"></i> Payout ETA: 24-48 Hrs</div>
         </div>
 
         <div class="form-group animate-section delay-2">
@@ -268,7 +268,6 @@
     </nav>
 
     <script>
-        // --- 1. MOBILE KEYBOARD NAVIGATION FIX ---
         const inputs = document.querySelectorAll('input, select, textarea');
         const bNav = document.querySelector('.bottom-nav');
         inputs.forEach(inp => {
@@ -292,7 +291,6 @@
             orbs[1].style.transform = `translate(-${x * 40}px, -${y * 40}px)`;
         });
 
-        // --- 2. GOOGLE APPS SCRIPT CONFIG ---
         const API_URL = 'https://script.google.com/macros/s/AKfycbynNLDDXS1wMrU6RGnk4nKb1jfQkQGuqrNIKWAt8wf46MaKP6y1rwGmSJg5fmm4KYU/exec'; 
         
         let userData = JSON.parse(localStorage.getItem('tournyx_user'));
@@ -337,7 +335,6 @@
         }
         function hideOverlay() { document.getElementById('cyberScanner').classList.remove('active'); }
 
-        // --- 4. FETCH LIVE DATA FROM SERVER & SETUP UI ---
         async function initPageData() {
             if(userData.avatar) document.getElementById('headerProfilePic').src = userData.avatar;
             
@@ -387,10 +384,8 @@
             }
             
             syncLiveTransactions(false);
-            setInterval(() => { syncLiveTransactions(false); }, 10000); // 10 Second Auto-Sync
         }
 
-        // --- 5. UI FUNCTIONS & MATH ---
         function setAmount(val) {
             let currentInp = parseFloat(document.getElementById('withdrawAmount').value) || 0;
             document.getElementById('withdrawAmount').value = currentInp + val;
@@ -422,14 +417,12 @@
             const errorDiv = document.getElementById('amountError');
             const btn = document.getElementById('withdrawBtn');
             
-            // --- PERFECTED COMMISSION MATH ---
             let currentFeePct = platformFeePercentage;
             if (!isPremiumUser) {
                 if (grossAmount >= 10000) currentFeePct += 0.03; 
                 else if (grossAmount >= 5000) currentFeePct += 0.02;
-            } else { currentFeePct = 0.05; } // PRO Lock
+            } else { currentFeePct = 0.05; }
 
-            // Fee is subtracted FROM the gross amount. 
             let fee = Math.ceil(grossAmount * currentFeePct);
             let netPayout = grossAmount - fee;
 
@@ -452,7 +445,6 @@
         function loadSavedPaymentData(forceMethod = null) { let saved = JSON.parse(localStorage.getItem('tournyx_saved_upi')); if(saved) { if(!forceMethod) { document.getElementById('paymentMethod').value = saved.method; updatePaymentPlaceholder(); } if(saved.method === document.getElementById('paymentMethod').value) { document.getElementById('paymentDetails').value = saved.detail1; if(saved.method === 'bank') document.getElementById('paymentDetails2').value = saved.detail2; } else { document.getElementById('paymentDetails').value = ""; document.getElementById('paymentDetails2').value = ""; } } }
         function clearSavedData() { localStorage.removeItem('tournyx_saved_upi'); document.getElementById('paymentDetails').value = ""; document.getElementById('paymentDetails2').value = ""; showToast("Saved details cleared."); }
 
-        // --- 6. SMART DATE PARSER (Fixes Daily Limit Resets) ---
         function isTransactionToday(dateStr) {
             if(!dateStr) return false;
             let d = new Date();
@@ -462,7 +454,6 @@
             return dateStr.includes(t1) || dateStr.includes(t2) || dateStr.includes("Today");
         }
 
-        // --- 7. FETCH STATUS HISTORY ---
         function syncLiveTransactions(manual = false) {
             fetch(API_URL + "?action=sync_user&email=" + encodeURIComponent(userData.email)).then(r=>r.json()).then(data => {
                 if(data.status === 'success' && data.data && typeof data.data.rupees !== 'undefined') {
@@ -487,7 +478,6 @@
             let dailyTotal = 0;
             txns.forEach(t => {
                 let stat = String(t.status || "").toLowerCase().trim();
-                // Matches precise date instead of throwing "Invalid Date"
                 if (t.type === "Debit" && t.title.toLowerCase().includes("withdraw") && isTransactionToday(t.date)) {
                     if(!["failed", "refunded", "cancelled"].includes(stat)) {
                         dailyTotal += parseInt(t.amount) || 0;
@@ -502,6 +492,7 @@
             validateAmount(); 
         }
 
+        // --- NEW HISTORY RENDERING LOGIC WITH GLOWING COLORS ---
         function renderHistoryUI(txns) {
             const historyList = document.getElementById('historyList');
             let withdrawals = txns.filter(t => t.title.toLowerCase().includes("withdraw"));
@@ -510,11 +501,26 @@
             if (withdrawals.length > 0) {
                 withdrawals.slice(0, 15).forEach((item, delay) => {
                     let stat = String(item.status || "Pending").toLowerCase().trim();
-                    let isFailed = ["failed", "refunded", "cancelled"].includes(stat);
                     let isSuccess = ["success", "completed"].includes(stat);
+                    let isCancelled = ["cancelled", "failed"].includes(stat);
+                    let isRefunded = ["refunded"].includes(stat);
                     
-                    let statusColor = isSuccess ? "var(--accent-green)" : (isFailed ? "var(--accent-red)" : "#ff9900");
-                    let mainIcon = isFailed ? "fa-xmark" : (isSuccess ? "fa-check" : "fa-clock");
+                    let statusColor = "#ff9900"; // Pending
+                    let statusGlow = "none";
+                    let mainIcon = "fa-clock";
+                    
+                    if (isSuccess) { 
+                        statusColor = "var(--accent-green)"; 
+                        statusGlow = "0 0 10px rgba(0, 255, 127, 0.6)"; 
+                        mainIcon = "fa-check-double";
+                    } else if (isCancelled) { 
+                        statusColor = "var(--accent-red)"; 
+                        mainIcon = "fa-xmark";
+                    } else if (isRefunded) { 
+                        statusColor = "var(--accent-cyan)"; 
+                        mainIcon = "fa-rotate-left";
+                    }
+
                     let displayDate = item.date.includes(',') ? item.date.split(',')[0] : item.date.split(' ')[0];
 
                     historyList.innerHTML += `
@@ -529,7 +535,7 @@
                             <div class="txn-right">
                                 <div class="in-out-label out-label">MONEY OUT</div>
                                 <div class="txn-amt amt-debit">- ₹${formatNum(item.amount)}</div>
-                                <div class="txn-status" style="color:${statusColor};">${item.status}</div>
+                                <div class="txn-status" style="color:${statusColor}; text-shadow:${statusGlow};">${item.status || 'Pending'}</div>
                             </div>
                         </div>`;
                 });
@@ -538,7 +544,6 @@
             }
         }
 
-        // --- 8. PROCESS WITHDRAWAL ---
         function processWithdrawal() {
             const grossAmount = parseFloat(document.getElementById('withdrawAmount').value);
             const method = document.getElementById('paymentMethod').value;
@@ -563,15 +568,15 @@
             const payload = {
                 action: 'withdraw_request',
                 email: userData.email,
-                username: userData.username,
-                amount: grossAmount, // Full gross amount deducted from wallet
-                netPayout: netPayout, // Pass net payout to backend explicitly
+                amount: grossAmount, 
+                netPayout: netPayout, 
                 method: method,
-                details: finalDetails + ` | Net Payout: Rs. ${netPayout}` 
+                details: finalDetails
             };
 
             setTimeout(() => {
-                // OPTIMISTIC UI DEDUCTION
+                showOverlay('success', 'Payout Approved!', 'Money will be received in 24-48 hours.');
+                
                 currentBalance -= grossAmount;
                 userData.rupees = currentBalance.toString();
                 localStorage.setItem('tournyx_user', JSON.stringify(userData));
@@ -586,15 +591,14 @@
                 document.getElementById('withdrawAmount').value = '';
                 validateAmount(); 
 
-                showOverlay('success', 'Request Sent!', isPremiumUser ? 'PRO Payout: Will arrive within 2 Hours.' : 'Funds will be transferred within 24 hours.');
-                setTimeout(() => { hideOverlay(); renderHistoryUI(localTxns); calculateDailyLimits(localTxns); }, 3000);
-
-                // FIRE TO BACKEND
                 fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-            }, 2000);
+
+                setTimeout(() => { hideOverlay(); renderHistoryUI(localTxns); calculateDailyLimits(localTxns); }, 3500);
+
+            }, 3000); 
         }
 
-        // --- 9. CUSTOM SUPPORT ROUTER LOGIC ---
+        // --- NEW SUPPORT LOGIC WITH GLOWING COLORS ---
         let currentSupportTxn = {};
         function openSupportModal() {
             const container = document.getElementById('supportTxnList');
@@ -606,20 +610,37 @@
             else {
                 withdrawals.forEach(t => {
                     let stat = String(t.status || "Pending").toLowerCase().trim();
-                    let isFailed = ["failed", "refunded", "cancelled"].includes(stat);
-                    let color = ["success", "completed"].includes(stat) ? "var(--accent-green)" : (isFailed ? "var(--accent-red)" : "#ff9900");
+                    let isSuccess = ["success", "completed"].includes(stat);
+                    let isCancelled = ["cancelled", "failed"].includes(stat);
+                    let isRefunded = ["refunded"].includes(stat);
+
+                    let color = "#ff9900";
+                    let glow = "none";
+                    let borderGlow = "none";
+                    
+                    if (isSuccess) { 
+                        color = "var(--accent-green)"; 
+                        glow = "0 0 8px rgba(0, 255, 127, 0.6)"; 
+                        borderGlow = "0 0 8px rgba(0, 255, 127, 0.4)";
+                    } else if (isCancelled) { 
+                        color = "var(--accent-red)"; 
+                    } else if (isRefunded) { 
+                        color = "var(--accent-cyan)"; 
+                    }
+
                     let displayDate = t.date.includes(',') ? t.date.split(',')[0] : t.date.split(' ')[0];
 
                     container.innerHTML += `
                         <div class="sup-txn-item" onclick="openMessageInput('${t.id}', '${t.amount}', '${displayDate}', '${t.status || 'Pending'}')">
                             <div><h5>${t.title}</h5><p>ID: ${t.id} • ${displayDate}</p></div>
                             <div style="text-align:right;"><div style="color:var(--accent-cyan); font-family:var(--font-head); font-weight:bold; margin-bottom:4px;">₹${t.amount}</div>
-                            <div style="font-size:0.65rem; font-weight:bold; text-transform:uppercase; color:${color}; border:1px solid ${color}; padding:2px 6px; border-radius:4px; display:inline-block;">${t.status || 'Pending'}</div></div>
+                            <div style="font-size:0.65rem; font-weight:bold; text-transform:uppercase; color:${color}; border:1px solid ${color}; box-shadow:${borderGlow}; text-shadow:${glow}; padding:2px 6px; border-radius:4px; display:inline-block;">${t.status || 'Pending'}</div></div>
                         </div>`;
                 });
             }
             document.getElementById('supportModalOverlay').classList.add('active');
         }
+        
         function closeSupportModal() { document.getElementById('supportModalOverlay').classList.remove('active'); }
         function openMessageInput(txnId, amount, date, status) {
             currentSupportTxn = { txnId, amount, date, status };
