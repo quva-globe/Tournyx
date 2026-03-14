@@ -660,31 +660,57 @@
     </div>
 
     <div class="modal-overlay" id="manageTourneyModal" style="z-index: 5005;">
-        <div class="modal-card">
+        <div class="modal-card" style="max-height: 95vh;">
             <div class="modal-header">
                 <div class="modal-title"><i class="fa-solid fa-pen-to-square" style="color:var(--accent-cyan);"></i> Edit Event</div>
                 <i class="fa-solid fa-xmark close-modal" onclick="closeManageModal(); triggerHaptic();"></i>
             </div>
-            <input type="hidden" id="editTourneyId">
             
-            <label class="form-label">Tournament Title</label>
-            <input type="text" id="editTourneyTitle" class="form-control" placeholder="Event Name" style="margin-bottom: 20px;">
+            <div style="overflow-y: auto; max-height: calc(90vh - 150px); padding-right: 5px;">
+                <input type="hidden" id="editTourneyId">
+                
+                <label class="form-label">Tournament Title</label>
+                <input type="text" id="editTourneyTitle" class="form-control" placeholder="Event Name" style="margin-bottom: 15px;">
+
+                <label class="form-label">Banner Image URL</label>
+                <input type="url" id="editTourneyBanner" class="form-control" placeholder="https://example.com/image.jpg" style="margin-bottom: 15px;">
+                
+                <label class="form-label">Match Period (Dates)</label>
+                <input type="text" id="editTourneyDate" class="form-control" placeholder="e.g. 15 March" style="margin-bottom: 15px;">
+
+                <label class="form-label">Registration Timing</label>
+                <input type="text" id="editTourneyRegTime" class="form-control" placeholder="e.g. Closes 14 March 5PM" style="margin-bottom: 15px;">
+
+                <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                    <div style="flex: 1;">
+                        <label class="form-label">Total Slots</label>
+                        <input type="number" id="editTourneySlots" class="form-control" placeholder="e.g. 100">
+                    </div>
+                    <div style="flex: 1;">
+                        <label class="form-label">Entry Fee (₹)</label>
+                        <input type="number" id="editTourneyEntry" class="form-control" placeholder="e.g. 50">
+                    </div>
+                </div>
+
+                <label class="form-label">Prize Pool (₹)</label>
+                <input type="text" id="editTourneyPrize" class="form-control" placeholder="e.g. 5000" style="margin-bottom: 15px;">
+                
+                <label class="form-label">Live Stream URL (Optional)</label>
+                <input type="url" id="editTourneyStream" class="form-control" placeholder="YouTube/Twitch URL" style="margin-bottom: 15px;">
+
+                <label class="form-label">Tournament Description / Rules</label>
+                <textarea id="editTourneyDesc" class="form-control" placeholder="Enter rules and details..." style="height: 100px; resize: none; margin-bottom: 15px; padding-left: 15px;"></textarea>
+                
+                <label class="form-label">Event Status</label>
+                <select id="editTourneyStatus" class="form-control" style="margin-bottom: 25px;">
+                    <option value="Upcoming">Upcoming</option>
+                    <option value="Live">Live</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
+            </div>
             
-            <label class="form-label">Match Period (Dates)</label>
-            <input type="text" id="editTourneyDate" class="form-control" placeholder="e.g. 15 March" style="margin-bottom: 20px;">
-            
-            <label class="form-label">Live Stream URL (Optional)</label>
-            <input type="url" id="editTourneyStream" class="form-control" placeholder="YouTube/Twitch URL" style="margin-bottom: 20px;">
-            
-            <label class="form-label">Event Status</label>
-            <select id="editTourneyStatus" class="form-control" style="margin-bottom: 25px;">
-                <option value="Upcoming">Upcoming</option>
-                <option value="Live">Live</option>
-                <option value="Completed">Completed</option>
-                <option value="Cancelled">Cancelled</option>
-            </select>
-            
-            <button class="save-btn" id="saveTourneyBtn" onclick="saveTournamentChanges(); triggerHaptic();">Update Tournament</button>
+            <button class="save-btn" id="saveTourneyBtn" onclick="saveTournamentChanges(); triggerHaptic();" style="margin-top:15px;">Update Tournament</button>
             <button class="delete-btn" id="deleteTourneyBtn" onclick="deleteTournament(); triggerHaptic();"><i class="fa-solid fa-trash-can"></i> Delete Tournament</button>
         </div>
     </div>
@@ -724,7 +750,7 @@
         let pArray = [];
         let animPaused = localStorage.getItem('tournyx_psm') === 'true';
 
-        class P { constructor(){ this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.s=Math.random()*2; this.c=Math.random()>0.5?'#bd00ff':'#00f2ff'; } u(){ this.y-=0.5; if(this.y<0)this.y=canvas.height; } d(){ ctx.fillStyle=this.c; ctx.globalAlpha=0.3; ctx.beginPath(); ctx.arc(Math.floor(this.x),Math.floor(this.y),this.s,0,Math.PI*2); ctx.fill(); } }
+        class P { constructor(){ this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.s=Math.random()*2; this.c=Math.random()>0.5?'#bd00ff':'#00f2ff'; } u(){ this.y-=0.5; if(this.y<0)this.y=canvas.height; } d(){ ctx.fillStyle=this.c; ctx.globalAlpha=0.3; ctx.beginPath(); ctx.arc(this.x,this.y,this.s,0,Math.PI*2); ctx.fill(); } }
         for(let i=0; i<30; i++) pArray.push(new P());
         
         function anim(){ 
@@ -979,7 +1005,6 @@
                     
                     userData.role = data.data.role || localUser.role || "player";
                     
-                    // Prioritize backend claimed array if exists
                     if(data.data.claimed_ms && Array.isArray(data.data.claimed_ms)) {
                         userData.claimed_ms = data.data.claimed_ms;
                     } else {
@@ -1176,7 +1201,6 @@
 
         function closeMilestoneModal() { document.getElementById('milestoneModal').classList.remove('active'); }
 
-        // LIVE CLAIM BUTTON - NO CORS BYPASSED
         function claimMilestoneReward(type, levelIndex, btn) {
             if(isGuestMode) { showToast("Login to claim rewards!", true); return; }
 
@@ -1191,7 +1215,6 @@
             let pointsToAdd = pMatch ? parseInt(pMatch[1]) : 0;
             let msId = type + '_' + levelIndex;
             
-            // Real-Time Request (No mode:'no-cors' so we get JSON back)
             fetch(API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'text/plain' },
@@ -1277,7 +1300,6 @@
         function closeMatchStatusModal() { document.getElementById('matchStatusModal').classList.remove('active'); }
 
         function switchRole(role) {
-            // --- NEW: BLOCK UNAUTHORIZED PLAYERS FROM ORGANIZER HUB ---
             if (role === 'organizer' && userData.role !== 'organizer') {
                 showToast("Access Denied: Register as an Organizer to host events!", true);
                 return; 
@@ -1372,14 +1394,21 @@
             });
         }
 
+        // --- EXPANDED MANAGER POPULATOR ---
         function openManageModal(match_id) {
             let t = myHostedEvents.find(x => String(x.id) === String(match_id) || String(x.match_id) === String(match_id));
             if(!t) return;
             
             document.getElementById('editTourneyId').value = t.id || t.match_id || "";
             document.getElementById('editTourneyTitle').value = t.title || "";
+            document.getElementById('editTourneyBanner').value = t.banner || t.image_url || "";
             document.getElementById('editTourneyDate').value = t.match_period || t.date || "";
-            document.getElementById('editTourneyStream').value = t.stream_url || "";
+            document.getElementById('editTourneyRegTime').value = t.reg_time || t.timing || "";
+            document.getElementById('editTourneySlots').value = t.slots || t.total_slots || "";
+            document.getElementById('editTourneyEntry').value = t.entry_fee || t.entry || "0";
+            document.getElementById('editTourneyPrize').value = t.prize_pool || t.prize || "0";
+            document.getElementById('editTourneyStream').value = t.stream_url || t.stream || "";
+            document.getElementById('editTourneyDesc').value = t.description || t.rules || "";
             
             let s = document.getElementById('editTourneyStatus');
             s.value = t.status || "Upcoming";
@@ -1390,27 +1419,43 @@
 
         function closeManageModal() { document.getElementById('manageTourneyModal').classList.remove('active'); }
 
+        // --- UPDATED SAVE FUNCTION TO PASS ALL NEW DATA ---
         function saveTournamentChanges() {
             const btn = document.getElementById('saveTourneyBtn');
             btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Updating...";
             btn.disabled = true;
 
+            const payload = {
+                action: 'edit_tournament',
+                id: document.getElementById('editTourneyId').value,
+                email: userData.email, 
+                title: document.getElementById('editTourneyTitle').value,
+                banner: document.getElementById('editTourneyBanner').value,
+                match_period: document.getElementById('editTourneyDate').value,
+                reg_time: document.getElementById('editTourneyRegTime').value,
+                slots: document.getElementById('editTourneySlots').value,
+                entry_fee: document.getElementById('editTourneyEntry').value,
+                prize_pool: document.getElementById('editTourneyPrize').value,
+                stream_url: document.getElementById('editTourneyStream').value,
+                description: document.getElementById('editTourneyDesc').value,
+                status: document.getElementById('editTourneyStatus').value
+            };
+
             fetch(API_URL, {
                 method: 'POST', headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify({
-                    action: 'edit_tournament',
-                    id: document.getElementById('editTourneyId').value,
-                    email: userData.email, 
-                    title: document.getElementById('editTourneyTitle').value,
-                    match_period: document.getElementById('editTourneyDate').value,
-                    stream_url: document.getElementById('editTourneyStream').value,
-                    status: document.getElementById('editTourneyStatus').value
-                })
-            }).then(() => {
-                showToast("Tournament Updated Successfully!");
-                closeManageModal();
+                body: JSON.stringify(payload)
+            }).then(res => res.json()).then(data => {
+                if (data.status === 'success') {
+                    showToast("Tournament Updated Successfully!");
+                    closeManageModal();
+                    setTimeout(() => { fetchMyTournaments(); }, 1000);
+                } else {
+                    showToast("Error updating tournament.", true);
+                }
                 btn.innerText = "Update Tournament"; btn.disabled = false;
-                setTimeout(() => { fetchMyTournaments(); }, 1000);
+            }).catch(() => {
+                showToast("Network Error.", true);
+                btn.innerText = "Update Tournament"; btn.disabled = false;
             });
         }
 
@@ -1483,7 +1528,6 @@
             });
         }
 
-        // IMAGE COMPRESSION FIX FOR AVATAR ERROR
         function handleAvatarUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -1508,7 +1552,6 @@
 
                     const compressedB64 = canvas.toDataURL('image/jpeg', 0.8);
                     
-                    // Upload to Server LIVE
                     fetch(API_URL, {
                         method: 'POST', headers: { 'Content-Type': 'text/plain' },
                         body: JSON.stringify({ action: 'update_profile', email: userData.email, avatar: compressedB64 })
