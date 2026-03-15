@@ -200,7 +200,7 @@
         .delete-btn:active { background: var(--accent-danger); color: white; transform: scale(0.96); }
 
         .qr-box { background: white; padding: 20px; border-radius: 15px; text-align: center; width: max-content; margin: 0 auto 20px; border: 5px solid var(--accent-cyan); box-shadow: 0 0 30px rgba(0,242,255,0.4);}
-        #avatarUploadInp { display: none; }
+        #avatarUploadInp, #tourneyBannerInp { display: none; }
         .skeleton { background: linear-gradient(90deg, #110822 25%, #1a0a3a 50%, #110822 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite linear; border-radius: 8px; transform: translateZ(0);}
         @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -243,6 +243,27 @@
         .claim-btn { background: var(--accent-green); color: black; border: none; padding: 8px 15px; border-radius: 8px; font-family: var(--font-head); font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 0 10px rgba(0,255,127,0.4); text-transform: uppercase; font-size: 0.8rem; margin-top: 5px;}
         .claim-btn:active { transform: scale(0.95); }
         .claim-btn:disabled { background: #555; color: #aaa; cursor: not-allowed; box-shadow: none; transform: none; }
+
+        /* --- TOURNAMENT MANAGER STYLES --- */
+        .image-upload-box {
+            border: 1px dashed var(--accent-cyan);
+            border-radius: 12px;
+            padding: 30px 20px;
+            text-align: center;
+            background: rgba(0,242,255,0.05);
+            cursor: pointer;
+            transition: 0.3s;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .image-upload-box:hover { background: rgba(0,242,255,0.1); }
+        .image-upload-box i { font-size: 2.5rem; color: var(--accent-cyan); margin-bottom: 10px; text-shadow: 0 0 15px rgba(0,242,255,0.4);}
+        .image-upload-box p { font-size: 0.85rem; color: #aaa; font-family: var(--font-body); }
+        .image-preview { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: 0.3s; z-index: 2; pointer-events: none;}
+        .image-preview.has-image { opacity: 1; }
+        .change-banner-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 8px; background: rgba(0,0,0,0.7); font-size: 0.75rem; color: white; z-index: 3; opacity: 0; transition: 0.3s;}
+        .image-upload-box:hover .change-banner-overlay { opacity: 1; }
     </style>
     
     <script>
@@ -661,57 +682,63 @@
 
     <div class="modal-overlay" id="manageTourneyModal" style="z-index: 5005;">
         <div class="modal-card" style="max-height: 95vh;">
-            <div class="modal-header">
+            <div class="modal-header" style="margin-bottom: 15px;">
                 <div class="modal-title"><i class="fa-solid fa-pen-to-square" style="color:var(--accent-cyan);"></i> Edit Event</div>
                 <i class="fa-solid fa-xmark close-modal" onclick="closeManageModal(); triggerHaptic();"></i>
             </div>
             
-            <div style="overflow-y: auto; max-height: calc(90vh - 150px); padding-right: 5px;">
+            <div style="overflow-y: auto; max-height: calc(90vh - 140px); padding-right: 5px;">
                 <input type="hidden" id="editTourneyId">
+                <input type="hidden" id="editTourneyBannerStr">
                 
-                <label class="form-label">Tournament Title</label>
-                <input type="text" id="editTourneyTitle" class="form-control" placeholder="Event Name" style="margin-bottom: 15px;">
-
-                <label class="form-label">Banner Image URL</label>
-                <input type="url" id="editTourneyBanner" class="form-control" placeholder="https://example.com/image.jpg" style="margin-bottom: 15px;">
+                <label class="form-label"><i class="fa-solid fa-image"></i> Visual Identity</label>
+                <div class="image-upload-box" onclick="document.getElementById('tourneyBannerInp').click(); triggerHaptic();">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <p>Upload Banner Image *<br>High-quality banner (16:9 ratio) • Max 5MB</p>
+                    <img src="" id="editTourneyBannerPreview" class="image-preview">
+                    <div class="change-banner-overlay">Tap to Change Banner</div>
+                </div>
+                <input type="file" id="tourneyBannerInp" accept="image/*" onchange="handleBannerUpload(event)">
                 
-                <label class="form-label">Match Period (Dates)</label>
-                <input type="text" id="editTourneyDate" class="form-control" placeholder="e.g. 15 March" style="margin-bottom: 15px;">
+                <label class="form-label" style="margin-top: 10px;"><i class="fa-solid fa-pen"></i> Basic Information</label>
+                <input type="text" id="editTourneyTitle" class="form-control" placeholder="Tournament Title *" style="margin-bottom: 20px;">
 
-                <label class="form-label">Registration Timing</label>
-                <input type="text" id="editTourneyRegTime" class="form-control" placeholder="e.g. Closes 14 March 5PM" style="margin-bottom: 15px;">
+                <label class="form-label"><i class="fa-solid fa-calendar-days"></i> Timeline</label>
+                <input type="text" id="editTourneyRegTime" class="form-control" placeholder="Registration Deadline *" style="margin-bottom: 15px;">
+                <input type="text" id="editTourneyDate" class="form-control" placeholder="Tournament Dates *" style="margin-bottom: 20px;">
 
-                <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                <label class="form-label"><i class="fa-solid fa-users"></i> Participation Format</label>
+                <div style="display: flex; gap: 15px; margin-bottom: 20px;">
                     <div style="flex: 1;">
-                        <label class="form-label">Total Slots</label>
-                        <input type="number" id="editTourneySlots" class="form-control" placeholder="e.g. 100">
+                        <input type="number" id="editTourneySlots" class="form-control" placeholder="Max Slots *">
                     </div>
                     <div style="flex: 1;">
-                        <label class="form-label">Entry Fee (₹)</label>
-                        <input type="number" id="editTourneyEntry" class="form-control" placeholder="e.g. 50">
+                        <input type="number" id="editTourneyEntry" class="form-control" placeholder="Entry Fee (₹) *">
                     </div>
                 </div>
 
-                <label class="form-label">Prize Pool (₹)</label>
-                <input type="text" id="editTourneyPrize" class="form-control" placeholder="e.g. 5000" style="margin-bottom: 15px;">
+                <label class="form-label"><i class="fa-solid fa-money-bill-wave"></i> Economics & Prize</label>
+                <input type="text" id="editTourneyPrize" class="form-control" placeholder="Prize Pool (₹) *" style="margin-bottom: 20px;">
                 
-                <label class="form-label">Live Stream URL (Optional)</label>
-                <input type="url" id="editTourneyStream" class="form-control" placeholder="YouTube/Twitch URL" style="margin-bottom: 15px;">
+                <label class="form-label"><i class="fa-brands fa-youtube"></i> Live Stream URL (Optional)</label>
+                <input type="url" id="editTourneyStream" class="form-control" placeholder="https://youtube.com/..." style="margin-bottom: 20px;">
 
-                <label class="form-label">Tournament Description / Rules</label>
-                <textarea id="editTourneyDesc" class="form-control" placeholder="Enter rules and details..." style="height: 100px; resize: none; margin-bottom: 15px; padding-left: 15px;"></textarea>
+                <label class="form-label"><i class="fa-solid fa-book"></i> Tournament Rules & Info</label>
+                <textarea id="editTourneyDesc" class="form-control" placeholder="Enter rules and details..." style="height: 120px; resize: none; margin-bottom: 20px; padding-left: 15px;"></textarea>
                 
-                <label class="form-label">Event Status</label>
+                <label class="form-label"><i class="fa-solid fa-toggle-on"></i> Event Status</label>
                 <select id="editTourneyStatus" class="form-control" style="margin-bottom: 25px;">
-                    <option value="Upcoming">Upcoming</option>
-                    <option value="Live">Live</option>
+                    <option value="Upcoming">Upcoming (Registrations Open)</option>
+                    <option value="Live">Live (Matches Started)</option>
                     <option value="Completed">Completed</option>
                     <option value="Cancelled">Cancelled</option>
                 </select>
             </div>
             
-            <button class="save-btn" id="saveTourneyBtn" onclick="saveTournamentChanges(); triggerHaptic();" style="margin-top:15px;">Update Tournament</button>
-            <button class="delete-btn" id="deleteTourneyBtn" onclick="deleteTournament(); triggerHaptic();"><i class="fa-solid fa-trash-can"></i> Delete Tournament</button>
+            <div style="padding-top: 15px; border-top: 1px solid var(--card-border); margin-top: 5px;">
+                <button class="save-btn" id="saveTourneyBtn" onclick="saveTournamentChanges(); triggerHaptic();" style="margin-bottom: 10px;">Update Tournament</button>
+                <button class="delete-btn" id="deleteTourneyBtn" onclick="deleteTournament(); triggerHaptic();" style="background: transparent; padding: 12px;"><i class="fa-solid fa-trash-can"></i> Delete</button>
+            </div>
         </div>
     </div>
 
@@ -750,7 +777,7 @@
         let pArray = [];
         let animPaused = localStorage.getItem('tournyx_psm') === 'true';
 
-        class P { constructor(){ this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.s=Math.random()*2; this.c=Math.random()>0.5?'#bd00ff':'#00f2ff'; } u(){ this.y-=0.5; if(this.y<0)this.y=canvas.height; } d(){ ctx.fillStyle=this.c; ctx.globalAlpha=0.3; ctx.beginPath(); ctx.arc(this.x,this.y,this.s,0,Math.PI*2); ctx.fill(); } }
+        class P { constructor(){ this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.s=Math.random()*2; this.c=Math.random()>0.5?'#bd00ff':'#00f2ff'; } u(){ this.y-=0.5; if(this.y<0)this.y=canvas.height; } d(){ ctx.fillStyle=this.c; ctx.globalAlpha=0.3; ctx.beginPath(); ctx.arc(Math.floor(this.x),Math.floor(this.y),this.s,0,Math.PI*2); ctx.fill(); } }
         for(let i=0; i<30; i++) pArray.push(new P());
         
         function anim(){ 
@@ -1401,14 +1428,29 @@
             
             document.getElementById('editTourneyId').value = t.id || t.match_id || "";
             document.getElementById('editTourneyTitle').value = t.title || "";
-            document.getElementById('editTourneyBanner').value = t.banner || t.image_url || "";
+            
+            // Image Preview Logic
+            let bannerUrl = t.banner || t.image_url || "";
+            document.getElementById('editTourneyBannerStr').value = bannerUrl;
+            let previewImg = document.getElementById('editTourneyBannerPreview');
+            if (bannerUrl.length > 10) {
+                previewImg.src = bannerUrl;
+                previewImg.classList.add('has-image');
+            } else {
+                previewImg.src = "";
+                previewImg.classList.remove('has-image');
+            }
+
             document.getElementById('editTourneyDate').value = t.match_period || t.date || "";
             document.getElementById('editTourneyRegTime').value = t.reg_time || t.timing || "";
             document.getElementById('editTourneySlots').value = t.slots || t.total_slots || "";
             document.getElementById('editTourneyEntry').value = t.entry_fee || t.entry || "0";
             document.getElementById('editTourneyPrize').value = t.prize_pool || t.prize || "0";
             document.getElementById('editTourneyStream').value = t.stream_url || t.stream || "";
-            document.getElementById('editTourneyDesc').value = t.description || t.rules || "";
+            
+            let rawRules = t.description || t.rules || "";
+            rawRules = rawRules.replace(/<div>/g, '\n').replace(/<\/div>/g, '').replace(/<br>/g, '\n').replace(/&nbsp;/g, ' ').replace(/<[^>]*>?/gm, '');
+            document.getElementById('editTourneyDesc').value = rawRules.trim();
             
             let s = document.getElementById('editTourneyStatus');
             s.value = t.status || "Upcoming";
@@ -1419,25 +1461,65 @@
 
         function closeManageModal() { document.getElementById('manageTourneyModal').classList.remove('active'); }
 
-        // --- UPDATED SAVE FUNCTION TO PASS ALL NEW DATA ---
+        // --- IMAGE COMPRESSOR FOR BANNER ---
+        function handleBannerUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            showToast("Processing Banner Image...");
+            const previewImg = document.getElementById('editTourneyBannerPreview');
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 800; // 16:9 ratio optimization
+                    const MAX_HEIGHT = 450;
+                    let width = img.width; let height = img.height;
+
+                    // Standardize to 16:9 
+                    if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } } 
+                    else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
+
+                    canvas.width = width; canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    const compressedB64 = canvas.toDataURL('image/jpeg', 0.6); // Compress heavy
+                    
+                    document.getElementById('editTourneyBannerStr').value = compressedB64;
+                    previewImg.src = compressedB64;
+                    previewImg.classList.add('has-image');
+                    showToast("Banner loaded! Press update to save.");
+                }
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // --- SAVE FUNCTION PASSES ALL DATA ---
         function saveTournamentChanges() {
             const btn = document.getElementById('saveTourneyBtn');
             btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Updating...";
             btn.disabled = true;
+            
+            let descVal = document.getElementById('editTourneyDesc').value;
+            let formattedDesc = descVal.split('\n').map(line => `<div>${line}</div>`).join('');
 
             const payload = {
                 action: 'edit_tournament',
                 id: document.getElementById('editTourneyId').value,
                 email: userData.email, 
                 title: document.getElementById('editTourneyTitle').value,
-                banner: document.getElementById('editTourneyBanner').value,
+                banner: document.getElementById('editTourneyBannerStr').value,
                 match_period: document.getElementById('editTourneyDate').value,
                 reg_time: document.getElementById('editTourneyRegTime').value,
                 slots: document.getElementById('editTourneySlots').value,
                 entry_fee: document.getElementById('editTourneyEntry').value,
                 prize_pool: document.getElementById('editTourneyPrize').value,
                 stream_url: document.getElementById('editTourneyStream').value,
-                description: document.getElementById('editTourneyDesc').value,
+                description: formattedDesc,
                 status: document.getElementById('editTourneyStatus').value
             };
 
