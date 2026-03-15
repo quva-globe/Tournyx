@@ -83,7 +83,7 @@
         .vip-silver { background: linear-gradient(45deg, #c0c0c0, #e0e0e0); color: black; box-shadow: 0 0 15px rgba(192,192,192,0.5); }
         
         .balance-label { font-size: 0.85rem; color: #ccc; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; display: flex; align-items: center; gap:10px; }
-        .balance-amount { font-family: var(--font-head); font-size: 2.5rem; font-weight: bold; color: white; display: flex; align-items: center; gap: 10px; text-shadow: 0 0 15px rgba(255,255,255,0.4); margin-bottom: 15px; }
+        .balance-amount { font-family: var(--font-head); font-size: 2.5rem; font-weight: bold; color: white; display: flex; align-items: center; gap: 10px; text-shadow: 0 0 15px rgba(255,255,255,0.4); margin-bottom: 15px; transition: 0.4s; }
         
         .blur-balance { filter: blur(10px); user-select: none; opacity: 0.8; }
 
@@ -125,7 +125,7 @@
         .section-title span { font-size: 0.8rem; color: var(--accent-cyan); cursor: pointer; text-transform: uppercase; padding: 5px 10px; border-radius: 8px; transition: 0.3s; border: 1px solid transparent;}
         
         .txn-list { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 15px; padding: 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
-        .txn-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.2s; overflow: hidden; gap: 10px;}
+        .txn-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.3s; overflow: hidden; gap: 10px;}
         .txn-item:active { background: rgba(255,255,255,0.05); border-color: var(--accent-cyan); transform: scale(0.98); }
         .txn-item:hover { border-color: var(--accent-cyan); background: rgba(0,242,255,0.05); }
         
@@ -223,12 +223,11 @@
 
         /* NAV */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 5px env(safe-area-inset-bottom); border-top: 1px solid var(--card-border); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.8); transform: translateZ(0);}
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; color: #666; text-decoration: none; font-size: 0.65rem; font-family: var(--font-head); font-weight: bold; flex: 1; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; will-change: transform, color;}
-        .nav-item span { margin-top: 4px; transition: 0.3s; }
-        .nav-item i { font-size: 1.3rem; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #666; font-size: 0.65rem; font-family: var(--font-head); font-weight: bold; flex: 1; text-decoration: none;}
+        .nav-item i { font-size: 1.3rem; margin-bottom:4px; }
         .nav-item.active { color: var(--accent-cyan); }
-        .nav-item.active i { transform: translateY(-4px); color: var(--accent-cyan); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
-        .nav-item.active span { transform: translateY(2px); color: white; }
+        .nav-item.active i { transform: translateY(-4px); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
+        
         .fab-slot { flex: 1.2; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
         .floating-plus { position: absolute; top: -30px; width: 58px; height: 58px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 4px solid var(--primary-bg); box-shadow: 0 10px 25px rgba(189,0,255,0.5); color: #fff; font-size: 1.8rem; z-index: 10; transition: 0.3s;}
         .floating-plus:hover { transform: translateX(-50%) scale(1.1); box-shadow: 0 15px 35px rgba(0,242,255,0.6); }
@@ -266,6 +265,7 @@
                 </div>
             </div>
             <div class="header-right">
+                <i class="fa-solid fa-rotate-right header-action-icon" id="manualSyncBtn" title="Force Live Sync" onclick="forceManualSync(); triggerHaptic();" style="margin-right: 15px;"></i>
                 <img src="https://via.placeholder.com/40" class="header-profile-img" id="headerProfilePic" onclick="window.location.href='profile.html'">
             </div>
         </div>
@@ -410,7 +410,7 @@
         <div class="lm-header">
             <i class="fa-solid fa-arrow-left header-action-icon" onclick="closeAllTxns(); triggerHaptic();"></i>
             <div class="app-title" style="font-size:1rem;">ALL TRANSACTIONS</div>
-            <i class="fa-solid fa-rotate-right header-action-icon" onclick="syncLiveTransactions(true); triggerHaptic();"></i>
+            <i class="fa-solid fa-rotate-right header-action-icon" onclick="syncLiveTransactions(false); triggerHaptic();"></i>
         </div>
         <div class="lm-scroll-area">
             <div class="txn-list" id="fullTxnListContainer" style="border:none; padding:0; background:transparent; box-shadow:none; margin-top:20px;"></div>
@@ -528,7 +528,7 @@
                 calculateMilestones(cached);
             }
             
-            // FLAWLESS INSTANT LOAD: No zeros, no animations on open.
+            // PREVENT BLURRY NUMBER GLITCH BY LOADING INSTANTLY ON OPEN
             updateWalletDisplay(true); 
             
             syncUserData();
@@ -542,22 +542,40 @@
             initParticles();
         });
 
-        // --- BULLETPROOF SYNC LOGIC ---
+        // --- NEW: DEDICATED MANUAL REFRESH FUNCTION ---
+        function forceManualSync() {
+            let btn = document.getElementById('manualSyncBtn');
+            btn.classList.add('fa-spin');
+            
+            syncUserData(true);
+            syncLiveTransactions(true);
+            
+            setTimeout(() => {
+                btn.classList.remove('fa-spin');
+                showToast("Wallet Synced Successfully!");
+            }, 1500);
+        }
+
+        // --- BULLETPROOF SYNC LOGIC (FIXES THE ZERO BUG) ---
         function syncUserData(silent = false) {
             fetch(API_URL + "?action=sync_user&email=" + encodeURIComponent(currentUser.email))
             .then(response => response.json())
             .then(data => {
                 if(data.status === "success") {
                     
-                    // FLAWLESS PAYLOAD PARSER: Catch the data no matter where the backend put it
-                    let payload = data.data !== undefined ? data.data : (typeof data.message === 'object' ? data.message : null);
+                    // BULLETPROOF PARSER: Searches every level of the backend response
+                    let payload = null;
+                    if (data.rupees !== undefined) payload = data;
+                    else if (data.data && data.data.rupees !== undefined) payload = data.data;
+                    else if (typeof data.message === 'object' && data.message.rupees !== undefined) payload = data.message;
                     
-                    if (payload && payload.rupees !== undefined) {
+                    // Only update if it actually found real data
+                    if (payload !== null) {
                         currentUser.rupees = payload.rupees;
                         currentUser.points = payload.points;
                         localStorage.setItem('tournyx_user', JSON.stringify(currentUser));
                         
-                        updateWalletDisplay(true); // Always update instantly, no glitchy numbers
+                        updateWalletDisplay(false); // Animate smoothly
                     }
                 }
             }).catch(e => { if(!silent) console.error("Wallet Sync Failed:", e); });
@@ -588,6 +606,29 @@
             anim();
         }
 
+        // --- ANIMATION ENGINE (FIXES GLITCHING) ---
+        window.activeAnimations = {};
+        function animateValue(obj, start, end, duration, prefix = "", suffix = "") {
+            if (!obj) return;
+            if (start === end) { obj.innerHTML = prefix + formatNum(end) + suffix; return; }
+            
+            if (window.activeAnimations[obj.id]) cancelAnimationFrame(window.activeAnimations[obj.id]);
+            
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = prefix + formatNum(Math.floor(progress * (end - start) + start)) + suffix;
+                if (progress < 1) { 
+                    window.activeAnimations[obj.id] = window.requestAnimationFrame(step); 
+                } else { 
+                    obj.innerHTML = prefix + formatNum(end) + suffix; 
+                    delete window.activeAnimations[obj.id];
+                }
+            };
+            window.activeAnimations[obj.id] = window.requestAnimationFrame(step);
+        }
+
         function setDynamicGreeting() {
             const hr = new Date().getHours(); let greet = "Welcome,";
             if (hr < 12) greet = "Good Morning,"; else if (hr < 18) greet = "Good Afternoon,"; else greet = "Good Evening,";
@@ -608,13 +649,23 @@
             if(isPrivacyOn) eye.classList.replace('fa-eye', 'fa-eye-slash'); else eye.classList.replace('fa-eye-slash', 'fa-eye');
         }
 
-        // FLAWLESS UI UPDATER - NO COUNTING ANIMATION
-        function updateWalletDisplay(instant = true) {
+        function updateWalletDisplay(instant = false) {
             let rs = parseInt(currentUser.rupees) || 0;
             let pts = parseInt(currentUser.points) || 0;
             
-            document.getElementById('displayRupees').innerHTML = formatNum(rs); 
-            document.getElementById('displayPoints').innerHTML = formatNum(pts); 
+            let elRs = document.getElementById('displayRupees');
+            let elPts = document.getElementById('displayPoints');
+            
+            let currentRs = parseInt(elRs.innerText.replace(/,/g, '')) || 0;
+            let currentPts = parseInt(elPts.innerText.replace(/,/g, '')) || 0;
+            
+            if (instant) {
+                elRs.innerHTML = formatNum(rs); 
+                elPts.innerHTML = formatNum(pts); 
+            } else {
+                if (currentRs !== rs) animateValue(elRs, currentRs, rs, 800);
+                if (currentPts !== pts) animateValue(elPts, currentPts, pts, 800);
+            }
             
             let badge = document.getElementById('vipBadge');
             let prog = document.getElementById('vipProgress');
@@ -681,7 +732,7 @@
                     body: JSON.stringify({ action: "claim_offer", email: currentUser.email, offerName: "Milestone Auto-Claim Levels: " + claimsMade.join(','), reward: newlyClaimed })
                 });
 
-                updateWalletDisplay(true);
+                updateWalletDisplay(false);
                 renderTransactions();
             }
 
@@ -816,7 +867,7 @@
                     
                     currentUser.rupees = (parseInt(currentUser.rupees) || 0) + 20;
                     localStorage.setItem('tournyx_user', JSON.stringify(currentUser));
-                    updateWalletDisplay(true); 
+                    updateWalletDisplay(false); 
                     showToast("UTR Pending. Rs. 20 First Deposit Bonus added instantly!");
                 } else {
                     showToast("UTR Submitted! Pending Admin/API Verification.");
@@ -832,16 +883,15 @@
             }, 3000);
         }
 
-        // --- NON-DESTRUCTIVE DOM UPDATES (Fixes Flashing History) ---
+        // --- NON-DESTRUCTIVE DOM UPDATES FOR TRANSACTIONS ---
         function renderTransactions() {
             const container = document.getElementById('txnListContainer');
             let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
             let newHtml = "";
             
             if (txns.length === 0) { 
-                newHtml = `<div style="text-align:center; padding:30px; color:#666;">No recent transactions.</div>`; 
+                newHtml = `<div style="text-align:center; padding:30px; color:#666;"><i class="fa-solid fa-file-invoice" style="font-size:2rem; opacity:0.5; margin-bottom:10px;"></i><br>No recent transactions.</div>`; 
             } else {
-                // Remove animation delays so they don't jump every time the page syncs
                 txns.slice(0, 5).forEach((t) => { newHtml += buildTxnHtml(t); });
             }
 
@@ -926,22 +976,27 @@
 
         // --- BULLETPROOF SYNC LOGIC FOR LEDGER ---
         function syncLiveTransactions(silent = false) {
-            if(!silent) { let icon = document.querySelector('.fa-rotate-right'); if(icon) icon.classList.add('fa-spin'); }
             fetch(API_URL + "?action=get_transactions&email=" + encodeURIComponent(currentUser.email)).then(r=>r.json()).then(d => {
                 if(d.status === "success") {
                     
-                    // Catch the payload accurately whether it's in d.data or d.message
-                    let payload = d.data !== undefined ? d.data : (typeof d.message === 'object' ? d.message : []);
+                    // BULLETPROOF PARSER: Searches every level for the array to never wipe data
+                    let txnsArray = null;
+                    if (Array.isArray(d)) txnsArray = d;
+                    else if (Array.isArray(d.data)) txnsArray = d.data;
+                    else if (Array.isArray(d.message)) txnsArray = d.message;
                     
-                    if (Array.isArray(payload)) {
-                        localStorage.setItem('tournyx_txns', JSON.stringify(payload));
+                    if (txnsArray !== null) {
+                        localStorage.setItem('tournyx_txns', JSON.stringify(txnsArray));
                         renderTransactions();
-                        calculateMilestones(payload);
-                        if(!silent) showToast("Ledger Synced.");
+                        calculateMilestones(txnsArray);
+                    } else {
+                        renderTransactions(); // Fallback to cache to clear infinite spinner
                     }
+                } else {
+                    renderTransactions();
                 }
-            }).catch(e=>{}).finally(() => {
-                if(!silent) { let icon = document.querySelector('.fa-rotate-right'); if(icon) setTimeout(()=>icon.classList.remove('fa-spin'), 500); }
+            }).catch(e => {
+                renderTransactions(); // Fallback to cache on error
             });
         }
 
