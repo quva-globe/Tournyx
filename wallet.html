@@ -566,7 +566,7 @@
                         currentUser.points = payload.points;
                         localStorage.setItem('tournyx_user', JSON.stringify(currentUser));
                         
-                        updateWalletDisplay(silent); // Smooth animation if numbers changed
+                        updateWalletDisplay(true); // Instant load, no animations
                     }
                 }
             }).catch(e => { if(!silent) console.error("Wallet Sync Failed:", e); });
@@ -597,29 +597,6 @@
             anim();
         }
 
-        // --- ANIMATION ENGINE (FIXES GLITCHING) ---
-        window.activeAnimations = {};
-        function animateValue(obj, start, end, duration, prefix = "", suffix = "") {
-            if (!obj) return;
-            if (start === end) { obj.innerHTML = prefix + formatNum(end) + suffix; return; }
-            
-            if (window.activeAnimations[obj.id]) cancelAnimationFrame(window.activeAnimations[obj.id]);
-            
-            let startTimestamp = null;
-            const step = (timestamp) => {
-                if (!startTimestamp) startTimestamp = timestamp;
-                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                obj.innerHTML = prefix + formatNum(Math.floor(progress * (end - start) + start)) + suffix;
-                if (progress < 1) { 
-                    window.activeAnimations[obj.id] = window.requestAnimationFrame(step); 
-                } else { 
-                    obj.innerHTML = prefix + formatNum(end) + suffix; 
-                    delete window.activeAnimations[obj.id];
-                }
-            };
-            window.activeAnimations[obj.id] = window.requestAnimationFrame(step);
-        }
-
         function setDynamicGreeting() {
             const hr = new Date().getHours(); let greet = "Welcome,";
             if (hr < 12) greet = "Good Morning,"; else if (hr < 18) greet = "Good Afternoon,"; else greet = "Good Evening,";
@@ -640,23 +617,13 @@
             if(isPrivacyOn) eye.classList.replace('fa-eye', 'fa-eye-slash'); else eye.classList.replace('fa-eye-slash', 'fa-eye');
         }
 
-        function updateWalletDisplay(instant = false) {
+        // OPTIMIZED - NO COUNTING ANIMATION
+        function updateWalletDisplay(instant = true) {
             let rs = parseInt(currentUser.rupees) || 0;
             let pts = parseInt(currentUser.points) || 0;
             
-            let elRs = document.getElementById('displayRupees');
-            let elPts = document.getElementById('displayPoints');
-            
-            let currentRs = parseInt(elRs.innerText.replace(/,/g, '')) || 0;
-            let currentPts = parseInt(elPts.innerText.replace(/,/g, '')) || 0;
-            
-            if (instant) {
-                elRs.innerHTML = formatNum(rs); 
-                elPts.innerHTML = formatNum(pts); 
-            } else {
-                if (currentRs !== rs) animateValue(elRs, currentRs, rs, 800);
-                if (currentPts !== pts) animateValue(elPts, currentPts, pts, 800);
-            }
+            document.getElementById('displayRupees').innerHTML = formatNum(rs); 
+            document.getElementById('displayPoints').innerHTML = formatNum(pts); 
             
             let badge = document.getElementById('vipBadge');
             let prog = document.getElementById('vipProgress');
@@ -724,7 +691,7 @@
                     body: JSON.stringify({ action: "claim_offer", email: currentUser.email, offerName: "Milestone Auto-Claim Levels: " + claimsMade.join(','), reward: newlyClaimed })
                 });
 
-                updateWalletDisplay(false);
+                updateWalletDisplay(true);
                 renderTransactions();
             }
 
@@ -860,13 +827,13 @@
                     // INSTANT ADD MONEY UI
                     currentUser.rupees = (parseInt(currentUser.rupees) || 0) + amt + 20;
                     localStorage.setItem('tournyx_user', JSON.stringify(currentUser));
-                    updateWalletDisplay(false); 
+                    updateWalletDisplay(true); 
                     showToast("UTR Pending. Rs. 20 First Deposit Bonus added instantly!");
                 } else {
                     // INSTANT ADD MONEY UI
                     currentUser.rupees = (parseInt(currentUser.rupees) || 0) + amt;
                     localStorage.setItem('tournyx_user', JSON.stringify(currentUser));
-                    updateWalletDisplay(false); 
+                    updateWalletDisplay(true); 
                     showToast("UTR Submitted! Balance updated optimistically.");
                 }
                 
