@@ -232,36 +232,17 @@
         .floating-plus { position: absolute; top: -30px; width: 58px; height: 58px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 4px solid var(--primary-bg); box-shadow: 0 10px 25px rgba(189,0,255,0.5); color: #fff; font-size: 1.8rem; z-index: 10; transition: 0.3s;}
         .floating-plus:hover { transform: translateX(-50%) scale(1.1); box-shadow: 0 15px 35px rgba(0,242,255,0.6); }
 
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes pulse { 0%{transform:scale(0.8); opacity:0.5;} 100%{transform:scale(1.2); opacity:1;} }
-        
         /* --- DESKTOP PERFECT CENTERED POPUPS OVERRIDE --- */
         @media (min-width: 850px) { 
             .bottom-nav { display: none !important; } 
             
-            /* Split layout for Desktop Add Money */
             .add-money-flex { flex-direction: row; align-items: stretch; }
             .add-money-left { flex: 1; }
             .add-money-right { flex: 1; display: flex; flex-direction: column; justify-content: center; border-left: 1px solid var(--card-border); padding-left: 20px; }
             
-            /* Center all Bottom Sheets Perfectly */
-            .bottom-sheet-overlay { 
-                align-items: center !important; 
-                justify-content: center !important; 
-                padding: 20px; 
-            }
-            .bottom-sheet { 
-                transform: scale(0.95) !important; 
-                opacity: 0; 
-                border-radius: 20px !important; 
-                max-height: 85vh; 
-                margin: auto !important; 
-                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; 
-            }
-            .bottom-sheet-overlay.active .bottom-sheet { 
-                transform: scale(1) !important; 
-                opacity: 1; 
-            }
+            .bottom-sheet-overlay { align-items: center !important; justify-content: center !important; padding: 20px; }
+            .bottom-sheet { transform: scale(0.95) !important; opacity: 0; border-radius: 20px !important; max-height: 85vh; margin: auto !important; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; }
+            .bottom-sheet-overlay.active .bottom-sheet { transform: scale(1) !important; opacity: 1; }
         }
         .median-active .top-header { display: flex !important; visibility: visible !important; }
     </style>
@@ -526,6 +507,9 @@
         let totalLifetimeDeposits = 0;
         let userCurrentLevel = 0;
 
+        // SMART ANIMATION CONTROLLER
+        window.activeAnimations = {};
+
         document.addEventListener("DOMContentLoaded", function() {
             if(!currentUser) { window.location.href = "login.html"; return; }
             if(currentUser.avatar) document.getElementById('headerProfilePic').src = currentUser.avatar;
@@ -546,15 +530,21 @@
                 calculateMilestones(cached);
             }
             
-            // INSTANTLY LOAD CACHE TO PREVENT ZERO FLASH
-            updateWalletDisplay(); 
+            // PREVENT BLURRY NUMBER GLITCH BY LOADING INSTANTLY ON OPEN
+            updateWalletDisplay(true); 
             
             syncUserData();
-            setTimeout(() => { syncLiveTransactions(); }, 1000);
+            
+            // BACKGROUND LIVE SYNC LOOP
+            setInterval(() => {
+                syncUserData(true); 
+                syncLiveTransactions(false);
+            }, 10000); // Polls safely every 10 seconds to respect API limits
+
             initParticles();
         });
 
-        function syncUserData() {
+        function syncUserData(silent = false) {
             fetch(API_URL + "?action=sync_user&email=" + encodeURIComponent(currentUser.email))
             .then(response => response.json())
             .then(data => {
@@ -566,9 +556,9 @@
                     currentUser.points = freshPoints;
                     localStorage.setItem('tournyx_user', JSON.stringify(currentUser));
                     
-                    updateWalletDisplay();
+                    updateWalletDisplay(); // Will smoothly animate only if changed
                 }
-            }).catch(e => console.error("Wallet Sync Failed:", e));
+            }).catch(e => { if(!silent) console.error("Wallet Sync Failed:", e); });
         }
 
         function triggerHaptic() { if(navigator.vibrate) navigator.vibrate(40); }
@@ -596,17 +586,29 @@
             anim();
         }
 
+        // --- BULLETPROOF ANIMATION ENGINE ---
         function animateValue(obj, start, end, duration, prefix = "", suffix = "") {
+            if (!obj) return;
             if (start === end) { obj.innerHTML = prefix + formatNum(end) + suffix; return; }
+            
+            // Cancel overlapping animations to prevent glitching numbers
+            if (window.activeAnimations[obj.id]) {
+                cancelAnimationFrame(window.activeAnimations[obj.id]);
+            }
+            
             let startTimestamp = null;
             const step = (timestamp) => {
                 if (!startTimestamp) startTimestamp = timestamp;
                 const progress = Math.min((timestamp - startTimestamp) / duration, 1);
                 obj.innerHTML = prefix + formatNum(Math.floor(progress * (end - start) + start)) + suffix;
-                if (progress < 1) { window.requestAnimationFrame(step); }
-                else { obj.innerHTML = prefix + formatNum(end) + suffix; }
+                if (progress < 1) { 
+                    window.activeAnimations[obj.id] = window.requestAnimationFrame(step); 
+                } else { 
+                    obj.innerHTML = prefix + formatNum(end) + suffix; 
+                    delete window.activeAnimations[obj.id];
+                }
             };
-            window.requestAnimationFrame(step);
+            window.activeAnimations[obj.id] = window.requestAnimationFrame(step);
         }
 
         function setDynamicGreeting() {
@@ -629,8 +631,8 @@
             if(isPrivacyOn) eye.classList.replace('fa-eye', 'fa-eye-slash'); else eye.classList.replace('fa-eye-slash', 'fa-eye');
         }
 
-        // --- OPTIMIZED WALLET DISPLAY (Prevents flash of Zero) ---
-        function updateWalletDisplay() {
+        // --- SMART DOM UPDATE ---
+        function updateWalletDisplay(instant = false) {
             let rs = parseInt(currentUser.rupees) || 0;
             let pts = parseInt(currentUser.points) || 0;
             
@@ -640,17 +642,12 @@
             let currentRs = parseInt(elRs.innerText.replace(/,/g, '')) || 0;
             let currentPts = parseInt(elPts.innerText.replace(/,/g, '')) || 0;
             
-            // Only animate if the balance ACTUALLY changed from a non-zero state
-            if (currentRs !== rs && currentRs !== 0) {
-                animateValue(elRs, currentRs, rs, 1000);
+            if (instant) {
+                elRs.innerHTML = formatNum(rs);
+                elPts.innerHTML = formatNum(pts);
             } else {
-                elRs.innerHTML = formatNum(rs); // Instant load
-            }
-            
-            if (currentPts !== pts && currentPts !== 0) {
-                animateValue(elPts, currentPts, pts, 1000);
-            } else {
-                elPts.innerHTML = formatNum(pts); // Instant load
+                if (currentRs !== rs) animateValue(elRs, currentRs, rs, 1000);
+                if (currentPts !== pts) animateValue(elPts, currentPts, pts, 1000);
             }
             
             let badge = document.getElementById('vipBadge');
@@ -869,22 +866,33 @@
             }, 3000);
         }
 
-        // --- NEW HISTORY RENDERING LOGIC WITH PERFECT OVERFLOW & COLORS ---
+        // --- NON-DESTRUCTIVE DOM UPDATES (Fixes Flashing History) ---
         function renderTransactions() {
             const container = document.getElementById('txnListContainer');
             let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
-            container.innerHTML = "";
-            if (txns.length === 0) { container.innerHTML = `<div style="text-align:center; padding:30px; color:#666;">No recent transactions.</div>`; return; }
-            txns.slice(0, 5).forEach((t, i) => { container.innerHTML += buildTxnHtml(t, i); });
+            let newHtml = "";
+            
+            if (txns.length === 0) { 
+                newHtml = `<div style="text-align:center; padding:30px; color:#666;">No recent transactions.</div>`; 
+            } else {
+                txns.slice(0, 5).forEach((t, i) => { newHtml += buildTxnHtml(t, i); });
+            }
+
+            // Only update DOM if content actually changed to prevent re-triggering CSS animations
+            if (container.innerHTML !== newHtml) {
+                container.innerHTML = newHtml;
+            }
         }
 
         function openAllTxns() {
             document.getElementById('ledgerModal').classList.add('active');
             let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
             const container = document.getElementById('fullTxnListContainer');
-            container.innerHTML = "";
-            txns.forEach((t, i) => { container.innerHTML += buildTxnHtml(t, i); });
+            let newHtml = "";
+            txns.forEach((t, i) => { newHtml += buildTxnHtml(t, i); });
+            if (container.innerHTML !== newHtml) container.innerHTML = newHtml;
         }
+        
         function closeAllTxns() { document.getElementById('ledgerModal').classList.remove('active'); }
 
         function buildTxnHtml(t, delay) {
@@ -933,7 +941,6 @@
             let inOutLabel = isCredit ? `<div class="in-out-label in-label">MONEY IN</div>` : `<div class="in-out-label out-label">MONEY OUT</div>`;
             let sign = isCredit ? '+' : '-';
 
-            // The amount text AND the +/- sign both inherit the status color dynamically
             return `
                 <div class="txn-item glow-hover" style="animation-delay:${delay*0.1}s" onclick="openReceipt('${t.id}')">
                     <div class="txn-left">
@@ -965,7 +972,6 @@
             });
         }
 
-        // --- RECEIPT MODAL LOGIC (Matched to perfectly color-sync) ---
         function openReceipt(id) {
             let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
             let t = txns.find(x => x.id === id); if(!t) return;
