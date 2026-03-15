@@ -10,7 +10,6 @@
     <title>Secure Player Wallet - Tournyx</title>
 <meta name="description" content="Manage your esports earnings, add funds via UPI, withdraw winnings, and track your transaction history securely on Tournyx.">
 
-    
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -30,7 +29,7 @@
                     }
                 } catch(e) { console.log("Theme bypassed."); }
             })();
-        </script>
+    </script>
     <style>
         :root {
             --primary-bg: #070311; --secondary-bg: #0d061e;
@@ -558,7 +557,11 @@
 
         // --- BULLETPROOF SYNC LOGIC (FIXES THE ZERO BUG) ---
         function syncUserData(silent = false) {
-            fetch(API_URL + "?action=sync_user&email=" + encodeURIComponent(currentUser.email))
+            fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify({ action: 'sync_user', email: currentUser.email })
+            })
             .then(response => response.json())
             .then(data => {
                 if(data.status === "success") {
@@ -728,7 +731,8 @@
                 document.getElementById('celebrationModal').classList.add('active');
                 
                 fetch(API_URL, {
-                    method: 'POST', mode: 'no-cors',
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' },
                     body: JSON.stringify({ action: "claim_offer", email: currentUser.email, offerName: "Milestone Auto-Claim Levels: " + claimsMade.join(','), reward: newlyClaimed })
                 });
 
@@ -877,8 +881,19 @@
                 renderTransactions();
                 calculateMilestones(txns);
                 
-                fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "submit_utr", email: currentUser.email, amount: amt, utr: utr }) });
-                if(isFirstDeposit) fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "claim_offer", email: currentUser.email, offerName: "First Deposit Bonus", reward: 20 }) });
+                fetch(API_URL, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify({ action: "submit_utr", email: currentUser.email, amount: amt, utr: utr }) 
+                });
+                
+                if(isFirstDeposit) {
+                    fetch(API_URL, { 
+                        method: 'POST', 
+                        headers: { 'Content-Type': 'text/plain' },
+                        body: JSON.stringify({ action: "claim_offer", email: currentUser.email, offerName: "First Deposit Bonus", reward: 20 }) 
+                    });
+                }
 
             }, 3000);
         }
@@ -892,6 +907,7 @@
             if (txns.length === 0) { 
                 newHtml = `<div style="text-align:center; padding:30px; color:#666;"><i class="fa-solid fa-file-invoice" style="font-size:2rem; opacity:0.5; margin-bottom:10px;"></i><br>No recent transactions.</div>`; 
             } else {
+                // Remove animation delays so they don't jump every time the page syncs
                 txns.slice(0, 5).forEach((t) => { newHtml += buildTxnHtml(t); });
             }
 
@@ -976,27 +992,36 @@
 
         // --- BULLETPROOF SYNC LOGIC FOR LEDGER ---
         function syncLiveTransactions(silent = false) {
-            fetch(API_URL + "?action=get_transactions&email=" + encodeURIComponent(currentUser.email)).then(r=>r.json()).then(d => {
-                if(d.status === "success") {
-                    
-                    // BULLETPROOF PARSER: Searches every level for the array to never wipe data
-                    let txnsArray = null;
-                    if (Array.isArray(d)) txnsArray = d;
-                    else if (Array.isArray(d.data)) txnsArray = d.data;
-                    else if (Array.isArray(d.message)) txnsArray = d.message;
-                    
-                    if (txnsArray !== null) {
-                        localStorage.setItem('tournyx_txns', JSON.stringify(txnsArray));
-                        renderTransactions();
-                        calculateMilestones(txnsArray);
-                    } else {
-                        renderTransactions(); // Fallback to cache to clear infinite spinner
-                    }
-                } else {
+            if(!silent) { let icon = document.querySelector('.fa-rotate-right'); if(icon) icon.classList.add('fa-spin'); }
+            
+            fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify({ action: 'get_transactions', email: currentUser.email })
+            })
+            .then(r => r.json())
+            .then(d => {
+                
+                // BULLETPROOF PARSER: Searches every level for the array to never wipe data
+                let txnsArray = null;
+                if (Array.isArray(d)) txnsArray = d;
+                else if (Array.isArray(d.data)) txnsArray = d.data;
+                else if (Array.isArray(d.message)) txnsArray = d.message;
+                
+                if (txnsArray !== null) {
+                    localStorage.setItem('tournyx_txns', JSON.stringify(txnsArray));
                     renderTransactions();
+                    calculateMilestones(txnsArray);
+                    if(!silent) showToast("Ledger Synced.");
+                } else {
+                    renderTransactions(); // Fallback to cache to clear infinite spinner
                 }
-            }).catch(e => {
+            })
+            .catch(e => {
                 renderTransactions(); // Fallback to cache on error
+            })
+            .finally(() => {
+                if(!silent) { let icon = document.querySelector('.fa-rotate-right'); if(icon) setTimeout(()=>icon.classList.remove('fa-spin'), 500); }
             });
         }
 
