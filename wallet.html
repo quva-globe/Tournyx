@@ -51,14 +51,14 @@
         #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; transform: translateZ(0); }
         .bg-gradient { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; background: radial-gradient(circle at 50% 0%, #15062e 0%, #070311 100%); pointer-events: none;}
 
-        .animate-section { animation: slideUpGlow 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
+        .animate-section { animation: slideUpGlow 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
         @keyframes slideUpGlow { 
-            0% { opacity: 0; transform: translateY(30px); }
+            0% { opacity: 0; transform: translateY(20px); }
             100% { opacity: 1; transform: translateY(0); } 
         }
-        .delay-1 { animation-delay: 0.1s; } .delay-2 { animation-delay: 0.2s; } .delay-3 { animation-delay: 0.3s; } .delay-4 { animation-delay: 0.4s; }
+        .delay-1 { animation-delay: 0.05s; } .delay-2 { animation-delay: 0.1s; } .delay-3 { animation-delay: 0.15s; } .delay-4 { animation-delay: 0.2s; }
         
-        .glow-hover { transition: 0.4s; }
+        .glow-hover { transition: 0.3s; }
         .glow-hover:hover { box-shadow: 0 0 20px var(--accent-cyan); border-color: var(--accent-cyan); transform: translateY(-3px); }
 
         .top-header { position: fixed; top: 0; left: 0; width: 100%; padding: calc(15px + env(safe-area-inset-top)) 15px 15px; background: rgba(7, 3, 17, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-bottom: 1px solid var(--card-border); display: flex; align-items: center; justify-content: space-between; z-index: 2000; box-shadow: 0 4px 30px rgba(0,0,0,0.5); transform: translateZ(0); }
@@ -74,7 +74,7 @@
         .content-container { padding: 15px; }
 
         /* --- WALLET CARD & VIP TIER --- */
-        .wallet-card { background: linear-gradient(135deg, rgba(189,0,255,0.2) 0%, rgba(0,242,255,0.1) 100%); border: 1px solid var(--card-border); border-radius: 20px; padding: 25px 20px; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 20px; animation: borderGlow 4s infinite alternate, slideUpGlow 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
+        .wallet-card { background: linear-gradient(135deg, rgba(189,0,255,0.2) 0%, rgba(0,242,255,0.1) 100%); border: 1px solid var(--card-border); border-radius: 20px; padding: 25px 20px; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 20px; animation: borderGlow 4s infinite alternate, slideUpGlow 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
         @keyframes borderGlow { from{border-color: rgba(189,0,255,0.3); box-shadow: 0 10px 30px rgba(189,0,255,0.1);} to{border-color: rgba(0,242,255,0.4); box-shadow: 0 10px 30px rgba(0,242,255,0.2);} }
         .wallet-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 60%); transform: rotate(45deg); pointer-events: none; }
         
@@ -83,7 +83,7 @@
         .vip-silver { background: linear-gradient(45deg, #c0c0c0, #e0e0e0); color: black; box-shadow: 0 0 15px rgba(192,192,192,0.5); }
         
         .balance-label { font-size: 0.85rem; color: #ccc; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; display: flex; align-items: center; gap:10px; }
-        .balance-amount { font-family: var(--font-head); font-size: 2.5rem; font-weight: bold; color: white; display: flex; align-items: center; gap: 10px; text-shadow: 0 0 15px rgba(255,255,255,0.4); margin-bottom: 15px; transition: 0.4s; }
+        .balance-amount { font-family: var(--font-head); font-size: 2.5rem; font-weight: bold; color: white; display: flex; align-items: center; gap: 10px; text-shadow: 0 0 15px rgba(255,255,255,0.4); margin-bottom: 15px; }
         
         .blur-balance { filter: blur(10px); user-select: none; opacity: 0.8; }
 
@@ -125,7 +125,7 @@
         .section-title span { font-size: 0.8rem; color: var(--accent-cyan); cursor: pointer; text-transform: uppercase; padding: 5px 10px; border-radius: 8px; transition: 0.3s; border: 1px solid transparent;}
         
         .txn-list { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 15px; padding: 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
-        .txn-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.3s; overflow: hidden; gap: 10px;}
+        .txn-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.2s; overflow: hidden; gap: 10px;}
         .txn-item:active { background: rgba(255,255,255,0.05); border-color: var(--accent-cyan); transform: scale(0.98); }
         .txn-item:hover { border-color: var(--accent-cyan); background: rgba(0,242,255,0.05); }
         
@@ -222,12 +222,13 @@
         #customToast.show { visibility: visible; opacity: 1; bottom: 100px; }
 
         /* NAV */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 5px env(safe-area-inset-bottom); border-top: 1px solid var(--card-border); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.8); }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: #666; font-size: 0.65rem; font-family: var(--font-head); font-weight: bold; flex: 1; text-decoration: none;}
-        .nav-item i { font-size: 1.3rem; margin-bottom:4px; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 5px env(safe-area-inset-bottom); border-top: 1px solid var(--card-border); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.8); transform: translateZ(0);}
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; color: #666; text-decoration: none; font-size: 0.65rem; font-family: var(--font-head); font-weight: bold; flex: 1; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; will-change: transform, color;}
+        .nav-item span { margin-top: 4px; transition: 0.3s; }
+        .nav-item i { font-size: 1.3rem; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .nav-item.active { color: var(--accent-cyan); }
-        .nav-item.active i { transform: translateY(-4px); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
-        
+        .nav-item.active i { transform: translateY(-4px); color: var(--accent-cyan); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
+        .nav-item.active span { transform: translateY(2px); color: white; }
         .fab-slot { flex: 1.2; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
         .floating-plus { position: absolute; top: -30px; width: 58px; height: 58px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 4px solid var(--primary-bg); box-shadow: 0 10px 25px rgba(189,0,255,0.5); color: #fff; font-size: 1.8rem; z-index: 10; transition: 0.3s;}
         .floating-plus:hover { transform: translateX(-50%) scale(1.1); box-shadow: 0 15px 35px rgba(0,242,255,0.6); }
@@ -507,9 +508,6 @@
         let totalLifetimeDeposits = 0;
         let userCurrentLevel = 0;
 
-        // SMART ANIMATION CONTROLLER
-        window.activeAnimations = {};
-
         document.addEventListener("DOMContentLoaded", function() {
             if(!currentUser) { window.location.href = "login.html"; return; }
             if(currentUser.avatar) document.getElementById('headerProfilePic').src = currentUser.avatar;
@@ -530,33 +528,37 @@
                 calculateMilestones(cached);
             }
             
-            // PREVENT BLURRY NUMBER GLITCH BY LOADING INSTANTLY ON OPEN
+            // FLAWLESS INSTANT LOAD: No zeros, no animations on open.
             updateWalletDisplay(true); 
             
             syncUserData();
             
-            // BACKGROUND LIVE SYNC LOOP
+            // Background Live Sync Loop
             setInterval(() => {
                 syncUserData(true); 
-                syncLiveTransactions(false);
-            }, 10000); // Polls safely every 10 seconds to respect API limits
+                syncLiveTransactions(true);
+            }, 10000); 
 
             initParticles();
         });
 
+        // --- BULLETPROOF SYNC LOGIC ---
         function syncUserData(silent = false) {
             fetch(API_URL + "?action=sync_user&email=" + encodeURIComponent(currentUser.email))
             .then(response => response.json())
             .then(data => {
                 if(data.status === "success") {
-                    let freshRupees = data.rupees !== undefined ? data.rupees : (data.data && data.data.rupees ? data.data.rupees : 0);
-                    let freshPoints = data.points !== undefined ? data.points : (data.data && data.data.points ? data.data.points : 0);
                     
-                    currentUser.rupees = freshRupees;
-                    currentUser.points = freshPoints;
-                    localStorage.setItem('tournyx_user', JSON.stringify(currentUser));
+                    // FLAWLESS PAYLOAD PARSER: Catch the data no matter where the backend put it
+                    let payload = data.data !== undefined ? data.data : (typeof data.message === 'object' ? data.message : null);
                     
-                    updateWalletDisplay(); // Will smoothly animate only if changed
+                    if (payload && payload.rupees !== undefined) {
+                        currentUser.rupees = payload.rupees;
+                        currentUser.points = payload.points;
+                        localStorage.setItem('tournyx_user', JSON.stringify(currentUser));
+                        
+                        updateWalletDisplay(true); // Always update instantly, no glitchy numbers
+                    }
                 }
             }).catch(e => { if(!silent) console.error("Wallet Sync Failed:", e); });
         }
@@ -586,31 +588,6 @@
             anim();
         }
 
-        // --- BULLETPROOF ANIMATION ENGINE ---
-        function animateValue(obj, start, end, duration, prefix = "", suffix = "") {
-            if (!obj) return;
-            if (start === end) { obj.innerHTML = prefix + formatNum(end) + suffix; return; }
-            
-            // Cancel overlapping animations to prevent glitching numbers
-            if (window.activeAnimations[obj.id]) {
-                cancelAnimationFrame(window.activeAnimations[obj.id]);
-            }
-            
-            let startTimestamp = null;
-            const step = (timestamp) => {
-                if (!startTimestamp) startTimestamp = timestamp;
-                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                obj.innerHTML = prefix + formatNum(Math.floor(progress * (end - start) + start)) + suffix;
-                if (progress < 1) { 
-                    window.activeAnimations[obj.id] = window.requestAnimationFrame(step); 
-                } else { 
-                    obj.innerHTML = prefix + formatNum(end) + suffix; 
-                    delete window.activeAnimations[obj.id];
-                }
-            };
-            window.activeAnimations[obj.id] = window.requestAnimationFrame(step);
-        }
-
         function setDynamicGreeting() {
             const hr = new Date().getHours(); let greet = "Welcome,";
             if (hr < 12) greet = "Good Morning,"; else if (hr < 18) greet = "Good Afternoon,"; else greet = "Good Evening,";
@@ -631,24 +608,13 @@
             if(isPrivacyOn) eye.classList.replace('fa-eye', 'fa-eye-slash'); else eye.classList.replace('fa-eye-slash', 'fa-eye');
         }
 
-        // --- SMART DOM UPDATE ---
-        function updateWalletDisplay(instant = false) {
+        // FLAWLESS UI UPDATER - NO COUNTING ANIMATION
+        function updateWalletDisplay(instant = true) {
             let rs = parseInt(currentUser.rupees) || 0;
             let pts = parseInt(currentUser.points) || 0;
             
-            let elRs = document.getElementById('displayRupees');
-            let elPts = document.getElementById('displayPoints');
-            
-            let currentRs = parseInt(elRs.innerText.replace(/,/g, '')) || 0;
-            let currentPts = parseInt(elPts.innerText.replace(/,/g, '')) || 0;
-            
-            if (instant) {
-                elRs.innerHTML = formatNum(rs);
-                elPts.innerHTML = formatNum(pts);
-            } else {
-                if (currentRs !== rs) animateValue(elRs, currentRs, rs, 1000);
-                if (currentPts !== pts) animateValue(elPts, currentPts, pts, 1000);
-            }
+            document.getElementById('displayRupees').innerHTML = formatNum(rs); 
+            document.getElementById('displayPoints').innerHTML = formatNum(pts); 
             
             let badge = document.getElementById('vipBadge');
             let prog = document.getElementById('vipProgress');
@@ -715,7 +681,7 @@
                     body: JSON.stringify({ action: "claim_offer", email: currentUser.email, offerName: "Milestone Auto-Claim Levels: " + claimsMade.join(','), reward: newlyClaimed })
                 });
 
-                updateWalletDisplay();
+                updateWalletDisplay(true);
                 renderTransactions();
             }
 
@@ -850,7 +816,7 @@
                     
                     currentUser.rupees = (parseInt(currentUser.rupees) || 0) + 20;
                     localStorage.setItem('tournyx_user', JSON.stringify(currentUser));
-                    updateWalletDisplay(); 
+                    updateWalletDisplay(true); 
                     showToast("UTR Pending. Rs. 20 First Deposit Bonus added instantly!");
                 } else {
                     showToast("UTR Submitted! Pending Admin/API Verification.");
@@ -875,7 +841,8 @@
             if (txns.length === 0) { 
                 newHtml = `<div style="text-align:center; padding:30px; color:#666;">No recent transactions.</div>`; 
             } else {
-                txns.slice(0, 5).forEach((t, i) => { newHtml += buildTxnHtml(t, i); });
+                // Remove animation delays so they don't jump every time the page syncs
+                txns.slice(0, 5).forEach((t) => { newHtml += buildTxnHtml(t); });
             }
 
             // Only update DOM if content actually changed to prevent re-triggering CSS animations
@@ -889,13 +856,13 @@
             let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
             const container = document.getElementById('fullTxnListContainer');
             let newHtml = "";
-            txns.forEach((t, i) => { newHtml += buildTxnHtml(t, i); });
+            txns.forEach((t) => { newHtml += buildTxnHtml(t); });
             if (container.innerHTML !== newHtml) container.innerHTML = newHtml;
         }
         
         function closeAllTxns() { document.getElementById('ledgerModal').classList.remove('active'); }
 
-        function buildTxnHtml(t, delay) {
+        function buildTxnHtml(t) {
             let isCredit = t.type === "Credit"; 
             
             let stat = String(t.status || "Pending").toLowerCase().trim();
@@ -903,7 +870,6 @@
             let isCancelled = ["cancelled", "failed"].includes(stat);
             let isRefunded = ["refunded"].includes(stat);
 
-            // COLOR ASSIGNMENTS
             let statusColor = "#ff9900"; // Pending Orange
             let statusBg = "rgba(255, 153, 0, 0.1)";
             let statusBorder = "rgba(255, 153, 0, 0.3)";
@@ -942,7 +908,7 @@
             let sign = isCredit ? '+' : '-';
 
             return `
-                <div class="txn-item glow-hover" style="animation-delay:${delay*0.1}s" onclick="openReceipt('${t.id}')">
+                <div class="txn-item glow-hover" onclick="openReceipt('${t.id}')">
                     <div class="txn-left">
                         <div class="txn-icon ${iconClass}"><i class="fa-solid ${mainIcon}"></i></div>
                         <div class="txn-info">
@@ -958,17 +924,24 @@
                 </div>`;
         }
 
-        function syncLiveTransactions(manual = false) {
-            if(manual) { let icon = document.querySelector('.fa-rotate-right'); if(icon) icon.classList.add('fa-spin'); }
+        // --- BULLETPROOF SYNC LOGIC FOR LEDGER ---
+        function syncLiveTransactions(silent = false) {
+            if(!silent) { let icon = document.querySelector('.fa-rotate-right'); if(icon) icon.classList.add('fa-spin'); }
             fetch(API_URL + "?action=get_transactions&email=" + encodeURIComponent(currentUser.email)).then(r=>r.json()).then(d => {
                 if(d.status === "success") {
-                    localStorage.setItem('tournyx_txns', JSON.stringify(d.data));
-                    renderTransactions();
-                    calculateMilestones(d.data);
-                    if(manual) showToast("Ledger Synced.");
+                    
+                    // Catch the payload accurately whether it's in d.data or d.message
+                    let payload = d.data !== undefined ? d.data : (typeof d.message === 'object' ? d.message : []);
+                    
+                    if (Array.isArray(payload)) {
+                        localStorage.setItem('tournyx_txns', JSON.stringify(payload));
+                        renderTransactions();
+                        calculateMilestones(payload);
+                        if(!silent) showToast("Ledger Synced.");
+                    }
                 }
             }).catch(e=>{}).finally(() => {
-                if(manual) { let icon = document.querySelector('.fa-rotate-right'); if(icon) setTimeout(()=>icon.classList.remove('fa-spin'), 500); }
+                if(!silent) { let icon = document.querySelector('.fa-rotate-right'); if(icon) setTimeout(()=>icon.classList.remove('fa-spin'), 500); }
             });
         }
 
