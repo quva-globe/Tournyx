@@ -192,12 +192,13 @@
         select.form-control { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23a0a0b0'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 15px center; background-size: 20px; }
         
         /* DATE & TIME SPECIFIC STYLES to match tournament.html */
-        input[type="date"].form-control, input[type="time"].form-control {
+        input[type="date"].form-control, input[type="time"].form-control, input[type="datetime-local"].form-control {
             color: white; 
             padding-right: 15px; 
         }
         input[type="date"].form-control::-webkit-calendar-picker-indicator,
-        input[type="time"].form-control::-webkit-calendar-picker-indicator {
+        input[type="time"].form-control::-webkit-calendar-picker-indicator,
+        input[type="datetime-local"].form-control::-webkit-calendar-picker-indicator {
             filter: invert(1);
             cursor: pointer;
         }
@@ -715,8 +716,15 @@
                 <input type="text" id="editTourneyTitle" class="form-control" placeholder="Tournament Title *" style="margin-bottom: 20px;">
 
                 <label class="form-label"><i class="fa-solid fa-calendar-days"></i> Timeline</label>
-                <input type="time" id="editTourneyRegTime" class="form-control" style="margin-bottom: 15px;">
-                <input type="date" id="editTourneyDate" class="form-control" style="margin-bottom: 20px;">
+                <label class="form-label" style="font-size: 0.75rem; text-transform:none; margin-bottom: 5px; color:#888;">Registration Deadline (Date & Time)</label>
+                <input type="datetime-local" id="editTourneyRegTime" class="form-control" style="margin-bottom: 15px;">
+                
+                <label class="form-label" style="font-size: 0.75rem; text-transform:none; margin-bottom: 5px; color:#888;">Tournament Matches (Start to End)</label>
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; align-items: center;">
+                    <input type="date" id="editTourneyDateStart" class="form-control">
+                    <span style="color: #888; font-family: var(--font-head); font-size: 0.8rem;">TO</span>
+                    <input type="date" id="editTourneyDateEnd" class="form-control">
+                </div>
 
                 <label class="form-label"><i class="fa-solid fa-users"></i> Participation Format</label>
                 <div style="display: flex; gap: 15px; margin-bottom: 20px;">
@@ -1452,25 +1460,23 @@
                 previewImg.classList.remove('has-image');
             }
 
-            // Fix for Native Date & Time Inputs
-            // t.match_period (Date) might be anything, attempt to format it to YYYY-MM-DD
-            let dateVal = t.match_period || t.date || "";
-            let timeVal = t.reg_time || t.timing || "";
+            // Dual Date Handling for Tournament Dates ("YYYY-MM-DD to YYYY-MM-DD")
+            let dateVal = t.match_period || ""; 
+            let startD = dateVal, endD = "";
+            if(dateVal.includes(' to ')) {
+                let pts = dateVal.split(' to ');
+                startD = pts[0]; endD = pts[1];
+            }
+            document.getElementById('editTourneyDateStart').value = startD;
+            document.getElementById('editTourneyDateEnd').value = endD;
 
-            try {
-                if(dateVal && dateVal.includes('/')) {
-                    let parts = dateVal.split('/');
-                    if(parts.length === 3) {
-                        dateVal = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
-                    }
-                }
-            } catch(e) {}
-
-            document.getElementById('editTourneyDate').value = dateVal;
+            // Registration Deadline
+            let timeVal = t.date || t.reg_time || "";
+            if (timeVal.length > 16 && timeVal.includes('Z')) timeVal = timeVal.substring(0, 16); 
             document.getElementById('editTourneyRegTime').value = timeVal;
             
             document.getElementById('editTourneySlots').value = t.slots || t.total_slots || "";
-            document.getElementById('editTourneyEntry').value = t.entry_fee || t.entry || "0";
+            document.getElementById('editTourneyEntry').value = t.entry_fee || t.fee || "0";
             document.getElementById('editTourneyPrize').value = t.prize_pool || t.prize || "0";
             document.getElementById('editTourneyStream').value = t.stream_url || t.stream || "";
             
@@ -1487,12 +1493,12 @@
 
         function closeManageModal() { document.getElementById('manageTourneyModal').classList.remove('active'); }
 
-        // --- IMAGE COMPRESSOR FOR BANNER ---
+        // --- IMAGE COMPRESSOR & IMGBB LINK FOR BANNER ---
         function handleBannerUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
 
-            showToast("Processing Banner Image...");
+            showToast("Compressing and generating short link...");
             const previewImg = document.getElementById('editTourneyBannerPreview');
 
             const reader = new FileReader();
@@ -1500,11 +1506,10 @@
                 const img = new Image();
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 800; // 16:9 ratio optimization
-                    const MAX_HEIGHT = 450;
+                    const MAX_WIDTH = 1280; 
+                    const MAX_HEIGHT = 720;
                     let width = img.width; let height = img.height;
 
-                    // Standardize to 16:9 
                     if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } } 
                     else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
 
@@ -1512,12 +1517,33 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
 
-                    const compressedB64 = canvas.toDataURL('image/jpeg', 0.6); // Compress heavy
-                    
-                    document.getElementById('editTourneyBannerStr').value = compressedB64;
+                    const compressedB64 = canvas.toDataURL('image/jpeg', 0.7); 
                     previewImg.src = compressedB64;
                     previewImg.classList.add('has-image');
-                    showToast("Banner loaded! Press update to save.");
+                    
+                    const base64Data = compressedB64.split(',')[1];
+                    const formData = new FormData();
+                    formData.append("image", base64Data);
+                    
+                    // IMPORTANT: Add your ImgBB Key here just like in tournament.html
+                    fetch("https://api.imgbb.com/1/upload?key=YOUR_IMGBB_API_KEY", {
+                        method: "POST",
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(result => {
+                        if(result.success) {
+                            document.getElementById('editTourneyBannerStr').value = result.data.url;
+                            showToast("Banner short link generated! Ready to update.");
+                        } else {
+                            document.getElementById('editTourneyBannerStr').value = compressedB64;
+                            showToast("Banner loaded via fallback! Ready to update.");
+                        }
+                    })
+                    .catch(error => {
+                        document.getElementById('editTourneyBannerStr').value = compressedB64;
+                        showToast("Banner loaded via fallback! Ready to update.");
+                    });
                 }
                 img.src = e.target.result;
             };
@@ -1533,8 +1559,11 @@
             let descVal = document.getElementById('editTourneyDesc').value;
             let formattedDesc = descVal.split('\n').map(line => `<div>${line}</div>`).join('');
 
-            // Format date back if needed, or let backend handle the raw HTML5 date format (YYYY-MM-DD)
-            let rawDate = document.getElementById('editTourneyDate').value;
+            // Combine Start & End Dates
+            let startD = document.getElementById('editTourneyDateStart').value;
+            let endD = document.getElementById('editTourneyDateEnd').value;
+            let finalMatchPeriod = startD;
+            if(endD && endD !== "") finalMatchPeriod += " to " + endD;
             
             const payload = {
                 action: 'edit_tournament',
@@ -1542,8 +1571,8 @@
                 email: userData.email, 
                 title: document.getElementById('editTourneyTitle').value,
                 banner: document.getElementById('editTourneyBannerStr').value,
-                match_period: rawDate,
-                reg_time: document.getElementById('editTourneyRegTime').value,
+                match_period: finalMatchPeriod, // Maps to "Tournament Date" column
+                reg_time: document.getElementById('editTourneyRegTime').value, // Maps to "Date" (Reg Deadline) column
                 slots: document.getElementById('editTourneySlots').value,
                 entry_fee: document.getElementById('editTourneyEntry').value,
                 prize_pool: document.getElementById('editTourneyPrize').value,
