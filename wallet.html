@@ -101,7 +101,6 @@
         .vip-silver { background: linear-gradient(45deg, #c0c0c0, #e0e0e0); color: black; box-shadow: 0 0 15px rgba(192,192,192,0.5); }
         
         .balance-label { font-size: 0.85rem; color: #ccc; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; display: flex; align-items: center; gap:10px; }
-        /* Overflow FIX via clamp & word-break */
         .balance-amount { font-family: var(--font-head); font-size: clamp(1.8rem, 7vw, 2.5rem); line-height: 1.1; font-weight: bold; color: white; display: flex; align-items: center; gap: 10px; text-shadow: 0 0 15px rgba(255,255,255,0.4); margin-bottom: 15px; transition: 0.4s; flex-wrap: wrap; word-break: break-word; overflow-wrap: break-word;}
         .blur-balance { filter: blur(10px); user-select: none; opacity: 0.8; }
 
@@ -124,25 +123,32 @@
         .first-deposit-banner { background: linear-gradient(90deg, rgba(255,153,0,0.2), rgba(0,0,0,0)); border: 1px solid var(--accent-orange); border-radius: 12px; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; cursor: pointer; animation: pulseGlow 2s infinite alternate; }
         @keyframes pulseGlow { from{box-shadow: 0 0 10px rgba(255,153,0,0.2);} to{box-shadow: 0 0 20px rgba(255,153,0,0.5);} }
 
-        /* --- TRANSACTION HISTORY --- */
+        /* --- TRANSACTION HISTORY (OVERFLOW FIXED) --- */
         .section-title { font-family: var(--font-head); font-size: 1.15rem; color: white; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
         .section-title span { font-size: 0.8rem; color: var(--accent-cyan); cursor: pointer; text-transform: uppercase; padding: 5px 10px; border-radius: 8px; transition: 0.3s; border: 1px solid transparent;}
         
         .txn-list { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 15px; padding: 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
         .txn-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.3s; animation: slideInUp 0.4s ease both;}
         .txn-item:active { background: rgba(255,255,255,0.05); border-color: var(--accent-cyan); transform: scale(0.98); }
-        .txn-left { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1; }
-        .txn-icon { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink:0;}
+        
+        /* Flex adjustments for strict boundaries */
+        .txn-left { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1; padding-right: 10px; }
+        .txn-icon { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
         .icon-credit { background: rgba(0,255,127,0.1); color: var(--accent-green); border: 1px solid rgba(0,255,127,0.3); }
         .icon-debit { background: rgba(255,77,77,0.1); color: var(--accent-red); border: 1px solid rgba(255,77,77,0.3); }
-        .txn-info h4 { font-family: var(--font-head); font-size: 1rem; color: white; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+        
+        /* Truncate long titles safely */
+        .txn-info { display: flex; flex-direction: column; min-width: 0; width: 100%; }
+        .txn-info h4 { font-family: var(--font-head); font-size: 0.95rem; color: white; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; display: block; }
         .txn-info p { font-size: 0.75rem; color: #888; display:flex; gap:5px; align-items:center;}
         .cat-tag { font-size: 0.6rem; padding: 2px 6px; border-radius: 5px; background:rgba(255,255,255,0.1); text-transform:uppercase;}
-        .txn-right { text-align: right; flex-shrink:0; display:flex; flex-direction:column; align-items:flex-end; max-width: 45%; }
+        
+        /* Keep right section compact and un-squished */
+        .txn-right { text-align: right; flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; min-width: 75px; }
         .in-out-label { font-size: 0.65rem; text-transform: uppercase; font-family: var(--font-head); font-weight: bold; padding: 2px 6px; border-radius: 4px; margin-bottom: 3px; letter-spacing: 1px; }
         .in-label { background: rgba(0,255,127,0.15); color: var(--accent-green); border: 1px solid rgba(0,255,127,0.3); }
         .out-label { background: rgba(255,77,77,0.15); color: var(--accent-red); border: 1px solid rgba(255,77,77,0.3); }
-        .txn-amt { font-family: var(--font-head); font-size: 1.15rem; font-weight: bold; }
+        .txn-amt { font-family: var(--font-head); font-size: 1.15rem; font-weight: bold; white-space: nowrap; }
         .amt-credit { color: var(--accent-green); text-shadow: 0 0 10px rgba(0,255,127,0.3); }
         .amt-debit { color: var(--accent-red); text-shadow: 0 0 10px rgba(255,77,77,0.3); }
         .txn-status { font-size: 0.7rem; color: #aaa; text-transform: uppercase; margin-top: 3px; background: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 6px; display: inline-block; font-weight:bold;}
@@ -408,7 +414,7 @@
 
             <div style="display:flex; gap:10px; margin-top:10px;">
                 <button class="pay-btn" style="flex:1; background:transparent; border:1px solid var(--accent-cyan); color:var(--accent-cyan); box-shadow:none; font-size:0.9rem;" onclick="downloadReceiptPDF()"><i class="fa-solid fa-download"></i> PDF</button>
-                <button class="pay-btn" style="flex:1; background:var(--accent-green); color:black; border:none; box-shadow:0 5px 20px rgba(0,255,127,0.3); font-size:0.9rem;" id="supportBtn" onclick="contactSupportTxn()"><i class="brands fa-whatsapp"></i> Support</button>
+                <button class="pay-btn" style="flex:1; background:var(--accent-green); color:black; border:none; box-shadow:0 5px 20px rgba(0,255,127,0.3); font-size:0.9rem;" id="supportBtn" onclick="contactSupportTxn()"><i class="fa-brands fa-whatsapp"></i> Support</button>
             </div>
         </div>
     </div>
