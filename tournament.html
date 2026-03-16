@@ -410,8 +410,8 @@
                 </div>
 
                 <div class="input-group">
-                    <label class="input-label">Tournament Date (Display Text) *</label>
-                    <input type="text" name="match_period" class="form-control" placeholder="e.g. 15 March - 18 March" required>
+                    <label class="input-label">Tournament Date *</label>
+                    <input type="date" name="match_period" class="form-control" required>
                     <div class="input-sublabel">Shows exactly when the matches will take place.</div>
                 </div>
 
@@ -445,7 +445,7 @@
         <i class="fa-solid fa-circle-check success-icon-anim" id="successIcon"></i>
         <h3 class="status-msg" id="loadingText">Forging Tournament...</h3>
         <p class="status-sub" id="successSub" style="display: none;">Your tournament has been successfully created and synced to the global server.</p>
-        <button class="btn-home" id="closeLoading" onclick="window.location.href='explore.html'">View in Explore</button>
+        <button class="btn-home" id="closeLoading" style="display: none;" onclick="window.location.href='explore.html'">View in Explore</button>
     </div>
 
     <div id="customToast">Notification</div>
@@ -683,15 +683,70 @@
 
             const reader = new FileReader();
             reader.onload = function(e) {
-                const b64 = e.target.result;
-                document.getElementById(areaId).style.display = 'none';
-                document.getElementById(previewId).src = b64;
-                document.getElementById(previewId).style.display = 'block';
-                document.getElementById(removeBtnId).style.display = 'block';
-                document.getElementById(base64Id).value = b64;
-                
-                document.getElementById(areaId).classList.remove('error');
-                calculateProgress();
+                const img = new Image();
+                img.onload = function() {
+                    // Compress Image using Canvas
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 1280; // HD width
+                    const MAX_HEIGHT = 720;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // Compress to JPEG with 0.7 quality
+                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+                    
+                    document.getElementById(areaId).style.display = 'none';
+                    document.getElementById(previewId).src = compressedBase64;
+                    document.getElementById(previewId).style.display = 'block';
+                    document.getElementById(removeBtnId).style.display = 'block';
+                    document.getElementById(areaId).classList.remove('error');
+                    
+                    showToast("Compressing and generating short link...");
+
+                    // Upload to ImgBB to get Short Link
+                    const base64Data = compressedBase64.split(',')[1];
+                    const formData = new FormData();
+                    formData.append("image", base64Data);
+                    
+                    /* IMPORTANT: Replace YOUR_IMGBB_API_KEY with an actual key from api.imgbb.com to get a real short link.
+                       If the API key is invalid, it falls back to the compressed base64 code automatically. */
+                    fetch("https://api.imgbb.com/1/upload?key=YOUR_IMGBB_API_KEY", {
+                        method: "POST",
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(result => {
+                        if(result.success) {
+                            document.getElementById(base64Id).value = result.data.url;
+                            showToast("Image short link generated!");
+                            calculateProgress();
+                        } else {
+                            document.getElementById(base64Id).value = compressedBase64;
+                            calculateProgress();
+                        }
+                    })
+                    .catch(error => {
+                        document.getElementById(base64Id).value = compressedBase64;
+                        calculateProgress();
+                    });
+                };
+                img.src = e.target.result;
             };
             reader.readAsDataURL(file);
         }
@@ -804,12 +859,17 @@
         function showSuccess(isError = false) {
             document.getElementById('spinnerEl').style.display = 'none';
             document.getElementById('successIcon').style.display = 'block';
+            
             if(!isError) {
                 document.getElementById('loadingText').innerText = "Tournament Published!";
                 document.getElementById('loadingText').style.color = "var(--accent-green)";
                 document.getElementById('successSub').style.display = 'block';
+                // Auto-redirect to explore.html
+                setTimeout(() => { window.location.href = 'explore.html'; }, 1500);
+            } else {
+                // Show button ONLY if there's an error so the user isn't stuck
+                document.getElementById('closeLoading').style.display = 'inline-block';
             }
-            document.getElementById('closeLoading').style.display = 'inline-block';
             triggerHaptic();
         }
     </script>
