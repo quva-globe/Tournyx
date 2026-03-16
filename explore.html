@@ -1565,16 +1565,32 @@
                 body: JSON.stringify({
                     action: "join", match_id: t.id || t.title, game: t.game, title: t.title,
                     date: t.date, prize: t.prize, email: user.email, username: user.username, phone: user.phone, 
-                    clan: clanName, entry_paid: cost, method: method
+                    clan: clanName, entry_paid: cost, method: method,
+                    org_email: t.org_email || t.email || "" // PASSES ORGANIZER EMAIL TO ADD EARNINGS!
                 })
             }).then(() => {
                 
-                // FORCE BACKEND WALLET SYNC (Fixes the balance returning issue)
+                // FORCE BACKEND WALLET SYNC & INSTANT LOCAL TRANSACTION LOG
                 if(cost > 0) {
                     fetch(API_URL, {
                         method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ action: 'update_profile', email: user.email, rupees: user.rupees, points: user.points })
                     });
+                    
+                    // --- NEW: Add Local Transaction instantly so wallet displays it without waiting for sync ---
+                    let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
+                    let dateStr = new Date().toLocaleString('en-US', { month:'short', day:'2-digit', year:'numeric', hour:'numeric', minute:'2-digit', hour12:true });
+                    let newTxn = { 
+                        id: "TXN-" + Math.floor(Math.random() * 1000000), 
+                        title: "Joined: " + (t.title || "Tournament"), 
+                        amount: cost, 
+                        type: "Debit", 
+                        status: "Success", 
+                        category: "Entry Fee", 
+                        date: dateStr 
+                    };
+                    txns.unshift(newTxn);
+                    localStorage.setItem('tournyx_txns', JSON.stringify(txns));
                 }
                 
                 userLiveMatches.push({ tournament_title: t.title, match_id: t.id || t.title });
