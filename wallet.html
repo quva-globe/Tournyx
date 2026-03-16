@@ -1,20 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="icon" href="https://tournyx.in/favicon.ico" sizes="any">
-    <link rel="icon" href="https://tournyx.in/favicon.png" type="image/png" sizes="192x192">
-    <link rel="apple-touch-icon" href="https://tournyx.in/apple-touch-icon.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#070311">
-    <title>Secure Player Wallet | Tournyx Ultimate</title>
-    <meta name="description" content="Manage your esports earnings, add funds via UPI, withdraw winnings, and track your transaction history securely on Tournyx.">
+    <title>Wallet - Tournyx</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
     <script>
-        // Failsafe Theme Loader
         (function() {
             try {
                 const THEMES = [
@@ -28,315 +26,308 @@
                     document.documentElement.style.setProperty('--accent-purple', THEMES[tIndex].purple);
                     document.documentElement.style.setProperty('--accent-gradient', `linear-gradient(90deg, ${THEMES[tIndex].purple}, ${THEMES[tIndex].cyan})`);
                 }
-            } catch(e) { console.warn("Theme loader bypassed for strict environments."); }
+            } catch(e) {}
         })();
     </script>
     <style>
+        /* --- GLOBAL VARIABLES --- */
         :root {
             --primary-bg: #070311; --secondary-bg: #0d061e;
             --card-bg: rgba(20, 10, 35, 0.7); --card-border: rgba(189, 0, 255, 0.2);
             --accent-cyan: #00f2ff; --accent-purple: #bd00ff;
             --accent-orange: #ff9900; --accent-green: #00ff7f; --accent-red: #ff4d4d;
             --accent-gradient: linear-gradient(90deg, #7b2cbf, #bd00ff, #00f2ff);
+            --text-main: #ffffff; --text-muted: #a0a0b0;
             --font-head: 'Orbitron', sans-serif; --font-body: 'Rajdhani', sans-serif;
-            --gpu-boost: translateZ(0);
         }
-        
-        * { -ms-overflow-style: none !important; scrollbar-width: none !important; margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        * { -ms-overflow-style: none !important; scrollbar-width: none !important; box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
         *::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; background: transparent !important; }
 
-        body { background-color: var(--primary-bg); color: white; font-family: var(--font-body); padding-bottom: calc(90px + env(safe-area-inset-bottom)); padding-top: calc(85px + env(safe-area-inset-top)); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+        body {
+            background-color: var(--primary-bg); color: var(--text-main); font-family: var(--font-body);
+            overflow-x: hidden; width: 100%;
+            padding-bottom: calc(90px + env(safe-area-inset-bottom)); 
+            padding-top: calc(85px + env(safe-area-inset-top)); 
+        }
 
-        .content-container, .app-footer, .top-header .header-wrapper { max-width: 1000px; margin-left: auto !important; margin-right: auto !important; width: 100%; }
+        .container, .app-footer, .top-header .header-wrapper { max-width: 800px; margin-left: auto !important; margin-right: auto !important; width: 100%; }
 
-        #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; transform: var(--gpu-boost); }
+        #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; transform: translateZ(0); }
         .bg-gradient { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; background: radial-gradient(circle at 50% 0%, #15062e 0%, #070311 100%); pointer-events: none;}
 
-        .animate-section { animation: slideUpGlow 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
+        .animate-section { animation: slideUpGlow 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
         @keyframes slideUpGlow { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
-        .delay-1 { animation-delay: 0.05s; } .delay-2 { animation-delay: 0.1s; } .delay-3 { animation-delay: 0.15s; } .delay-4 { animation-delay: 0.2s; }
-        
-        .glow-hover { transition: all 0.3s ease; }
-        .glow-hover:hover { box-shadow: 0 0 20px var(--accent-cyan); border-color: var(--accent-cyan); transform: translateY(-3px); }
-        .glow-hover:active { transform: scale(0.96); }
+        .delay-1 { animation-delay: 0.1s; } .delay-2 { animation-delay: 0.2s; } .delay-3 { animation-delay: 0.3s; } .delay-4 { animation-delay: 0.4s; }
 
-        .top-header { position: fixed; top: 0; left: 0; width: 100%; padding: calc(15px + env(safe-area-inset-top)) 15px 15px; background: rgba(7, 3, 17, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-bottom: 1px solid var(--card-border); display: flex; align-items: center; justify-content: space-between; z-index: 2000; box-shadow: 0 4px 30px rgba(0,0,0,0.5); transform: var(--gpu-boost); }
+        /* --- INITIAL PAGE LOADER --- */
+        #mainLoader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary-bg); z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease, visibility 0.5s; }
+        #mainLoader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+        /* --- RESPONSIVE HEADER --- */
+        .top-header { 
+            position: fixed; top: 0; left: 0; width: 100%; 
+            padding: calc(15px + env(safe-area-inset-top)) 15px 15px; 
+            background: rgba(7, 3, 17, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--card-border);
+            display: flex; align-items: center; justify-content: center; z-index: 2000;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.5); transform:translateZ(0);
+        }
         .header-wrapper { display: flex; align-items: center; justify-content: space-between; }
-        .header-left { display: flex; align-items: center; gap: 12px; }
-        .app-title { font-family: var(--font-head); font-size: 1.2rem; font-weight: 900; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px; }
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .back-btn { color: white; font-size: 1.3rem; text-decoration: none; transition: 0.3s; cursor: pointer; padding: 5px; }
+        .back-btn:active { color: var(--accent-cyan); transform: scale(0.9); }
+        .app-title { font-family: var(--font-head); font-size: 1.3rem; font-weight: 700; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px; text-transform: uppercase; margin:0;}
         .header-greeting { font-size: 0.85rem; color: #aaa; margin-bottom: 2px; display: flex; align-items: center; }
-        .header-action-icon { font-size: 1.4rem; color: white; cursor: pointer; transition: 0.3s; padding: 5px; }
-        .header-action-icon:active { color: var(--accent-cyan); transform: scale(0.85); }
-        .header-profile-img { width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--accent-cyan); object-fit: cover; cursor: pointer; box-shadow: 0 0 15px rgba(0,242,255,0.4); transition: 0.3s; flex-shrink: 0; }
-
-        .live-ticker { position: fixed; top: calc(72px + env(safe-area-inset-top)); left: 0; width: 100%; background: rgba(0,242,255,0.08); border-bottom: 1px solid rgba(0,242,255,0.3); color: white; padding: 6px 0; font-family: var(--font-head); font-size: 0.75rem; overflow: hidden; white-space: nowrap; display: flex; align-items: center; z-index: 1999; transform: var(--gpu-boost);}
-        .content-container { padding: 20px 15px; }
         
-        /* Offline Banner */
-        .offline-banner { display: none; background: var(--accent-red); color: white; text-align: center; font-family: var(--font-head); font-size: 0.8rem; padding: 5px; position: fixed; top: 0; width: 100%; z-index: 9999; font-weight: bold; }
+        /* DESKTOP NAVIGATION */
+        .desktop-nav { display: none; gap: 20px; align-items: center; }
+        .desktop-nav a { color: #aaa; text-decoration: none; font-family: var(--font-head); font-size: 0.9rem; font-weight: bold; text-transform: uppercase; transition: 0.3s; }
+        .desktop-nav a:hover, .desktop-nav a.active { color: var(--accent-cyan); text-shadow: 0 0 10px var(--accent-cyan); }
+        
+        .header-actions { display: flex; align-items: center; gap: 15px; }
+        .header-profile-img { width: 45px; height: 45px; border-radius: 12px; border: 1px solid var(--card-border); object-fit: cover; cursor: pointer; box-shadow: 0 0 15px rgba(189,0,255,0.2); transition: 0.3s; flex-shrink: 0; background:#000; }
+        .header-profile-img:active { transform:scale(0.9); border-color:var(--accent-cyan);}
+
+        .container { padding: 15px; margin-top: 0; }
 
         /* --- WALLET CARD --- */
-        .wallet-card { background: linear-gradient(135deg, rgba(189,0,255,0.2) 0%, rgba(0,242,255,0.1) 100%); border: 1px solid var(--card-border); border-radius: 20px; padding: 25px 20px; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 25px; animation: borderGlow 4s infinite alternate, slideUpGlow 0.5s both; }
+        .wallet-card { background: linear-gradient(135deg, rgba(189,0,255,0.2) 0%, rgba(0,242,255,0.1) 100%); border: 1px solid var(--card-border); border-radius: 20px; padding: 25px 20px; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 20px; animation: borderGlow 4s infinite alternate, slideUpGlow 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
         @keyframes borderGlow { from{border-color: rgba(189,0,255,0.3); box-shadow: 0 10px 30px rgba(189,0,255,0.1);} to{border-color: rgba(0,242,255,0.4); box-shadow: 0 10px 30px rgba(0,242,255,0.2);} }
         .wallet-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 60%); transform: rotate(45deg); pointer-events: none; }
         
-        .vip-badge { position: absolute; top: 15px; right: 15px; background: linear-gradient(45deg, #FFD700, #ff9900); color: #000; padding: 5px 12px; border-radius: 12px; font-family: var(--font-head); font-size: 0.75rem; font-weight: 900; box-shadow: 0 0 15px rgba(255,215,0,0.5); display: flex; align-items: center; gap: 5px;}
+        .vip-badge { position: absolute; top: 15px; right: 15px; background: linear-gradient(45deg, #FFD700, #ff9900); color: #000; padding: 4px 10px; border-radius: 12px; font-family: var(--font-head); font-size: 0.75rem; font-weight: bold; box-shadow: 0 0 15px rgba(255,215,0,0.5); display: flex; align-items: center; gap: 5px;}
         .vip-bronze { background: linear-gradient(45deg, #cd7f32, #a0522d); color: white; box-shadow: 0 0 15px rgba(205,127,50,0.5); }
         .vip-silver { background: linear-gradient(45deg, #c0c0c0, #e0e0e0); color: black; box-shadow: 0 0 15px rgba(192,192,192,0.5); }
         
-        .balance-label { font-size: 0.9rem; color: #ccc; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 5px; display: flex; align-items: center; gap:10px; font-weight: 600;}
-        .balance-amount { font-family: var(--font-head); font-size: 2.8rem; font-weight: 900; color: white; display: flex; align-items: center; gap: 10px; text-shadow: 0 0 20px rgba(255,255,255,0.4); margin-bottom: 20px; transition: filter 0.4s; }
-        .blur-balance { filter: blur(12px); user-select: none; opacity: 0.7; }
+        .balance-label { font-size: 0.85rem; color: #ccc; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; display: flex; align-items: center; gap:10px; }
+        /* Overflow FIX via clamp */
+        .balance-amount { font-family: var(--font-head); font-size: clamp(2rem, 8vw, 2.8rem); font-weight: bold; color: white; display: flex; align-items: center; gap: 10px; text-shadow: 0 0 15px rgba(255,255,255,0.4); margin-bottom: 15px; transition: 0.4s; flex-wrap: wrap;}
+        .blur-balance { filter: blur(10px); user-select: none; opacity: 0.8; }
 
-        .pts-balance { display: flex; align-items: center; justify-content:space-between; gap: 8px; background: rgba(0,0,0,0.6); padding: 10px 15px; border-radius: 12px; border: 1px solid rgba(0,242,255,0.3); width: 100%; transition: 0.3s; box-shadow: inset 0 0 10px rgba(0,242,255,0.1); }
-        .pts-balance span { font-family: var(--font-head); font-size: 1.1rem; font-weight: bold; color: var(--accent-cyan); }
-        
-        .vip-progress-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 5px; margin-top: 20px; overflow:hidden;}
-        .vip-progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent-orange), #FFD700); box-shadow: 0 0 10px var(--accent-orange); transition: width 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);}
+        .pts-balance { display: flex; align-items: center; justify-content:space-between; gap: 8px; background: rgba(0,0,0,0.5); padding: 8px 15px; border-radius: 12px; border: 1px solid rgba(0,242,255,0.3); width: 100%; transition: 0.3s; box-shadow: inset 0 0 10px rgba(0,242,255,0.1); }
+        .pts-balance span { font-family: var(--font-head); font-size: clamp(0.9rem, 4vw, 1rem); font-weight: bold; color: var(--accent-cyan); }
+        .vip-progress-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 5px; margin-top: 15px; overflow:hidden;}
+        .vip-progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent-orange), #FFD700); box-shadow: 0 0 10px var(--accent-orange); transition: 1s ease;}
 
-        /* --- 4-GRID QUICK ACTIONS (Added P2P Transfer & Promo) --- */
-        .quick-actions-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 25px; }
-        .action-btn { background: var(--secondary-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 15px 5px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: all 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.4); text-decoration: none; color: white; position: relative; overflow: hidden; }
-        .action-btn::after { content: ''; position: absolute; top:0; left:-100%; width:50%; height:100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent); transform: skewX(-20deg); transition: 0.5s; }
-        .action-btn:hover::after { left: 150%; }
-        .action-btn i { font-size: 1.5rem; }
-        .action-btn span { font-family: var(--font-head); font-size: 0.7rem; font-weight: bold; text-transform: uppercase; text-align: center; }
-        
-        .btn-add { border-color: var(--accent-purple); } .btn-add i { color: var(--accent-purple); text-shadow: 0 0 15px rgba(189,0,255,0.5); }
-        .btn-withdraw { border-color: var(--accent-orange); } .btn-withdraw i { color: var(--accent-orange); text-shadow: 0 0 15px rgba(255,153,0,0.5); }
-        .btn-transfer { border-color: var(--accent-cyan); } .btn-transfer i { color: var(--accent-cyan); text-shadow: 0 0 15px rgba(0,242,255,0.5); }
-        .btn-promo { border-color: var(--accent-green); } .btn-promo i { color: var(--accent-green); text-shadow: 0 0 15px rgba(0,255,127,0.5); }
+        /* --- QUICK ACTIONS --- */
+        .quick-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+        .action-btn { background: var(--secondary-bg); border: 1px solid var(--card-border); border-radius: 15px; padding: 18px 5px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.4); text-decoration: none; color: white; }
+        .action-btn:active { transform: scale(0.95); }
+        .action-btn i { font-size: 1.6rem; }
+        .action-btn span { font-family: var(--font-head); font-size: 0.8rem; font-weight: bold; text-transform: uppercase; }
+        .btn-add { border-color: var(--accent-purple); } .btn-add i { color: var(--accent-purple); text-shadow: 0 0 15px rgba(189,0,255,0.5); } .btn-add:hover { background: rgba(189,0,255,0.1); }
+        .btn-withdraw { border-color: var(--accent-orange); } .btn-withdraw i { color: var(--accent-orange); text-shadow: 0 0 15px rgba(255,153,0,0.5); } .btn-withdraw:hover { background: rgba(255,153,0,0.1); }
+        .btn-redeem { border-color: var(--accent-cyan); } .btn-redeem i { color: var(--accent-cyan); text-shadow: 0 0 15px rgba(0,242,255,0.5); } .btn-redeem:hover { background: rgba(0,242,255,0.1); }
 
-        /* --- MILESTONE & BANNERS --- */
-        .milestone-card { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 15px; padding: 18px; margin-bottom: 25px; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); cursor: pointer; }
-        .ms-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .ms-title { font-family: var(--font-head); font-size: 1rem; color: var(--accent-cyan); font-weight: bold; display:flex; align-items:center; gap:8px;}
-        .ms-amt { font-size: 0.85rem; color: #aaa; font-weight: bold; font-family: var(--font-body); }
-        .ms-bar-bg { width: 100%; height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; overflow: hidden; margin-bottom: 8px; }
-        .ms-bar-fill { height: 100%; background: var(--accent-gradient); width: 0%; border-radius: 5px; box-shadow: 0 0 12px var(--accent-cyan); transition: width 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .ms-desc { font-size: 0.8rem; color: #888; display: flex; justify-content: space-between; align-items:center;}
-        .ms-reward-badge { background: rgba(0,255,127,0.15); color: var(--accent-green); padding: 3px 10px; border-radius: 8px; font-weight: bold; border: 1px solid rgba(0,255,127,0.3); font-family: var(--font-head); }
-
-        .bonus-banner { background: linear-gradient(90deg, rgba(0,255,127,0.1), rgba(0,0,0,0)); border: 1px solid var(--accent-green); border-radius: 12px; padding: 15px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; cursor: pointer; transition: 0.3s; }
-        .first-deposit-banner { background: linear-gradient(90deg, rgba(255,153,0,0.2), rgba(0,0,0,0)); border: 1px solid var(--accent-orange); border-radius: 12px; padding: 15px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; cursor: pointer; animation: pulseGlow 2s infinite alternate; }
+        /* --- FIRST DEPOSIT BANNER --- */
+        .first-deposit-banner { background: linear-gradient(90deg, rgba(255,153,0,0.2), rgba(0,0,0,0)); border: 1px solid var(--accent-orange); border-radius: 12px; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; cursor: pointer; animation: pulseGlow 2s infinite alternate; }
         @keyframes pulseGlow { from{box-shadow: 0 0 10px rgba(255,153,0,0.2);} to{box-shadow: 0 0 20px rgba(255,153,0,0.5);} }
 
-        /* --- SKELETON LOADER --- */
-        .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.02) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.02) 75%); background-size: 200% 100%; animation: skeletonLoading 1.5s infinite; border-radius: 8px; }
-        @keyframes skeletonLoading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-
         /* --- TRANSACTION HISTORY --- */
-        .section-title { font-family: var(--font-head); font-size: 1.2rem; color: white; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
-        .section-title span { font-size: 0.8rem; color: var(--accent-cyan); cursor: pointer; text-transform: uppercase; padding: 6px 12px; border-radius: 8px; transition: 0.3s; background: rgba(0,242,255,0.1); border: 1px solid rgba(0,242,255,0.2);}
-        .section-title span:active { transform: scale(0.9); }
+        .section-title { font-family: var(--font-head); font-size: 1.15rem; color: white; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
+        .section-title span { font-size: 0.8rem; color: var(--accent-cyan); cursor: pointer; text-transform: uppercase; padding: 5px 10px; border-radius: 8px; transition: 0.3s; border: 1px solid transparent;}
         
-        .txn-list { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 15px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
-        .txn-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: all 0.2s ease-in-out; overflow: hidden; gap: 10px;}
-        .txn-item:active { transform: scale(0.97); border-color: var(--accent-cyan); background: rgba(0,242,255,0.05); }
-        
-        .txn-left { display: flex; align-items: center; gap: 15px; min-width: 0; flex: 1; overflow: hidden;}
-        .txn-icon { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink:0;}
+        .txn-list { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 15px; padding: 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .txn-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.3s; animation: slideInUp 0.4s ease both;}
+        .txn-item:active { background: rgba(255,255,255,0.05); border-color: var(--accent-cyan); transform: scale(0.98); }
+        .txn-left { display: flex; align-items: center; gap: 15px; min-width:0; }
+        .txn-icon { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink:0;}
         .icon-credit { background: rgba(0,255,127,0.1); color: var(--accent-green); border: 1px solid rgba(0,255,127,0.3); }
         .icon-debit { background: rgba(255,77,77,0.1); color: var(--accent-red); border: 1px solid rgba(255,77,77,0.3); }
-        .icon-prize { background: rgba(255,215,0,0.1); color: #FFD700; border: 1px solid rgba(255,215,0,0.3); }
-        .icon-entry { background: rgba(189,0,255,0.1); color: var(--accent-purple); border: 1px solid rgba(189,0,255,0.3); }
-        .icon-bonus { background: rgba(0,242,255,0.1); color: var(--accent-cyan); border: 1px solid rgba(0,242,255,0.3); }
-        
-        .txn-info { min-width: 0; overflow: hidden; flex: 1; }
-        .txn-info h4 { font-family: var(--font-head); font-size: 1.05rem; color: white; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 700;}
-        .txn-info p { font-size: 0.8rem; color: #888; display:flex; gap:8px; align-items:center; white-space: nowrap;}
-        .cat-tag { font-size: 0.65rem; padding: 3px 8px; border-radius: 6px; background:rgba(255,255,255,0.1); text-transform:uppercase; font-weight: bold; flex-shrink: 0;}
-        
-        .txn-right { text-align: right; flex-shrink: 0; display:flex; flex-direction:column; align-items:flex-end; justify-content: center;}
-        .in-out-label { font-size: 0.65rem; text-transform: uppercase; font-family: var(--font-head); font-weight: 900; padding: 2px 6px; border-radius: 4px; margin-bottom: 5px; letter-spacing: 1px; }
-        .in-label { background: rgba(0,255,127,0.15); color: var(--accent-green); }
-        .out-label { background: rgba(255,77,77,0.15); color: var(--accent-red); }
+        .txn-info h4 { font-family: var(--font-head); font-size: 1rem; color: white; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
+        .txn-info p { font-size: 0.75rem; color: #888; display:flex; gap:5px; align-items:center;}
+        .cat-tag { font-size: 0.6rem; padding: 2px 6px; border-radius: 5px; background:rgba(255,255,255,0.1); text-transform:uppercase;}
+        .txn-right { text-align: right; flex-shrink:0; display:flex; flex-direction:column; align-items:flex-end;}
+        .in-out-label { font-size: 0.65rem; text-transform: uppercase; font-family: var(--font-head); font-weight: bold; padding: 2px 6px; border-radius: 4px; margin-bottom: 3px; letter-spacing: 1px; }
+        .in-label { background: rgba(0,255,127,0.15); color: var(--accent-green); border: 1px solid rgba(0,255,127,0.3); }
+        .out-label { background: rgba(255,77,77,0.15); color: var(--accent-red); border: 1px solid rgba(255,77,77,0.3); }
+        .txn-amt { font-family: var(--font-head); font-size: 1.15rem; font-weight: bold; }
+        .amt-credit { color: var(--accent-green); text-shadow: 0 0 10px rgba(0,255,127,0.3); }
+        .amt-debit { color: var(--accent-red); text-shadow: 0 0 10px rgba(255,77,77,0.3); }
+        .txn-status { font-size: 0.7rem; color: #aaa; text-transform: uppercase; margin-top: 3px; background: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 6px; display: inline-block; font-weight:bold;}
 
-        .txn-amt { font-family: var(--font-head); font-size: 1.25rem; font-weight: 900; white-space: nowrap; }
-        .txn-status { font-size: 0.7rem; text-transform: uppercase; margin-top: 5px; padding: 4px 10px; border-radius: 6px; display: inline-block; font-weight:900; letter-spacing: 0.5px; white-space: nowrap;}
-
-        /* --- BOTTOM SHEETS & MODALS --- */
-        .bottom-sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 5000; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(8px); opacity: 0; transition: 0.3s; }
+        /* --- ADD MONEY (BOTTOM SHEET) --- */
+        .bottom-sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 5000; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(5px); opacity: 0; transition: 0.4s; }
         .bottom-sheet-overlay.active { display: flex; opacity: 1; }
-        .bottom-sheet { width: 100%; max-width: 800px; background: var(--secondary-bg); border-radius: 30px 30px 0 0; border-top: 1px solid var(--card-border); padding: 30px 20px calc(20px + env(safe-area-inset-bottom)); transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 90vh; overflow-y: auto; box-shadow: 0 -10px 40px rgba(0,0,0,0.9); }
+        .bottom-sheet { width: 100%; max-width: 800px; background: var(--secondary-bg); border-radius: 25px 25px 0 0; border-top: 1px solid var(--card-border); padding: 30px 20px calc(20px + env(safe-area-inset-bottom)); transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 90vh; overflow-y: auto; box-shadow: 0 -10px 40px rgba(0,0,0,0.8); }
         .bottom-sheet-overlay.active .bottom-sheet { transform: translateY(0); }
         
+        /* Desktop Centered Popup Fix */
+        @media (min-width: 850px) {
+            .bottom-sheet-overlay { align-items: center; justify-content: center; }
+            .bottom-sheet { border-radius: 25px; transform: scale(0.9); opacity: 0; transition: all 0.3s ease; max-height:85vh;}
+            .bottom-sheet-overlay.active .bottom-sheet { transform: scale(1); opacity: 1; }
+            .add-money-flex { display: flex; flex-direction: row; align-items: stretch; gap: 20px; }
+            .add-money-left { flex: 1; }
+            .add-money-right { flex: 1; display: flex; flex-direction: column; justify-content: center; border-left: 1px solid var(--card-border); padding-left: 20px; }
+        }
+        @media (max-width: 849px) { .add-money-flex { display: flex; flex-direction: column; gap: 20px; } }
+
         .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .sheet-title { font-family: var(--font-head); font-size: 1.4rem; color: white; display: flex; align-items: center; gap: 12px; font-weight: bold;}
-        .close-sheet { color: #888; font-size: 2rem; cursor: pointer; padding: 5px; transition: 0.3s; background: rgba(255,255,255,0.05); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;}
-        .close-sheet:active { transform: rotate(90deg) scale(0.8); background: rgba(255,77,77,0.2); color: var(--accent-red); }
+        .sheet-title { font-family: var(--font-head); font-size: 1.3rem; color: white; display: flex; align-items: center; gap: 10px; }
+        .close-sheet { color: #888; font-size: 1.8rem; cursor: pointer; padding: 5px; transition: 0.3s; }
         
-        /* ADD MONEY MODAL */
-        .add-money-flex { display: flex; flex-direction: column; gap: 20px; }
         .amt-input-wrapper { position: relative; margin-bottom: 15px; }
-        .amt-currency { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); font-family: var(--font-head); font-size: 1.6rem; color: white; font-weight: bold; }
-        .amt-input { width: 100%; background: #070311; border: 2px solid var(--card-border); padding: 22px 20px 22px 65px; border-radius: 16px; color: white; font-family: var(--font-head); font-size: 2rem; font-weight: bold; outline: none; transition: 0.3s; box-shadow: inset 0 0 15px rgba(0,0,0,0.5); }
-        .amt-input:focus { border-color: var(--accent-purple); box-shadow: 0 0 20px rgba(189,0,255,0.4), inset 0 0 10px rgba(0,0,0,0.5); }
+        .amt-currency { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); font-family: var(--font-head); font-size: 1.5rem; color: white; font-weight: bold; }
+        .amt-input { width: 100%; background: #070311; border: 2px solid var(--card-border); padding: 20px 20px 20px 60px; border-radius: 15px; color: white; font-family: var(--font-head); font-size: 1.8rem; font-weight: bold; outline: none; transition: 0.3s; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+        .amt-input:focus { border-color: var(--accent-purple); box-shadow: 0 0 15px rgba(189,0,255,0.3), inset 0 0 10px rgba(0,0,0,0.5); }
+        @keyframes shake { 0%,100%{transform:translateX(0);} 20%,60%{transform:translateX(-10px);} 40%,80%{transform:translateX(10px);} }
+        .input-error { border-color: var(--accent-red) !important; animation: shake 0.4s both; }
 
-        @keyframes shake { 0%,100%{transform:translateX(0);} 20%,60%{transform:translateX(-12px);} 40%,80%{transform:translateX(12px);} }
-        .input-error { border-color: var(--accent-red) !important; animation: shake 0.4s both; box-shadow: 0 0 15px var(--accent-red) !important;}
+        .quick-amt-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 25px; }
+        .quick-amt-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); color: #ccc; padding: 12px 0; text-align: center; border-radius: 10px; font-family: var(--font-head); font-weight: bold; cursor: pointer; transition: 0.3s; position: relative;}
+        .quick-amt-btn:active { background: rgba(189,0,255,0.2); border-color: var(--accent-purple); color: white; transform:scale(0.95);}
+        .bonus-tag { position: absolute; top: -8px; right: -5px; background: var(--accent-orange); color: black; font-size: 0.6rem; padding: 2px 6px; border-radius: 8px; font-weight: bold; animation: pulseGlow 1.5s infinite alternate; }
 
-        .quick-amt-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 25px; }
-        .quick-amt-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #ccc; padding: 15px 0; text-align: center; border-radius: 12px; font-family: var(--font-head); font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: 0.2s; position: relative;}
-        .quick-amt-btn:active { background: rgba(189,0,255,0.2); border-color: var(--accent-purple); color: white; transform:scale(0.92);}
-        .bonus-tag { position: absolute; top: -10px; right: -5px; background: var(--accent-orange); color: black; font-size: 0.65rem; padding: 3px 8px; border-radius: 8px; font-weight: 900; animation: pulseGlow 1.5s infinite alternate; }
+        .qr-section { background: rgba(0,0,0,0.5); border: 1px dashed var(--accent-cyan); border-radius: 15px; padding: 20px; text-align: center; margin-bottom: 20px; position: relative; overflow: hidden; display:none; transition: 0.3s;}
+        .qr-section.active { display: block; animation: fadeIn 0.5s; }
+        .qr-img-box { width: 180px; height: 180px; background: white; padding: 10px; border-radius: 10px; margin: 0 auto 15px; position: relative; box-shadow: 0 0 20px rgba(0,242,255,0.3);}
+        .qr-img-box img { width: 100%; height: 100%; }
+        
+        .upi-copy-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); display: inline-flex; align-items: center; gap: 10px; padding: 8px 15px; border-radius: 20px; font-family: var(--font-body); font-size: 0.9rem; cursor: pointer; margin-bottom:10px;}
+        .pay-btn { width: 100%; padding: 18px; background: var(--accent-gradient); border: none; border-radius: 15px; color: white; font-family: var(--font-head); font-size: 1.1rem; font-weight: bold; text-transform: uppercase; cursor: pointer; box-shadow: 0 5px 20px rgba(189,0,255,0.4); display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 10px;}
+        .utr-input-field { width: 100%; background: #070311; border: 2px solid var(--card-border); padding: 16px; border-radius: 12px; color: white; font-family: var(--font-body); font-size: 1.1rem; outline: none; margin-bottom: 15px; transition: 0.3s; letter-spacing: 2px; font-weight:bold; text-align:center;}
 
-        .pay-btn { width: 100%; padding: 20px; background: var(--accent-gradient); border: none; border-radius: 16px; color: white; font-family: var(--font-head); font-size: 1.2rem; font-weight: 900; text-transform: uppercase; cursor: pointer; box-shadow: 0 8px 25px rgba(189,0,255,0.4); display: flex; justify-content: center; align-items: center; gap: 12px; margin-bottom: 10px; transition: 0.2s;}
-        .pay-btn:active { transform: scale(0.96); }
-
-        .utr-input-field { width: 100%; background: #070311; border: 2px solid var(--card-border); padding: 18px; border-radius: 12px; color: white; font-family: var(--font-body); font-size: 1.2rem; outline: none; margin-bottom: 15px; transition: 0.3s; letter-spacing: 3px; font-weight:bold; text-align:center;}
-        .utr-input-field:focus { border-color: var(--accent-green); box-shadow: 0 0 20px rgba(0,255,127,0.3); }
-
-        /* FULL LEDGER MODAL WITH ANALYTICS */
+        /* FULL LEDGER MODAL */
         .ledger-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary-bg); z-index: 4000; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; overflow: hidden; }
         .ledger-modal.active { transform: translateX(0); }
         .lm-header { padding: calc(15px + env(safe-area-inset-top)) 15px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); background: rgba(7,3,17,0.95); backdrop-filter: blur(10px); z-index: 10; }
         .lm-title { font-family: var(--font-head); font-size: 1.2rem; color: white; font-weight: bold; flex: 1; text-align: center; }
-        
-        .ledger-stats { display: flex; gap: 10px; padding: 15px; background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .stat-box { flex: 1; padding: 15px; border-radius: 12px; text-align: center; border: 1px solid; }
-        .stat-in { background: rgba(0,255,127,0.05); border-color: rgba(0,255,127,0.2); color: var(--accent-green); }
-        .stat-out { background: rgba(255,77,77,0.05); border-color: rgba(255,77,77,0.2); color: var(--accent-red); }
-        
-        .ledger-filters { display: flex; gap: 10px; padding: 0 15px 15px; overflow-x: auto; border-bottom: 1px solid rgba(255,255,255,0.05);}
-        .filter-chip { padding: 8px 15px; border-radius: 20px; background: rgba(255,255,255,0.1); font-family: var(--font-head); font-size: 0.8rem; font-weight: bold; cursor: pointer; white-space: nowrap; transition: 0.2s;}
-        .filter-chip.active { background: var(--accent-cyan); color: #000; }
-
         .lm-scroll-area { flex: 1; overflow-y: auto; padding: 15px; }
-        .search-bar { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 15px 20px; border-radius: 12px; color: white; font-family: var(--font-body); font-size: 1rem; margin-bottom: 15px; outline: none;}
-        .search-bar:focus { border-color: var(--accent-cyan); }
+
+        /* RECEIPT MODAL */
+        #receiptContent { background: var(--secondary-bg); border-radius: 15px; padding: 20px; margin-bottom: 15px;}
+        .rcpt-icon { width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin: 0 auto 15px; }
+        .rcpt-amt { text-align: center; font-family: var(--font-head); font-size: 2.5rem; font-weight: bold; margin-bottom: 5px; }
+        .rcpt-title { text-align: center; color: #888; font-size: 1rem; margin-bottom: 30px; }
+        .rcpt-row { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px dashed rgba(255,255,255,0.1); font-size: 0.95rem; }
+
+        /* HIDDEN WHITE PDF CONTAINER (For flawless Paytm-style receipts) */
+        #pdfContainerWrapper { position: absolute; left: -9999px; top: -9999px; width: 600px; }
 
         /* CYBER SCANNER LOADER */
         .cyber-scanner-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:0.4s; backdrop-filter:blur(10px);}
         .cyber-scanner-overlay.active { opacity:1; pointer-events:all; }
-        .cyber-circle { width: 120px; height: 120px; border: 4px dashed var(--accent-cyan); border-radius: 50%; animation: spin 4s linear infinite; display: flex; align-items: center; justify-content: center; position: relative;}
-        .cyber-inner { width: 70px; height: 70px; background: rgba(0,242,255,0.2); border-radius: 50%; box-shadow: 0 0 40px var(--accent-cyan); animation: pulse 1s infinite alternate; }
-        .cyber-text { font-family: var(--font-head); color: var(--accent-cyan); font-size: 1.4rem; margin-top: 25px; letter-spacing: 3px; text-transform: uppercase; font-weight: 900; text-shadow: 0 0 15px var(--accent-cyan);}
+        .cyber-circle { width: 100px; height: 100px; border: 3px dashed var(--accent-cyan); border-radius: 50%; animation: spin 2s linear infinite; display: flex; align-items: center; justify-content: center; position: relative; transition: 0.3s;}
+        .cyber-inner { width: 60px; height: 60px; background: rgba(0,242,255,0.2); border-radius: 50%; box-shadow: 0 0 30px var(--accent-cyan); animation: pulse 1s infinite alternate; transition: 0.3s;}
+        .cyber-text { font-family: var(--font-head); color: var(--accent-cyan); font-size: 1.2rem; margin-top: 20px; letter-spacing: 2px; text-transform: uppercase; text-shadow: 0 0 10px var(--accent-cyan); transition: 0.3s;}
+        .cyber-desc { color:#888; font-size:0.8rem; margin-top:10px; transition: 0.3s; text-align: center;}
 
-        /* CONFETTI CANVAS */
-        #confettiCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10000; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes pulse { 0%{transform:scale(0.8); opacity:0.5;} 100%{transform:scale(1.2); opacity:1;} }
 
-        /* --- TOAST --- */
-        #customToast { visibility: hidden; min-width: 250px; background-color: var(--accent-green); color: #000; text-align: center; border-radius: 16px; padding: 18px; position: fixed; z-index: 9999; left: 50%; bottom: -50px; transform: translateX(-50%); font-family: var(--font-head); font-weight: 900; box-shadow: 0 10px 30px rgba(0,255,127,0.6); opacity: 0; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        #customToast { visibility: hidden; min-width: 250px; background-color: var(--accent-cyan); color: #000; text-align: center; border-radius: 12px; padding: 16px; position: fixed; z-index: 9999; left: 50%; bottom: -50px; transform: translateX(-50%); font-family: var(--font-head); font-weight: bold; box-shadow: 0 8px 25px rgba(0,242,255,0.6); opacity: 0; transition: opacity 0.4s, bottom 0.4s; }
         #customToast.show { visibility: visible; opacity: 1; bottom: 100px; }
 
-        /* NAV (Kept exactly as requested) */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 5px env(safe-area-inset-bottom); border-top: 1px solid var(--card-border); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.8); transform: var(--gpu-boost);}
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 5px env(safe-area-inset-bottom); border-top: 1px solid rgba(189, 0, 255, 0.2); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.8); transform: translateZ(0); transition: bottom 0.3s;}
         .nav-item { display: flex; flex-direction: column; align-items: center; color: #666; font-size: 0.65rem; font-family: var(--font-head); font-weight: bold; flex: 1; text-decoration: none;}
-        .nav-item i { font-size: 1.3rem; margin-bottom:4px; }
+        .nav-item i { font-size: 1.3rem; margin-bottom:4px; transition: 0.3s;}
         .nav-item.active { color: var(--accent-cyan); }
-        .nav-item.active i { transform: translateY(-4px); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
-        .nav-item.active span { transform: translateY(2px); color: white; }
+        .nav-item.active i { transform: translateY(-4px); filter: drop-shadow(0 0 10px var(--accent-cyan)); color:var(--accent-cyan);}
         .fab-slot { flex: 1.2; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
-        .floating-plus { position: absolute; top: -30px; width: 58px; height: 58px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 4px solid var(--primary-bg); box-shadow: 0 10px 25px rgba(189,0,255,0.5); color: #fff; font-size: 1.8rem; z-index: 10; transition: 0.3s;}
-        .floating-plus:hover { transform: translateX(-50%) scale(1.1); box-shadow: 0 15px 35px rgba(0,242,255,0.6); }
-
+        .floating-plus { position: absolute; top: -30px; width: 58px; height: 58px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 4px solid var(--primary-bg); box-shadow: 0 10px 25px rgba(189,0,255,0.5); color: #fff; font-size: 1.8rem; z-index: 10; }
+        
         @media (min-width: 850px) { 
             .bottom-nav { display: none !important; } 
-            .add-money-flex { flex-direction: row; align-items: stretch; }
-            .add-money-left, .add-money-right { flex: 1; }
-            .bottom-sheet-overlay { align-items: center !important; }
-            .bottom-sheet { transform: scale(0.95) !important; opacity: 0; border-radius: 20px !important; max-height: 85vh; margin: auto !important; }
-            .bottom-sheet-overlay.active .bottom-sheet { transform: scale(1) !important; opacity: 1; }
+            .desktop-nav { display: flex; }
         }
+        .median-active .top-header { display: flex !important; visibility: visible !important; }
     </style>
 </head>
 <body>
-    <div class="offline-banner" id="offlineBanner"><i class="fa-solid fa-wifi"></i> Network Disconnected. Operating in Offline Mode.</div>
     <div class="bg-gradient"></div>
     <canvas id="particles-canvas"></canvas>
-    <canvas id="confettiCanvas"></canvas>
 
-    <div class="live-ticker">
-        <marquee scrollamount="6"><i class="fa-solid fa-bolt" style="color:var(--accent-orange)"></i> ESPORTS MARKET: 100 PTS = ₹2.00 | Complete your First Deposit to claim ₹20 Instant Bonus! | 100% Secure UTR Verification Active | Ultimate Engine V2 Running.</marquee>
+    <div id="mainLoader">
+        <i class="fa-solid fa-circle-notch fa-spin" style="font-size:3.5rem; color:var(--accent-cyan); margin-bottom:20px;"></i>
+        <div style="font-family:var(--font-head); color:white; letter-spacing:2px; font-weight:bold; text-transform:uppercase;">Syncing Secure Ledger...</div>
     </div>
 
     <header class="top-header">
         <div class="header-wrapper">
             <div class="header-left">
-                <a href="index.html" style="color:white;"><i class="fa-solid fa-arrow-left header-action-icon" onclick="playClickSound()"></i></a>
+                <a href="index.html" style="color:white;"><i class="fa-solid fa-arrow-left header-action-icon"></i></a>
                 <div>
                     <div class="header-greeting" id="dynamicGreeting">Welcome,</div>
                     <div class="app-title">WALLET</div>
                 </div>
             </div>
-            <div class="header-right">
-                <img src="https://via.placeholder.com/40" class="header-profile-img" id="headerProfilePic" onclick="playClickSound(); window.location.href='profile.html'">
+            <div class="desktop-nav">
+                <a href="index.html">Home</a>
+                <a href="explore.html">Explore</a>
+                <a href="matches.html">Matches</a>
+                <a href="clans.html">Clan</a>
+                <a href="wallet.html" class="active">Wallet</a>
+                <a href="profile.html">Profile</a>
+            </div>
+            <div class="header-actions">
+                <img src="https://tournyx.in/favicon.png" class="header-profile-img" id="headerProfilePic" onclick="window.location.href='profile.html'">
             </div>
         </div>
     </header>
 
-    <div class="content-container">
+    <div class="container">
+        
         <div class="wallet-card animate-section delay-1">
             <div class="vip-badge" id="vipBadge"><i class="fa-solid fa-medal"></i> BRONZE TIER</div>
             <div class="balance-label">
-                Total Balance <i class="fa-solid fa-eye" id="eyeIcon" onclick="togglePrivacy();" style="margin-left:5px; cursor: pointer; color:#888; font-size:1.1rem; padding:5px;"></i>
+                <span>Total Balance <i class="fa-solid fa-eye" id="eyeIcon" onclick="togglePrivacy(); triggerHaptic();" style="margin-left:8px; cursor: pointer; color:#888;"></i></span>
             </div>
             <div class="balance-amount" id="balanceWrapper">
                 Rs. <span id="displayRupees">0</span>
             </div>
+            
             <div class="pts-balance" id="ptsWrapper">
-                <div style="display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-coins fa-spin-pulse"></i> <span id="displayPoints">0</span> PTS</div>
-                <div style="font-size:0.7rem; color:#888; text-transform:uppercase; font-weight:bold;">Reward Points</div>
+                <div style="display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-coins"></i> <span id="displayPoints">0</span> PTS</div>
+                <div style="font-size:0.7rem; color:#888; text-transform:uppercase;">Reward Points</div>
             </div>
-            <div class="vip-progress-bg"><div class="vip-progress-fill" id="vipProgress"></div></div>
-            <div style="font-size:0.7rem; color:#aaa; margin-top:8px; text-align:right; font-family:var(--font-head); font-weight:bold;">Next Tier: <span id="nextTierText" style="color:var(--accent-cyan);">Silver</span></div>
+            
+            <div class="vip-progress-bg">
+                <div class="vip-progress-fill" id="vipProgress"></div>
+            </div>
+            <div style="font-size:0.65rem; color:#aaa; margin-top:5px; text-align:right;">Next Tier: <span id="nextTierText">Silver</span></div>
         </div>
 
-        <div class="quick-actions-grid animate-section delay-2">
-            <div class="action-btn btn-add" onclick="openAddMoney();">
-                <i class="fa-solid fa-circle-plus"></i><span>Add Cash</span>
+        <div class="quick-actions animate-section delay-2">
+            <div class="action-btn btn-add" onclick="openAddMoney(); triggerHaptic();">
+                <i class="fa-solid fa-circle-plus"></i>
+                <span>Add Cash</span>
             </div>
-            <a href="withdraw.html" class="action-btn btn-withdraw" onclick="playClickSound();">
-                <i class="fa-solid fa-money-bill-transfer"></i><span>Withdraw</span>
+            <a href="withdraw.html" class="action-btn btn-withdraw" onclick="triggerHaptic();">
+                <i class="fa-solid fa-money-bill-transfer"></i>
+                <span>Withdraw</span>
             </a>
-            <div class="action-btn btn-transfer" onclick="openPromoModal();">
-                <i class="fa-solid fa-ticket"></i><span>Promo Code</span>
-            </div>
-            <a href="redeem.html" class="action-btn btn-promo" onclick="playClickSound();">
-                <i class="fa-solid fa-gift"></i><span>Redeem</span>
+            <a href="redeem.html" class="action-btn btn-redeem" onclick="triggerHaptic();">
+                <i class="fa-solid fa-gift"></i>
+                <span>Redeem</span>
             </a>
         </div>
-
-        <div class="milestone-card animate-section delay-3 glow-hover" onclick="playClickSound(); openMilestoneModal();">
-            <div class="ms-header">
-                <span class="ms-title"><i class="fa-solid fa-ranking-star"></i> Deposit Milestone: Lvl <span id="msLevel">1</span>/10</span>
-                <span class="ms-amt">Rs.<span id="msTotal">0</span> / Rs.<span id="msNext">100</span></span>
-            </div>
-            <div class="ms-bar-bg"><div class="ms-bar-fill" id="msBar"></div></div>
-            <div class="ms-desc">
-                <span>Reach next level to unlock reward!</span>
-                <span class="ms-reward-badge" id="msRewardText">Reward: Rs. 10</span>
-            </div>
-        </div>
-
-        <div class="bonus-banner animate-section delay-3 glow-hover" id="dailyBonusBanner" onclick="openAddMoney(); setAmt(500);" style="display:none;">
+        
+        <div class="first-deposit-banner animate-section delay-3" id="firstDepositBanner" onclick="openAddMoney(); setAmt(59);" style="display:none;">
             <div>
-                <div style="font-family:var(--font-head); font-weight:bold; color:white; font-size:1.1rem;"><i class="fa-solid fa-gift" style="color:var(--accent-green);"></i> Daily Deposit Bonus</div>
-                <div style="font-size:0.8rem; color:#ccc;">Add Rs. 500+ to unlock Exclusive Avatar.</div>
+                <div style="font-family:var(--font-head); font-weight:bold; color:var(--accent-orange);"><i class="fa-solid fa-bolt"></i> FIRST DEPOSIT BONUS</div>
+                <div style="font-size:0.75rem; color:#ccc;">Add money now to instantly unlock massive Bonus Cash!</div>
             </div>
-            <i class="fa-solid fa-chevron-right" style="color:var(--accent-green); font-size:1.5rem;"></i>
-        </div>
-        <div class="first-deposit-banner animate-section delay-3 glow-hover" id="firstDepositBanner" onclick="openAddMoney(); setAmt(100);">
-            <div>
-                <div style="font-family:var(--font-head); font-weight:900; color:var(--accent-orange); font-size:1.1rem;"><i class="fa-solid fa-bolt"></i> FIRST DEPOSIT BONUS</div>
-                <div style="font-size:0.8rem; color:#ccc;">Add any amount to instantly claim +Rs. 20 Bonus!</div>
-            </div>
-            <i class="fa-solid fa-chevron-right" style="color:var(--accent-orange); font-size:1.5rem;"></i>
+            <i class="fa-solid fa-chevron-right" style="color:var(--accent-orange);"></i>
         </div>
 
         <div class="section-title animate-section delay-4">
-            Recent Transactions <span onclick="openAllTxns();">View All <i class="fa-solid fa-chevron-right" style="font-size:0.7rem; margin-left:3px;"></i></span>
+            Recent Transactions 
+            <div>
+                <i class="fa-solid fa-download header-action-icon" onclick="downloadAllTxnsPDF(); triggerHaptic();" style="color:var(--accent-cyan); margin-right:15px; font-size:1rem;"></i>
+                <span onclick="openAllTxns(); triggerHaptic();">View All <i class="fa-solid fa-chevron-right" style="font-size:0.7rem; margin-left:3px;"></i></span>
+            </div>
         </div>
         
         <div class="txn-list animate-section delay-4" id="txnListContainer">
-            <div class="txn-item skeleton" style="height:80px; border:none;"></div>
-            <div class="txn-item skeleton" style="height:80px; border:none;"></div>
-            <div class="txn-item skeleton" style="height:80px; border:none;"></div>
+            <div style="text-align:center; padding: 30px 20px; color: #888; font-size: 0.95rem;">
+                <i class="fa-solid fa-spinner fa-spin" style="color:var(--accent-cyan); font-size:1.5rem; margin-bottom:10px; display:block;"></i> Syncing live ledger...
+            </div>
         </div>
 
-        <div style="text-align:center; color:#666; font-size:0.8rem; margin-top:30px; margin-bottom: 20px; display:flex; align-items:center; justify-content:center; gap:8px; font-family:var(--font-head);">
-            <i class="fa-solid fa-shield-halved"></i> Secured by 256-bit Encryption V2
+        <div style="text-align:center; color:#666; font-size:0.75rem; margin-top:20px; margin-bottom: 20px; display:flex; align-items:center; justify-content:center; gap:8px;">
+            <i class="fa-solid fa-lock"></i> Secured by 256-bit Encryption • RBI Compliant
         </div>
     </div>
 
@@ -346,82 +337,130 @@
                 <div class="sheet-title"><i class="fa-solid fa-wallet" style="color:var(--accent-cyan);"></i> Deposit Funds</div>
                 <i class="fa-solid fa-xmark close-sheet" onclick="closeAddMoney()"></i>
             </div>
+            
             <div class="add-money-flex">
                 <div class="add-money-left">
                     <div class="amt-input-wrapper">
                         <div class="amt-currency">Rs.</div>
-                        <input type="number" id="addAmtInput" class="amt-input" placeholder="0">
+                        <input type="number" id="addAmtInput" class="amt-input" placeholder="0" oninput="updateQR()">
                     </div>
-                    <div class="quick-amt-grid">
-                        <div class="quick-amt-btn" onclick="setAmt(50);">+50 <div class="bonus-tag display-bonus">+20</div></div>
-                        <div class="quick-amt-btn" onclick="setAmt(100);">+100 <div class="bonus-tag display-bonus">+20</div></div>
-                        <div class="quick-amt-btn" onclick="setAmt(250);">+250 <div class="bonus-tag display-bonus">+20</div></div>
-                        <div class="quick-amt-btn" onclick="setAmt(500);">+500 <div class="bonus-tag display-bonus">+20</div></div>
+
+                    <div class="quick-amt-grid" id="quickAmtGrid">
+                        </div>
+                    
+                    <div id="mobilePayBtn" style="display:none;">
+                        <button class="pay-btn" onclick="openUPIApp(); triggerHaptic();">Pay via UPI App <i class="fa-solid fa-bolt"></i></button>
+                        <div style="text-align:center; margin:15px 0; color:#888; font-family:var(--font-head); font-size:0.8rem;">OR SCAN QR / SUBMIT UTR</div>
                     </div>
-                    <button class="pay-btn" onclick="openUPIApp();">
-                        Pay via UPI App <i class="fa-solid fa-bolt"></i>
-                    </button>
-                    <div style="text-align:center; margin:20px 0; color:#888; font-family:var(--font-head); font-size:0.9rem; font-weight:bold;">OR SUBMIT UTR</div>
-                    <div style="background:rgba(0,242,255,0.05); border:1px solid rgba(0,242,255,0.2); padding:20px; border-radius:16px;">
+
+                    <div style="background:rgba(0,242,255,0.05); border:1px solid rgba(0,242,255,0.2); padding:20px; border-radius:15px; margin-top:20px;">
+                        <div style="font-family:var(--font-head); color:white; margin-bottom:10px; font-size:1.1rem;"><i class="fa-solid fa-shield-halved" style="color:var(--accent-cyan);"></i> Verify Payment</div>
+                        <p style="font-size:0.8rem; color:#aaa; margin-bottom:15px;">After paying via App or QR, paste the 12-digit UTR below to securely add funds.</p>
                         <input type="number" id="utrInput" placeholder="Enter 12-digit UTR" class="utr-input-field">
-                        <button class="pay-btn" style="background: transparent; border: 2px solid var(--accent-green); color: var(--accent-green); box-shadow:none; margin-bottom:0;" onclick="submitStrictUTR();">
-                            Verify UTR <i class="fa-solid fa-check-double"></i>
-                        </button>
+                        <button class="pay-btn" style="background: transparent; border: 1px solid var(--accent-green); color: var(--accent-green); box-shadow:none; margin-bottom:0;" onclick="submitStrictUTR(); triggerHaptic();">Verify UTR <i class="fa-solid fa-check-double"></i></button>
+                    </div>
+                </div>
+                
+                <div class="add-money-right">
+                    <div class="qr-section" id="qrContainer">
+                        <div style="font-family:var(--font-head); color:white; margin-bottom:10px;">Scan to Pay <span id="qrAmtText" style="color:var(--accent-green);"></span></div>
+                        <div class="qr-img-box">
+                            <div class="scan-line"></div>
+                            <img id="dynamicQR" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=tournyx">
+                        </div>
+                        <div class="upi-copy-box" onclick="copyUPI()">
+                            <span id="officialUPI">86081838383@ask</span> <i class="fa-regular fa-copy" style="color:var(--accent-cyan);"></i>
+                        </div>
+                        <div style="font-size:0.7rem; color:#ff9900;"><i class="fa-regular fa-clock"></i> QR Expires in <span id="qrTimer">05:00</span></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="bottom-sheet-overlay" id="promoModalOverlay">
-        <div class="bottom-sheet">
-            <div class="sheet-header">
-                <div class="sheet-title"><i class="fa-solid fa-ticket" style="color:var(--accent-green);"></i> Redeem Promo</div>
-                <i class="fa-solid fa-xmark close-sheet" onclick="closePromoModal()"></i>
-            </div>
-            <div style="text-align:center; margin-bottom:20px;">
-                <i class="fa-solid fa-gift" style="font-size:4rem; color:var(--accent-green); margin-bottom:15px;"></i>
-                <p style="color:#aaa;">Enter your creator or event promo code below to claim exclusive bonuses.</p>
-            </div>
-            <input type="text" id="promoInput" placeholder="ENTER CODE" class="utr-input-field" style="text-transform:uppercase;">
-            <button class="pay-btn" onclick="applyPromo()">Apply Code</button>
-        </div>
-    </div>
-
     <div class="ledger-modal" id="ledgerModal">
         <div class="lm-header">
-            <i class="fa-solid fa-arrow-left header-action-icon" onclick="closeAllTxns();"></i>
-            <div class="app-title" style="font-size:1.1rem;">ALL TRANSACTIONS</div>
-            <i class="fa-solid fa-download header-action-icon" onclick="showToast('Exporting to CSV...')"></i>
-        </div>
-        <div class="ledger-stats">
-            <div class="stat-box stat-in">
-                <div style="font-size:0.7rem; font-family:var(--font-head); font-weight:bold;">TOTAL IN</div>
-                <div style="font-size:1.2rem; font-weight:bold;" id="statTotalIn">Rs. 0</div>
-            </div>
-            <div class="stat-box stat-out">
-                <div style="font-size:0.7rem; font-family:var(--font-head); font-weight:bold;">TOTAL OUT</div>
-                <div style="font-size:1.2rem; font-weight:bold;" id="statTotalOut">Rs. 0</div>
-            </div>
-        </div>
-        <div class="ledger-filters">
-            <div class="filter-chip active" onclick="filterLedger('all', this)">All</div>
-            <div class="filter-chip" onclick="filterLedger('in', this)">Money In</div>
-            <div class="filter-chip" onclick="filterLedger('out', this)">Money Out</div>
-            <div class="filter-chip" onclick="filterLedger('bonus', this)">Bonuses</div>
+            <i class="fa-solid fa-arrow-left back-btn" onclick="closeAllTxns(); triggerHaptic();"></i>
+            <div class="app-title" style="font-size:1rem;">ALL TRANSACTIONS</div>
+            <i class="fa-solid fa-download header-action-icon" onclick="downloadAllTxnsPDF(); triggerHaptic();" style="color:var(--accent-cyan);"></i>
         </div>
         <div class="lm-scroll-area">
-            <input type="text" class="search-bar" placeholder="Search transactions..." onkeyup="searchLedger(this.value)">
-            <div class="txn-list" id="fullTxnListContainer" style="border:none; padding:0; background:transparent; box-shadow:none;"></div>
+            <div class="txn-list" id="fullTxnListContainer" style="border:none; padding:0; background:transparent; box-shadow:none; margin-top:20px;"></div>
         </div>
     </div>
 
-    <div class="bottom-sheet-overlay" id="milestoneModalOverlay"><div class="bottom-sheet"><div class="sheet-header"><div class="sheet-title"><i class="fa-solid fa-ranking-star" style="color:var(--accent-orange);"></i> Milestone Rewards</div><i class="fa-solid fa-xmark close-sheet" onclick="closeMilestoneModal()"></i></div><div id="milestoneListContainer" style="display:flex; flex-direction:column; gap:12px;"></div></div></div>
+    <div class="bottom-sheet-overlay" id="receiptOverlay">
+        <div class="bottom-sheet">
+            <div class="sheet-header">
+                <div class="sheet-title">Secure Receipt</div>
+                <i class="fa-solid fa-xmark close-sheet" onclick="closeReceipt()"></i>
+            </div>
+            
+            <div id="receiptContent">
+                <div class="rcpt-icon" id="rcptIcon"></div>
+                <div class="rcpt-amt" id="rcptAmt">Rs. 0</div>
+                <div class="rcpt-title" id="rcptTitle">Payment</div>
+                <div class="rcpt-row"><span class="rcpt-lbl">Transaction Status</span><span class="rcpt-val" id="rcptStatusVal"></span></div>
+                <div class="rcpt-row"><span class="rcpt-lbl">Category</span><span class="rcpt-val" id="rcptCat"><i class="fa-solid fa-gamepad"></i> Entry Fee</span></div>
+                <div class="rcpt-row"><span class="rcpt-lbl">Date & Time</span><span class="rcpt-val" id="rcptDate">Jan 1, 12:00 PM</span></div>
+                <div class="rcpt-row" style="border-bottom:none;"><span class="rcpt-lbl">Transaction ID</span><span class="rcpt-val"><span id="rcptId" style="font-size:0.85rem; color:#ccc;">TXN...</span> <i class="fa-regular fa-copy" style="color:var(--accent-cyan); cursor:pointer; padding:5px;" onclick="copyTxnId(); triggerHaptic();"></i></span></div>
+            </div>
+
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <button class="pay-btn" style="flex:1; background:transparent; border:1px solid var(--accent-cyan); color:var(--accent-cyan); box-shadow:none; font-size:0.9rem;" onclick="downloadReceiptPDF()"><i class="fa-solid fa-download"></i> PDF</button>
+                <button class="pay-btn" style="flex:1; background:var(--accent-green); color:black; border:none; box-shadow:0 5px 20px rgba(0,255,127,0.3); font-size:0.9rem;" id="supportBtn" onclick="contactSupportTxn()"><i class="fa-brands fa-whatsapp"></i> Support</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="pdfContainerWrapper">
+        <div id="pdfTemplate" style="background:#ffffff; color:#000000; padding:40px; font-family:Arial, sans-serif; width:600px; box-sizing:border-box;">
+            <div style="text-align:center; border-bottom:2px solid #eeeeee; padding-bottom:20px; margin-bottom:20px;">
+                <h1 style="color:#bd00ff; margin:0; font-family:sans-serif; text-transform:uppercase;">Tournyx Esports</h1>
+                <p style="color:#555555; margin:5px 0 0 0; font-size:14px;">Official Transaction Receipt</p>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:30px; background:#f9f9f9; padding:20px; border-radius:8px;">
+                <div>
+                    <p style="margin:0 0 5px 0; color:#555555; font-size:12px;">User Name</p>
+                    <h3 style="margin:0; color:#000000; font-size:18px;" id="pdfUserName">Name</h3>
+                </div>
+                <div style="text-align:right;">
+                    <p style="margin:0 0 5px 0; color:#555555; font-size:12px;">Email ID</p>
+                    <h3 style="margin:0; color:#000000; font-size:18px;" id="pdfUserEmail">email@domain.com</h3>
+                </div>
+            </div>
+            <table style="width:100%; border-collapse:collapse; text-align:left;">
+                <tr style="border-bottom:1px solid #eeeeee;">
+                    <td style="padding:15px 0; color:#555555;">Transaction ID</td>
+                    <td style="padding:15px 0; text-align:right; font-weight:bold; color:#000000;" id="pdfTxnId">TXN123</td>
+                </tr>
+                <tr style="border-bottom:1px solid #eeeeee;">
+                    <td style="padding:15px 0; color:#555555;">Date & Time</td>
+                    <td style="padding:15px 0; text-align:right; font-weight:bold; color:#000000;" id="pdfDate">Jan 1, 12:00 PM</td>
+                </tr>
+                <tr style="border-bottom:1px solid #eeeeee;">
+                    <td style="padding:15px 0; color:#555555;">Description</td>
+                    <td style="padding:15px 0; text-align:right; font-weight:bold; color:#000000;" id="pdfTitle">Wallet Top-up</td>
+                </tr>
+                <tr style="border-bottom:1px solid #eeeeee;">
+                    <td style="padding:15px 0; color:#555555;">Status</td>
+                    <td style="padding:15px 0; text-align:right; font-weight:bold;" id="pdfStatus">Success</td>
+                </tr>
+                <tr>
+                    <td style="padding:20px 0; color:#000000; font-size:18px; font-weight:bold;">Total Amount</td>
+                    <td style="padding:20px 0; text-align:right; font-size:24px; font-weight:bold;" id="pdfAmt">Rs. 0</td>
+                </tr>
+            </table>
+            <div style="text-align:center; margin-top:40px; color:#999999; font-size:12px;">
+                <p>This is a computer generated receipt and does not require a physical signature.</p>
+            </div>
+        </div>
+    </div>
 
     <div class="cyber-scanner-overlay" id="cyberScanner">
-        <div class="cyber-circle"><div class="cyber-inner"></div></div>
-        <div class="cyber-text" id="scannerText">Verifying UTR...</div>
-        <div style="color:#888; font-size:0.9rem; margin-top:15px; font-family:var(--font-head);">Connecting to secure banking APIs</div>
+        <div class="cyber-circle" id="scannerCircle"><div class="cyber-inner" id="scannerInner"></div></div>
+        <div class="cyber-text" id="scannerText">AUTHORIZING...</div>
+        <div class="cyber-desc" id="scannerDesc">Initiating secure 256-bit connection</div>
     </div>
 
     <div id="customToast">Notification</div>
@@ -437,371 +476,448 @@
     </nav>
 
     <script>
-        // --- CHROME & BROWSER SAFETY ENGINE ---
-        // This ensures localStorage never crashes the app even if strictly blocked by Chrome.
-        const SafeStorage = {
-            memoryCache: {},
-            getItem: function(key) {
-                try { return localStorage.getItem(key); } 
-                catch(e) { console.warn("Chrome blocked localStorage read. Using memory fallback."); return this.memoryCache[key] || null; }
-            },
-            setItem: function(key, val) {
-                try { localStorage.setItem(key, val); } 
-                catch(e) { console.warn("Chrome blocked localStorage write."); this.memoryCache[key] = val; }
-            }
-        };
-
-        const API_URL = 'https://script.google.com/macros/s/AKfycbynNLDDXS1wMrU6RGnk4nKb1jfQkQGuqrNIKWAt8wf46MaKP6y1rwGmSJg5fmm4KYU/exec';
-        const OFFICIAL_UPI = "8608159825-2@ybl"; 
-        
-        // Failsafe Initialization
-        let currentUser = null;
-        try {
-            let parsed = JSON.parse(SafeStorage.getItem('tournyx_user'));
-            if(parsed && typeof parsed === 'object') currentUser = parsed;
-        } catch(e) {}
-
-        if(!currentUser) { 
-            // V2 Feature: Instead of an infinite crash loop, we inject dummy data if not logged in (Useful for previews/testing)
-            console.warn("User not found in storage. Booting in Dev/Preview Mode.");
-            currentUser = { username: "Player One", email: "guest@tournyx.in", rupees: 0, points: 0, isPremium: false };
-            SafeStorage.setItem('tournyx_user', JSON.stringify(currentUser));
-        }
-
-        const MILESTONES = [0, 100, 500, 1000, 2500, 5000, 10000, 25000, 50000, 100000, 500000];
-        const MS_REWARDS = [0, 10,   25,  50,   100,  250,  500,   1000,  2500,  5000,   10000];
-        let totalLifetimeDeposits = 0; let userCurrentLevel = 0;
-
-        // Audio Engine
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function playClickSound() {
-            triggerHaptic();
-            if(audioCtx.state === 'suspended') audioCtx.resume();
-            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
-            osc.type = 'sine'; osc.frequency.setValueAtTime(600, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.05);
-            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.start(); osc.stop(audioCtx.currentTime + 0.1);
-        }
-
-        function playSuccessSound() {
-            if(audioCtx.state === 'suspended') audioCtx.resume();
-            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
-            osc.type = 'square'; osc.frequency.setValueAtTime(400, audioCtx.currentTime);
-            osc.frequency.setValueAtTime(600, audioCtx.currentTime + 0.1);
-            osc.frequency.setValueAtTime(1000, audioCtx.currentTime + 0.2);
-            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-            gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.4);
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.start(); osc.stop(audioCtx.currentTime + 0.4);
-        }
-
-        document.addEventListener("DOMContentLoaded", function() {
-            if(currentUser.avatar) {
-                let img = document.getElementById('headerProfilePic');
-                img.src = currentUser.avatar;
-                img.onerror = function() { this.src = 'https://via.placeholder.com/40'; }; // Fix broken images
-            }
-            
-            setDynamicGreeting();
-            updateWalletDisplay(true); // Instant load to prevent NaN glitch
-            
-            // Handle Network State
-            window.addEventListener('offline', () => document.getElementById('offlineBanner').style.display = 'block');
-            window.addEventListener('online', () => document.getElementById('offlineBanner').style.display = 'none');
-            if(!navigator.onLine) document.getElementById('offlineBanner').style.display = 'block';
-
-            let cached = JSON.parse(SafeStorage.getItem('tournyx_txns')) || [];
-            if(cached.length > 0) {
-                renderTransactions(cached);
-                calculateMilestones(cached);
-                calculateAnalytics(cached);
-            } else {
-                document.getElementById('txnListContainer').innerHTML = `<div style="text-align:center; padding:30px; color:#666;"><i class="fa-solid fa-ghost" style="font-size:3rem; opacity:0.3; margin-bottom:15px;"></i><br><span style="font-family:var(--font-head); font-weight:bold;">No Data Found</span><br>Your ledger is empty.</div>`;
-            }
-            
-            syncUserData();
-            syncLiveTransactions();
-            setInterval(() => { if(navigator.onLine){ syncUserData(true); syncLiveTransactions(true); } }, 8000); 
-            initParticles();
+        // --- MOBILE KEYBOARD NAV FIX ---
+        const inputs = document.querySelectorAll('input, select, textarea');
+        const bNav = document.querySelector('.bottom-nav');
+        inputs.forEach(inp => {
+            inp.addEventListener('focus', () => { if(bNav) bNav.style.bottom = '-100px'; });
+            inp.addEventListener('blur', () => { if(bNav) setTimeout(() => bNav.style.bottom = '0', 100); });
         });
 
-        function syncUserData(silent = false) {
-            // Failsafe Fetch logic for Chrome
-            fetch(API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify({ action: 'sync_user', email: currentUser.email })
-            })
-            .then(r => r.json())
-            .then(data => {
-                let p = (data.rupees !== undefined) ? data : (data.data?.rupees !== undefined ? data.data : data.message);
-                if (p && p.rupees !== undefined) {
-                    currentUser.rupees = parseInt(p.rupees) || 0;
-                    currentUser.points = parseInt(p.points) || 0;
-                    SafeStorage.setItem('tournyx_user', JSON.stringify(currentUser));
-                    updateWalletDisplay(silent);
-                }
-            }).catch(e => { if(!silent) console.log("Sync delayed (Network/CORS). Using local data."); });
-        }
+        // --- CONSTANTS ---
+        const API_URL = 'https://script.google.com/macros/s/AKfycbynNLDDXS1wMrU6RGnk4nKb1jfQkQGuqrNIKWAt8wf46MaKP6y1rwGmSJg5fmm4KYU/exec';
+        const OFFICIAL_UPI = "86081838383@ask"; 
+        
+        let currentUser = JSON.parse(localStorage.getItem('tournyx_user'));
+        let activeReceiptId = "";
+        let activeReceiptData = null;
+        let qrTimerInterval;
+        
+        let isFirstDepositEligible = true;
+        const FIRST_DEPOSIT_OFFERS = [
+            { amt: 59, bonus: 50 }, { amt: 109, bonus: 50 },
+            { amt: 200, bonus: 159 }, { amt: 300, bonus: 150 }, { amt: 500, bonus: 250 }
+        ];
+        const STANDARD_OFFERS = [50, 100, 250, 500];
 
-        function triggerHaptic() { try { if(navigator.vibrate) navigator.vibrate(40); } catch(e){} }
+        document.addEventListener("DOMContentLoaded", function() {
+            if(!currentUser) { window.location.href = "login.html"; return; }
+            if(currentUser.avatar) document.getElementById('headerProfilePic').src = currentUser.avatar;
+            setDynamicGreeting();
+            
+            let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            if(isMobile) { document.getElementById('mobilePayBtn').style.display = 'block'; }
+            else { document.getElementById('qrContainer').classList.add('active'); setAmt(59); }
+            
+            // Load from cache first
+            let cached = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
+            if(cached.length > 0) { renderTransactions(); checkFirstDeposit(cached); updateWalletDisplay(); }
+            else { updateWalletDisplay(); renderQuickAmts(); }
+            
+            // Fire sync, hide loader when done
+            syncLiveTransactions().finally(() => {
+                document.getElementById('mainLoader').classList.add('hidden');
+            });
+            
+            // Background Live Sync (Every 5 seconds)
+            setInterval(() => syncLiveTransactions(), 5000); 
+        });
+
+        function triggerHaptic() { if(navigator.vibrate) navigator.vibrate(40); }
         function triggerError(id) { let el = document.getElementById(id); el.classList.add('input-error'); triggerHaptic(); setTimeout(()=>el.classList.remove('input-error'),500); }
         function showToast(msg, isError=false) {
             let t = document.getElementById("customToast"); t.innerText = msg;
-            t.style.backgroundColor = isError ? "var(--accent-red)" : "var(--accent-green)";
-            t.style.boxShadow = isError ? "0 10px 30px rgba(255,77,77,0.6)" : "0 10px 30px rgba(0,255,127,0.6)";
+            t.style.backgroundColor = isError ? "#ff4d4d" : "var(--accent-green)"; t.style.color = "black";
             t.className = "show"; triggerHaptic(); setTimeout(()=>t.className="", 3500);
         }
-        function formatNum(num) { return (parseInt(num) || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+        function formatNum(num) { return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
 
-        // Particles Engine
-        function initParticles() {
-            const canvas = document.getElementById('particles-canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            let particles = [];
-            for(let i=0;i<40;i++) particles.push({ x:Math.random()*canvas.width, y:Math.random()*canvas.height, s:Math.random()*2.5, vx:Math.random()*0.5-0.25, vy:Math.random()*0.5-0.25 });
-            function anim(){ 
-                ctx.clearRect(0,0,canvas.width,canvas.height); 
-                particles.forEach(p=>{
-                    p.x+=p.vx; p.y+=p.vy; if(p.x<0||p.x>canvas.width)p.vx*=-1; if(p.y<0||p.y>canvas.height)p.vy*=-1;
-                    ctx.fillStyle='rgba(189,0,255,0.3)'; ctx.beginPath(); ctx.arc(Math.floor(p.x),Math.floor(p.y),p.s,0,Math.PI*2); ctx.fill(); 
-                }); requestAnimationFrame(anim); 
-            } anim();
-        }
-
-        // Confetti Physics Engine
-        function fireConfetti() {
-            const canvas = document.getElementById('confettiCanvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            let pieces = [];
-            const colors = ['#00f2ff', '#bd00ff', '#00ff7f', '#ff9900', '#FFD700'];
-            for(let i=0; i<100; i++) {
-                pieces.push({ x: canvas.width/2, y: canvas.height/2, vx: (Math.random()-0.5)*20, vy: (Math.random()-1)*20, size: Math.random()*10+5, color: colors[Math.floor(Math.random()*colors.length)], rot: Math.random()*360, rotSpeed: (Math.random()-0.5)*10 });
-            }
-            function render() {
-                ctx.clearRect(0,0,canvas.width,canvas.height);
-                let active = false;
-                pieces.forEach(p => {
-                    p.x += p.vx; p.y += p.vy; p.vy += 0.5; p.rot += p.rotSpeed;
-                    if(p.y < canvas.height) active = true;
-                    ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot * Math.PI/180);
-                    ctx.fillStyle = p.color; ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size); ctx.restore();
-                });
-                if(active) requestAnimationFrame(render); else ctx.clearRect(0,0,canvas.width,canvas.height);
-            } render();
-        }
-
-        window.activeAnimations = {};
         function animateValue(obj, start, end, duration) {
-            if (!obj) return;
-            start = parseInt(start)||0; end = parseInt(end)||0;
-            if (start === end) { obj.innerHTML = formatNum(end); return; }
-            if (window.activeAnimations[obj.id]) cancelAnimationFrame(window.activeAnimations[obj.id]);
+            if(start === end) { obj.innerHTML = formatNum(end); return; }
             let startTimestamp = null;
             const step = (timestamp) => {
                 if (!startTimestamp) startTimestamp = timestamp;
                 const progress = Math.min((timestamp - startTimestamp) / duration, 1);
                 obj.innerHTML = formatNum(Math.floor(progress * (end - start) + start));
-                if (progress < 1) window.activeAnimations[obj.id] = window.requestAnimationFrame(step); 
-                else { obj.innerHTML = formatNum(end); delete window.activeAnimations[obj.id]; }
-            }; window.activeAnimations[obj.id] = window.requestAnimationFrame(step);
+                if (progress < 1) { window.requestAnimationFrame(step); } else { obj.innerHTML = formatNum(end); }
+            };
+            window.requestAnimationFrame(step);
         }
 
         function setDynamicGreeting() {
-            const hr = new Date().getHours(); let greet = hr < 12 ? "Good Morning," : hr < 18 ? "Good Afternoon," : "Good Evening,";
+            const hr = new Date().getHours(); let greet = "Welcome,";
+            if (hr < 12) greet = "Good Morning,"; else if (hr < 18) greet = "Good Afternoon,"; else greet = "Good Evening,";
             let name = currentUser.username ? currentUser.username.split(" ")[0] : "Player";
-            let tag = currentUser.isPremium ? '<span style="background:var(--accent-purple); color:white; padding:2px 6px; border-radius:4px; font-size:0.6rem; margin-left:8px; font-weight:bold;">PRO</span>' : '';
-            document.getElementById('dynamicGreeting').innerHTML = `${greet} ${name} ${tag}`;
+            let isPremium = currentUser.isPremium || currentUser.premium || false;
+            let tagHTML = isPremium ? '<span style="background:var(--accent-purple); color:white; padding:2px 6px; border-radius:4px; font-size:0.6rem; margin-left:8px; font-family:var(--font-head); font-weight:bold;">PRO</span>' : '<span style="background:rgba(255,255,255,0.1); color:#ccc; padding:2px 6px; border-radius:4px; font-size:0.6rem; margin-left:8px; font-family:var(--font-head); font-weight:bold;">NORMAL</span>';
+            document.getElementById('dynamicGreeting').innerHTML = `${greet} ${name} ${tagHTML}`;
         }
 
         let isPrivacyOn = false;
         function togglePrivacy() {
-            playClickSound();
             isPrivacyOn = !isPrivacyOn;
             document.getElementById('balanceWrapper').classList.toggle('blur-balance');
             document.getElementById('ptsWrapper').classList.toggle('blur-balance');
-            document.getElementById('eyeIcon').classList.replace(isPrivacyOn ? 'fa-eye' : 'fa-eye-slash', isPrivacyOn ? 'fa-eye-slash' : 'fa-eye');
+            let eye = document.getElementById('eyeIcon');
+            if(isPrivacyOn) eye.classList.replace('fa-eye', 'fa-eye-slash'); else eye.classList.replace('fa-eye-slash', 'fa-eye');
         }
 
-        function updateWalletDisplay(instant = false) {
-            let rs = parseInt(currentUser.rupees) || 0; let pts = parseInt(currentUser.points) || 0;
-            let elRs = document.getElementById('displayRupees'); let elPts = document.getElementById('displayPoints');
-            let currentRs = parseInt(elRs.innerText.replace(/,/g, '')) || 0; let currentPts = parseInt(elPts.innerText.replace(/,/g, '')) || 0;
+        function updateWalletDisplay() {
+            let rs = parseFloat(currentUser.rupees);
+            if(isNaN(rs)) rs = 0;
+            let pts = parseInt(currentUser.points) || 0;
             
-            if (instant) { elRs.innerHTML = formatNum(rs); elPts.innerHTML = formatNum(pts); } 
-            else { animateValue(elRs, currentRs, rs, 800); animateValue(elPts, currentPts, pts, 800); }
+            animateValue(document.getElementById('displayRupees'), 0, rs, 1000);
+            animateValue(document.getElementById('displayPoints'), 0, pts, 1000);
             
             let badge = document.getElementById('vipBadge'); let prog = document.getElementById('vipProgress'); let nTier = document.getElementById('nextTierText');
-            if (rs >= 5000) { badge.innerHTML = '<i class="fa-solid fa-crown"></i> GOLD TIER'; badge.className = 'vip-badge'; prog.style.width = '100%'; nTier.innerText = "Max Level"; nTier.style.color="#FFD700";}
-            else if (rs >= 1000) { badge.innerHTML = '<i class="fa-solid fa-star"></i> SILVER TIER'; badge.className = 'vip-badge vip-silver'; prog.style.width = ((rs/5000)*100)+'%'; nTier.innerText = "Gold"; nTier.style.color="#FFD700";}
-            else { badge.innerHTML = '<i class="fa-solid fa-medal"></i> BRONZE TIER'; badge.className = 'vip-badge vip-bronze'; prog.style.width = ((rs/1000)*100)+'%'; nTier.innerText = "Silver"; nTier.style.color="#c0c0c0";}
+            if (rs >= 5000) { badge.innerHTML = '<i class="fa-solid fa-crown"></i> GOLD TIER'; badge.className = 'vip-badge'; prog.style.width = '100%'; nTier.innerText = "Diamond"; }
+            else if (rs >= 1000) { badge.innerHTML = '<i class="fa-solid fa-star"></i> SILVER TIER'; badge.className = 'vip-badge vip-silver'; prog.style.width = ((rs/5000)*100)+'%'; nTier.innerText = "Gold"; }
+            else { badge.innerHTML = '<i class="fa-solid fa-medal"></i> BRONZE TIER'; badge.className = 'vip-badge vip-bronze'; prog.style.width = ((rs/1000)*100)+'%'; nTier.innerText = "Silver"; }
         }
 
-        function calculateMilestones(txns) {
-            totalLifetimeDeposits = txns.filter(t => t.type === 'Credit' && t.category === 'Deposit' && t.status === 'Success').reduce((sum, t) => sum + (parseInt(t.amount)||0), 0);
-            
-            if(totalLifetimeDeposits === 0) { document.getElementById('firstDepositBanner').style.display = 'flex'; document.getElementById('dailyBonusBanner').style.display = 'none'; document.querySelectorAll('.display-bonus').forEach(el => el.style.display = 'block'); } 
-            else { document.getElementById('firstDepositBanner').style.display = 'none'; document.getElementById('dailyBonusBanner').style.display = 'flex'; document.querySelectorAll('.display-bonus').forEach(el => el.style.display = 'none'); }
-
-            userCurrentLevel = 0;
-            for(let i=1; i<MILESTONES.length; i++) { if(totalLifetimeDeposits >= MILESTONES[i]) userCurrentLevel = i; else break; }
-            
-            let claimedMs = JSON.parse(SafeStorage.getItem('tournyx_ms_claimed')) || [];
-            let newlyClaimed = 0; let claimsMade = [];
-            
-            for(let i=1; i<=userCurrentLevel; i++) {
-                if(!claimedMs.includes(i)) { newlyClaimed += MS_REWARDS[i]; claimedMs.push(i); claimsMade.push(i); }
-            }
-
-            if (newlyClaimed > 0) {
-                playSuccessSound(); fireConfetti();
-                SafeStorage.setItem('tournyx_ms_claimed', JSON.stringify(claimedMs));
-                currentUser.rupees += newlyClaimed; SafeStorage.setItem('tournyx_user', JSON.stringify(currentUser));
-                showToast(`Level Up! +Rs. ${newlyClaimed} Auto-Claimed!`);
-                updateWalletDisplay(false);
-            }
-
-            let nextVal = MILESTONES[userCurrentLevel + 1] || MILESTONES[10]; let nextReward = MS_REWARDS[userCurrentLevel + 1] || 0;
-            document.getElementById('msLevel').innerText = userCurrentLevel + 1;
-            document.getElementById('msTotal').innerText = formatNum(totalLifetimeDeposits);
-            document.getElementById('msNext').innerText = formatNum(nextVal);
-            document.getElementById('msRewardText').innerText = `Reward: Rs. ${formatNum(nextReward)}`;
-            setTimeout(() => { document.getElementById('msBar').style.width = Math.min((totalLifetimeDeposits / nextVal) * 100, 100) + "%"; }, 500);
-        }
-
-        function calculateAnalytics(txns) {
-            let tin = 0, tout = 0;
-            txns.forEach(t => { if(t.status === 'Success'){ if(t.type === 'Credit') tin+=parseInt(t.amount); else tout+=parseInt(t.amount); }});
-            document.getElementById('statTotalIn').innerText = 'Rs. ' + formatNum(tin);
-            document.getElementById('statTotalOut').innerText = 'Rs. ' + formatNum(tout);
-        }
-
-        function buildTxnHtml(t) {
-            let isCredit = t.type === "Credit"; let stat = String(t.status || "Pending").toLowerCase().trim();
-            let isSuccess = ["success", "completed"].includes(stat); let isCancelled = ["cancelled", "failed"].includes(stat);
-            
-            let sc = isSuccess ? "var(--accent-green)" : isCancelled ? "var(--accent-red)" : "#ff9900";
-            let sBg = isSuccess ? "rgba(0,255,127,0.1)" : isCancelled ? "rgba(255,77,77,0.1)" : "rgba(255,153,0,0.1)";
-            let mIcon = isSuccess ? (isCredit ? "fa-arrow-down" : "fa-arrow-up") : isCancelled ? "fa-xmark" : "fa-clock";
-
-            let cat = t.category || "General"; let cIco = "fa-money-bill"; let iCls = isCredit ? "icon-credit" : "icon-debit";
-            let tl = t.title.toLowerCase();
-            if(tl.includes('entry')||tl.includes('register')) { cat = "Entry Fee"; cIco = "fa-gamepad"; iCls = "icon-entry"; }
-            if(tl.includes('prize')||tl.includes('won')) { cat = "Prize"; cIco = "fa-trophy"; iCls = "icon-prize"; }
-            if(tl.includes('deposit')) { cat = "Deposit"; cIco = "fa-wallet"; }
-            if(tl.includes('bonus')) { cat = "Bonus"; cIco = "fa-bolt"; iCls = "icon-bonus"; }
-
-            return `<div class="txn-item" onclick="playClickSound()">
-                <div class="txn-left"><div class="txn-icon ${iCls}"><i class="fa-solid ${mIcon}"></i></div>
-                <div class="txn-info"><h4>${t.title}</h4><p><span class="cat-tag"><i class="fa-solid ${cIco}"></i> ${cat}</span> <span>${t.date.split(',')[0]}</span></p></div></div>
-                <div class="txn-right"><div class="in-out-label ${isCredit?'in-label':'out-label'}">${isCredit?'IN':'OUT'}</div>
-                <div class="txn-amt" style="color:${sc};">${isCredit?'+':'-'} Rs.${formatNum(t.amount)}</div>
-                <div class="txn-status" style="color:${sc}; background:${sBg};">${t.status}</div></div></div>`;
-        }
-
-        function renderTransactions(txns = null) {
-            if(!txns) txns = JSON.parse(SafeStorage.getItem('tournyx_txns')) || [];
-            let html = txns.slice(0, 5).map(t => buildTxnHtml(t)).join('');
-            document.getElementById('txnListContainer').innerHTML = html || `<div style="text-align:center; padding:30px; color:#666;"><i class="fa-solid fa-ghost" style="font-size:3rem; opacity:0.3; margin-bottom:15px;"></i><br><span style="font-family:var(--font-head); font-weight:bold;">No Data Found</span></div>`;
-        }
-
-        function syncLiveTransactions(silent = false) {
-            fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: 'get_transactions', email: currentUser.email }) })
-            .then(r => r.json()).then(d => {
-                let arr = Array.isArray(d) ? d : (Array.isArray(d.data) ? d.data : d.message);
-                if (Array.isArray(arr)) {
-                    SafeStorage.setItem('tournyx_txns', JSON.stringify(arr));
-                    renderTransactions(arr); calculateMilestones(arr); calculateAnalytics(arr);
+        // --- FIRST DEPOSIT LOGIC ---
+        function checkFirstDeposit(txns) {
+            let hasDeposit = false;
+            txns.forEach(t => {
+                let cat = String(t.category || t.title || "").toLowerCase();
+                let typ = String(t.type || "").toLowerCase();
+                if(typ === 'credit' && (cat.includes('deposit') || cat.includes('top-up'))) {
+                    hasDeposit = true;
                 }
-            }).catch(e => { if(!silent) console.log("Ledger Sync Delayed."); });
-        }
-
-        // --- UI MODALS ---
-        function openAddMoney() { playClickSound(); document.getElementById('addMoneyOverlay').classList.add('active'); }
-        function closeAddMoney() { document.getElementById('addMoneyOverlay').classList.remove('active'); document.getElementById('addAmtInput').value = ""; }
-        function setAmt(v) { playClickSound(); document.getElementById('addAmtInput').value = v; }
-        
-        function openPromoModal() { playClickSound(); document.getElementById('promoModalOverlay').classList.add('active'); }
-        function closePromoModal() { document.getElementById('promoModalOverlay').classList.remove('active'); }
-        function applyPromo() {
-            playClickSound();
-            let code = document.getElementById('promoInput').value.trim();
-            if(code.length < 3) { triggerError('promoInput'); showToast("Invalid Code", true); return; }
-            closePromoModal();
-            showToast("Promo Code server offline. Try again later.", true);
-        }
-
-        function openAllTxns() { playClickSound(); document.getElementById('ledgerModal').classList.add('active'); filterLedger('all', document.querySelector('.filter-chip')); }
-        function closeAllTxns() { playClickSound(); document.getElementById('ledgerModal').classList.remove('active'); }
-
-        let currentLedgerFilter = 'all';
-        function filterLedger(type, el) {
-            playClickSound();
-            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active')); el.classList.add('active');
-            currentLedgerFilter = type; searchLedger(document.querySelector('.search-bar').value);
-        }
-        function searchLedger(query) {
-            let txns = JSON.parse(SafeStorage.getItem('tournyx_txns')) || [];
-            let q = query.toLowerCase();
-            let filtered = txns.filter(t => {
-                let matchQ = t.title.toLowerCase().includes(q) || t.id.toLowerCase().includes(q);
-                let matchF = currentLedgerFilter === 'all' ? true : currentLedgerFilter === 'in' ? t.type==='Credit' : currentLedgerFilter === 'out' ? t.type==='Debit' : t.category==='Bonus';
-                return matchQ && matchF;
             });
-            document.getElementById('fullTxnListContainer').innerHTML = filtered.map(t => buildTxnHtml(t)).join('') || `<div style="text-align:center; padding:30px; color:#666;">No results found.</div>`;
+
+            isFirstDepositEligible = !hasDeposit;
+            if(isFirstDepositEligible) { document.getElementById('firstDepositBanner').style.display = 'flex'; } 
+            else { document.getElementById('firstDepositBanner').style.display = 'none'; }
+            renderQuickAmts();
         }
 
-        function openMilestoneModal() {
-            let container = document.getElementById('milestoneListContainer'); container.innerHTML = "";
-            let claimedMs = JSON.parse(SafeStorage.getItem('tournyx_ms_claimed')) || [];
-            for(let i=1; i<MILESTONES.length; i++) {
-                let isC = claimedMs.includes(i); let isN = (i === userCurrentLevel + 1);
-                container.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; background:var(--card-bg); border:1px solid ${isC?'var(--accent-green)':isN?'var(--accent-orange)':'var(--card-border)'}; padding:15px; border-radius:12px; opacity:${isC||isN?1:0.5}; box-shadow:${isN?'0 0 15px rgba(255,153,0,0.2)':'none'};">
-                        <div><div style="font-family:var(--font-head); color:white; font-size:1.1rem; font-weight:bold;">Level ${i}</div><div style="font-size:0.8rem; color:#aaa;">Deposit Rs. ${formatNum(MILESTONES[i])}</div></div>
-                        <div style="text-align:right;"><div style="color:var(--accent-cyan); font-weight:bold;">+ Rs. ${formatNum(MS_REWARDS[i])}</div>
-                        ${isC?'<span style="color:var(--accent-green); font-size:0.8rem; font-weight:bold;"><i class="fa-solid fa-check"></i> Claimed</span>':isN?'<span style="color:var(--accent-orange); font-size:0.8rem; font-weight:bold;"><i class="fa-solid fa-unlock"></i> Next Goal</span>':''}</div></div>`;
+        function renderQuickAmts() {
+            const grid = document.getElementById('quickAmtGrid');
+            grid.innerHTML = "";
+            if (isFirstDepositEligible) {
+                FIRST_DEPOSIT_OFFERS.forEach(offer => {
+                    grid.innerHTML += `<div class="quick-amt-btn" onclick="setAmt(${offer.amt}); triggerHaptic();">+${offer.amt} <div class="bonus-tag display-bonus">+${offer.bonus} Bonus</div></div>`;
+                });
+            } else {
+                STANDARD_OFFERS.forEach(amt => {
+                    grid.innerHTML += `<div class="quick-amt-btn" onclick="setAmt(${amt}); triggerHaptic();">+${amt}</div>`;
+                });
             }
-            document.getElementById('milestoneModalOverlay').classList.add('active');
         }
-        function closeMilestoneModal() { document.getElementById('milestoneModalOverlay').classList.remove('active'); }
 
+        // --- UTR SYSTEM ---
+        function openAddMoney() { document.getElementById('addMoneyOverlay').classList.add('active'); startQRTimer(); }
+        function closeAddMoney() { document.getElementById('addMoneyOverlay').classList.remove('active'); document.getElementById('addAmtInput').value = ""; document.getElementById('utrInput').value = ""; clearInterval(qrTimerInterval); }
+        function setAmt(val) { document.getElementById('addAmtInput').value = val; updateQR(); }
+        
+        function updateQR() {
+            let amt = parseInt(document.getElementById('addAmtInput').value);
+            let qrBox = document.getElementById('qrContainer');
+            if(isNaN(amt) || amt < 10) { if(/Android|iPhone/i.test(navigator.userAgent)) qrBox.classList.remove('active'); return; }
+            qrBox.classList.add('active');
+            document.getElementById('qrAmtText').innerText = `Rs. ${amt}`;
+            let upiLink = `upi://pay?pa=${OFFICIAL_UPI}&pn=Tournyx%20Esports&am=${amt}&cu=INR`;
+            document.getElementById('dynamicQR').src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiLink)}`;
+        }
+        
+        function startQRTimer() {
+            let time = 300; let el = document.getElementById('qrTimer'); clearInterval(qrTimerInterval);
+            qrTimerInterval = setInterval(() => { let m = Math.floor(time/60); let s = time % 60; el.innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`; if(time <= 0) { clearInterval(qrTimerInterval); closeAddMoney(); showToast("QR Session Expired.", true); } time--; }, 1000);
+        }
+        
         function openUPIApp() {
-            playClickSound(); let amt = parseInt(document.getElementById('addAmtInput').value);
-            if(isNaN(amt) || amt < 10) { triggerError('addAmtInput'); showToast("Min deposit Rs 10", true); return; }
+            let amt = parseInt(document.getElementById('addAmtInput').value);
+            if(isNaN(amt) || amt < 10) { triggerError('addAmtInput'); showToast("Enter minimum Rs 10", true); return; }
             window.location.href = `upi://pay?pa=${OFFICIAL_UPI}&pn=Tournyx%20Esports&am=${amt}&cu=INR`;
         }
+        function copyUPI() { navigator.clipboard.writeText(OFFICIAL_UPI).then(()=>showToast("UPI ID Copied!")); triggerHaptic(); }
 
+        // --- ADVANCED UTR LOADER ---
         function submitStrictUTR() {
-            playClickSound();
-            let amt = parseInt(document.getElementById('addAmtInput').value); let utr = document.getElementById('utrInput').value.trim();
+            let amt = parseInt(document.getElementById('addAmtInput').value);
+            let utr = document.getElementById('utrInput').value.trim();
             if(isNaN(amt) || amt < 10) { triggerError('addAmtInput'); showToast("Invalid Amount", true); return; }
-            if(!/^\d{12}$/.test(utr)) { triggerError('utrInput'); showToast("UTR must be exactly 12 digits", true); return; }
+            if(!/^\d{12}$/.test(utr)) { triggerError('utrInput'); showToast("UTR must be exactly 12 digits.", true); return; }
             
-            closeAddMoney(); const scanner = document.getElementById('cyberScanner'); scanner.classList.add('active');
+            closeAddMoney();
+
+            let scanner = document.getElementById('cyberScanner');
+            let sText = document.getElementById('scannerText');
+            let sDesc = document.getElementById('scannerDesc');
+            let sCircle = document.getElementById('scannerCircle');
+            let sInner = document.getElementById('scannerInner');
             
+            scanner.classList.add('active');
+            sText.innerText = "AUTHORIZING...";
+            sDesc.innerText = "Initiating secure 256-bit connection...";
+            sCircle.style.borderColor = "var(--accent-cyan)";
+            sInner.style.background = "rgba(0,242,255,0.2)";
+
+            // Multi-Stage Loader Sequence (8.5 seconds)
+            setTimeout(() => { sText.innerText = "VERIFYING UTR..."; sDesc.innerText = "Connecting to banking APIs..."; }, 3000);
+            setTimeout(() => { sText.innerText = "SYNCING WEBHOOK..."; sDesc.innerText = "Awaiting bank confirmation..."; sCircle.style.borderColor = "var(--accent-purple)"; sInner.style.background = "rgba(189,0,255,0.2)"; }, 6000);
+
             setTimeout(() => {
-                scanner.classList.remove('active'); playSuccessSound(); fireConfetti();
-                let txns = JSON.parse(SafeStorage.getItem('tournyx_txns')) || [];
-                let dStr = new Date().toLocaleString('en-US', { month:'short', day:'2-digit', hour:'numeric', minute:'2-digit', hour12:true });
+                scanner.classList.remove('active');
+                showToast("Pending bank confirmation. Will be added shortly.");
                 
-                let isFirst = totalLifetimeDeposits === 0;
-                txns.unshift({ id: "TXN" + utr.substring(6), title: "Deposit via UPI", amount: amt, type: "Credit", status: "Success", category: "Deposit", date: dStr });
-                if(isFirst) txns.unshift({ id: "BONUS" + utr.substring(8), title: "First Deposit Bonus", amount: 20, type: "Credit", status: "Success", category: "Bonus", date: dStr });
+                // Determine Specific First Time Bonus mapping
+                let bonusAmt = 0;
+                if(isFirstDepositEligible) {
+                    let offer = FIRST_DEPOSIT_OFFERS.find(o => o.amt === amt);
+                    if(offer) bonusAmt = offer.bonus;
+                }
+
+                let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
+                let dateStr = new Date().toLocaleString('en-US', { month:'short', day:'2-digit', year:'numeric', hour:'numeric', minute:'2-digit', hour12:true });
                 
-                currentUser.rupees += (amt + (isFirst ? 20 : 0));
-                SafeStorage.setItem('tournyx_user', JSON.stringify(currentUser)); SafeStorage.setItem('tournyx_txns', JSON.stringify(txns));
+                let newTxn = { id: "TXN" + utr.substring(6), title: "Wallet Top-up (UPI)", amount: amt, type: "Credit", status: "Pending", category: "Deposit", date: dateStr };
+                txns.unshift(newTxn);
+
+                if(bonusAmt > 0) {
+                    let bonusTxn = { id: "BONUS" + Math.floor(Math.random()*10000), title: "First Deposit Bonus", amount: bonusAmt, type: "Credit", status: "Pending", category: "Bonus", date: dateStr };
+                    txns.unshift(bonusTxn);
+                    showToast("UTR & Bonus Pending Verification!");
+                }
                 
-                updateWalletDisplay(false); renderTransactions(txns); calculateMilestones(txns); calculateAnalytics(txns);
-                showToast(`UTR Accepted! Rs. ${amt} added successfully.`);
+                localStorage.setItem('tournyx_txns', JSON.stringify(txns));
+                renderTransactions(); checkFirstDeposit(txns);
                 
-                // Background Sync
-                fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: "submit_utr", email: currentUser.email, amount: amt, utr: utr }) });
-            }, 2500);
+                fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "submit_utr", email: currentUser.email, amount: amt, utr: utr }) });
+                if(bonusAmt > 0) {
+                    fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "claim_offer", email: currentUser.email, offerName: "First Deposit Bonus Setup", reward: bonusAmt }) });
+                }
+            }, 8500);
+        }
+
+        // --- BACKGROUND SYNC ---
+        async function syncLiveTransactions() {
+            try {
+                let userRes = await fetch(API_URL + "?action=sync_user&email=" + encodeURIComponent(currentUser.email));
+                let userDataObj = await userRes.json();
+                if(userDataObj.status === 'success' && userDataObj.data && userDataObj.data.rupees !== undefined && userDataObj.data.rupees !== "") {
+                    let freshBal = parseFloat(userDataObj.data.rupees);
+                    if(!isNaN(freshBal)) {
+                        currentUser.rupees = freshBal.toString();
+                        localStorage.setItem('tournyx_user', JSON.stringify(currentUser));
+                        updateWalletDisplay();
+                    }
+                }
+
+                let txnRes = await fetch(API_URL + "?action=get_transactions&email=" + encodeURIComponent(currentUser.email));
+                let txnDataObj = await txnRes.json();
+                if(txnDataObj.status === 'success' && txnDataObj.data && Array.isArray(txnDataObj.data)) {
+                    localStorage.setItem('tournyx_txns', JSON.stringify(txnDataObj.data));
+                    renderTransactions();
+                    checkFirstDeposit(txnDataObj.data);
+                }
+            } catch(e) {}
+        }
+
+        // --- RENDER LEDGER ---
+        function renderTransactions() {
+            const container = document.getElementById('txnListContainer');
+            let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
+            container.innerHTML = "";
+            if (txns.length === 0) { container.innerHTML = `<div style="text-align:center; padding:30px; color:#666;">No recent transactions.</div>`; return; }
+            txns.slice(0, 5).forEach((t, i) => { container.innerHTML += buildTxnHtml(t, i); });
+        }
+
+        function openAllTxns() {
+            document.getElementById('ledgerModal').classList.add('active');
+            let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
+            const container = document.getElementById('fullTxnListContainer');
+            container.innerHTML = "";
+            txns.forEach((t, i) => { container.innerHTML += buildTxnHtml(t, i); });
+        }
+        function closeAllTxns() { document.getElementById('ledgerModal').classList.remove('active'); }
+
+        function buildTxnHtml(t, delay) {
+            let typeStr = String(t.type || "").toLowerCase();
+            let isCredit = typeStr === "credit"; 
+            let stat = String(t.status || "").toLowerCase();
+            let isPending = stat === "pending";
+            let isFailed = stat === "failed" || stat === "cancelled" || stat === "refunded";
+            let isSuccess = stat === "success" || stat === "completed";
+            
+            let cat = t.category || "General"; let catIcon = "fa-money-bill";
+            let iconClass = isCredit ? "icon-credit" : "icon-debit"; 
+            let mainIcon = isCredit ? "fa-arrow-down" : "fa-arrow-up";
+            
+            let titleLower = String(t.title || "").toLowerCase();
+            if(titleLower.includes('tournament') || titleLower.includes('entry')) { cat = "Entry Fee"; catIcon = "fa-gamepad"; iconClass = "icon-entry"; mainIcon = "fa-gamepad"; }
+            if(titleLower.includes('prize') || titleLower.includes('won')) { cat = "Prize Won"; catIcon = "fa-trophy"; iconClass = "icon-prize"; mainIcon = "fa-trophy"; }
+            if(titleLower.includes('deposit') || titleLower.includes('top-up')) { cat = "Deposit"; catIcon = "fa-wallet"; }
+            if(titleLower.includes('bonus')) { cat = "Bonus"; catIcon = "fa-bolt"; iconClass = "icon-bonus"; mainIcon = "fa-bolt"; }
+            if(titleLower.includes('withdraw')) { cat = "Payout"; catIcon = "fa-money-bill-transfer"; }
+            
+            if(isPending) { iconClass = "icon-debit"; mainIcon = "fa-clock"; }
+            if(isFailed) { mainIcon = "fa-xmark"; iconClass = "icon-debit"; }
+
+            let amtClass = isCredit ? "amt-credit" : "amt-debit";
+            let statusColor = isSuccess ? "var(--accent-green)" : (isFailed ? "var(--accent-red)" : "#ff9900");
+            
+            let inOutLabel = isCredit ? `<div class="in-out-label in-label">MONEY IN</div>` : `<div class="in-out-label out-label">MONEY OUT</div>`;
+            let displayDate = t.date ? (t.date.includes(',') ? t.date.split(',')[0] : t.date.split(' ')[0]) : "Today";
+
+            return `
+                <div class="txn-item glow-hover" style="animation-delay:${delay*0.1}s" onclick="openReceipt('${t.id}')">
+                    <div class="txn-left">
+                        <div class="txn-icon ${iconClass}"><i class="fa-solid ${mainIcon}"></i></div>
+                        <div class="txn-info">
+                            <h4>${t.title}</h4>
+                            <p><span class="cat-tag"><i class="fa-solid ${catIcon}"></i> ${cat}</span> ${displayDate}</p>
+                        </div>
+                    </div>
+                    <div class="txn-right">
+                        ${inOutLabel}
+                        <div class="txn-amt ${amtClass}">${isCredit?'+':'-'} ₹${formatNum(t.amount)}</div>
+                        <div class="txn-status" style="color:${statusColor};">${t.status}</div>
+                    </div>
+                </div>`;
+        }
+
+        // --- RECEIPT & PDF SUPPORT ---
+        function openReceipt(id) {
+            let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
+            let t = txns.find(x => x.id === id); if(!t) return;
+            activeReceiptId = id;
+            activeReceiptData = t;
+            
+            let typeStr = String(t.type || "").toLowerCase();
+            let isCredit = typeStr === "credit"; 
+            let stat = String(t.status || "").toLowerCase();
+            let isPending = stat === "pending";
+            let isFailed = stat === "failed" || stat === "cancelled" || stat === "refunded";
+            let isSuccess = stat === "success" || stat === "completed";
+            
+            let catStr = `<i class="fa-solid fa-gamepad"></i> General`;
+            let titleLower = String(t.title || "").toLowerCase();
+            if (titleLower.includes("top-up") || titleLower.includes("deposit")) catStr = `<i class="fa-solid fa-wallet"></i> Deposit`;
+            else if (titleLower.includes("bonus")) catStr = `<i class="fa-solid fa-bolt"></i> Bonus`;
+            else if (titleLower.includes("prize")) catStr = `<i class="fa-solid fa-trophy"></i> Prize Won`;
+            else if (titleLower.includes("withdraw")) catStr = `<i class="fa-solid fa-money-bill-transfer"></i> Payout`;
+            
+            let mainIcon = isFailed ? "fa-xmark" : (isPending ? "fa-clock" : (isCredit ? "fa-check" : "fa-arrow-up"));
+            let iconEl = document.getElementById('rcptIcon');
+            iconEl.innerHTML = `<i class="fa-solid ${mainIcon}"></i>`;
+            iconEl.className = `rcpt-icon ${isPending ? 'icon-debit' : (isCredit ? 'icon-credit' : 'icon-debit')}`;
+            if(isFailed) iconEl.className = `rcpt-icon icon-debit`;
+            
+            document.getElementById('rcptAmt').innerText = `${isCredit?'+':'-'} Rs. ${formatNum(t.amount)}`;
+            document.getElementById('rcptAmt').className = `rcpt-amt ${isCredit ? 'amt-credit' : 'amt-debit'}`;
+            document.getElementById('rcptTitle').innerText = t.title;
+            document.getElementById('rcptCat').innerHTML = catStr;
+            document.getElementById('rcptDate').innerText = t.date;
+            document.getElementById('rcptId').innerText = t.id;
+            
+            let statusColor = isSuccess ? "var(--accent-green)" : (isFailed ? "var(--accent-red)" : "#ff9900");
+            let sEl = document.getElementById('rcptStatusVal');
+            sEl.innerHTML = `<i class="fa-solid ${mainIcon}"></i> ${t.status}`;
+            sEl.style.color = statusColor;
+
+            // Populate Hidden PDF Template
+            document.getElementById('pdfUserName').innerText = currentUser.username || "User";
+            document.getElementById('pdfUserEmail').innerText = currentUser.email || "";
+            document.getElementById('pdfTxnId').innerText = t.id;
+            document.getElementById('pdfDate').innerText = t.date;
+            document.getElementById('pdfTitle').innerText = t.title;
+            document.getElementById('pdfStatus').innerText = t.status;
+            document.getElementById('pdfStatus').style.color = isSuccess ? "#00b300" : (isFailed ? "#ff0000" : "#ff9900");
+            document.getElementById('pdfAmt').innerText = `${isCredit?'+':'-'} Rs. ${formatNum(t.amount)}`;
+            document.getElementById('pdfAmt').style.color = isCredit ? "#00b300" : "#ff0000";
+
+            document.getElementById('receiptOverlay').classList.add('active');
+        }
+        
+        function closeReceipt() { document.getElementById('receiptOverlay').classList.remove('active'); }
+        function copyTxnId() { navigator.clipboard.writeText(activeReceiptId); showToast("TXN ID Copied!"); }
+        
+        function downloadReceiptPDF() {
+            triggerHaptic();
+            const element = document.getElementById('pdfTemplate');
+            const opt = {
+                margin: 0.5,
+                filename: `Tournyx_Receipt_${activeReceiptId}.pdf`,
+                image: { type: 'jpeg', quality: 1 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+            showToast("Downloading PDF Receipt...");
+        }
+
+        function downloadAllTxnsPDF() {
+            triggerHaptic();
+            showToast("Generating Full Ledger PDF...");
+            let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
+            
+            let content = document.createElement('div');
+            content.style.padding = '40px';
+            content.style.background = '#ffffff';
+            content.style.color = '#000000';
+            content.style.fontFamily = 'Arial, sans-serif';
+            
+            let headerHTML = `
+                <div style="text-align:center; border-bottom:2px solid #eeeeee; padding-bottom:20px; margin-bottom:20px;">
+                    <h1 style="color:#bd00ff; margin:0; text-transform:uppercase;">Tournyx Esports</h1>
+                    <p style="color:#555555; margin:5px 0 0 0; font-size:14px;">Official Transaction Ledger</p>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:30px; background:#f9f9f9; padding:20px; border-radius:8px;">
+                    <div><p style="margin:0 0 5px 0; color:#555555; font-size:12px;">User Name</p><h3 style="margin:0; font-size:18px;">${currentUser.username}</h3></div>
+                    <div style="text-align:right;"><p style="margin:0 0 5px 0; color:#555555; font-size:12px;">Email ID</p><h3 style="margin:0; font-size:18px;">${currentUser.email}</h3></div>
+                </div>
+                <table style="width:100%; border-collapse:collapse; text-align:left; font-size:12px;">
+                    <thead>
+                        <tr style="background:#eeeeee; color:#333;">
+                            <th style="padding:10px;">Date</th>
+                            <th style="padding:10px;">Txn ID</th>
+                            <th style="padding:10px;">Description</th>
+                            <th style="padding:10px;">Status</th>
+                            <th style="padding:10px; text-align:right;">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            txns.forEach(t => {
+                let isCredit = String(t.type).toLowerCase() === "credit";
+                let isFailed = String(t.status).toLowerCase() === "failed" || String(t.status).toLowerCase() === "refunded" || String(t.status).toLowerCase() === "cancelled";
+                let isSuccess = String(t.status).toLowerCase() === "success" || String(t.status).toLowerCase() === "completed";
+                let statusCol = isSuccess ? "#00b300" : (isFailed ? "#ff0000" : "#ff9900");
+                let amtCol = isCredit ? "#00b300" : "#ff0000";
+                
+                headerHTML += `
+                    <tr style="border-bottom:1px solid #eeeeee;">
+                        <td style="padding:10px; color:#555;">${t.date.split(',')[0]}</td>
+                        <td style="padding:10px;">${t.id}</td>
+                        <td style="padding:10px;">${t.title}</td>
+                        <td style="padding:10px; font-weight:bold; color:${statusCol};">${t.status}</td>
+                        <td style="padding:10px; text-align:right; font-weight:bold; color:${amtCol};">${isCredit?'+':'-'} Rs. ${formatNum(t.amount)}</td>
+                    </tr>
+                `;
+            });
+            
+            headerHTML += `</tbody></table><div style="text-align:center; margin-top:40px; color:#999999; font-size:12px;"><p>This is a computer generated ledger and does not require a physical signature.</p></div>`;
+            content.innerHTML = headerHTML;
+            
+            const opt = {
+                margin: 0.5,
+                filename: `Tournyx_Ledger_${currentUser.username}.pdf`,
+                image: { type: 'jpeg', quality: 1 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(content).save();
+        }
+
+        function contactSupportTxn() {
+            triggerHaptic();
+            if(!activeReceiptData) return;
+            let msg = `Hello Tournyx Support, I need help with my recent transaction.%0A%0A*Transaction ID:* ${activeReceiptData.id}%0A*Amount:* Rs. ${activeReceiptData.amount}%0A*Date:* ${activeReceiptData.date}%0A*Status:* ${activeReceiptData.status}%0A*User:* ${currentUser.email}%0A%0APlease assist me with this.`;
+            window.open(`https://wa.me/918608183838?text=${msg}`, '_blank');
         }
     </script>
 </body>
