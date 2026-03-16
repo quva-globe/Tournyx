@@ -534,12 +534,8 @@
                 <div class="dm-tab-content" id="dtTabMatches">
                     <div class="dm-sec-title"><i class="fa-solid fa-key"></i> Room Details</div>
                     
-                    <div style="background: rgba(255,153,0,0.1); border: 1px dashed var(--accent-orange); padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 25px;">
-                        <i class="fa-solid fa-lock" style="font-size: 2rem; color: var(--accent-orange); margin-bottom: 10px;"></i>
-                        <div style="font-family: var(--font-head); font-weight: bold; color: white; margin-bottom: 5px;">ID & Password Locked</div>
-                        <div style="font-size: 0.85rem; color: #ccc;">Details will appear here for registered players 15 minutes before match start time.</div>
-                        <button class="btn-secondary" id="btnCopyRoom" disabled style="margin-top:15px; width:100%; opacity:0.5;"><i class="fa-solid fa-copy"></i> Copy Details</button>
-                    </div>
+                    <div id="roomDetailsArea">
+                        </div>
 
                     <div class="dm-sec-title"><i class="fa-solid fa-sitemap"></i> Match Schedule & Brackets</div>
                     <div style="text-align:center; color:#888; padding:40px;">Brackets have not been generated yet.</div>
@@ -732,6 +728,7 @@
         let activeFeeFilter = 'All';
         let backgroundSyncInterval = null;
         let localTournamentsData = []; 
+        let activeCountdown = null;
 
         function triggerHaptic() {
             if(navigator.vibrate) { navigator.vibrate(40); }
@@ -821,6 +818,99 @@
                 return d.toLocaleString('en-US', { month: 'short', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true });
             } catch(e) { return dateStr; }
         }
+        
+        // --- LIVE 24-HOUR LANDING PAGE TIMER ---
+        function startLandingPageTimers() {
+            setInterval(() => {
+                let now = new Date().getTime();
+                document.querySelectorAll('.tourney-card').forEach(card => {
+                    let dateStr = card.getAttribute('data-date');
+                    if(!dateStr || dateStr === "TBD") return;
+
+                    let targetDate = new Date(dateStr).getTime();
+                    if(isNaN(targetDate)) return;
+
+                    let distance = targetDate - now;
+                    let badge = card.querySelector('.t-timer-badge');
+                    if(!badge) return;
+
+                    if(distance < 0) {
+                        badge.innerHTML = `<i class="fa-solid fa-clock"></i> Closed`;
+                        badge.classList.remove('ending-soon');
+                        return;
+                    }
+
+                    let hours = Math.floor(distance / (1000 * 60 * 60));
+                    if(hours < 24) {
+                        badge.classList.add('ending-soon');
+                        let hrs = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        let mins = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                        let secs = Math.floor((distance % (1000 * 60)) / 1000);
+                        let h = hrs < 10 ? "0" + hrs : hrs;
+                        let m = mins < 10 ? "0" + mins : mins;
+                        let s = secs < 10 ? "0" + secs : secs;
+                        badge.innerHTML = `<i class="fa-regular fa-clock"></i> ${h}:${m}:${s}`;
+                    } else {
+                        let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                        badge.classList.remove('ending-soon');
+                        badge.innerHTML = `<i class="fa-regular fa-clock"></i> Ends in ${days} days`;
+                    }
+                });
+            }, 1000);
+        }
+
+        // --- LIVE MODAL DETAIL COUNTDOWN TIMER ---
+        function updateLiveCountdown(targetDateStr, textElementId, badgeElementId) {
+            if(activeCountdown) clearInterval(activeCountdown);
+            let targetDate = new Date(targetDateStr).getTime();
+            if(isNaN(targetDate)) return;
+
+            activeCountdown = setInterval(() => {
+                let now = new Date().getTime();
+                let distance = targetDate - now;
+
+                let el = document.getElementById(textElementId);
+                let badge = document.getElementById(badgeElementId);
+                let btn = document.getElementById('masterJoinBtn');
+
+                if (distance < 0) {
+                    clearInterval(activeCountdown);
+                    if(el) { el.innerText = "Registration Closed"; el.style.color = "white"; }
+                    if(badge) {
+                        badge.innerText = "CLOSED";
+                        badge.style.color = "#ff4d4d"; 
+                        badge.style.background = "rgba(255,77,77,0.1)"; 
+                        badge.style.borderColor = "#ff4d4d";
+                    }
+                    if(btn && btn.innerText === "Register Now") {
+                        btn.innerHTML = "<i class='fa-solid fa-clock'></i> REGISTRATION CLOSED";
+                        btn.disabled = true;
+                    }
+                    return;
+                }
+
+                let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+
+                let displayStr = "";
+                if(days > 0) {
+                    displayStr = formatDateTime(targetDateStr) + ` (Ends in ${days}d ${hours}h)`;
+                } else {
+                    let h = hours < 10 ? "0" + hours : hours;
+                    let m = minutes < 10 ? "0" + minutes : minutes;
+                    let s = seconds < 10 ? "0" + seconds : seconds;
+                    displayStr = `Closes in: ${h}:${m}:${s}`;
+                }
+
+                if(el) {
+                    el.innerText = displayStr;
+                    if(days === 0) el.style.color = "var(--accent-orange)"; 
+                    else el.style.color = "white";
+                }
+            }, 1000);
+        }
 
         function getPrizeText(val) { let num = parseInt(val); return (isNaN(num) || num <= 0) ? "Glory" : num + " Rs."; }
         function getSmartEntryText(feeRs, feePts) {
@@ -881,6 +971,7 @@
 
             initTabSwitching(); 
             startSilentDataSync(); 
+            startLandingPageTimers(); // Initiate live timer on landing feed
         });
 
         function startSilentDataSync() {
@@ -1004,6 +1095,7 @@
                         card.setAttribute('data-platform', plat); 
                         card.setAttribute('data-fee-rs', rFee);
                         card.setAttribute('data-fee-pts', pFee);
+                        card.setAttribute('data-date', t.date || ""); // Pushed for Landing Page Timer
                         card.setAttribute('onclick', `openTournamentDetails('${encodeURIComponent(JSON.stringify(t))}')`);
 
                         const bg = formatImageUrl(t.banner);
@@ -1116,20 +1208,34 @@
             }
 
             document.getElementById('dtMatchDateRange').innerText = t.match_period || "TBA";
-            document.getElementById('dtRegDateRange').innerText = formatDateTime(t.date);
             
             let isFull = parseInt(t.filled_slots) >= parseInt(t.slots);
             let sLower = (t.status || "Upcoming").toLowerCase();
             let timeData = calculateTimeRemaining(t.date);
             let isRegClosed = timeData.isClosed;
             let isCancelled = sLower.includes("cancel");
+            let isCompleted = sLower.includes('completed') || sLower.includes('past');
+            
+            if(activeCountdown) clearInterval(activeCountdown);
+            if(!isCancelled && !isCompleted && !isFull && !isRegClosed) {
+                updateLiveCountdown(t.date, 'dtRegDateRange', 'dtRegStatus');
+            } else {
+                document.getElementById('dtRegDateRange').innerText = formatDateTime(t.date);
+            }
 
             let regStatus = document.getElementById('dtRegStatus');
             
-            if(isCancelled || sLower.includes('live') || sLower.includes('completed') || isFull || isRegClosed) {
-                regStatus.innerText = "CLOSED"; regStatus.style.color = "#ff4d4d"; regStatus.style.background = "rgba(255,77,77,0.1)"; regStatus.style.borderColor = "#ff4d4d";
+            if(isCancelled || isCompleted || isFull || isRegClosed) {
+                regStatus.innerText = "CLOSED"; 
+                regStatus.style.color = "#ff4d4d"; 
+                regStatus.style.background = "rgba(255,77,77,0.1)"; 
+                regStatus.style.borderColor = "#ff4d4d";
+                document.getElementById('dtRegDateRange').style.color = "white"; 
             } else {
-                regStatus.innerText = "OPEN"; regStatus.style.color = "var(--accent-green)"; regStatus.style.background = "rgba(0,255,127,0.1)"; regStatus.style.borderColor = "var(--accent-green)";
+                regStatus.innerText = sLower.includes("live") ? "LIVE NOW" : "OPEN"; 
+                regStatus.style.color = "var(--accent-green)"; 
+                regStatus.style.background = "rgba(0,255,127,0.1)"; 
+                regStatus.style.borderColor = "var(--accent-green)";
             }
 
             let t_slots = parseInt(t.slots) || 48;
@@ -1139,12 +1245,44 @@
             let btn = document.getElementById('masterJoinBtn');
             let isJoined = userLiveMatches.some(m => m.tournament_title === t.title || m.match_id === (t.id || t.title)); 
             
-            let btnCopy = document.getElementById('btnCopyRoom');
-            if (isJoined && sLower.includes('live')) {
-                btnCopy.disabled = false; btnCopy.style.opacity = 1;
-                btnCopy.onclick = () => { triggerHaptic(); navigator.clipboard.writeText("Will be active 15 mins before match."); showToast("ID/Pass Copied!"); };
+            let roomArea = document.getElementById('roomDetailsArea');
+            if (isJoined) {
+                if (t.room_id && t.room_id.trim() !== "") {
+                    roomArea.innerHTML = `
+                        <div style="background: rgba(0,255,127,0.1); border: 1px solid var(--accent-green); padding: 20px; border-radius: 12px; margin-bottom: 25px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding-bottom:15px; border-bottom:1px solid rgba(0,255,127,0.2);">
+                                <div>
+                                    <div style="font-size:0.75rem; color:#888; text-transform:uppercase; letter-spacing:1px;">Room ID</div>
+                                    <div style="font-family:var(--font-head); font-size:1.3rem; color:white; font-weight:bold; letter-spacing:1px;" id="dispRoomId">${t.room_id}</div>
+                                </div>
+                                <button class="btn-secondary" style="padding:8px 15px; font-size:0.8rem; border-color:var(--accent-green); color:var(--accent-green);" onclick="navigator.clipboard.writeText('${t.room_id}'); showToast('Room ID Copied!'); triggerHaptic();"><i class="fa-solid fa-copy"></i></button>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div>
+                                    <div style="font-size:0.75rem; color:#888; text-transform:uppercase; letter-spacing:1px;">Password</div>
+                                    <div style="font-family:var(--font-head); font-size:1.1rem; color:var(--accent-cyan); font-weight:bold; letter-spacing:1px;" id="dispRoomPass">${t.room_pass || 'No Password Needed'}</div>
+                                </div>
+                                <button class="btn-secondary" style="padding:8px 15px; font-size:0.8rem; border-color:var(--accent-cyan); color:var(--accent-cyan);" onclick="navigator.clipboard.writeText('${t.room_pass || ''}'); showToast('Password Copied!'); triggerHaptic();"><i class="fa-solid fa-copy"></i></button>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    roomArea.innerHTML = `
+                        <div style="background: rgba(0,242,255,0.05); border: 1px dashed var(--accent-cyan); padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 25px;">
+                            <i class="fa-solid fa-clock-rotate-left" style="font-size: 2rem; color: var(--accent-cyan); margin-bottom: 10px;"></i>
+                            <div style="font-family: var(--font-head); font-weight: bold; color: white; margin-bottom: 5px;">Waiting for Organizer</div>
+                            <div style="font-size: 0.85rem; color: #ccc;">You are registered! Room ID and Password will be fetched securely from the server once the organizer provides them.</div>
+                        </div>
+                    `;
+                }
             } else {
-                btnCopy.disabled = true; btnCopy.style.opacity = 0.5;
+                roomArea.innerHTML = `
+                    <div style="background: rgba(255,153,0,0.1); border: 1px dashed var(--accent-orange); padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 25px;">
+                        <i class="fa-solid fa-lock" style="font-size: 2rem; color: var(--accent-orange); margin-bottom: 10px;"></i>
+                        <div style="font-family: var(--font-head); font-weight: bold; color: white; margin-bottom: 5px;">ID & Password Locked</div>
+                        <div style="font-size: 0.85rem; color: #ccc;">Details are only visible to securely registered players. Confirm your slot to get access to the Room.</div>
+                    </div>
+                `;
             }
 
             if(isGuestMode) {
@@ -1160,11 +1298,11 @@
             } else if(isFull) {
                 btn.innerHTML = "<i class='fa-solid fa-users-slash'></i> SLOT FILLED";
                 btn.disabled = true;
+            } else if (isCompleted) {
+                btn.innerText = "COMPLETED";
+                btn.disabled = true;
             } else if (isRegClosed) {
                 btn.innerHTML = "<i class='fa-solid fa-clock'></i> REGISTRATION CLOSED";
-                btn.disabled = true;
-            } else if (sLower.includes("completed") || sLower.includes("live")) {
-                btn.innerText = sLower.includes("completed") ? "COMPLETED" : "MATCH CLOSED";
                 btn.disabled = true;
             } else {
                 btn.innerText = "Register Now";
@@ -1182,7 +1320,11 @@
             document.getElementById('tourneyDetailModal').classList.add('active');
         }
 
-        function closeDetailModal() { triggerHaptic(); document.getElementById('tourneyDetailModal').classList.remove('active'); }
+        function closeDetailModal() { 
+            triggerHaptic(); 
+            if(activeCountdown) clearInterval(activeCountdown);
+            document.getElementById('tourneyDetailModal').classList.remove('active'); 
+        }
 
         function fetchLiveTeams() {
             if(!activeTournament.title) return;
@@ -1194,12 +1336,13 @@
             .then(data => {
                 container.innerHTML = "";
                 let userClans = JSON.parse(localStorage.getItem('tournyx_my_clans_cache')) || [];
-                let userClanNames = userClans.map(c => c.name);
+                let userClanNames = userClans.map(c => String(c.name).toLowerCase().trim());
                 
                 if(data.status === 'success' && data.data.length > 0) {
                     document.getElementById('dtRegistrations').innerText = `${data.data.length}/${activeTournament.slots || 48}`;
                     data.data.forEach(team => {
-                        let isMyClan = userClanNames.includes(team.clan);
+                        let currentTeamStr = String(team.clan).toLowerCase().trim();
+                        let isMyClan = userClanNames.includes(currentTeamStr);
                         let highlightClass = isMyClan ? "my-clan" : "";
                         let clanIcon = isMyClan ? `<i class="fa-solid fa-star" style="color:var(--accent-orange)"></i>` : `<i class="fa-solid fa-shield-halved"></i>`;
                         
@@ -1217,6 +1360,7 @@
             }).catch(() => container.innerHTML = `<div style="text-align:center; color:#ff4d4d; padding:20px;">Failed to load teams.</div>`);
         }
 
+        // --- ADVANCED REGISTRATION OVERLAY (DUPLICATE CLAN CHECK) ---
         function openRegistrationFlow() {
             triggerHaptic();
             if(document.getElementById('masterJoinBtn').disabled) return;
@@ -1227,52 +1371,92 @@
                 return;
             }
             
-            let user = JSON.parse(localStorage.getItem('tournyx_user')) || {};
-            let userClans = JSON.parse(localStorage.getItem('tournyx_my_clans_cache')) || [];
-            
-            let matchingClans = userClans.filter(c => {
-                if(!c.game || !activeTournament.game) return false;
-                let tourneyGame = activeTournament.game.toLowerCase();
-                let clanGame = c.game.toLowerCase();
-                return tourneyGame.includes(clanGame) || clanGame.includes(tourneyGame) || tourneyGame === 'multiple' || tourneyGame === 'esports';
-            });
+            document.getElementById('regOverlay').classList.add('active');
 
             const clanSelectionArea = document.getElementById('clanSelectionArea');
             const btnArea = document.getElementById('regButtonsArea');
             
-            if (userClans.length === 0) {
-                clanSelectionArea.innerHTML = `
-                    <div style="text-align:center; padding: 15px;">
-                        <i class="fa-solid fa-users-slash fa-shake" style="font-size:3.5rem; color:var(--accent-orange); margin-bottom:15px;"></i>
-                        <h3 style="color:white; font-family:var(--font-head); text-transform:uppercase; text-shadow:0 0 10px rgba(255,153,0,0.5);">No Roster Found!</h3>
-                        <p style="color:#ccc; font-size:0.85rem; margin-top:10px; line-height:1.5;">Esports is a team game! You don't have an active clan to represent.</p>
-                        <button type="button" class="btn-primary" style="margin-top:20px; background:var(--accent-orange); box-shadow:0 0 15px rgba(255,153,0,0.4);" onclick="window.location.href='clans.html'"><i class="fa-solid fa-plus"></i> Create / Join a Clan Now</button>
-                    </div>
-                `;
-                btnArea.style.display = 'none';
-            } else {
-                clanSelectionArea.innerHTML = `
-                    <label class="form-label" id="regClanLabel">Select Roster *</label>
-                    <select class="form-select" id="formSelectClan" required>
-                        <option value="" disabled selected>Choose your team...</option>
-                    </select>
-                `;
-                btnArea.style.display = 'flex';
-                
-                const select = document.getElementById('formSelectClan');
-                if (matchingClans.length > 0) {
-                    matchingClans.forEach(c => { select.innerHTML += `<option value="${c.name}">${c.name} (${c.game})</option>`; });
-                    document.getElementById('regClanLabel').innerHTML = `Select ${activeTournament.game} Roster *`;
-                } else {
-                    select.innerHTML += `<option value="${user.username} (Solo Player)">Register as Solo Player</option>`;
-                    document.getElementById('regClanLabel').innerHTML = `No matching clan found. Playing Solo.`;
+            clanSelectionArea.innerHTML = `<div style="text-align:center; padding:20px; color:var(--accent-cyan);"><i class="fa-solid fa-spinner fa-spin" style="font-size:2rem; margin-bottom:10px;"></i><br>Validating Roster...</div>`;
+            btnArea.style.display = 'none';
+
+            let user = JSON.parse(localStorage.getItem('tournyx_user')) || {};
+            
+            // Simultaneously fetch User's Clans AND the Tournament's already registered teams
+            Promise.all([
+                fetch(API_URL + "?action=get_my_clans&username=" + encodeURIComponent(user.username)).then(res => res.json()),
+                fetch(API_URL + "?action=get_tournament_details&match_id=" + encodeURIComponent(activeTournament.id || activeTournament.title)).then(res => res.json())
+            ])
+            .then(([clansData, detailsData]) => {
+                let userClans = [];
+                if(clansData.status === 'success') {
+                    userClans = clansData.data;
+                    localStorage.setItem('tournyx_my_clans_cache', JSON.stringify(clansData.data));
+                }
+
+                let registeredTeams = [];
+                if(detailsData.status === 'success') {
+                    registeredTeams = detailsData.data.map(t => String(t.clan).toLowerCase().trim());
                 }
                 
-                document.getElementById('finalSubmitBtn').innerText = "Proceed";
-                document.getElementById('finalSubmitBtn').disabled = false;
-            }
+                let matchingClans = userClans.filter(c => {
+                    if(!c.game || !activeTournament.game) return true;
+                    let tourneyGame = activeTournament.game.toLowerCase();
+                    let clanGame = c.game.toLowerCase();
+                    return tourneyGame.includes(clanGame) || clanGame.includes(tourneyGame) || tourneyGame.includes('all') || clanGame.includes('all') || tourneyGame === 'multiple' || tourneyGame === 'esports';
+                });
 
-            document.getElementById('regOverlay').classList.add('active');
+                // Filter out any of the user's clans that are ALREADY in the tournament
+                let availableClans = matchingClans.filter(c => !registeredTeams.includes(String(c.name).toLowerCase().trim()));
+                let alreadyRegisteredClans = matchingClans.filter(c => registeredTeams.includes(String(c.name).toLowerCase().trim()));
+
+                if (userClans.length === 0) {
+                    clanSelectionArea.innerHTML = `
+                        <div style="text-align:center; padding: 15px;">
+                            <i class="fa-solid fa-users-slash fa-shake" style="font-size:3.5rem; color:var(--accent-orange); margin-bottom:15px;"></i>
+                            <h3 style="color:white; font-family:var(--font-head); text-transform:uppercase; text-shadow:0 0 10px rgba(255,153,0,0.5);">No Roster Found!</h3>
+                            <p style="color:#ccc; font-size:0.85rem; margin-top:10px; line-height:1.5;">Esports is a team game! You don't have an active clan to represent.</p>
+                            <button type="button" class="btn-primary" style="margin-top:20px; background:var(--accent-orange); box-shadow:0 0 15px rgba(255,153,0,0.4);" onclick="window.location.href='clans.html'"><i class="fa-solid fa-plus"></i> Create / Join a Clan Now</button>
+                        </div>
+                    `;
+                } else if (availableClans.length === 0 && alreadyRegisteredClans.length > 0) {
+                    // Success block: Teammate already registered the clan!
+                    clanSelectionArea.innerHTML = `
+                        <div style="text-align:center; padding: 15px;">
+                            <i class="fa-solid fa-check-double" style="font-size:3.5rem; color:var(--accent-green); margin-bottom:15px;"></i>
+                            <h3 style="color:white; font-family:var(--font-head); text-transform:uppercase; text-shadow:0 0 10px rgba(0,255,127,0.5);">Already Registered!</h3>
+                            <p style="color:#ccc; font-size:0.85rem; margin-top:10px; line-height:1.5;">Your clan has already secured a slot in this tournament. Go to the Matches tab for details!</p>
+                        </div>
+                    `;
+                    let masterBtn = document.getElementById('masterJoinBtn');
+                    masterBtn.innerHTML = "<i class='fa-solid fa-check'></i> ALREADY JOINED";
+                    masterBtn.disabled = true;
+                    btnArea.style.display = 'none';
+                } else {
+                    // Prompt standard registration
+                    clanSelectionArea.innerHTML = `
+                        <label class="form-label" id="regClanLabel">Select Roster *</label>
+                        <select class="form-select" id="formSelectClan" required>
+                            <option value="" disabled selected>Choose your team...</option>
+                        </select>
+                        ${alreadyRegisteredClans.length > 0 ? `<div style="font-size:0.75rem; color:var(--accent-orange); margin-bottom:15px; text-align:center;"><i class="fa-solid fa-circle-info"></i> Some of your clans are already registered and hidden.</div>` : ''}
+                    `;
+                    btnArea.style.display = 'flex';
+                    
+                    const select = document.getElementById('formSelectClan');
+                    if (availableClans.length > 0) {
+                        availableClans.forEach(c => { select.innerHTML += `<option value="${c.name}">${c.name} (${c.game})</option>`; });
+                        document.getElementById('regClanLabel').innerHTML = `Select ${activeTournament.game} Roster *`;
+                    } else {
+                        select.innerHTML += `<option value="${user.username} (Solo Player)">Register as Solo Player</option>`;
+                        document.getElementById('regClanLabel').innerHTML = `No matching clan found. Playing Solo.`;
+                    }
+                    
+                    document.getElementById('finalSubmitBtn').innerText = "Proceed";
+                    document.getElementById('finalSubmitBtn').disabled = false;
+                }
+            }).catch(err => {
+                clanSelectionArea.innerHTML = `<div style="text-align:center; color:#ff4d4d; padding:20px;"><i class="fa-solid fa-triangle-exclamation" style="font-size:2rem; margin-bottom:10px;"></i><br>Network Error. Failed to validate roster.</div>`;
+            });
         }
         
         function closeRegistrationFlow() { triggerHaptic(); document.getElementById('regOverlay').classList.remove('active'); }
@@ -1397,6 +1581,36 @@
                 let dtRegs = document.getElementById('dtRegistrations');
                 if (dtRegs) { dtRegs.innerText = `${newFilled}/${totalSlots}`; }
                 
+                let roomArea = document.getElementById('roomDetailsArea');
+                if (t.room_id && t.room_id.trim() !== "") {
+                    roomArea.innerHTML = `
+                        <div style="background: rgba(0,255,127,0.1); border: 1px solid var(--accent-green); padding: 20px; border-radius: 12px; margin-bottom: 25px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding-bottom:15px; border-bottom:1px solid rgba(0,255,127,0.2);">
+                                <div>
+                                    <div style="font-size:0.75rem; color:#888; text-transform:uppercase; letter-spacing:1px;">Room ID</div>
+                                    <div style="font-family:var(--font-head); font-size:1.3rem; color:white; font-weight:bold; letter-spacing:1px;" id="dispRoomId">${t.room_id}</div>
+                                </div>
+                                <button class="btn-secondary" style="padding:8px 15px; font-size:0.8rem; border-color:var(--accent-green); color:var(--accent-green);" onclick="navigator.clipboard.writeText('${t.room_id}'); showToast('Room ID Copied!'); triggerHaptic();"><i class="fa-solid fa-copy"></i></button>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div>
+                                    <div style="font-size:0.75rem; color:#888; text-transform:uppercase; letter-spacing:1px;">Password</div>
+                                    <div style="font-family:var(--font-head); font-size:1.1rem; color:var(--accent-cyan); font-weight:bold; letter-spacing:1px;" id="dispRoomPass">${t.room_pass || 'No Password Needed'}</div>
+                                </div>
+                                <button class="btn-secondary" style="padding:8px 15px; font-size:0.8rem; border-color:var(--accent-cyan); color:var(--accent-cyan);" onclick="navigator.clipboard.writeText('${t.room_pass || ''}'); showToast('Password Copied!'); triggerHaptic();"><i class="fa-solid fa-copy"></i></button>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    roomArea.innerHTML = `
+                        <div style="background: rgba(0,242,255,0.05); border: 1px dashed var(--accent-cyan); padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 25px;">
+                            <i class="fa-solid fa-clock-rotate-left" style="font-size: 2rem; color: var(--accent-cyan); margin-bottom: 10px;"></i>
+                            <div style="font-family: var(--font-head); font-weight: bold; color: white; margin-bottom: 5px;">Waiting for Organizer</div>
+                            <div style="font-size: 0.85rem; color: #ccc;">You are successfully registered! Room ID and Password will be fetched securely from the server once the organizer provides them.</div>
+                        </div>
+                    `;
+                }
+
                 let cardIdToFind = String(t.id || t.title).trim();
                 document.querySelectorAll('.tourney-card').forEach(card => {
                     let cardId = String(card.getAttribute('data-id')).trim();
