@@ -191,6 +191,17 @@
         .form-control:focus { border-color: var(--accent-cyan); box-shadow: 0 0 15px rgba(0,242,255,0.3), inset 0 0 5px rgba(0,0,0,0.5); }
         select.form-control { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23a0a0b0'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 15px center; background-size: 20px; }
         
+        /* DATE & TIME SPECIFIC STYLES to match tournament.html */
+        input[type="date"].form-control, input[type="time"].form-control {
+            color: white; 
+            padding-right: 15px; 
+        }
+        input[type="date"].form-control::-webkit-calendar-picker-indicator,
+        input[type="time"].form-control::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+
         .form-label { display: block; font-size: 0.85rem; color: #a0a0b0; margin-bottom: 8px; font-weight: bold; font-family: var(--font-head); text-transform: uppercase; letter-spacing: 0.5px;}
         
         .save-btn { width: 100%; padding: 18px; background: var(--accent-gradient); border: none; color: white; font-family: var(--font-head); font-weight: bold; font-size: 1.1rem; border-radius: 12px; cursor: pointer; box-shadow: 0 5px 20px rgba(189,0,255,0.4); text-transform: uppercase; transition: 0.3s; letter-spacing: 1px; will-change: transform; margin-bottom: 15px;}
@@ -704,8 +715,8 @@
                 <input type="text" id="editTourneyTitle" class="form-control" placeholder="Tournament Title *" style="margin-bottom: 20px;">
 
                 <label class="form-label"><i class="fa-solid fa-calendar-days"></i> Timeline</label>
-                <input type="text" id="editTourneyRegTime" class="form-control" placeholder="Registration Deadline *" style="margin-bottom: 15px;">
-                <input type="text" id="editTourneyDate" class="form-control" placeholder="Tournament Dates *" style="margin-bottom: 20px;">
+                <input type="time" id="editTourneyRegTime" class="form-control" style="margin-bottom: 15px;">
+                <input type="date" id="editTourneyDate" class="form-control" style="margin-bottom: 20px;">
 
                 <label class="form-label"><i class="fa-solid fa-users"></i> Participation Format</label>
                 <div style="display: flex; gap: 15px; margin-bottom: 20px;">
@@ -1441,8 +1452,23 @@
                 previewImg.classList.remove('has-image');
             }
 
-            document.getElementById('editTourneyDate').value = t.match_period || t.date || "";
-            document.getElementById('editTourneyRegTime').value = t.reg_time || t.timing || "";
+            // Fix for Native Date & Time Inputs
+            // t.match_period (Date) might be anything, attempt to format it to YYYY-MM-DD
+            let dateVal = t.match_period || t.date || "";
+            let timeVal = t.reg_time || t.timing || "";
+
+            try {
+                if(dateVal && dateVal.includes('/')) {
+                    let parts = dateVal.split('/');
+                    if(parts.length === 3) {
+                        dateVal = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+                    }
+                }
+            } catch(e) {}
+
+            document.getElementById('editTourneyDate').value = dateVal;
+            document.getElementById('editTourneyRegTime').value = timeVal;
+            
             document.getElementById('editTourneySlots').value = t.slots || t.total_slots || "";
             document.getElementById('editTourneyEntry').value = t.entry_fee || t.entry || "0";
             document.getElementById('editTourneyPrize').value = t.prize_pool || t.prize || "0";
@@ -1507,13 +1533,16 @@
             let descVal = document.getElementById('editTourneyDesc').value;
             let formattedDesc = descVal.split('\n').map(line => `<div>${line}</div>`).join('');
 
+            // Format date back if needed, or let backend handle the raw HTML5 date format (YYYY-MM-DD)
+            let rawDate = document.getElementById('editTourneyDate').value;
+            
             const payload = {
                 action: 'edit_tournament',
                 id: document.getElementById('editTourneyId').value,
                 email: userData.email, 
                 title: document.getElementById('editTourneyTitle').value,
                 banner: document.getElementById('editTourneyBannerStr').value,
-                match_period: document.getElementById('editTourneyDate').value,
+                match_period: rawDate,
                 reg_time: document.getElementById('editTourneyRegTime').value,
                 slots: document.getElementById('editTourneySlots').value,
                 entry_fee: document.getElementById('editTourneyEntry').value,
@@ -1553,7 +1582,7 @@
             }).then(() => {
                 showToast("Tournament Deleted!");
                 closeManageModal();
-                btn.innerHTML = "<i class='fa-solid fa-trash-can'></i> Delete Tournament"; 
+                btn.innerHTML = "<i class='fa-solid fa-trash-can'></i> Delete"; 
                 btn.disabled = false;
                 setTimeout(() => { fetchMyTournaments(); }, 1000);
             });
