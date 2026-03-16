@@ -913,14 +913,14 @@
         }
 
         function getPrizeText(val) { let num = parseInt(val); return (isNaN(num) || num <= 0) ? "Glory" : num + " Rs."; }
+        
+        // --- FIXED: Smart Entry text will not auto convert 50 to 2500 anymore ---
         function getSmartEntryText(feeRs, feePts) {
             let r = parseInt(feeRs);
             let p = parseInt(feePts);
             let hasR = !isNaN(r) && r > 0;
             let hasP = !isNaN(p) && p > 0;
             
-            if(!hasP && hasR) { p = r * 50; hasP = true; } 
-
             if(hasR && hasP) return `${r} Rs OR ${p} PTS`;
             if(hasR) return `${r} Rs`;
             if(hasP) return `${p} PTS Only`;
@@ -971,7 +971,7 @@
 
             initTabSwitching(); 
             startSilentDataSync(); 
-            startLandingPageTimers(); // Initiate live timer on landing feed
+            startLandingPageTimers(); 
         });
 
         function startSilentDataSync() {
@@ -1057,7 +1057,7 @@
                         let tIdSafe = String(t.id || t.title).trim();
                         
                         let rFee = parseInt(t.fee) || 0;
-                        let pFee = parseInt(t.fee_pts) || (rFee > 0 ? rFee * 50 : 0);
+                        let pFee = parseInt(t.fee_pts) || 0; // FIXED: no auto convert
                         let plat = t.platform || "Mobile";
                         
                         const totalSlots = parseInt(t.slots) || 48;
@@ -1095,7 +1095,7 @@
                         card.setAttribute('data-platform', plat); 
                         card.setAttribute('data-fee-rs', rFee);
                         card.setAttribute('data-fee-pts', pFee);
-                        card.setAttribute('data-date', t.date || ""); // Pushed for Landing Page Timer
+                        card.setAttribute('data-date', t.date || ""); 
                         card.setAttribute('onclick', `openTournamentDetails('${encodeURIComponent(JSON.stringify(t))}')`);
 
                         const bg = formatImageUrl(t.banner);
@@ -1245,9 +1245,10 @@
             let btn = document.getElementById('masterJoinBtn');
             let isJoined = userLiveMatches.some(m => m.tournament_title === t.title || m.match_id === (t.id || t.title)); 
             
+            // --- FIXED: Room ID fetch error bug natively squashed using String() ---
             let roomArea = document.getElementById('roomDetailsArea');
             if (isJoined) {
-                if (t.room_id && t.room_id.trim() !== "") {
+                if (t.room_id != null && String(t.room_id).trim() !== "") {
                     roomArea.innerHTML = `
                         <div style="background: rgba(0,255,127,0.1); border: 1px solid var(--accent-green); padding: 20px; border-radius: 12px; margin-bottom: 25px;">
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding-bottom:15px; border-bottom:1px solid rgba(0,255,127,0.2);">
@@ -1260,7 +1261,7 @@
                             <div style="display:flex; justify-content:space-between; align-items:center;">
                                 <div>
                                     <div style="font-size:0.75rem; color:#888; text-transform:uppercase; letter-spacing:1px;">Password</div>
-                                    <div style="font-family:var(--font-head); font-size:1.1rem; color:var(--accent-cyan); font-weight:bold; letter-spacing:1px;" id="dispRoomPass">${t.room_pass || 'No Password Needed'}</div>
+                                    <div style="font-family:var(--font-head); font-size:1.1rem; color:var(--accent-cyan); font-weight:bold; letter-spacing:1px;" id="dispRoomPass">${t.room_pass != null ? t.room_pass : 'No Password Needed'}</div>
                                 </div>
                                 <button class="btn-secondary" style="padding:8px 15px; font-size:0.8rem; border-color:var(--accent-cyan); color:var(--accent-cyan);" onclick="navigator.clipboard.writeText('${t.room_pass || ''}'); showToast('Password Copied!'); triggerHaptic();"><i class="fa-solid fa-copy"></i></button>
                             </div>
@@ -1271,7 +1272,7 @@
                         <div style="background: rgba(0,242,255,0.05); border: 1px dashed var(--accent-cyan); padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 25px;">
                             <i class="fa-solid fa-clock-rotate-left" style="font-size: 2rem; color: var(--accent-cyan); margin-bottom: 10px;"></i>
                             <div style="font-family: var(--font-head); font-weight: bold; color: white; margin-bottom: 5px;">Waiting for Organizer</div>
-                            <div style="font-size: 0.85rem; color: #ccc;">You are registered! Room ID and Password will be fetched securely from the server once the organizer provides them.</div>
+                            <div style="font-size: 0.85rem; color: #ccc;">You are successfully registered! Room ID and Password will be fetched securely from the server once the organizer provides them.</div>
                         </div>
                     `;
                 }
@@ -1471,7 +1472,7 @@
 
             const clanName = document.getElementById('formSelectClan').value;
             let rawFeeRupees = parseInt(activeTournament.fee) || 0;
-            let rawFeePts = parseInt(activeTournament.fee_pts) || (rawFeeRupees > 0 ? rawFeeRupees * 50 : 0);
+            let rawFeePts = parseInt(activeTournament.fee_pts) || 0; // FIXED: No auto-conversion
             
             if (rawFeeRupees > 0 || rawFeePts > 0) {
                 closeRegistrationFlow();
@@ -1512,7 +1513,7 @@
             let user = JSON.parse(localStorage.getItem('tournyx_user')) || {};
             
             let rFee = parseInt(t.fee) || 0;
-            let pFee = parseInt(t.fee_pts) || (rFee > 0 ? rFee * 50 : 0);
+            let pFee = parseInt(t.fee_pts) || 0;
             
             let uRupees = parseInt(user.rupees) || 0;
             let uPoints = parseInt(user.points) || 0;
@@ -1530,29 +1531,32 @@
             triggerSecureLoader(pendingRegistrationData.clanName, method==='rupees'?rFee:pFee, method);
         }
 
+        // --- NEW: BLOCKING ATTRACTIVE LOADER ---
         function triggerSecureLoader(clanName, cost, method) {
             document.getElementById('securePaymentLoader').style.display = 'flex';
             let txt = document.getElementById('loaderTxt');
             let bar = document.getElementById('secureLoaderBar');
+            let icon = document.querySelector('#securePaymentLoader .fa-shield-halved');
+            
+            bar.style.width = "0%";
+            bar.style.background = "var(--accent-gradient)";
+            icon.style.color = "var(--accent-cyan)";
+            icon.className = "fa-solid fa-shield-halved fa-beat";
+            txt.innerText = "Establishing secure connection...";
+            txt.style.color = "var(--accent-orange)";
+            
             playSuccessSound(); 
 
             setTimeout(() => { txt.innerText = "Encrypting Data..."; bar.style.width = "40%"; }, 500);
             setTimeout(() => { txt.innerText = "Processing Details..."; bar.style.width = "75%"; }, 1200);
-            setTimeout(() => { txt.innerText = "Validating Slot Availability..."; bar.style.width = "90%"; }, 2000);
+            setTimeout(() => { txt.innerText = "Securing Slot on Server..."; bar.style.width = "90%"; }, 2000);
             setTimeout(() => { 
-                txt.innerText = "Success! Slot Secured!"; 
-                bar.style.width = "100%"; 
-                bar.style.background = "#00ff7f";
-                document.querySelector('.fa-shield-halved').style.color = "#00ff7f";
+                // Actual Network Request Starts Now
+                submitFinalRegistration(clanName, cost, method, bar, txt, icon);
             }, 2800);
-
-            setTimeout(() => {
-                document.getElementById('securePaymentLoader').style.display = 'none';
-                submitFinalRegistration(clanName, cost, method);
-            }, 3500);
         }
 
-        function submitFinalRegistration(clanName, cost, method) {
+        function submitFinalRegistration(clanName, cost, method, bar, txt, icon) {
             const t = activeTournament;
             let user = JSON.parse(localStorage.getItem('tournyx_user'));
 
@@ -1564,69 +1568,93 @@
                     clan: clanName, entry_paid: cost, method: method
                 })
             }).then(() => {
+                
+                // FORCE BACKEND WALLET SYNC (Fixes the balance returning issue)
+                if(cost > 0) {
+                    fetch(API_URL, {
+                        method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'update_profile', email: user.email, rupees: user.rupees, points: user.points })
+                    });
+                }
+                
                 userLiveMatches.push({ tournament_title: t.title, match_id: t.id || t.title });
                 
-                closeRegistrationFlow();
-                showToast(cost > 0 ? "Payment successful! Welcome to the Arena." : "Registration Confirmed! GLHF.");
+                bar.style.width = "100%"; 
+                bar.style.background = "#00ff7f";
+                icon.style.color = "#00ff7f";
+                icon.className = "fa-solid fa-check-circle";
+                txt.innerText = "Success! Slot Secured!"; 
+                txt.style.color = "#00ff7f";
                 
-                let btn = document.getElementById('masterJoinBtn');
-                btn.innerHTML = "<i class='fa-solid fa-check'></i> ALREADY JOINED";
-                btn.disabled = true;
-                
-                let currentFilled = parseInt(t.filled_slots) || 0;
-                let newFilled = currentFilled + 1;
-                let totalSlots = parseInt(t.slots) || 48;
-                t.filled_slots = newFilled; 
-                
-                let dtRegs = document.getElementById('dtRegistrations');
-                if (dtRegs) { dtRegs.innerText = `${newFilled}/${totalSlots}`; }
-                
-                let roomArea = document.getElementById('roomDetailsArea');
-                if (t.room_id && t.room_id.trim() !== "") {
-                    roomArea.innerHTML = `
-                        <div style="background: rgba(0,255,127,0.1); border: 1px solid var(--accent-green); padding: 20px; border-radius: 12px; margin-bottom: 25px;">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding-bottom:15px; border-bottom:1px solid rgba(0,255,127,0.2);">
-                                <div>
-                                    <div style="font-size:0.75rem; color:#888; text-transform:uppercase; letter-spacing:1px;">Room ID</div>
-                                    <div style="font-family:var(--font-head); font-size:1.3rem; color:white; font-weight:bold; letter-spacing:1px;" id="dispRoomId">${t.room_id}</div>
+                setTimeout(() => {
+                    document.getElementById('securePaymentLoader').style.display = 'none';
+                    closeRegistrationFlow();
+                    showToast(cost > 0 ? "Payment successful! Welcome to the Arena." : "Registration Confirmed! GLHF.");
+                    
+                    let btn = document.getElementById('masterJoinBtn');
+                    btn.innerHTML = "<i class='fa-solid fa-check'></i> ALREADY JOINED";
+                    btn.disabled = true;
+                    
+                    let currentFilled = parseInt(t.filled_slots) || 0;
+                    let newFilled = currentFilled + 1;
+                    let totalSlots = parseInt(t.slots) || 48;
+                    t.filled_slots = newFilled; 
+                    
+                    let dtRegs = document.getElementById('dtRegistrations');
+                    if (dtRegs) { dtRegs.innerText = `${newFilled}/${totalSlots}`; }
+                    
+                    let roomArea = document.getElementById('roomDetailsArea');
+                    if (t.room_id != null && String(t.room_id).trim() !== "") {
+                        roomArea.innerHTML = `
+                            <div style="background: rgba(0,255,127,0.1); border: 1px solid var(--accent-green); padding: 20px; border-radius: 12px; margin-bottom: 25px;">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding-bottom:15px; border-bottom:1px solid rgba(0,255,127,0.2);">
+                                    <div>
+                                        <div style="font-size:0.75rem; color:#888; text-transform:uppercase; letter-spacing:1px;">Room ID</div>
+                                        <div style="font-family:var(--font-head); font-size:1.3rem; color:white; font-weight:bold; letter-spacing:1px;" id="dispRoomId">${t.room_id}</div>
+                                    </div>
+                                    <button class="btn-secondary" style="padding:8px 15px; font-size:0.8rem; border-color:var(--accent-green); color:var(--accent-green);" onclick="navigator.clipboard.writeText('${t.room_id}'); showToast('Room ID Copied!'); triggerHaptic();"><i class="fa-solid fa-copy"></i></button>
                                 </div>
-                                <button class="btn-secondary" style="padding:8px 15px; font-size:0.8rem; border-color:var(--accent-green); color:var(--accent-green);" onclick="navigator.clipboard.writeText('${t.room_id}'); showToast('Room ID Copied!'); triggerHaptic();"><i class="fa-solid fa-copy"></i></button>
-                            </div>
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <div>
-                                    <div style="font-size:0.75rem; color:#888; text-transform:uppercase; letter-spacing:1px;">Password</div>
-                                    <div style="font-family:var(--font-head); font-size:1.1rem; color:var(--accent-cyan); font-weight:bold; letter-spacing:1px;" id="dispRoomPass">${t.room_pass || 'No Password Needed'}</div>
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <div>
+                                        <div style="font-size:0.75rem; color:#888; text-transform:uppercase; letter-spacing:1px;">Password</div>
+                                        <div style="font-family:var(--font-head); font-size:1.1rem; color:var(--accent-cyan); font-weight:bold; letter-spacing:1px;" id="dispRoomPass">${t.room_pass != null ? t.room_pass : 'No Password Needed'}</div>
+                                    </div>
+                                    <button class="btn-secondary" style="padding:8px 15px; font-size:0.8rem; border-color:var(--accent-cyan); color:var(--accent-cyan);" onclick="navigator.clipboard.writeText('${t.room_pass || ''}'); showToast('Password Copied!'); triggerHaptic();"><i class="fa-solid fa-copy"></i></button>
                                 </div>
-                                <button class="btn-secondary" style="padding:8px 15px; font-size:0.8rem; border-color:var(--accent-cyan); color:var(--accent-cyan);" onclick="navigator.clipboard.writeText('${t.room_pass || ''}'); showToast('Password Copied!'); triggerHaptic();"><i class="fa-solid fa-copy"></i></button>
                             </div>
-                        </div>
-                    `;
-                } else {
-                    roomArea.innerHTML = `
-                        <div style="background: rgba(0,242,255,0.05); border: 1px dashed var(--accent-cyan); padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 25px;">
-                            <i class="fa-solid fa-clock-rotate-left" style="font-size: 2rem; color: var(--accent-cyan); margin-bottom: 10px;"></i>
-                            <div style="font-family: var(--font-head); font-weight: bold; color: white; margin-bottom: 5px;">Waiting for Organizer</div>
-                            <div style="font-size: 0.85rem; color: #ccc;">You are successfully registered! Room ID and Password will be fetched securely from the server once the organizer provides them.</div>
-                        </div>
-                    `;
-                }
-
-                let cardIdToFind = String(t.id || t.title).trim();
-                document.querySelectorAll('.tourney-card').forEach(card => {
-                    let cardId = String(card.getAttribute('data-id')).trim();
-                    if(cardId === cardIdToFind) {
-                        let tracker = card.querySelector('.slot-text');
-                        let bar = card.querySelector('.progress-bar');
-                        if(tracker) tracker.innerHTML = `<i class="fa-solid fa-users"></i> ${newFilled}/${totalSlots} Slots Filled`;
-                        if(bar) bar.style.width = `${(newFilled/totalSlots)*100}%`;
-                        
-                        if(newFilled >= totalSlots) {
-                            card.classList.add('is-full');
-                            let badge = card.querySelector('.t-status-badge');
-                            if(badge) badge.outerHTML = `<div class="t-status-badge" style="color:#ff4d4d; border-color:#ff4d4d; background:rgba(0,0,0,0.8);"><i class="fa-solid fa-users-slash"></i> SLOT FILLED</div>`;
-                        }
+                        `;
+                    } else {
+                        roomArea.innerHTML = `
+                            <div style="background: rgba(0,242,255,0.05); border: 1px dashed var(--accent-cyan); padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 25px;">
+                                <i class="fa-solid fa-clock-rotate-left" style="font-size: 2rem; color: var(--accent-cyan); margin-bottom: 10px;"></i>
+                                <div style="font-family: var(--font-head); font-weight: bold; color: white; margin-bottom: 5px;">Waiting for Organizer</div>
+                                <div style="font-size: 0.85rem; color: #ccc;">You are successfully registered! Room ID and Password will be fetched securely from the server once the organizer provides them.</div>
+                            </div>
+                        `;
                     }
-                });
+
+                    let cardIdToFind = String(t.id || t.title).trim();
+                    document.querySelectorAll('.tourney-card').forEach(card => {
+                        let cardId = String(card.getAttribute('data-id')).trim();
+                        if(cardId === cardIdToFind) {
+                            let tracker = card.querySelector('.slot-text');
+                            let bar = card.querySelector('.progress-bar');
+                            if(tracker) tracker.innerHTML = `<i class="fa-solid fa-users"></i> ${newFilled}/${totalSlots} Slots Filled`;
+                            if(bar) bar.style.width = `${(newFilled/totalSlots)*100}%`;
+                            
+                            if(newFilled >= totalSlots) {
+                                card.classList.add('is-full');
+                                let badge = card.querySelector('.t-status-badge');
+                                if(badge) badge.outerHTML = `<div class="t-status-badge" style="color:#ff4d4d; border-color:#ff4d4d; background:rgba(0,0,0,0.8);"><i class="fa-solid fa-users-slash"></i> SLOT FILLED</div>`;
+                            }
+                        }
+                    });
+                }, 1500);
+            }).catch(e => {
+                txt.innerText = "Network Error! Try Again.";
+                txt.style.color = "#ff4d4d";
+                bar.style.background = "#ff4d4d";
+                setTimeout(() => { document.getElementById('securePaymentLoader').style.display = 'none'; }, 2000);
             });
         }
 
@@ -1651,6 +1679,13 @@
 
             user.rupees = uRupees - val;
             localStorage.setItem('tournyx_user', JSON.stringify(user));
+            
+            // Force Sync backend
+            fetch(API_URL, {
+                method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'update_profile', email: user.email, rupees: user.rupees, points: user.points })
+            });
+
             document.getElementById('contributeWalletBal').innerText = user.rupees;
             
             showToast("Successfully contributed " + val + " Rs. to " + (activeTournament.title || "the event") + "!");
