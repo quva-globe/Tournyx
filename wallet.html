@@ -101,12 +101,12 @@
         .vip-silver { background: linear-gradient(45deg, #c0c0c0, #e0e0e0); color: black; box-shadow: 0 0 15px rgba(192,192,192,0.5); }
         
         .balance-label { font-size: 0.85rem; color: #ccc; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; display: flex; align-items: center; gap:10px; }
-        /* Overflow FIX via clamp */
-        .balance-amount { font-family: var(--font-head); font-size: clamp(2rem, 8vw, 2.8rem); font-weight: bold; color: white; display: flex; align-items: center; gap: 10px; text-shadow: 0 0 15px rgba(255,255,255,0.4); margin-bottom: 15px; transition: 0.4s; flex-wrap: wrap;}
+        /* Overflow FIX via clamp & word-break */
+        .balance-amount { font-family: var(--font-head); font-size: clamp(1.8rem, 7vw, 2.5rem); line-height: 1.1; font-weight: bold; color: white; display: flex; align-items: center; gap: 10px; text-shadow: 0 0 15px rgba(255,255,255,0.4); margin-bottom: 15px; transition: 0.4s; flex-wrap: wrap; word-break: break-word; overflow-wrap: break-word;}
         .blur-balance { filter: blur(10px); user-select: none; opacity: 0.8; }
 
         .pts-balance { display: flex; align-items: center; justify-content:space-between; gap: 8px; background: rgba(0,0,0,0.5); padding: 8px 15px; border-radius: 12px; border: 1px solid rgba(0,242,255,0.3); width: 100%; transition: 0.3s; box-shadow: inset 0 0 10px rgba(0,242,255,0.1); }
-        .pts-balance span { font-family: var(--font-head); font-size: clamp(0.9rem, 4vw, 1rem); font-weight: bold; color: var(--accent-cyan); }
+        .pts-balance span { font-family: var(--font-head); font-size: clamp(0.85rem, 4vw, 1rem); font-weight: bold; color: var(--accent-cyan); word-break: break-word;}
         .vip-progress-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 5px; margin-top: 15px; overflow:hidden;}
         .vip-progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent-orange), #FFD700); box-shadow: 0 0 10px var(--accent-orange); transition: 1s ease;}
 
@@ -115,7 +115,7 @@
         .action-btn { background: var(--secondary-bg); border: 1px solid var(--card-border); border-radius: 15px; padding: 18px 5px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.4); text-decoration: none; color: white; }
         .action-btn:active { transform: scale(0.95); }
         .action-btn i { font-size: 1.6rem; }
-        .action-btn span { font-family: var(--font-head); font-size: 0.8rem; font-weight: bold; text-transform: uppercase; }
+        .action-btn span { font-family: var(--font-head); font-size: clamp(0.65rem, 2.5vw, 0.8rem); text-align: center; font-weight: bold; text-transform: uppercase; }
         .btn-add { border-color: var(--accent-purple); } .btn-add i { color: var(--accent-purple); text-shadow: 0 0 15px rgba(189,0,255,0.5); } .btn-add:hover { background: rgba(189,0,255,0.1); }
         .btn-withdraw { border-color: var(--accent-orange); } .btn-withdraw i { color: var(--accent-orange); text-shadow: 0 0 15px rgba(255,153,0,0.5); } .btn-withdraw:hover { background: rgba(255,153,0,0.1); }
         .btn-redeem { border-color: var(--accent-cyan); } .btn-redeem i { color: var(--accent-cyan); text-shadow: 0 0 15px rgba(0,242,255,0.5); } .btn-redeem:hover { background: rgba(0,242,255,0.1); }
@@ -131,14 +131,14 @@
         .txn-list { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 15px; padding: 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
         .txn-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.3s; animation: slideInUp 0.4s ease both;}
         .txn-item:active { background: rgba(255,255,255,0.05); border-color: var(--accent-cyan); transform: scale(0.98); }
-        .txn-left { display: flex; align-items: center; gap: 15px; min-width:0; }
+        .txn-left { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1; }
         .txn-icon { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink:0;}
         .icon-credit { background: rgba(0,255,127,0.1); color: var(--accent-green); border: 1px solid rgba(0,255,127,0.3); }
         .icon-debit { background: rgba(255,77,77,0.1); color: var(--accent-red); border: 1px solid rgba(255,77,77,0.3); }
-        .txn-info h4 { font-family: var(--font-head); font-size: 1rem; color: white; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
+        .txn-info h4 { font-family: var(--font-head); font-size: 1rem; color: white; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
         .txn-info p { font-size: 0.75rem; color: #888; display:flex; gap:5px; align-items:center;}
         .cat-tag { font-size: 0.6rem; padding: 2px 6px; border-radius: 5px; background:rgba(255,255,255,0.1); text-transform:uppercase;}
-        .txn-right { text-align: right; flex-shrink:0; display:flex; flex-direction:column; align-items:flex-end;}
+        .txn-right { text-align: right; flex-shrink:0; display:flex; flex-direction:column; align-items:flex-end; max-width: 45%; }
         .in-out-label { font-size: 0.65rem; text-transform: uppercase; font-family: var(--font-head); font-weight: bold; padding: 2px 6px; border-radius: 4px; margin-bottom: 3px; letter-spacing: 1px; }
         .in-label { background: rgba(0,255,127,0.15); color: var(--accent-green); border: 1px solid rgba(0,255,127,0.3); }
         .out-label { background: rgba(255,77,77,0.15); color: var(--accent-red); border: 1px solid rgba(255,77,77,0.3); }
@@ -199,7 +199,7 @@
         /* RECEIPT MODAL */
         #receiptContent { background: var(--secondary-bg); border-radius: 15px; padding: 20px; margin-bottom: 15px;}
         .rcpt-icon { width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin: 0 auto 15px; }
-        .rcpt-amt { text-align: center; font-family: var(--font-head); font-size: 2.5rem; font-weight: bold; margin-bottom: 5px; }
+        .rcpt-amt { text-align: center; font-family: var(--font-head); font-size: clamp(1.5rem, 6vw, 2.5rem); font-weight: bold; margin-bottom: 5px; word-break: break-word; }
         .rcpt-title { text-align: center; color: #888; font-size: 1rem; margin-bottom: 30px; }
         .rcpt-row { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px dashed rgba(255,255,255,0.1); font-size: 0.95rem; }
 
@@ -408,7 +408,7 @@
 
             <div style="display:flex; gap:10px; margin-top:10px;">
                 <button class="pay-btn" style="flex:1; background:transparent; border:1px solid var(--accent-cyan); color:var(--accent-cyan); box-shadow:none; font-size:0.9rem;" onclick="downloadReceiptPDF()"><i class="fa-solid fa-download"></i> PDF</button>
-                <button class="pay-btn" style="flex:1; background:var(--accent-green); color:black; border:none; box-shadow:0 5px 20px rgba(0,255,127,0.3); font-size:0.9rem;" id="supportBtn" onclick="contactSupportTxn()"><i class="fa-brands fa-whatsapp"></i> Support</button>
+                <button class="pay-btn" style="flex:1; background:var(--accent-green); color:black; border:none; box-shadow:0 5px 20px rgba(0,255,127,0.3); font-size:0.9rem;" id="supportBtn" onclick="contactSupportTxn()"><i class="brands fa-whatsapp"></i> Support</button>
             </div>
         </div>
     </div>
@@ -747,10 +747,10 @@
             let mainIcon = isCredit ? "fa-arrow-down" : "fa-arrow-up";
             
             let titleLower = String(t.title || "").toLowerCase();
-            if(titleLower.includes('tournament') || titleLower.includes('entry')) { cat = "Entry Fee"; catIcon = "fa-gamepad"; iconClass = "icon-entry"; mainIcon = "fa-gamepad"; }
-            if(titleLower.includes('prize') || titleLower.includes('won')) { cat = "Prize Won"; catIcon = "fa-trophy"; iconClass = "icon-prize"; mainIcon = "fa-trophy"; }
+            if(titleLower.includes('tournament') || titleLower.includes('entry') || titleLower.includes('joined')) { cat = "Entry Fee"; catIcon = "fa-gamepad"; iconClass = "icon-debit"; mainIcon = "fa-gamepad"; }
+            if(titleLower.includes('prize') || titleLower.includes('won')) { cat = "Prize Won"; catIcon = "fa-trophy"; iconClass = "icon-credit"; mainIcon = "fa-trophy"; }
             if(titleLower.includes('deposit') || titleLower.includes('top-up')) { cat = "Deposit"; catIcon = "fa-wallet"; }
-            if(titleLower.includes('bonus')) { cat = "Bonus"; catIcon = "fa-bolt"; iconClass = "icon-bonus"; mainIcon = "fa-bolt"; }
+            if(titleLower.includes('bonus')) { cat = "Bonus"; catIcon = "fa-bolt"; iconClass = "icon-credit"; mainIcon = "fa-bolt"; }
             if(titleLower.includes('withdraw')) { cat = "Payout"; catIcon = "fa-money-bill-transfer"; }
             
             if(isPending) { iconClass = "icon-debit"; mainIcon = "fa-clock"; }
