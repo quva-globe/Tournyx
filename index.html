@@ -2,43 +2,59 @@
 <html lang="en">
 <head>
     <link rel="icon" href="https://tournyx.in/favicon.ico" sizes="48x48">
-<link rel="icon" href="https://tournyx.in/favicon.png" type="image/png" sizes="192x192">
-<link rel="apple-touch-icon" href="https://tournyx.in/apple-touch-icon.png">
+    <link rel="icon" href="https://tournyx.in/favicon.png" type="image/png" sizes="192x192">
+    <link rel="apple-touch-icon" href="https://tournyx.in/apple-touch-icon.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Tournyx - Play Premium Esports Tournaments</title>
-<meta name="description" content="Welcome to Tournyx Esports. India's top platform for BGMI, Free Fire, and CODM tournaments. Register now and win cash prizes daily.">
-
     
+    <title>Tournyx - Play Premium Esports Tournaments</title>
+    <meta name="description" content="Welcome to Tournyx Esports. India's top platform for BGMI, Free Fire, and CODM tournaments. Register now and win cash prizes daily.">
+    <meta name="keywords" content="Esports, Tournaments, BGMI, Free Fire, Gaming, Tournyx, Play and Earn, Esports India">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Tournyx">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://tournyx.in/">
+    <meta property="og:title" content="Tournyx - Play Premium Esports Tournaments">
+    <meta property="og:description" content="Join India's top esports platform. Compete in BGMI, Free Fire, and CODM to win daily cash prizes.">
+    <meta property="og:image" content="https://tournyx.in/favicon.png">
+    
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://tournyx.in/">
+    <meta property="twitter:title" content="Tournyx - Play Premium Esports Tournaments">
+    <meta property="twitter:description" content="Join India's top esports platform. Compete in BGMI, Free Fire, and CODM to win daily cash prizes.">
+    <meta property="twitter:image" content="https://tournyx.in/favicon.png">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <script type="application/ld+json">
     {
-      "@type": "WebSite",
-      "name": "Tournyx",
-      "alternateName": ["Tournyx Esports", "Tournyx India", "Tournyx Gaming"],
-      "url": "https://tournyx.in/",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://tournyx.in/explore.html?q={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
-    },
-    {
-      "@type": "Organization",
-      "name": "Tournyx Esports",
-      "url": "https://tournyx.in/",
-      "logo": "https://tournyx.in/favicon.png",
-      "description": "India's Premium Skill-Based Esports Tournament Platform for BGMI and Free Fire."
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "name": "Tournyx",
+          "alternateName": ["Tournyx Esports", "Tournyx India", "Tournyx Gaming"],
+          "url": "https://tournyx.in/",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://tournyx.in/explore.html?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "Organization",
+          "name": "Tournyx Esports",
+          "url": "https://tournyx.in/",
+          "logo": "https://tournyx.in/favicon.png",
+          "description": "India's Premium Skill-Based Esports Tournament Platform for BGMI and Free Fire."
+        }
+      ]
     }
-  ]
-}
-</script>
+    </script>
 
     <script>
             (function() {
@@ -58,7 +74,7 @@
                     console.log("Theme setting bypassed - strict browser settings.");
                 }
             })();
-        </script>
+    </script>
     <style>
         /* --- GLOBAL VARIABLES --- */
         :root {
@@ -93,7 +109,7 @@
         }
 
         /* --- RESPONSIVE WRAPPERS --- */
-        .hero, .role-cards, .stats-area, .section-pad, .pay-section, .app-footer {
+        .hero, .role-cards, .stats-area, .section-pad, .pay-section, .app-footer, .next-match-card {
             max-width: 1000px; margin-left: auto !important; margin-right: auto !important; width: 100%;
         }
 
@@ -143,24 +159,24 @@
         .app-logo { width: 30px; height: 30px; border-radius: 50%; object-fit: contain; box-shadow: 0 0 15px var(--accent-purple); }
         .app-title { font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        /* --- NEW DESKTOP NAV MENU --- */
-        .desktop-nav { display: none; align-items: center; gap: 25px; }
+        /* --- DESKTOP NAV --- */
+        .desktop-nav { display: none; align-items: center; gap: 20px; }
         .desktop-nav a { color: var(--text-muted); text-decoration: none; font-family: var(--font-head); font-size: 0.95rem; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: 1px;}
         .desktop-nav a:hover, .desktop-nav a.active { color: var(--accent-cyan); text-shadow: 0 0 10px rgba(0,242,255,0.4); }
         
-        /* --- DESKTOP NOTIFICATION ICON --- */
-        .desktop-noti { display: none; color: white; font-size: 1.3rem; transition: 0.3s; margin-right: 15px; text-decoration: none; }
-        .desktop-noti:hover { color: var(--accent-cyan); text-shadow: 0 0 10px var(--accent-cyan); transform: scale(1.1); }
-        
+        /* DESKTOP HEADER ICONS (Notification + Create + Wallet) */
+        .desktop-icon-btn { display: none; color: white; font-size: 1.1rem; transition: 0.3s; text-decoration: none; align-items: center; justify-content: center; width: 35px; height: 35px; border-radius: 50%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
+        .desktop-icon-btn:hover { color: var(--accent-cyan); border-color: var(--accent-cyan); background: rgba(0,242,255,0.1); transform: scale(1.05); box-shadow: 0 0 10px rgba(0,242,255,0.3); }
+
         @media (min-width: 850px) { 
             .desktop-nav { display: flex; } 
-            .desktop-noti { display: block; }
+            .desktop-icon-btn { display: flex; }
         }
 
-        .header-right { display: flex; align-items: center; gap: 12px; }
-        .header-balance { background: linear-gradient(90deg, #ff9900, #ff5e00); padding: 6px 14px; border-radius: 20px; display: flex; align-items: center; gap: 6px; font-family: var(--font-head); font-size: 0.95rem; font-weight: bold; color: #ffffff; text-decoration: none; transition: 0.3s; box-shadow: 0 2px 15px rgba(255, 153, 0, 0.5); will-change: transform;}
+        .header-right { display: flex; align-items: center; gap: 10px; }
+        .header-balance { background: linear-gradient(90deg, #ff9900, #ff5e00); padding: 6px 14px; border-radius: 20px; display: flex; align-items: center; gap: 6px; font-family: var(--font-head); font-size: 0.95rem; font-weight: bold; color: #ffffff; text-decoration: none; transition: 0.3s; box-shadow: 0 2px 15px rgba(255, 153, 0, 0.5); will-change: transform; flex-shrink: 0;}
         .header-balance:hover { box-shadow: 0 4px 20px rgba(255, 153, 0, 0.8); transform: scale(1.05); }
-        .menu-btn { font-size: 1.4rem; color: white; cursor: pointer; transition: 0.3s; padding: 5px; }
+        .menu-btn { font-size: 1.4rem; color: white; cursor: pointer; transition: 0.3s; padding: 5px; flex-shrink: 0;}
         .menu-btn:active { color: var(--accent-cyan); text-shadow: 0 0 15px var(--accent-cyan); transform: scale(0.9); }
 
         /* --- NOTIFICATION SLIDER --- */
@@ -197,8 +213,8 @@
         .menu-links a:hover i { color: var(--accent-cyan); text-shadow: 0 0 10px var(--accent-cyan); }
         .logout-link { margin-top: 10px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); color: #ff4d4d !important; }
 
-        /* --- DYNAMIC NEXT MATCH WIDGET --- */
-        .next-match-card { margin: 15px auto 0; max-width: 1000px; background: linear-gradient(135deg, rgba(0, 242, 255, 0.1), rgba(189, 0, 255, 0.15)); border: 1px solid var(--accent-purple); border-radius: 16px; padding: 15px; position: relative; overflow: hidden; display: none; box-shadow: 0 5px 20px rgba(189,0,255,0.2); animation: borderGlow 3s infinite alternate; transform: translateZ(0);}
+        /* --- DYNAMIC NEXT MATCH WIDGET (MOVED ABOVE HERO) --- */
+        .next-match-card { margin: 15px auto; background: linear-gradient(135deg, rgba(0, 242, 255, 0.1), rgba(189, 0, 255, 0.15)); border: 1px solid var(--accent-purple); border-radius: 16px; padding: 15px; position: relative; overflow: hidden; display: none; box-shadow: 0 5px 20px rgba(189,0,255,0.2); animation: borderGlow 3s infinite alternate; transform: translateZ(0);}
         @keyframes borderGlow { from{border-color:var(--accent-purple); box-shadow: 0 5px 15px rgba(189,0,255,0.1);} to{border-color:var(--accent-cyan); box-shadow: 0 5px 15px rgba(0,242,255,0.2);} }
         .nm-label { font-size: 0.75rem; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; font-weight: bold; display:flex; align-items:center; gap:5px;}
         .nm-title { font-family: var(--font-head); font-size: 1.1rem; margin-bottom: 5px; color: white; text-shadow: 0 0 10px rgba(255,255,255,0.3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%;}
@@ -206,21 +222,8 @@
         .nm-btn { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: var(--accent-gradient); color: white; padding: 8px 15px; border-radius: 20px; font-weight: bold; font-family: var(--font-head); font-size: 0.8rem; cursor:pointer; text-decoration: none; box-shadow: 0 0 15px rgba(189,0,255,0.5); transition: 0.3s; border: none; }
         .nm-btn:hover { box-shadow: 0 0 25px rgba(0,242,255,0.7); transform: translateY(-50%) scale(1.05); }
 
-        /* --- LIVE TOURNAMENTS SLIDER (NEW) --- */
-        .live-tourney-slider { display: flex; gap: 15px; overflow-x: auto; padding: 10px 5px 20px; scroll-snap-type: x mandatory; scrollbar-width: none; }
-        .live-tourney-slider::-webkit-scrollbar { display: none; }
-        .live-card { flex: 0 0 85%; scroll-snap-align: center; background: linear-gradient(145deg, rgba(0,255,127,0.1), rgba(0,0,0,0.8)); border: 1px solid rgba(0,255,127,0.4); border-radius: 15px; padding: 15px; display: flex; align-items: center; gap: 15px; box-shadow: 0 5px 20px rgba(0,255,127,0.15); text-decoration: none; transition: 0.3s;}
-        @media(min-width:768px){ .live-card { flex: 0 0 350px; } }
-        .live-card:active { transform: scale(0.98); box-shadow: 0 5px 25px rgba(0,255,127,0.3); }
-        .live-img { width: 70px; height: 70px; border-radius: 10px; object-fit: cover; border: 1px solid var(--accent-green); flex-shrink: 0;}
-        .live-info { flex: 1; overflow: hidden; }
-        .live-badge { display: inline-block; background: rgba(0,255,127,0.2); color: var(--accent-green); font-size: 0.65rem; font-family: var(--font-head); font-weight: bold; padding: 3px 8px; border-radius: 10px; margin-bottom: 5px; animation: blink 1.5s infinite alternate;}
-        .live-title { font-family: var(--font-head); font-size: 1rem; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px;}
-        .live-prize { font-size: 0.85rem; color: #a0a0b0; font-weight: bold; }
-        .live-prize span { color: var(--accent-orange); }
-
         /* --- HERO --- */
-        .hero { text-align: center; padding: 25px 15px 15px; position: relative; z-index: 2; }
+        .hero { text-align: center; padding: 15px 15px 10px; position: relative; z-index: 2; margin-top: 5px;}
         .hero h1 { font-family: var(--font-head); font-size: 2rem; line-height: 1.3; margin-bottom: 15px; }
         
         .gradient-text { 
@@ -233,6 +236,19 @@
         .typing-container { color: #ffffff; font-size: 1.05rem; max-width: 500px; margin: 0 auto; line-height: 1.4; height: 25px; font-weight: 700; text-shadow: 0 0 10px rgba(255,255,255,0.5); letter-spacing: 0.5px;}
         .typing-text::after { content: '|'; animation: cursorBlink 1s infinite; color: var(--accent-cyan); text-shadow: 0 0 15px var(--accent-cyan); }
         @keyframes cursorBlink { 50% { opacity: 0; } }
+
+        /* --- LIVE TOURNAMENTS SLIDER (MOVED BELOW HERO) --- */
+        .live-tourney-slider { display: flex; gap: 15px; overflow-x: auto; padding: 10px 5px 20px; scroll-snap-type: x mandatory; scrollbar-width: none; margin-top: 10px;}
+        .live-tourney-slider::-webkit-scrollbar { display: none; }
+        .live-card { flex: 0 0 85%; scroll-snap-align: center; background: linear-gradient(145deg, rgba(0,255,127,0.1), rgba(0,0,0,0.8)); border: 1px solid rgba(0,255,127,0.4); border-radius: 15px; padding: 15px; display: flex; align-items: center; gap: 15px; box-shadow: 0 5px 20px rgba(0,255,127,0.15); text-decoration: none; transition: 0.3s;}
+        @media(min-width:768px){ .live-card { flex: 0 0 350px; } }
+        .live-card:active { transform: scale(0.98); box-shadow: 0 5px 25px rgba(0,255,127,0.3); }
+        .live-img { width: 70px; height: 70px; border-radius: 10px; object-fit: cover; border: 1px solid var(--accent-green); flex-shrink: 0;}
+        .live-info { flex: 1; overflow: hidden; }
+        .live-badge { display: inline-block; background: rgba(0,255,127,0.2); color: var(--accent-green); font-size: 0.65rem; font-family: var(--font-head); font-weight: bold; padding: 3px 8px; border-radius: 10px; margin-bottom: 5px; animation: blink 1.5s infinite alternate;}
+        .live-title { font-family: var(--font-head); font-size: 1rem; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px;}
+        .live-prize { font-size: 0.85rem; color: #a0a0b0; font-weight: bold; }
+        .live-prize span { color: var(--accent-orange); }
 
         /* --- ROLE CARDS --- */
         .role-cards { padding: 15px; display: flex; flex-direction: column; gap: 20px; position: relative; z-index: 2; margin-bottom: 15px;}
@@ -458,11 +474,12 @@
                 <a href="explore.html"><i class="fa-solid fa-compass"></i> Explore</a>
                 <a href="matches.html"><i class="fa-solid fa-trophy"></i> Matches</a>
                 <a href="clans.html"><i class="fa-solid fa-shield-halved"></i> Clan</a>
-                <a href="tournament.html" style="color:var(--accent-cyan);"><i class="fa-solid fa-plus"></i> Create</a>
             </nav>
 
-            <div class="header-right">
-                <a href="notifications.html" class="desktop-noti" title="Notifications"><i class="fa-regular fa-bell"></i></a>
+            <div class="header-right" style="gap: 15px;">
+                <a href="tournament.html" class="desktop-icon-btn" title="Create Tournament"><i class="fa-solid fa-plus"></i></a>
+                <a href="notifications.html" class="desktop-icon-btn" title="Notifications"><i class="fa-regular fa-bell"></i></a>
+                
                 <a href="wallet.html" class="header-balance">
                     <i class="fa-solid fa-wallet"></i> <span id="homeWalletBalance">0</span>
                 </a>
@@ -517,6 +534,11 @@
         <button class="nm-btn" id="nmBtn">VIEW DETAILS</button>
     </div>
 
+    <section class="hero fade-up delay-1">
+        <h1 id="heroTitle">Own the Arena<br><span class="gradient-text">Power Your Play 🏆</span></h1>
+        <div class="typing-container"><span class="typing-text" id="typingText"></span></div>
+    </section>
+
     <section class="section-pad fade-up visible" id="liveSectionContainer" style="display:none; padding-bottom: 20px;">
         <div class="slider-header" style="margin-bottom:10px;">
             <h2 class="section-title" style="margin:0; text-align:left; font-size:1.3rem; color:var(--accent-green); text-shadow:0 0 15px rgba(0,255,127,0.4);"><i class="fa-solid fa-satellite-dish fa-fade"></i> Live Now</h2>
@@ -524,11 +546,6 @@
         </div>
         <div class="live-tourney-slider" id="liveTourneySlider">
             </div>
-    </section>
-
-    <section class="hero fade-up delay-1">
-        <h1 id="heroTitle">Own the Arena<br><span class="gradient-text">Power Your Play 🏆</span></h1>
-        <div class="typing-container"><span class="typing-text" id="typingText"></span></div>
     </section>
 
     <section class="role-cards glow-section fade-up delay-1">
@@ -917,7 +934,7 @@
             try {
                 const d = new Date(dateStr);
                 if (isNaN(d.getTime())) return dateStr; 
-                return d.toLocaleString('en-US', { month: 'short', day: '2-digit', hour: 'numeric', minute: '2-digit', hour12: true });
+                return d.toLocaleString('en-US', { month: 'short', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true });
             } catch(e) { return dateStr; }
         }
 
@@ -948,9 +965,11 @@
                     
                     let rawDate = next.match_period || next.date;
                     let displayDate = rawDate;
-                    if (rawDate && (rawDate.includes('T') || rawDate.includes('-'))) {
+                    if (rawDate) {
                         let fDate = formatDateTime(rawDate);
-                        if (fDate !== "TBA" && fDate !== "TBD") displayDate = fDate;
+                        if (fDate !== "TBA" && fDate !== "TBD" && fDate !== rawDate) {
+                            displayDate = fDate;
+                        }
                     }
 
                     document.getElementById('nmDate').innerHTML = `<span style="color:${sColor}; font-weight:bold; font-family:var(--font-head);"><i class="fa-solid fa-satellite-dish fa-fade"></i> ${next.status.toUpperCase()}</span> • ${displayDate}`;
