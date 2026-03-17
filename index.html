@@ -147,7 +147,15 @@
         .desktop-nav { display: none; align-items: center; gap: 25px; }
         .desktop-nav a { color: var(--text-muted); text-decoration: none; font-family: var(--font-head); font-size: 0.95rem; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: 1px;}
         .desktop-nav a:hover, .desktop-nav a.active { color: var(--accent-cyan); text-shadow: 0 0 10px rgba(0,242,255,0.4); }
-        @media (min-width: 850px) { .desktop-nav { display: flex; } }
+        
+        /* --- DESKTOP NOTIFICATION ICON --- */
+        .desktop-noti { display: none; color: white; font-size: 1.3rem; transition: 0.3s; margin-right: 15px; text-decoration: none; }
+        .desktop-noti:hover { color: var(--accent-cyan); text-shadow: 0 0 10px var(--accent-cyan); transform: scale(1.1); }
+        
+        @media (min-width: 850px) { 
+            .desktop-nav { display: flex; } 
+            .desktop-noti { display: block; }
+        }
 
         .header-right { display: flex; align-items: center; gap: 12px; }
         .header-balance { background: linear-gradient(90deg, #ff9900, #ff5e00); padding: 6px 14px; border-radius: 20px; display: flex; align-items: center; gap: 6px; font-family: var(--font-head); font-size: 0.95rem; font-weight: bold; color: #ffffff; text-decoration: none; transition: 0.3s; box-shadow: 0 2px 15px rgba(255, 153, 0, 0.5); will-change: transform;}
@@ -454,6 +462,7 @@
             </nav>
 
             <div class="header-right">
+                <a href="notifications.html" class="desktop-noti" title="Notifications"><i class="fa-regular fa-bell"></i></a>
                 <a href="wallet.html" class="header-balance">
                     <i class="fa-solid fa-wallet"></i> <span id="homeWalletBalance">0</span>
                 </a>
@@ -501,25 +510,25 @@
         </div>
     </div>
 
-    <section class="hero fade-up">
-        <h1 id="heroTitle">Own the Arena<br><span class="gradient-text">Power Your Play 🏆</span></h1>
-        <div class="typing-container"><span class="typing-text" id="typingText"></span></div>
-    </section>
-
-    <div class="next-match-card fade-up" id="nextMatchWidget">
+    <div class="next-match-card fade-up visible" id="nextMatchWidget">
         <div class="nm-label"><i class="fa-solid fa-bolt"></i> Your Next Match</div>
         <div class="nm-title" id="nmTitle">Loading...</div>
         <div class="nm-time" id="nmDate">--</div>
         <button class="nm-btn" id="nmBtn">VIEW DETAILS</button>
     </div>
 
-    <section class="section-pad fade-up" id="liveSectionContainer" style="display:none; padding-bottom: 20px;">
+    <section class="section-pad fade-up visible" id="liveSectionContainer" style="display:none; padding-bottom: 20px;">
         <div class="slider-header" style="margin-bottom:10px;">
             <h2 class="section-title" style="margin:0; text-align:left; font-size:1.3rem; color:var(--accent-green); text-shadow:0 0 15px rgba(0,255,127,0.4);"><i class="fa-solid fa-satellite-dish fa-fade"></i> Live Now</h2>
             <a href="explore.html" class="view-all" style="color:var(--accent-green); border-color:var(--accent-green);">View All</a>
         </div>
         <div class="live-tourney-slider" id="liveTourneySlider">
             </div>
+    </section>
+
+    <section class="hero fade-up delay-1">
+        <h1 id="heroTitle">Own the Arena<br><span class="gradient-text">Power Your Play 🏆</span></h1>
+        <div class="typing-container"><span class="typing-text" id="typingText"></span></div>
     </section>
 
     <section class="role-cards glow-section fade-up delay-1">
@@ -903,6 +912,15 @@
         }
 
         // --- 4. LIVE NEXT MATCH FETCHING ---
+        function formatDateTime(dateStr) {
+            if (!dateStr || dateStr === "TBD") return "TBA";
+            try {
+                const d = new Date(dateStr);
+                if (isNaN(d.getTime())) return dateStr; 
+                return d.toLocaleString('en-US', { month: 'short', day: '2-digit', hour: 'numeric', minute: '2-digit', hour12: true });
+            } catch(e) { return dateStr; }
+        }
+
         async function fetchNextMatch(user) {
             try {
                 const [tRes, mRes] = await Promise.all([
@@ -927,7 +945,15 @@
                     document.getElementById('nmTitle').innerText = next.title;
                     
                     let sColor = next.status.toLowerCase().includes('live') ? 'var(--accent-green)' : 'var(--accent-cyan)';
-                    document.getElementById('nmDate').innerHTML = `<span style="color:${sColor}; font-weight:bold; font-family:var(--font-head);"><i class="fa-solid fa-satellite-dish fa-fade"></i> ${next.status.toUpperCase()}</span> • ${next.match_period || next.date}`;
+                    
+                    let rawDate = next.match_period || next.date;
+                    let displayDate = rawDate;
+                    if (rawDate && (rawDate.includes('T') || rawDate.includes('-'))) {
+                        let fDate = formatDateTime(rawDate);
+                        if (fDate !== "TBA" && fDate !== "TBD") displayDate = fDate;
+                    }
+
+                    document.getElementById('nmDate').innerHTML = `<span style="color:${sColor}; font-weight:bold; font-family:var(--font-head);"><i class="fa-solid fa-satellite-dish fa-fade"></i> ${next.status.toUpperCase()}</span> • ${displayDate}`;
                     
                     document.getElementById('nmBtn').onclick = () => window.location.href = `explore.html?tournament=${next.id}`;
                     widget.style.display = 'block';
@@ -960,15 +986,6 @@
             if (hours < 24) return { text: `Ends in ${hours}h`, isClosed: false };
             let days = Math.floor(hours / 24);
             return { text: `Ends in ${days}d`, isClosed: false };
-        }
-
-        function formatDateTime(dateStr) {
-            if (!dateStr || dateStr === "TBD") return "TBA";
-            try {
-                const d = new Date(dateStr);
-                if (isNaN(d.getTime())) return dateStr; 
-                return d.toLocaleString('en-US', { month: 'short', day: '2-digit', hour: 'numeric', minute: '2-digit', hour12: true });
-            } catch(e) { return dateStr; }
         }
 
         function loadLiveTournamentsSlider(allData) {
