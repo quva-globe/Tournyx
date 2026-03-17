@@ -118,7 +118,6 @@
         .tourney-card.upcoming-glow { border: 1px solid rgba(0,242,255,0.3); box-shadow: 0 5px 20px rgba(0,242,255,0.1); }
         .tourney-card.upcoming-glow:hover { box-shadow: 0 5px 25px rgba(0,242,255,0.3); border-color: var(--accent-cyan); }
         
-        /* OVERRIDING BLUR & CLOSE STATES */
         .tourney-card.is-full { opacity: 0.65; filter: grayscale(70%); animation: none !important; border-color: #444 !important; box-shadow: 0 5px 15px rgba(0,0,0,0.5) !important; }
 
         @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -133,7 +132,6 @@
         .t-timer-badge { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.2); color: white; font-family: var(--font-head); font-size: 0.7rem; font-weight: bold; padding: 6px 12px; border-radius: 20px; backdrop-filter: blur(5px); }
         .t-timer-badge.ending-soon { background: linear-gradient(90deg, #ff4d4d, #ff9900); border: none; box-shadow: 0 0 10px rgba(255,77,77,0.5); }
         
-        /* LIVE LIKE SYSTEM */
         .t-like { position: absolute; bottom: 12px; left: 12px; background: rgba(0,0,0,0.7); color: white; padding: 4px 10px; border-radius: 20px; display: flex; align-items: center; justify-content: center; gap: 6px; backdrop-filter: blur(5px); transition: 0.3s; border: 1px solid rgba(255,255,255,0.2); font-family: var(--font-head); font-size: 0.8rem; font-weight: bold; cursor: pointer; z-index: 5; }
         .t-like.liked { color: #ff4d4d; border-color: #ff4d4d; background: rgba(255,77,77,0.1); box-shadow: 0 0 10px rgba(255,77,77,0.3); }
         .t-like i { transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -199,7 +197,7 @@
         .dm-share { font-size: 1.3rem; color: var(--accent-cyan); cursor: pointer; padding: 5px; }
 
         .dm-scroll-area { flex: 1; overflow-y: auto; padding-bottom: 20px; animation: fadeIn 0.4s; }
-        .dm-scroll-content { max-width: 800px; margin: 0 auto; position: relative; } 
+        .dm-scroll-content { max-width: 800px; margin: 0 auto; position: relative; padding-bottom: 80px;} 
         
         .dm-banner { width: 100%; height: 220px; object-fit: cover; }
         
@@ -249,7 +247,7 @@
         .clan-item-icon { width: 35px; height: 35px; border-radius: 8px; background: rgba(0,242,255,0.1); color: var(--accent-cyan); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
         .clan-item-name { font-family: var(--font-head); font-size: 1rem; color: white; flex: 1; }
 
-        /* LOCKED FOOTER */
+        /* LOCKED FOOTER - Desktop Centered */
         .locked-footer { background: #070311; padding: 15px 15px calc(15px + env(safe-area-inset-bottom)); border-top: 1px solid var(--card-border); display: flex; gap: 10px; flex-shrink: 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); z-index: 50;}
         .btn-primary { flex: 1; background: var(--accent-gradient); color: white; border: none; padding: 14px; border-radius: 12px; font-family: var(--font-head); font-weight: bold; font-size: 1rem; cursor: pointer; box-shadow: 0 5px 15px rgba(189,0,255,0.4); text-transform: uppercase; transition: 0.3s; display:flex; align-items:center; justify-content:center; gap:8px;}
         .btn-primary:active { transform: scale(0.98); }
@@ -310,10 +308,21 @@
         .median-active .top-header { display: none !important; }
         .median-active { padding-top: 15px !important; }
         
-        /* --- NEW: PERFECT SINGLE PAGE SHARE MODE --- */
-        .single-page-mode .top-header, .single-page-mode .search-row, .single-page-mode .game-scroll, .single-page-mode .tourney-list, .single-page-mode .bottom-nav, .single-page-mode .app-footer, .single-page-mode .guest-banner, .single-page-mode .floating-plus { display: none !important; }
+        /* --- PERFECT SINGLE PAGE SHARE MODE --- */
+        .single-page-mode .top-header, .single-page-mode .search-row, .single-page-mode .game-scroll, .single-page-mode .tourney-list, .single-page-mode .bottom-nav, .single-page-mode .app-footer, .single-page-mode .floating-plus { display: none !important; }
         .single-page-mode body { padding: 0 !important; background: var(--primary-bg); }
         .single-page-mode .detail-modal { position: fixed !important; transform: none !important; transition: none !important; height: 100vh !important; width: 100vw !important; top: 0 !important; left: 0 !important; }
+        .single-page-mode .locked-footer { position: fixed; bottom: 0; width: 100%; z-index: 9999; }
+        .single-page-mode .guest-banner { position: fixed; top: 0; width: 100%; z-index: 9999; }
+
+        /* LIVE PLATFORM FEATURES GLOBALLY AVAILABLE */
+        #liveFeaturesBlock { padding: 20px 0; }
+        .pro-feat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-top: 15px; }
+        .pro-feat-badge { background: rgba(0,255,127,0.05); border: 1px solid rgba(0,255,127,0.2); border-radius: 8px; padding: 10px; text-align: center; color: #ccc; font-size: 0.75rem; font-family: var(--font-head); }
+        .pro-feat-badge i { color: var(--accent-green); font-size: 1.2rem; margin-bottom: 5px; display: block; }
+
+        /* Share Page Initial Loader */
+        #shareLoader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary-bg); z-index: 99999; align-items: center; justify-content: center; flex-direction: column; }
         
         /* NEW SECURE PAYMENT LOADER */
         #securePaymentLoader { display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:9999; background:rgba(0,0,0,0.95); backdrop-filter:blur(10px); flex-direction:column; align-items:center; justify-content:center; }
@@ -330,8 +339,13 @@
 <body>
     <canvas id="particles-canvas"></canvas>
 
+    <div id="shareLoader">
+        <i class="fa-solid fa-spinner fa-spin" style="font-size: 3rem; color: var(--accent-cyan); margin-bottom: 15px;"></i>
+        <div style="font-family: var(--font-head); color: white; letter-spacing: 2px;">LOADING MATCH DATA...</div>
+    </div>
+
     <div class="guest-banner" id="guestBanner" onclick="window.location.href='login.html'">
-        <i class="fa-solid fa-lock"></i> You are browsing as a guest. Tap here to login/register!
+        <i class="fa-solid fa-lock"></i> Browsing as guest. Tap here to Login/Register!
     </div>
 
     <header class="top-header">
@@ -459,8 +473,8 @@
                 
                     <h2 id="dtTitle" class="t-title" style="font-size: 1.5rem; white-space: normal; margin-bottom: 5px;">Tournament Title</h2>
                     
-                    <div style="background: rgba(255,255,255,0.05); border: 1px solid var(--accent-cyan); padding:10px; border-radius:10px; margin-bottom: 20px; display:flex; align-items:center; gap:10px;">
-                        <img id="orgAvatarImg" src="https://via.placeholder.com/40" style="width:40px; height:40px; border-radius:50%; border:2px solid var(--accent-cyan);">
+                    <div style="background: rgba(255,255,255,0.05); border: 1px solid var(--accent-cyan); padding:10px; border-radius:10px; margin-bottom: 20px; display:flex; align-items:center; gap:10px; cursor: pointer; transition: 0.3s;" onclick="openHostProfile()">
+                        <img id="orgAvatarImg" src="https://via.placeholder.com/40" style="width:40px; height:40px; border-radius:50%; border:2px solid var(--accent-cyan); object-fit: cover;">
                         <div style="flex:1;">
                             <div style="color: #a0a0b0; font-size: 0.75rem;">Organized by</div>
                             <div style="color:white; font-weight:bold; font-family:var(--font-head); display:flex; align-items:center; gap:5px;">
@@ -468,7 +482,7 @@
                             </div>
                         </div>
                         <div style="text-align:right;">
-                            <div style="color:var(--accent-cyan); font-family:var(--font-head); font-weight:bold; font-size:0.85rem;">Host Rating</div>
+                            <div style="color:var(--accent-cyan); font-family:var(--font-head); font-weight:bold; font-size:0.85rem;">View Profile</div>
                             <div id="dtOrgStats" style="font-size:0.75rem; color:#ccc;"><i class="fa-solid fa-star"></i> Hosted: Loading...</div>
                         </div>
                     </div>
@@ -529,6 +543,32 @@
                             <div class="t-detail-item"><i class="fa-solid fa-sitemap"></i> Format: <span id="dtFormat" style="color:white; font-weight:bold; margin-left: 5px;">Loading...</span></div>
                         </div>
                     </div>
+
+                    <div id="liveFeaturesBlock">
+                        <div class="dm-sec-title" style="color:var(--accent-green); justify-content:center; border-bottom:1px solid rgba(0,255,127,0.2); padding-bottom:10px;"><i class="fa-solid fa-bolt"></i> Live Esports Features</div>
+                        <div class="pro-feat-grid">
+                            <div class="pro-feat-badge"><i class="fa-solid fa-shield-halved"></i> Anti-Cheat</div>
+                            <div class="pro-feat-badge"><i class="fa-solid fa-video"></i> Live Streaming</div>
+                            <div class="pro-feat-badge"><i class="fa-brands fa-discord"></i> Voice Comms</div>
+                            <div class="pro-feat-badge"><i class="fa-solid fa-sitemap"></i> Dynamic Brackets</div>
+                            <div class="pro-feat-badge"><i class="fa-solid fa-chart-line"></i> Live Scores</div>
+                            <div class="pro-feat-badge"><i class="fa-solid fa-server"></i> Low Ping Servers</div>
+                            <div class="pro-feat-badge"><i class="fa-solid fa-stopwatch"></i> Zero Delay</div>
+                            <div class="pro-feat-badge"><i class="fa-solid fa-bolt"></i> Instant Payouts</div>
+                            <div class="pro-feat-badge"><i class="fa-solid fa-crown"></i> Premium Lobby</div>
+                            <div class="pro-feat-badge"><i class="fa-solid fa-lock"></i> Roster Lock</div>
+                            <div class="pro-feat-badge"><i class="fa-solid fa-scale-balanced"></i> Fair Matchmaking</div>
+                            <div class="pro-feat-badge"><i class="fa-solid fa-coins"></i> Crypto / Rupee</div>
+                            <div class="pro-feat-badge"><i class="fa-solid fa-calculator"></i> Auto-Scoring</div>
+                            <div class="pro-feat-badge"><i class="fa-solid fa-cloud"></i> Cloud Recording</div>
+                            <div class="pro-feat-badge"><i class="fa-solid fa-mobile-screen"></i> Cross Platform</div>
+                            <div class="pro-feat-badge"><i class="fa-solid fa-gavel"></i> Pro Ruleset</div>
+                            <div class="pro-feat-badge"><i class="fa-solid fa-users"></i> Crowd Vote</div>
+                            <div class="pro-feat-badge"><i class="fa-solid fa-gift"></i> VIP Giveaways</div>
+                            <div class="pro-feat-badge"><i class="fa-solid fa-ranking-star"></i> Ranked System</div>
+                            <div class="pro-feat-badge"><i class="fa-solid fa-medal"></i> Verified Host</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="dm-tab-content" id="dtTabMatches">
@@ -582,6 +622,39 @@
         <div class="locked-footer">
             <button class="btn-secondary" onclick="openContributeModal(); triggerHaptic();"><i class="fa-regular fa-heart"></i> Contribute</button>
             <button class="btn-primary" id="masterJoinBtn" onclick="openRegistrationFlow(); triggerHaptic();">Register Now</button>
+        </div>
+    </div>
+
+    <div class="bottom-sheet-overlay" id="hostProfileOverlay">
+        <div class="bottom-sheet" style="border-radius: 20px 20px 0 0; padding-bottom: 30px;">
+            <div class="sheet-header">
+                <div class="sheet-title"><i class="fa-solid fa-address-card"></i> Host Details</div>
+                <i class="fa-solid fa-xmark close-sheet" onclick="closeHostProfile()"></i>
+            </div>
+            
+            <div style="text-align: center; margin-bottom: 25px;">
+                <img id="hpAvatar" src="https://via.placeholder.com/80" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--accent-cyan); margin-bottom: 12px; object-fit: cover; box-shadow: 0 0 15px rgba(0,242,255,0.4);">
+                <h3 id="hpName" style="color: white; font-family: var(--font-head); font-size: 1.4rem; margin-bottom: 5px;">Host Name</h3>
+                <div style="color: #1da1f2; font-size: 0.9rem; font-weight:bold;"><i class="fa-solid fa-certificate"></i> Verified Tournament Organizer</div>
+            </div>
+
+            <div class="dm-stat-grid" style="grid-template-columns: 1fr 1fr 1fr; margin-bottom: 0;">
+                <div class="stat-box" style="padding: 10px;">
+                    <i class="fa-solid fa-trophy" style="font-size: 1.2rem; color: var(--accent-cyan);"></i>
+                    <div class="val" id="hpHosted" style="font-size: 1.2rem;">0</div>
+                    <div class="lbl" style="font-size: 0.65rem;">Hosted</div>
+                </div>
+                <div class="stat-box" style="padding: 10px;">
+                    <i class="fa-solid fa-check-double" style="font-size: 1.2rem; color: var(--accent-green);"></i>
+                    <div class="val" id="hpSuccess" style="font-size: 1.2rem; color: var(--accent-green);">100%</div>
+                    <div class="lbl" style="font-size: 0.65rem;">Success Rate</div>
+                </div>
+                <div class="stat-box" style="padding: 10px;">
+                    <i class="fa-solid fa-star" style="font-size: 1.2rem; color: #ffd700;"></i>
+                    <div class="val" id="hpRating" style="font-size: 1.2rem; color: #ffd700;">4.9</div>
+                    <div class="lbl" style="font-size: 0.65rem;">Avg Rating</div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -819,7 +892,6 @@
             } catch(e) { return dateStr; }
         }
         
-        // --- LIVE 24-HOUR LANDING PAGE TIMER ---
         function startLandingPageTimers() {
             setInterval(() => {
                 let now = new Date().getTime();
@@ -859,7 +931,6 @@
             }, 1000);
         }
 
-        // --- LIVE MODAL DETAIL COUNTDOWN TIMER ---
         function updateLiveCountdown(targetDateStr, textElementId, badgeElementId) {
             if(activeCountdown) clearInterval(activeCountdown);
             let targetDate = new Date(targetDateStr).getTime();
@@ -914,7 +985,6 @@
 
         function getPrizeText(val) { let num = parseInt(val); return (isNaN(num) || num <= 0) ? "Glory" : num + " Rs."; }
         
-        // --- FIXED: Smart Entry text will not auto convert 50 to 2500 anymore ---
         function getSmartEntryText(feeRs, feePts) {
             let r = parseInt(feeRs);
             let p = parseInt(feePts);
@@ -941,6 +1011,7 @@
             if(targetTourneyId) {
                 document.body.classList.add('single-page-mode');
                 document.getElementById('dmBackButton').onclick = function() { window.location.href = 'explore.html'; };
+                document.getElementById('shareLoader').style.display = 'flex';
             }
 
             if(!user || !user.email) { 
@@ -1047,6 +1118,23 @@
             .then(res => res.json())
             .then(data => {
                 if (data.status === "success") {
+                    data.data.sort((a, b) => {
+                        let now = new Date().getTime();
+                        let dA = new Date(a.date).getTime() - now;
+                        let dB = new Date(b.date).getTime() - now;
+
+                        let aEndingSoon = dA > 0 && dA < (24 * 60 * 60 * 1000);
+                        let bEndingSoon = dB > 0 && dB < (24 * 60 * 60 * 1000);
+
+                        if(aEndingSoon && !bEndingSoon) return -1;
+                        if(!aEndingSoon && bEndingSoon) return 1;
+
+                        if (dA > 0 && dB > 0) return dA - dB;
+                        if (dA > 0) return -1;
+                        if (dB > 0) return 1;
+                        return dB - dA;
+                    });
+
                     localTournamentsData = data.data; 
                     const feed = document.getElementById('tournamentContainer');
                     feed.innerHTML = "";
@@ -1057,7 +1145,7 @@
                         let tIdSafe = String(t.id || t.title).trim();
                         
                         let rFee = parseInt(t.fee) || 0;
-                        let pFee = parseInt(t.fee_pts) || 0; // FIXED: no auto convert
+                        let pFee = parseInt(t.fee_pts) || 0;
                         let plat = t.platform || "Mobile";
                         
                         const totalSlots = parseInt(t.slots) || 48;
@@ -1138,14 +1226,24 @@
                         feed.appendChild(card);
                         
                         if (autoOpenId && (tIdSafe == autoOpenId || t.title.replace(/\s+/g, '') == autoOpenId)) {
-                            setTimeout(() => openTournamentDetails(encodeURIComponent(JSON.stringify(t))), 300);
+                            setTimeout(() => {
+                                document.getElementById('shareLoader').style.display = 'none';
+                                openTournamentDetails(encodeURIComponent(JSON.stringify(t)));
+                            }, 500);
                         }
                     });
+                    
+                    if(autoOpenId && document.getElementById('shareLoader').style.display === 'flex') {
+                        document.getElementById('shareLoader').style.display = 'none'; 
+                    }
                     applyFilter(); 
                 }
                 document.getElementById('refreshIcon').classList.remove('fa-spin');
             })
-            .catch(err => document.getElementById('refreshIcon').classList.remove('fa-spin'));
+            .catch(err => {
+                document.getElementById('refreshIcon').classList.remove('fa-spin');
+                document.getElementById('shareLoader').style.display = 'none';
+            });
         }
 
         function initTabSwitching() {
@@ -1175,11 +1273,13 @@
             if ((parseInt(t.filled_slots) / parseInt(t.slots)) > 0.8) badgesHTML += `<span class="esports-badge b-fast"><i class="fa-solid fa-fire"></i> Fast Filling</span>`;
             document.getElementById('dynamicBadgesArea').innerHTML = badgesHTML;
             
+            // FETCHING HOST PROFILE DETAILS PERFECTLY
             let orgId = t.org_username || t.email || 'Verified Organizer';
             document.getElementById('dtOrgName').innerHTML = `${t.org_username || 'Verified Organizer'}`;
-            document.getElementById('orgAvatarImg').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(orgId)}&background=070311&color=00f2ff&bold=true&border=1`;
+            let hostAvatar = t.org_avatar ? formatImageUrl(t.org_avatar) : `https://ui-avatars.com/api/?name=${encodeURIComponent(orgId)}&background=070311&color=00f2ff&bold=true&border=1`;
+            document.getElementById('orgAvatarImg').src = hostAvatar;
             
-            let hostedCount = localTournamentsData.filter(x => x.org_username === orgId || x.email === orgId).length;
+            let hostedCount = t.org_hosted_count ? parseInt(t.org_hosted_count) : localTournamentsData.filter(x => x.org_username === orgId || x.email === orgId).length;
             document.getElementById('dtOrgStats').innerHTML = `<i class="fa-solid fa-star"></i> Hosted: ${Math.max(hostedCount, 1)} Match${hostedCount > 1 ? 'es' : ''}`;
 
             document.getElementById('dtPrize').innerText = getPrizeText(t.prize);
@@ -1245,7 +1345,6 @@
             let btn = document.getElementById('masterJoinBtn');
             let isJoined = userLiveMatches.some(m => m.tournament_title === t.title || m.match_id === (t.id || t.title)); 
             
-            // --- FIXED: Room ID fetch error bug natively squashed using String() ---
             let roomArea = document.getElementById('roomDetailsArea');
             if (isJoined) {
                 if (t.room_id != null && String(t.room_id).trim() !== "") {
@@ -1321,6 +1420,28 @@
             document.getElementById('tourneyDetailModal').classList.add('active');
         }
 
+        // --- NEW: FUNCTION TO OPEN HOST PROFILE FROM SHEET ---
+        function openHostProfile() {
+            triggerHaptic();
+            let t = activeTournament;
+            if(!t) return;
+            
+            let orgId = t.org_username || t.email || 'Verified Organizer';
+            let hostAvatar = t.org_avatar ? formatImageUrl(t.org_avatar) : `https://ui-avatars.com/api/?name=${encodeURIComponent(orgId)}&background=070311&color=00f2ff&bold=true&border=1`;
+            let hostedCount = t.org_hosted_count ? parseInt(t.org_hosted_count) : Math.max(localTournamentsData.filter(x => x.org_username === orgId || x.email === orgId).length, 1);
+            let successRate = t.org_success_rate ? t.org_success_rate : "100%"; // Falls back to 100% if not returned by backend
+            let rating = t.org_rating ? t.org_rating : "4.9";
+            
+            document.getElementById('hpAvatar').src = hostAvatar;
+            document.getElementById('hpName').innerText = orgId;
+            document.getElementById('hpHosted').innerText = hostedCount;
+            document.getElementById('hpSuccess').innerText = successRate;
+            document.getElementById('hpRating').innerText = rating;
+            
+            document.getElementById('hostProfileOverlay').classList.add('active');
+        }
+        function closeHostProfile() { triggerHaptic(); document.getElementById('hostProfileOverlay').classList.remove('active'); }
+
         function closeDetailModal() { 
             triggerHaptic(); 
             if(activeCountdown) clearInterval(activeCountdown);
@@ -1344,13 +1465,19 @@
                     data.data.forEach(team => {
                         let currentTeamStr = String(team.clan).toLowerCase().trim();
                         let isMyClan = userClanNames.includes(currentTeamStr);
+                        
+                        let displayClanName = team.clan;
+                        if(displayClanName.startsWith("{")) {
+                            try { let sd = JSON.parse(displayClanName); displayClanName = sd.username; } catch(e){}
+                        }
+                        
                         let highlightClass = isMyClan ? "my-clan" : "";
                         let clanIcon = isMyClan ? `<i class="fa-solid fa-star" style="color:var(--accent-orange)"></i>` : `<i class="fa-solid fa-shield-halved"></i>`;
                         
                         container.innerHTML += `
                             <div class="clan-item ${highlightClass}">
                                 <div class="clan-item-icon">${clanIcon}</div>
-                                <div class="clan-item-name">${team.clan || "Solo Player"} ${isMyClan ? '(You)' : ''}</div>
+                                <div class="clan-item-name">${displayClanName || "Solo Player"} ${isMyClan ? '(You)' : ''}</div>
                                 <div style="font-size:0.75rem; color:#888;">${team.status || 'Verified'}</div>
                             </div>
                         `;
@@ -1361,7 +1488,6 @@
             }).catch(() => container.innerHTML = `<div style="text-align:center; color:#ff4d4d; padding:20px;">Failed to load teams.</div>`);
         }
 
-        // --- ADVANCED REGISTRATION OVERLAY (DUPLICATE CLAN CHECK) ---
         function openRegistrationFlow() {
             triggerHaptic();
             if(document.getElementById('masterJoinBtn').disabled) return;
@@ -1376,13 +1502,31 @@
 
             const clanSelectionArea = document.getElementById('clanSelectionArea');
             const btnArea = document.getElementById('regButtonsArea');
-            
-            clanSelectionArea.innerHTML = `<div style="text-align:center; padding:20px; color:var(--accent-cyan);"><i class="fa-solid fa-spinner fa-spin" style="font-size:2rem; margin-bottom:10px;"></i><br>Validating Roster...</div>`;
-            btnArea.style.display = 'none';
-
             let user = JSON.parse(localStorage.getItem('tournyx_user')) || {};
             
-            // Simultaneously fetch User's Clans AND the Tournament's already registered teams
+            let isSolo = activeTournament.format && activeTournament.format.toLowerCase().includes('solo');
+            
+            if(isSolo) {
+                let soloPayload = { username: user.username, id: user.email, phone: user.phone };
+                clanSelectionArea.innerHTML = `
+                    <div style="text-align:center; padding: 15px;">
+                        <i class="fa-solid fa-user-astronaut" style="font-size:3rem; color:var(--accent-cyan); margin-bottom:15px;"></i>
+                        <h3 style="color:white; font-family:var(--font-head); text-transform:uppercase;">Solo Registration</h3>
+                        <p style="color:#ccc; font-size:0.85rem; margin-top:10px;">Registering dynamically as <b>${user.username}</b>. Details will be saved natively to the sheet.</p>
+                    </div>
+                    <select class="form-select" id="formSelectClan" style="display:none;" required>
+                        <option value='${JSON.stringify(soloPayload)}'>SOLO</option>
+                    </select>
+                `;
+                btnArea.style.display = 'flex';
+                document.getElementById('finalSubmitBtn').innerText = "Proceed to Pay";
+                document.getElementById('finalSubmitBtn').disabled = false;
+                return;
+            }
+
+            clanSelectionArea.innerHTML = `<div style="text-align:center; padding:20px; color:var(--accent-cyan);"><i class="fa-solid fa-spinner fa-spin" style="font-size:2rem; margin-bottom:10px;"></i><br>Validating Roster...</div>`;
+            btnArea.style.display = 'none';
+            
             Promise.all([
                 fetch(API_URL + "?action=get_my_clans&username=" + encodeURIComponent(user.username)).then(res => res.json()),
                 fetch(API_URL + "?action=get_tournament_details&match_id=" + encodeURIComponent(activeTournament.id || activeTournament.title)).then(res => res.json())
@@ -1406,21 +1550,19 @@
                     return tourneyGame.includes(clanGame) || clanGame.includes(tourneyGame) || tourneyGame.includes('all') || clanGame.includes('all') || tourneyGame === 'multiple' || tourneyGame === 'esports';
                 });
 
-                // Filter out any of the user's clans that are ALREADY in the tournament
                 let availableClans = matchingClans.filter(c => !registeredTeams.includes(String(c.name).toLowerCase().trim()));
                 let alreadyRegisteredClans = matchingClans.filter(c => registeredTeams.includes(String(c.name).toLowerCase().trim()));
 
-                if (userClans.length === 0) {
+                if (availableClans.length === 0 && alreadyRegisteredClans.length === 0) {
                     clanSelectionArea.innerHTML = `
                         <div style="text-align:center; padding: 15px;">
                             <i class="fa-solid fa-users-slash fa-shake" style="font-size:3.5rem; color:var(--accent-orange); margin-bottom:15px;"></i>
                             <h3 style="color:white; font-family:var(--font-head); text-transform:uppercase; text-shadow:0 0 10px rgba(255,153,0,0.5);">No Roster Found!</h3>
-                            <p style="color:#ccc; font-size:0.85rem; margin-top:10px; line-height:1.5;">Esports is a team game! You don't have an active clan to represent.</p>
+                            <p style="color:#ccc; font-size:0.85rem; margin-top:10px; line-height:1.5;">Esports is a team game! You don't have an active clan to represent for <b>${activeTournament.game}</b>.</p>
                             <button type="button" class="btn-primary" style="margin-top:20px; background:var(--accent-orange); box-shadow:0 0 15px rgba(255,153,0,0.4);" onclick="window.location.href='clans.html'"><i class="fa-solid fa-plus"></i> Create / Join a Clan Now</button>
                         </div>
                     `;
                 } else if (availableClans.length === 0 && alreadyRegisteredClans.length > 0) {
-                    // Success block: Teammate already registered the clan!
                     clanSelectionArea.innerHTML = `
                         <div style="text-align:center; padding: 15px;">
                             <i class="fa-solid fa-check-double" style="font-size:3.5rem; color:var(--accent-green); margin-bottom:15px;"></i>
@@ -1433,7 +1575,6 @@
                     masterBtn.disabled = true;
                     btnArea.style.display = 'none';
                 } else {
-                    // Prompt standard registration
                     clanSelectionArea.innerHTML = `
                         <label class="form-label" id="regClanLabel">Select Roster *</label>
                         <select class="form-select" id="formSelectClan" required>
@@ -1444,13 +1585,8 @@
                     btnArea.style.display = 'flex';
                     
                     const select = document.getElementById('formSelectClan');
-                    if (availableClans.length > 0) {
-                        availableClans.forEach(c => { select.innerHTML += `<option value="${c.name}">${c.name} (${c.game})</option>`; });
-                        document.getElementById('regClanLabel').innerHTML = `Select ${activeTournament.game} Roster *`;
-                    } else {
-                        select.innerHTML += `<option value="${user.username} (Solo Player)">Register as Solo Player</option>`;
-                        document.getElementById('regClanLabel').innerHTML = `No matching clan found. Playing Solo.`;
-                    }
+                    availableClans.forEach(c => { select.innerHTML += `<option value="${c.name}">${c.name} (${c.game})</option>`; });
+                    document.getElementById('regClanLabel').innerHTML = `Select ${activeTournament.game} Roster *`;
                     
                     document.getElementById('finalSubmitBtn').innerText = "Proceed";
                     document.getElementById('finalSubmitBtn').disabled = false;
@@ -1472,7 +1608,7 @@
 
             const clanName = document.getElementById('formSelectClan').value;
             let rawFeeRupees = parseInt(activeTournament.fee) || 0;
-            let rawFeePts = parseInt(activeTournament.fee_pts) || 0; // FIXED: No auto-conversion
+            let rawFeePts = parseInt(activeTournament.fee_pts) || 0; 
             
             if (rawFeeRupees > 0 || rawFeePts > 0) {
                 closeRegistrationFlow();
@@ -1531,7 +1667,6 @@
             triggerSecureLoader(pendingRegistrationData.clanName, method==='rupees'?rFee:pFee, method);
         }
 
-        // --- NEW: BLOCKING ATTRACTIVE LOADER ---
         function triggerSecureLoader(clanName, cost, method) {
             document.getElementById('securePaymentLoader').style.display = 'flex';
             let txt = document.getElementById('loaderTxt');
@@ -1551,7 +1686,6 @@
             setTimeout(() => { txt.innerText = "Processing Details..."; bar.style.width = "75%"; }, 1200);
             setTimeout(() => { txt.innerText = "Securing Slot on Server..."; bar.style.width = "90%"; }, 2000);
             setTimeout(() => { 
-                // Actual Network Request Starts Now
                 submitFinalRegistration(clanName, cost, method, bar, txt, icon);
             }, 2800);
         }
@@ -1566,18 +1700,16 @@
                     action: "join", match_id: t.id || t.title, game: t.game, title: t.title,
                     date: t.date, prize: t.prize, email: user.email, username: user.username, phone: user.phone, 
                     clan: clanName, entry_paid: cost, method: method,
-                    org_email: t.org_email || t.email || "" // PASSES ORGANIZER EMAIL TO ADD EARNINGS!
+                    org_email: t.org_email || t.email || ""
                 })
             }).then(() => {
                 
-                // FORCE BACKEND WALLET SYNC & INSTANT LOCAL TRANSACTION LOG
                 if(cost > 0) {
                     fetch(API_URL, {
                         method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ action: 'update_profile', email: user.email, rupees: user.rupees, points: user.points })
                     });
                     
-                    // --- NEW: Add Local Transaction instantly so wallet displays it without waiting for sync ---
                     let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
                     let dateStr = new Date().toLocaleString('en-US', { month:'short', day:'2-digit', year:'numeric', hour:'numeric', minute:'2-digit', hour12:true });
                     let newTxn = { 
@@ -1684,6 +1816,7 @@
         function closeContributeModal() { document.getElementById('contributeOverlay').classList.remove('active'); document.getElementById('customAmtInput').value = ""; clearAmtBtns(); }
         function selectAmt(btn, amt) { triggerHaptic(); clearAmtBtns(); btn.classList.add('active'); document.getElementById('customAmtInput').value = amt; }
         function clearAmtBtns() { document.querySelectorAll('.amt-btn').forEach(b => b.classList.remove('active')); }
+        
         function processContribution() {
             let val = parseInt(document.getElementById('customAmtInput').value);
             if(isNaN(val) || val <= 0) { showToast("Please select a valid amount.", true); return; }
@@ -1696,10 +1829,14 @@
             user.rupees = uRupees - val;
             localStorage.setItem('tournyx_user', JSON.stringify(user));
             
-            // Force Sync backend
             fetch(API_URL, {
                 method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action: 'update_profile', email: user.email, rupees: user.rupees, points: user.points })
+            });
+
+            fetch(API_URL, {
+                method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'contribute', match_id: activeTournament.id || activeTournament.title, amount: val, user: user.email })
             });
 
             document.getElementById('contributeWalletBal').innerText = user.rupees;
