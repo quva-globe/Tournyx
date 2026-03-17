@@ -82,6 +82,8 @@
         .refresh-btn:active { transform: rotate(180deg); background: var(--accent-cyan); color: black; box-shadow: 0 0 15px rgba(0,242,255,0.5); }
         .refresh-btn.cooldown { opacity: 0.5; pointer-events: none; border-color: #555; color: #555; }
 
+        .header-profile-img { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--accent-cyan); object-fit: cover; cursor: pointer; box-shadow: 0 0 10px rgba(0,242,255,0.4); transition: 0.3s; flex-shrink: 0;}
+
         /* --- ADVANCED STATS WIDGET --- */
         .stats-row { display: flex; gap: 10px; padding: 5px 15px 5px; margin-bottom: 5px; }
         .stat-box { flex: 1; background: var(--secondary-bg); border: 1px solid var(--card-border); padding: 10px; border-radius: 12px; text-align: center; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
@@ -243,8 +245,11 @@
                 <a href="tournament.html" style="color:var(--accent-cyan);"><i class="fa-solid fa-plus"></i> Create</a>
             </nav>
 
-            <div class="refresh-btn" onclick="manualRefresh()" id="refreshBtn">
-                <i class="fa-solid fa-rotate-right" id="refreshIcon"></i>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div class="refresh-btn" onclick="manualRefresh()" id="refreshBtn">
+                    <i class="fa-solid fa-rotate-right" id="refreshIcon"></i>
+                </div>
+                <img src="https://via.placeholder.com/40" class="header-profile-img" id="headerProfilePic" onclick="handleProfileClick()">
             </div>
         </div>
     </header>
@@ -377,6 +382,15 @@
             setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
         }
 
+        function handleProfileClick() {
+            const user = JSON.parse(localStorage.getItem('tournyx_user'));
+            if (!user || !user.email) {
+                window.location.href = 'login.html';
+            } else {
+                window.location.href = 'profile.html';
+            }
+        }
+
         function copyRoomData(event, element, text, type) {
             event.stopPropagation();
             if(text === 'WAITING' || !text) return;
@@ -439,17 +453,35 @@
             if(!navigator.onLine) document.getElementById('offlineBanner').classList.add('active');
             
             const user = JSON.parse(localStorage.getItem('tournyx_user'));
-            if (!user || !user.email) { window.location.href = "login.html"; return; }
 
-            // Instantly show skeleton on load to indicate fast loading
+            if (user && user.avatar) {
+                document.getElementById('headerProfilePic').src = user.avatar;
+            }
+
             document.getElementById('skeletonLoader').style.display = 'flex';
             document.getElementById('realContent').style.display = 'none';
+
+            if (!user || !user.email) {
+                document.getElementById('skeletonLoader').style.display = 'none';
+                document.getElementById('realContent').style.display = 'flex';
+                document.getElementById('realContent').innerHTML = `
+                    <div class="empty-box">
+                        <i class="fa-solid fa-lock empty-icon" style="color:var(--accent-orange); animation:none;"></i>
+                        <h3 style="color:var(--accent-orange); font-family:var(--font-head);">Login Required</h3>
+                        <p style="font-size:0.85rem; color:#888; margin-bottom:15px;">Please login to view your registered matches.</p>
+                        <button onclick="window.location.href='login.html'" class="browse-link" style="border:none; cursor:pointer;">Login / Register</button>
+                    </div>`;
+                return;
+            }
 
             fetchLiveMatches();
             startSilentPolling();
         });
 
         function manualRefresh() {
+            const user = JSON.parse(localStorage.getItem('tournyx_user'));
+            if (!user || !user.email) { window.location.href = "login.html"; return; }
+
             if(isRefreshing) return;
             isRefreshing = true;
             triggerHaptic();
@@ -503,6 +535,15 @@
                             fetchedPass = "WAITING";
                         }
 
+                        // Parse out JSON string if registered as Solo
+                        let clanData = s(entry.clan, "Solo Player");
+                        if(clanData.startsWith("{")) {
+                            try { 
+                                let pd = JSON.parse(clanData); 
+                                clanData = pd.username || "Solo Player"; 
+                            } catch(e){}
+                        }
+
                         freshMatches.push({
                             match_id: s(tDetails.id) || s(tDetails.match_id) || s(entry.match_id), 
                             name: s(tDetails.title) || s(entry.tournament_title, "Unknown Tournament"),
@@ -511,7 +552,7 @@
                             status: s(tDetails.status, "Upcoming"),
                             roomID: fetchedId,
                             roomPass: fetchedPass,
-                            clan: s(entry.clan, "Solo Player")
+                            clan: clanData
                         });
                     }
                 });
@@ -546,7 +587,8 @@
 
         function startSilentPolling() {
             silentPollInterval = setInterval(() => {
-                if(navigator.onLine && !isRefreshing) fetchLiveMatches();
+                const user = JSON.parse(localStorage.getItem('tournyx_user'));
+                if(navigator.onLine && !isRefreshing && user && user.email) fetchLiveMatches();
             }, 10000); 
         }
 
@@ -688,8 +730,7 @@
             event.stopPropagation();
             triggerHaptic();
 
-            // BUG FIX 2: Replaced html entity emoji with clean plain text to prevent raw code in native popup
-            if(confirm('WARNING: Are you sure you want to withdraw from ' + tournamentName + '? Your entry will be cancelled.')) {
+            if(confirm('WARNING: Are you sure you want to withdraw from ' + tournamentName + '? If you paid an entry fee, the money will be refunded to your wallet in 1-3 working days.')) {
                 executeUnjoin(tournamentName, matchId);
             }
         }
@@ -706,7 +747,6 @@
             }).then(() => {
                 
                 globalLiveMatches = globalLiveMatches.filter(m => m.match_id !== matchId);
-                localStorage.setItem(`tournyx_my_matches_cache_${user.email}`, JSON.stringify(globalLiveMatches));
                 renderMatches();
 
                 setTimeout(() => {
