@@ -56,7 +56,7 @@
         body { background-color: var(--primary-bg); color: white; font-family: var(--font-body); padding-bottom: calc(90px + env(safe-area-bottom)); padding-top: calc(55px + env(safe-area-inset-top)); overflow-x: hidden; }
 
         /* --- RESPONSIVE WRAPPER --- */
-        .search-row, .game-scroll, .tourney-list, .app-footer, .top-header .header-wrapper { max-width: 1000px; margin-left: auto !important; margin-right: auto !important; width: 100%; }
+        .search-row, .game-scroll, .tourney-list, .app-footer, .top-header .header-wrapper, .advanced-features-scroll { max-width: 1000px; margin-left: auto !important; margin-right: auto !important; width: 100%; }
 
         /* --- BACKGROUND --- */
         #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at 50% 0%, #15062e 0%, #070311 100%); }
@@ -81,7 +81,7 @@
         .header-profile-img { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--accent-cyan); object-fit: cover; cursor: pointer; box-shadow: 0 0 10px rgba(0,242,255,0.4); transition: 0.3s; flex-shrink: 0;}
 
         /* --- SEARCH & ACTIONS --- */
-        .search-row { display: flex; gap: 10px; padding: 15px 15px 20px 15px; align-items: center; }
+        .search-row { display: flex; gap: 10px; padding: 15px 15px 15px 15px; align-items: center; }
         .search-box { position: relative; flex: 1; display: flex; min-width: 0; }
         .search-input { width: 100%; background: #110822; border: 1px solid var(--card-border); padding: 12px 15px 12px 40px; border-radius: 12px; color: white; transition: 0.3s; font-size: 0.95rem; font-family: var(--font-body); }
         .search-input:focus { border-color: var(--accent-cyan); outline: none; box-shadow: 0 0 15px rgba(0,242,255,0.2); }
@@ -90,11 +90,17 @@
         .action-btn:active { transform: scale(0.9); }
 
         /* --- QUICK GAME FILTERS --- */
-        .game-scroll { display: flex; gap: 12px; overflow-x: auto; padding: 0 15px 15px; }
+        .game-scroll { display: flex; gap: 12px; overflow-x: auto; padding: 0 15px 10px; }
         .game-item { display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(255,255,255,0.05); padding: 8px 18px; border-radius: 12px; border: 1px solid transparent; cursor: pointer; transition: 0.3s; opacity: 0.7; flex-shrink: 0; white-space: nowrap; }
         .game-item.active { opacity: 1; border: 1px solid var(--accent-cyan); background: rgba(0,242,255,0.15); box-shadow: 0 4px 15px rgba(0,242,255,0.2); }
         .game-icon { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
         .game-name { font-size: 0.85rem; font-family: var(--font-head); font-weight: bold; white-space: nowrap; }
+
+        /* --- 10 ADVANCED FEATURES SCROLL --- */
+        .advanced-features-scroll { display: flex; gap: 10px; overflow-x: auto; padding: 0 15px 15px; margin-top: 5px; scrollbar-width: none; }
+        .advanced-features-scroll::-webkit-scrollbar { display: none; }
+        .af-item { display: flex; align-items: center; gap: 6px; background: rgba(0, 242, 255, 0.05); border: 1px solid rgba(0, 242, 255, 0.2); padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; color: var(--accent-cyan); font-family: var(--font-head); font-weight: bold; white-space: nowrap; flex-shrink: 0; }
+        .af-item i { font-size: 0.9rem; }
 
         /* --- TOURNAMENT CARDS & GLOW EFFECTS --- */
         .tourney-list { padding: 0 15px; display: flex; flex-direction: column; gap: 20px; min-height: 400px; }
@@ -169,7 +175,7 @@
         .s-line { height: 15px; border-radius: 8px; width: 80%; }
 
         /* --- ADVANCED FILTER BOTTOM SHEET --- */
-        .bottom-sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 4000; display: none; opacity: 0; transition: 0.3s; backdrop-filter: blur(5px); }
+        .bottom-sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 5000; display: none; opacity: 0; transition: 0.3s; backdrop-filter: blur(5px); }
         .bottom-sheet { position: absolute; bottom: 0; left: 0; width: 100%; background: var(--secondary-bg); border-radius: 20px 20px 0 0; border-top: 1px solid var(--card-border); padding: 25px 20px; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 90vh; overflow-y: auto; box-shadow: 0 -10px 40px rgba(0,0,0,0.8); }
         .bottom-sheet-overlay.active { display: block; opacity: 1; }
         .bottom-sheet-overlay.active .bottom-sheet { transform: translateY(0); }
@@ -247,7 +253,7 @@
         .clan-item-icon { width: 35px; height: 35px; border-radius: 8px; background: rgba(0,242,255,0.1); color: var(--accent-cyan); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
         .clan-item-name { font-family: var(--font-head); font-size: 1rem; color: white; flex: 1; }
 
-        /* LOCKED FOOTER - Desktop Centered */
+        /* LOCKED FOOTER */
         .locked-footer { background: #070311; padding: 15px 15px calc(15px + env(safe-area-inset-bottom)); border-top: 1px solid var(--card-border); display: flex; gap: 10px; flex-shrink: 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); z-index: 50;}
         .btn-primary { flex: 1; background: var(--accent-gradient); color: white; border: none; padding: 14px; border-radius: 12px; font-family: var(--font-head); font-weight: bold; font-size: 1rem; cursor: pointer; box-shadow: 0 5px 15px rgba(189,0,255,0.4); text-transform: uppercase; transition: 0.3s; display:flex; align-items:center; justify-content:center; gap:8px;}
         .btn-primary:active { transform: scale(0.98); }
@@ -255,9 +261,6 @@
         .btn-secondary { background: transparent; border: 1px solid var(--accent-orange); color: var(--accent-orange); padding: 14px; border-radius: 12px; font-family: var(--font-head); font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; text-transform: uppercase; }
         .btn-secondary:active { background: rgba(255,153,0,0.1); }
         
-        /* GUEST MODE DOWNLOAD BTN OVERRIDE */
-        .btn-primary.guest-mode-btn { background: linear-gradient(90deg, #ff4d4d, #ff9900); box-shadow: 0 5px 15px rgba(255,77,77,0.4); }
-
         /* REGISTRATION & PAYMENT OVERLAYS */
         #payFeeRupees, #payFeePts { font-weight: bold; font-family: var(--font-head); font-size: 1.1rem; }
         #payFeeRupees { color: var(--accent-orange); }
@@ -309,23 +312,32 @@
         .median-active { padding-top: 15px !important; }
         
         /* --- PERFECT SINGLE PAGE SHARE MODE --- */
-        .single-page-mode .top-header, .single-page-mode .search-row, .single-page-mode .game-scroll, .single-page-mode .tourney-list, .single-page-mode .bottom-nav, .single-page-mode .app-footer, .single-page-mode .floating-plus { display: none !important; }
+        .single-page-mode .top-header, .single-page-mode .search-row, .single-page-mode .game-scroll, .single-page-mode .tourney-list, .single-page-mode .bottom-nav, .single-page-mode .app-footer, .single-page-mode .floating-plus, .single-page-mode .advanced-features-scroll { display: none !important; }
         .single-page-mode body { padding: 0 !important; background: var(--primary-bg); }
         .single-page-mode .detail-modal { position: fixed !important; transform: none !important; transition: none !important; height: 100vh !important; width: 100vw !important; top: 0 !important; left: 0 !important; }
         .single-page-mode .locked-footer { position: fixed; bottom: 0; width: 100%; z-index: 9999; }
         .single-page-mode .guest-banner { position: fixed; top: 0; width: 100%; z-index: 9999; }
+        .single-page-mode .dm-header { margin-top: 40px; } /* Space for banner */
 
-        /* LIVE PLATFORM FEATURES GLOBALLY AVAILABLE */
-        #liveFeaturesBlock { padding: 20px 0; }
-        .pro-feat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-top: 15px; }
-        .pro-feat-badge { background: rgba(0,255,127,0.05); border: 1px solid rgba(0,255,127,0.2); border-radius: 8px; padding: 10px; text-align: center; color: #ccc; font-size: 0.75rem; font-family: var(--font-head); }
-        .pro-feat-badge i { color: var(--accent-green); font-size: 1.2rem; margin-bottom: 5px; display: block; }
+        /* Unique Share Features Grid */
+        #proFeaturesBlock { display: none; padding: 20px 15px; border-top: 1px solid var(--card-border); background: #0a0418; }
+        .pro-feat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-top: 15px; }
+        .pro-feat-badge { background: rgba(0,242,255,0.05); border: 1px solid rgba(0,242,255,0.2); border-radius: 8px; padding: 10px; text-align: center; color: #ccc; font-size: 0.75rem; font-family: var(--font-head); }
+        .pro-feat-badge i { color: var(--accent-cyan); font-size: 1.2rem; margin-bottom: 5px; display: block; }
 
         /* Share Page Initial Loader */
         #shareLoader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary-bg); z-index: 99999; align-items: center; justify-content: center; flex-direction: column; }
         
         /* NEW SECURE PAYMENT LOADER */
         #securePaymentLoader { display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:9999; background:rgba(0,0,0,0.95); backdrop-filter:blur(10px); flex-direction:column; align-items:center; justify-content:center; }
+
+        /* GUEST LOGIN POPUP */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 5000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal-overlay.active { display: flex; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popIn { from{transform:scale(0.9); opacity:0;} to{transform:scale(1); opacity:1;} }
+        .modal-box { background: var(--primary-bg); width: 90%; max-width: 400px; border-radius: 20px; border: 1px solid var(--card-border); padding: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); text-align: center; position: relative;}
+        .modal-close { position: absolute; top: 15px; right: 15px; color: #888; font-size: 1.3rem; cursor: pointer; transition: 0.3s;}
+        .modal-close:hover { color: white; transform: rotate(90deg); }
     </style>
     
     <script>
@@ -344,7 +356,7 @@
         <div style="font-family: var(--font-head); color: white; letter-spacing: 2px;">LOADING MATCH DATA...</div>
     </div>
 
-    <div class="guest-banner" id="guestBanner" onclick="window.location.href='login.html'">
+    <div class="guest-banner" id="guestBanner" onclick="document.getElementById('guestLoginModal').classList.add('active');">
         <i class="fa-solid fa-lock"></i> Browsing as guest. Tap here to Login/Register!
     </div>
 
@@ -364,7 +376,7 @@
             </nav>
 
             <div class="header-right">
-                <img src="https://via.placeholder.com/40" class="header-profile-img" id="headerProfilePic" onclick="window.location.href='profile.html'">
+                <img src="https://via.placeholder.com/40" class="header-profile-img" id="headerProfilePic" onclick="if(isGuestMode) { document.getElementById('guestLoginModal').classList.add('active'); } else { window.location.href='profile.html'; }">
             </div>
         </div>
     </header>
@@ -383,6 +395,19 @@
         <div class="game-item" onclick="filterGame('BGMI', this)"><img class="game-icon" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj3MKUI87mMK4_3DltS3LQgqfrK1sESUIMMqlENdi0dPRtOFkeDbvPsTbSaCRaJOb17QZ5s9OO5dR6kFCYiCkgUCF2zBWwvGFSb3T-9Nz51XuIzMvIiOuqwcLzyzeFmn1orKbiETP4LrlaG-RidnWAAzBwUA3aL5_z62HP4_F7R02lAK_WSYdH0U_Gn7Es/s250/1000094211.jpg" /><span class="game-name">BGMI</span></div>
         <div class="game-item" onclick="filterGame('Free Fire', this)"><img class="game-icon" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiJvPTY_y_XU-0Lwbnjwm7961lCDkSlQh2MtCWHunFVX6WS7WCprCtkPyB334BU_-4vGsP0NseDQf4NPBEOIxqjk7VZQqZUHpnLb4Bw-c1UeXQy2M9DzNrNdYt_aL0GEb1AlTPupC5zEjJiP3Ci0Oxk-wdg5TF5cs8_UNSe3uTT1BE884je3iXr8QlMjx8/s240/1000094210.jpg" /><span class="game-name">Free Fire</span></div>
         <div class="game-item" onclick="filterGame('COD', this)"><img class="game-icon" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg8vsDFFkLAXTA234WJzc3OqsLbmB3HBlKaXhiJo-JFVcTtYmMUI2DVdk5ljTPvGPKj-vtcejjFAxZO0sapDafr6xqN7VpHLGCcxqYWWY2LIZszXhrnnO1gcXFeJzY2EclP6G1bLoea5bshOtT7Dl3p4F_l0pGDuz1j5KJ78dEnI7cQixwAeDC1vKG89N4/s460/1000094209.jpg" /><span class="game-name">CODM</span></div>
+    </div>
+
+    <div class="advanced-features-scroll">
+        <div class="af-item"><i class="fa-solid fa-shield-halved"></i> AI Anti-Cheat</div>
+        <div class="af-item"><i class="fa-solid fa-bolt"></i> Instant Payouts</div>
+        <div class="af-item"><i class="fa-solid fa-sitemap"></i> Live Brackets</div>
+        <div class="af-item"><i class="fa-brands fa-discord"></i> Dedicated Comms</div>
+        <div class="af-item"><i class="fa-solid fa-chart-line"></i> Esports Analytics</div>
+        <div class="af-item"><i class="fa-solid fa-server"></i> Low Ping Servers</div>
+        <div class="af-item"><i class="fa-solid fa-video"></i> Streamer Friendly</div>
+        <div class="af-item"><i class="fa-solid fa-crown"></i> Premium Lobbies</div>
+        <div class="af-item"><i class="fa-solid fa-lock"></i> Roster Lock</div>
+        <div class="af-item"><i class="fa-solid fa-gavel"></i> Pro Rulesets</div>
     </div>
 
     <div class="tourney-list" id="tournamentContainer">
@@ -544,26 +569,26 @@
                         </div>
                     </div>
 
-                    <div id="liveFeaturesBlock">
-                        <div class="dm-sec-title" style="color:var(--accent-green); justify-content:center; border-bottom:1px solid rgba(0,255,127,0.2); padding-bottom:10px;"><i class="fa-solid fa-bolt"></i> Live Esports Features</div>
+                    <div id="proFeaturesBlock">
+                        <div class="dm-sec-title" style="color:var(--accent-purple)"><i class="fa-solid fa-star"></i> Premium Match Features</div>
                         <div class="pro-feat-grid">
                             <div class="pro-feat-badge"><i class="fa-solid fa-shield-halved"></i> Anti-Cheat</div>
-                            <div class="pro-feat-badge"><i class="fa-solid fa-video"></i> Live Streaming</div>
-                            <div class="pro-feat-badge"><i class="fa-brands fa-discord"></i> Voice Comms</div>
-                            <div class="pro-feat-badge"><i class="fa-solid fa-sitemap"></i> Dynamic Brackets</div>
-                            <div class="pro-feat-badge"><i class="fa-solid fa-chart-line"></i> Live Scores</div>
-                            <div class="pro-feat-badge"><i class="fa-solid fa-server"></i> Low Ping Servers</div>
-                            <div class="pro-feat-badge"><i class="fa-solid fa-stopwatch"></i> Zero Delay</div>
                             <div class="pro-feat-badge"><i class="fa-solid fa-bolt"></i> Instant Payouts</div>
+                            <div class="pro-feat-badge"><i class="fa-brands fa-discord"></i> Dedicated Support</div>
+                            <div class="pro-feat-badge"><i class="fa-solid fa-sitemap"></i> Live Brackets</div>
+                            <div class="pro-feat-badge"><i class="fa-solid fa-chart-line"></i> Esports Analytics</div>
+                            <div class="pro-feat-badge"><i class="fa-solid fa-server"></i> High Tickrate</div>
+                            <div class="pro-feat-badge"><i class="fa-solid fa-stopwatch"></i> Zero Delay</div>
+                            <div class="pro-feat-badge"><i class="fa-solid fa-video"></i> Streamer Friendly</div>
                             <div class="pro-feat-badge"><i class="fa-solid fa-crown"></i> Premium Lobby</div>
                             <div class="pro-feat-badge"><i class="fa-solid fa-lock"></i> Roster Lock</div>
-                            <div class="pro-feat-badge"><i class="fa-solid fa-scale-balanced"></i> Fair Matchmaking</div>
-                            <div class="pro-feat-badge"><i class="fa-solid fa-coins"></i> Crypto / Rupee</div>
+                            <div class="pro-feat-badge"><i class="fa-solid fa-scale-balanced"></i> Fair Play</div>
+                            <div class="pro-feat-badge"><i class="fa-solid fa-coins"></i> Crypto/Rupee</div>
                             <div class="pro-feat-badge"><i class="fa-solid fa-calculator"></i> Auto-Scoring</div>
-                            <div class="pro-feat-badge"><i class="fa-solid fa-cloud"></i> Cloud Recording</div>
-                            <div class="pro-feat-badge"><i class="fa-solid fa-mobile-screen"></i> Cross Platform</div>
+                            <div class="pro-feat-badge"><i class="fa-solid fa-cloud"></i> Cloud Server</div>
+                            <div class="pro-feat-badge"><i class="fa-solid fa-mobile-screen"></i> Mobile/Tablet</div>
                             <div class="pro-feat-badge"><i class="fa-solid fa-gavel"></i> Pro Ruleset</div>
-                            <div class="pro-feat-badge"><i class="fa-solid fa-users"></i> Crowd Vote</div>
+                            <div class="pro-feat-badge"><i class="fa-solid fa-users"></i> Community Vote</div>
                             <div class="pro-feat-badge"><i class="fa-solid fa-gift"></i> VIP Giveaways</div>
                             <div class="pro-feat-badge"><i class="fa-solid fa-ranking-star"></i> Ranked System</div>
                             <div class="pro-feat-badge"><i class="fa-solid fa-medal"></i> Verified Host</div>
@@ -655,6 +680,16 @@
                     <div class="lbl" style="font-size: 0.65rem;">Avg Rating</div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="guestLoginModal">
+        <div class="modal-box">
+            <i class="fa-solid fa-xmark modal-close" onclick="document.getElementById('guestLoginModal').classList.remove('active');"></i>
+            <i class="fa-solid fa-user-astronaut" style="font-size: 4rem; color: var(--accent-cyan); margin-bottom: 15px; filter: drop-shadow(0 0 15px var(--accent-cyan));"></i>
+            <h3 style="font-family: var(--font-head); font-size: 1.5rem; margin-bottom: 10px; color: white;">Join the Elite!</h3>
+            <p style="color: #aaa; font-size: 0.95rem; margin-bottom: 25px; line-height: 1.5;">Login or Sign Up to secure your slot, track your stats, and manage tournaments.</p>
+            <button class="save-btn" style="background: linear-gradient(90deg, #ff4d4d, #ff9900); box-shadow: 0 5px 20px rgba(255, 77, 77, 0.4); border:none; color:white; width:100%; padding:15px; font-family:var(--font-head); font-weight:bold; border-radius:12px; cursor:pointer;" onclick="window.location.href='login.html'">Login / Sign Up</button>
         </div>
     </div>
 
@@ -793,7 +828,7 @@
     </nav>
 
     <script>
-        const API_URL = 'https://script.google.com/macros/s/AKfycbyqqTpgaflxKJ9xH0jq7mJ_jLzcoNhas3gNo0h5gvoa_6r5Ae9NFxJAJp7ZoYNnMRKl/exec';
+        const API_URL = 'https://script.google.com/macros/s/AKfycbynNLDDXS1wMrU6RGnk4nKb1jfQkQGuqrNIKWAt8wf46MaKP6y1rwGmSJg5fmm4KYU/exec';
         let activeTournament = {}; 
         let pendingRegistrationData = null; 
         let userLiveMatches = []; 
@@ -1014,32 +1049,26 @@
                 document.getElementById('shareLoader').style.display = 'flex';
             }
 
+            // GUEST MODE REMOVAL OF REDIRECT
             if(!user || !user.email) { 
-                if(targetTourneyId) {
-                    isGuestMode = true;
-                    document.getElementById('headerProfilePic').style.display = 'none';
-                    document.getElementById('guestBanner').classList.add('active');
-                    loadLiveTournaments(targetTourneyId);
-                    return; 
-                } else {
-                    window.location.href = "login.html"; 
-                    return; 
-                }
+                isGuestMode = true;
+                document.getElementById('headerProfilePic').style.display = 'none';
+                document.getElementById('guestBanner').classList.add('active');
+            } else {
+                if(user.avatar) document.getElementById('headerProfilePic').src = user.avatar;
+                fetch(API_URL + "?action=get_matches&email=" + encodeURIComponent(user.email))
+                    .then(res => res.json())
+                    .then(data => { if(data.status === 'success') userLiveMatches = data.data; });
+                
+                fetch(API_URL + "?action=get_my_clans&username=" + encodeURIComponent(user.username))
+                    .then(res => res.json())
+                    .then(data => { if(data.status === 'success') localStorage.setItem('tournyx_my_clans_cache', JSON.stringify(data.data)); });
             }
             
-            if(user.avatar) document.getElementById('headerProfilePic').src = user.avatar;
             localStorage.removeItem('myMatches');
 
             loadLiveTournaments(targetTourneyId);
             
-            fetch(API_URL + "?action=get_matches&email=" + encodeURIComponent(user.email))
-                .then(res => res.json())
-                .then(data => { if(data.status === 'success') userLiveMatches = data.data; });
-            
-            fetch(API_URL + "?action=get_my_clans&username=" + encodeURIComponent(user.username))
-                .then(res => res.json())
-                .then(data => { if(data.status === 'success') localStorage.setItem('tournyx_my_clans_cache', JSON.stringify(data.data)); });
-
             initTabSwitching(); 
             startSilentDataSync(); 
             startLandingPageTimers(); 
@@ -1279,8 +1308,8 @@
             let hostAvatar = t.org_avatar ? formatImageUrl(t.org_avatar) : `https://ui-avatars.com/api/?name=${encodeURIComponent(orgId)}&background=070311&color=00f2ff&bold=true&border=1`;
             document.getElementById('orgAvatarImg').src = hostAvatar;
             
-            let hostedCount = t.org_hosted_count ? parseInt(t.org_hosted_count) : localTournamentsData.filter(x => x.org_username === orgId || x.email === orgId).length;
-            document.getElementById('dtOrgStats').innerHTML = `<i class="fa-solid fa-star"></i> Hosted: ${Math.max(hostedCount, 1)} Match${hostedCount > 1 ? 'es' : ''}`;
+            let hostedCount = t.org_hosted_count ? parseInt(t.org_hosted_count) : Math.max(localTournamentsData.filter(x => x.org_username === orgId || x.email === orgId).length, 1);
+            document.getElementById('dtOrgStats').innerHTML = `<i class="fa-solid fa-star"></i> Hosted: ${hostedCount} Match${hostedCount > 1 ? 'es' : ''}`;
 
             document.getElementById('dtPrize').innerText = getPrizeText(t.prize);
             document.getElementById('dtFee').innerText = getSmartEntryText(t.fee, t.fee_pts);
@@ -1429,7 +1458,7 @@
             let orgId = t.org_username || t.email || 'Verified Organizer';
             let hostAvatar = t.org_avatar ? formatImageUrl(t.org_avatar) : `https://ui-avatars.com/api/?name=${encodeURIComponent(orgId)}&background=070311&color=00f2ff&bold=true&border=1`;
             let hostedCount = t.org_hosted_count ? parseInt(t.org_hosted_count) : Math.max(localTournamentsData.filter(x => x.org_username === orgId || x.email === orgId).length, 1);
-            let successRate = t.org_success_rate ? t.org_success_rate : "100%"; // Falls back to 100% if not returned by backend
+            let successRate = t.org_success_rate ? t.org_success_rate : "100%"; 
             let rating = t.org_rating ? t.org_rating : "4.9";
             
             document.getElementById('hpAvatar').src = hostAvatar;
@@ -1440,6 +1469,7 @@
             
             document.getElementById('hostProfileOverlay').classList.add('active');
         }
+        
         function closeHostProfile() { triggerHaptic(); document.getElementById('hostProfileOverlay').classList.remove('active'); }
 
         function closeDetailModal() { 
@@ -1492,9 +1522,9 @@
             triggerHaptic();
             if(document.getElementById('masterJoinBtn').disabled) return;
             
+            // IF GUEST - TRIGGER GUEST POPUP INSTEAD OF REDIRECT
             if(isGuestMode) {
-                const tId = activeTournament.id || activeTournament.title.replace(/\s+/g, '');
-                window.location.href = `login.html?redirect=explore.html?tournament=${encodeURIComponent(tId)}`;
+                document.getElementById('guestLoginModal').classList.add('active');
                 return;
             }
             
@@ -1807,7 +1837,7 @@
         }
 
         function openContributeModal() {
-            if(isGuestMode) { showToast("Login to Contribute!", true); return; }
+            if(isGuestMode) { document.getElementById('guestLoginModal').classList.add('active'); return; }
             document.getElementById('contributeOverlay').classList.add('active');
             let user = JSON.parse(localStorage.getItem('tournyx_user')) || {};
             let bal = document.getElementById('contributeWalletBal');
@@ -1838,6 +1868,21 @@
                 method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action: 'contribute', match_id: activeTournament.id || activeTournament.title, amount: val, user: user.email })
             });
+
+            // ADD TO LOCAL TRANSACTIONS FOR IMMEDIATE UI FEEDBACK
+            let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
+            let dateStr = new Date().toLocaleString('en-US', { month:'short', day:'2-digit', year:'numeric', hour:'numeric', minute:'2-digit', hour12:true });
+            let newTxn = { 
+                id: "TXN-" + Math.floor(Math.random() * 1000000), 
+                title: "Contributed to: " + (activeTournament.title || "Tournament"), 
+                amount: val, 
+                type: "Debit", 
+                status: "Success", 
+                category: "Donation", 
+                date: dateStr 
+            };
+            txns.unshift(newTxn);
+            localStorage.setItem('tournyx_txns', JSON.stringify(txns));
 
             document.getElementById('contributeWalletBal').innerText = user.rupees;
             
