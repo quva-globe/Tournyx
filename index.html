@@ -161,21 +161,20 @@
         .noti-item { font-size: 0.75rem; color: #d4d4ff; margin-right: 40px; font-family: var(--font-head); letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; white-space: nowrap; }
         @keyframes slideRight { from { transform: translate3d(-50%, 0, 0); } to { transform: translate3d(0, 0, 0); } }
 
-        /* --- MENU & SECURE BACKDROP (BUG FIXED) --- */
+        /* --- SMOOTH MENU --- */
         .menu-backdrop { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 2999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .menu-backdrop.active { opacity: 1; pointer-events: auto; }
         
-        /* Fully responsive desktop/mobile overlay menu */
         .overlay-menu { 
-            position: fixed; top: 0; right: -320px; 
+            position: fixed; top: 0; right: 0; 
             width: 100%; max-width: 300px; height: 100vh; 
             background: #090314; border-left: 1px solid var(--accent-purple); 
-            z-index: 3000; transition: right 0.3s ease; 
-            padding: 20px; display: flex; flex-direction: column; 
+            z-index: 3000; padding: 20px; display: flex; flex-direction: column; 
             box-shadow: -10px 0 30px rgba(0,0,0,0.8); 
+            transform: translateX(100%); transition: transform 0.3s ease-in-out;
         }
-        @media(min-width: 768px) { .overlay-menu { max-width: 350px; right: -350px; } }
-        .overlay-menu.active { right: 0; }
+        @media(min-width: 768px) { .overlay-menu { max-width: 350px; } }
+        .overlay-menu.active { transform: translateX(0); }
         
         .menu-user-info-link { text-decoration: none; display: block; margin-bottom: 30px; background: rgba(189,0,255,0.05); padding: 15px; border-radius: 15px; border: 1px solid rgba(189,0,255,0.2); }
         .menu-user-info { display: flex; align-items: center; gap: 15px; }
@@ -184,7 +183,6 @@
         .menu-user-name { font-family: var(--font-head); font-size: 1.2rem; color: white; margin-bottom: 2px; text-shadow: 0 0 5px rgba(255,255,255,0.5); }
         .menu-user-sub { font-size: 0.85rem; color: var(--accent-cyan); }
         .menu-links { flex-grow: 1; overflow-y: auto; }
-        /* Smooth, normal transition for menu links without glitchy transforms */
         .menu-links a { display: flex; align-items: center; font-family: var(--font-head); font-size: 1rem; color: #e0e0e0; text-decoration: none; margin-bottom: 22px; transition: all 0.3s ease;}
         .menu-links a i { width: 30px; font-size: 1.2rem; color: var(--accent-purple); margin-right: 15px; text-align: center; transition: 0.3s ease; }
         .menu-links a:hover { color: var(--accent-cyan); padding-left: 10px; }
@@ -200,8 +198,21 @@
         .nm-btn { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: var(--accent-gradient); color: white; padding: 8px 15px; border-radius: 20px; font-weight: bold; font-family: var(--font-head); font-size: 0.8rem; cursor:pointer; text-decoration: none; box-shadow: 0 0 15px rgba(189,0,255,0.5); transition: 0.3s; border: none; }
         .nm-btn:hover { box-shadow: 0 0 25px rgba(0,242,255,0.7); transform: translateY(-50%) scale(1.05); }
 
+        /* --- LIVE TOURNAMENTS SLIDER (NEW) --- */
+        .live-tourney-slider { display: flex; gap: 15px; overflow-x: auto; padding: 10px 5px 20px; scroll-snap-type: x mandatory; scrollbar-width: none; }
+        .live-tourney-slider::-webkit-scrollbar { display: none; }
+        .live-card { flex: 0 0 85%; scroll-snap-align: center; background: linear-gradient(145deg, rgba(0,255,127,0.1), rgba(0,0,0,0.8)); border: 1px solid rgba(0,255,127,0.4); border-radius: 15px; padding: 15px; display: flex; align-items: center; gap: 15px; box-shadow: 0 5px 20px rgba(0,255,127,0.15); text-decoration: none; transition: 0.3s;}
+        @media(min-width:768px){ .live-card { flex: 0 0 350px; } }
+        .live-card:active { transform: scale(0.98); box-shadow: 0 5px 25px rgba(0,255,127,0.3); }
+        .live-img { width: 70px; height: 70px; border-radius: 10px; object-fit: cover; border: 1px solid var(--accent-green); flex-shrink: 0;}
+        .live-info { flex: 1; overflow: hidden; }
+        .live-badge { display: inline-block; background: rgba(0,255,127,0.2); color: var(--accent-green); font-size: 0.65rem; font-family: var(--font-head); font-weight: bold; padding: 3px 8px; border-radius: 10px; margin-bottom: 5px; animation: blink 1.5s infinite alternate;}
+        .live-title { font-family: var(--font-head); font-size: 1rem; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px;}
+        .live-prize { font-size: 0.85rem; color: #a0a0b0; font-weight: bold; }
+        .live-prize span { color: var(--accent-orange); }
+
         /* --- HERO --- */
-        .hero { text-align: center; padding: 30px 15px 15px; position: relative; z-index: 2; }
+        .hero { text-align: center; padding: 25px 15px 15px; position: relative; z-index: 2; }
         .hero h1 { font-family: var(--font-head); font-size: 2rem; line-height: 1.3; margin-bottom: 15px; }
         
         .gradient-text { 
@@ -216,7 +227,7 @@
         @keyframes cursorBlink { 50% { opacity: 0; } }
 
         /* --- ROLE CARDS --- */
-        .role-cards { padding: 15px; display: flex; flex-direction: column; gap: 20px; position: relative; z-index: 2; }
+        .role-cards { padding: 15px; display: flex; flex-direction: column; gap: 20px; position: relative; z-index: 2; margin-bottom: 15px;}
         @media(min-width:768px) { .role-cards { flex-direction: row; } .role-card { flex: 1; } }
         .role-card { border-radius: 15px; padding: 25px 20px; text-align: center; position: relative; overflow: hidden; border: 1px solid var(--card-border); background: var(--secondary-bg); transition: 0.3s; }
         .role-card:active { transform: translateY(-5px) scale(0.98); box-shadow: 0 15px 35px rgba(189,0,255,0.15); }
@@ -241,13 +252,12 @@
         .stat-label { font-size: 0.8rem; color: #b0b0cc; font-weight: bold; text-transform:uppercase; letter-spacing: 1px; }
 
         .marquee-container { width: 100%; overflow: hidden; padding-bottom: 5px; }
-        /* Smooth infinite scroll fix */
         .marquee-track { display: flex; gap: 15px; width: max-content; animation: scroll 30s linear infinite; transform: translateZ(0);}
         .marquee-track:hover { animation-play-state: paused; }
         @keyframes scroll { 0% { transform: translate3d(0,0,0); } 100% { transform: translate3d(-50%,0,0); } }
         .game-pill { padding: 10px 25px; background: linear-gradient(90deg, #110822, #1a0a3a); border: 1px solid rgba(189,0,255,0.4); border-radius: 50px; font-family: var(--font-head); font-size: 0.9rem; color: #ffffff; white-space: nowrap; display: flex; align-items: center; gap: 10px; box-shadow: 0 0 20px rgba(189,0,255,0.2); }
 
-        /* --- 15 FEATURES GRID --- */
+        /* --- 15 FEATURES GRID (UPDATED) --- */
         .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 15px; margin-top: 20px; }
         .f-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.08); padding: 20px 10px; border-radius: 15px; text-align: center; transition: 0.3s; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         .f-card:active { background: rgba(189,0,255,0.15); border-color: var(--accent-cyan); transform: translateY(-5px) scale(0.95); box-shadow: 0 10px 25px rgba(0,242,255,0.2); }
@@ -317,16 +327,22 @@
         .t-tag { position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.85); border: 1px solid var(--accent-cyan); padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-family: var(--font-head); font-weight: bold; color: white; box-shadow: 0 0 15px rgba(0,242,255,0.6); text-transform: uppercase; }
         .t-content { padding: 20px; }
         .t-title { font-family: var(--font-head); font-size: 1.2rem; margin-bottom: 10px; color: white; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-shadow: 0 0 5px rgba(255,255,255,0.3); }
-        .t-meta { display: flex; justify-content: space-between; font-size: 0.9rem; color: #b0b0cc; margin-bottom: 18px; font-weight: 600; align-items: center; }
-        .t-prize { color: var(--accent-orange); font-weight: 900; font-size: 1.05rem; text-shadow: 0 0 15px rgba(255,153,0,0.5); }
+        
+        .t-detail-item { font-size: 0.8rem; color: #b0b0cc; margin-bottom: 5px; display:flex; align-items:center; gap:6px;}
+        .t-detail-item i { color: var(--accent-cyan); width: 14px;}
+        
+        .t-meta { display: flex; justify-content: space-between; font-size: 0.9rem; color: #b0b0cc; margin-top: 15px; margin-bottom: 18px; font-weight: 600; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;}
+        .t-prize { color: var(--accent-orange); font-weight: 900; font-size: 1.1rem; text-shadow: 0 0 15px rgba(255,153,0,0.5); }
+        
+        /* Updated progress bar for featured */
+        .f-progress-container { width: 100%; background: rgba(255,255,255,0.1); border-radius: 5px; height: 6px; margin: 10px 0; overflow: hidden; }
+        .f-progress-bar { height: 100%; background: var(--accent-cyan); border-radius: 5px; box-shadow: 0 0 10px rgba(0,242,255,0.5); }
         
         .t-btn { display: block; width: 100%; padding: 14px; background: var(--accent-gradient); border: none; border-radius: 12px; color: white; font-family: var(--font-head); font-weight: bold; font-size: 0.95rem; cursor: pointer; text-decoration: none; text-align: center; transition: 0.3s; box-shadow: 0 8px 20px rgba(189,0,255,0.5); text-transform: uppercase; letter-spacing: 1px; }
         .t-btn:active { box-shadow: 0 12px 30px rgba(0,242,255,0.7); transform: scale(0.95); }
-        .t-btn.disabled { background: #2a2a3a; color: #666; cursor: default; box-shadow: none; border: 1px solid #444; }
 
         /* Skeletons */
         .skeleton { background: linear-gradient(90deg, #110822 25%, #1a0a3a 50%, #110822 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite linear; border-radius: 10px; }
-        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 
         /* --- FUNCTIONAL DAILY QUESTS --- */
         .quests-wrapper { display: flex; flex-direction: column; gap: 15px; position:relative;}
@@ -339,7 +355,7 @@
         .quest-btn.claimed { background: #222; border-color: #444; color: var(--accent-green); box-shadow: none; cursor: default; pointer-events:none;}
 
         /* Confetti */
-        .confetti-piece { position: absolute; width: 10px; height: 20px; opacity: 0; border-radius: 2px; }
+        .confetti-piece { position: absolute; width: 10px; height: 20px; opacity: 0; border-radius: 2px; z-index: 9999;}
         @keyframes popConfetti { 0% { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); opacity: 1; } 100% { transform: translate3d(0, -150px, 0) scale(0.5) rotate(720deg); opacity: 0; } }
 
         /* --- PAYMENTS --- */
@@ -485,6 +501,11 @@
         </div>
     </div>
 
+    <section class="hero fade-up">
+        <h1 id="heroTitle">Own the Arena<br><span class="gradient-text">Power Your Play 🏆</span></h1>
+        <div class="typing-container"><span class="typing-text" id="typingText"></span></div>
+    </section>
+
     <div class="next-match-card fade-up" id="nextMatchWidget">
         <div class="nm-label"><i class="fa-solid fa-bolt"></i> Your Next Match</div>
         <div class="nm-title" id="nmTitle">Loading...</div>
@@ -492,9 +513,13 @@
         <button class="nm-btn" id="nmBtn">VIEW DETAILS</button>
     </div>
 
-    <section class="hero fade-up">
-        <h1 id="heroTitle">Own the Arena<br><span class="gradient-text">Power Your Play 🏆</span></h1>
-        <div class="typing-container"><span class="typing-text" id="typingText"></span></div>
+    <section class="section-pad fade-up" id="liveSectionContainer" style="display:none; padding-bottom: 20px;">
+        <div class="slider-header" style="margin-bottom:10px;">
+            <h2 class="section-title" style="margin:0; text-align:left; font-size:1.3rem; color:var(--accent-green); text-shadow:0 0 15px rgba(0,255,127,0.4);"><i class="fa-solid fa-satellite-dish fa-fade"></i> Live Now</h2>
+            <a href="explore.html" class="view-all" style="color:var(--accent-green); border-color:var(--accent-green);">View All</a>
+        </div>
+        <div class="live-tourney-slider" id="liveTourneySlider">
+            </div>
     </section>
 
     <section class="role-cards glow-section fade-up delay-1">
@@ -517,90 +542,11 @@
         </div>
     </section>
 
-    <section class="stats-area glow-section fade-up delay-1">
-        <div class="stats-grid">
-            <div class="stat-box"><span class="stat-val count-up" data-target="56">0</span>K+<br><span class="stat-label">Players</span></div>
-            <div class="stat-box"><span class="stat-val" style="color:var(--accent-green)">₹<span class="count-up" data-target="93">0</span>K+</span><br><span class="stat-label">Prizes</span></div>
-            <div class="stat-box"><span class="stat-val count-up" style="color:var(--accent-orange)" data-target="150">0</span>+<br><span class="stat-label">Events</span></div>
-            <div class="stat-box"><span class="stat-val count-up" style="color:var(--accent-cyan)" data-target="4">0</span>+<br><span class="stat-label">States</span></div>
+    <section class="section-pad glow-section fade-up delay-1">
+        <div class="slider-header" style="justify-content: center;">
+            <h2 class="section-title" style="margin:0; font-size:1.4rem;">Daily <span style="color:var(--accent-orange); text-shadow:0 0 15px rgba(255,153,0,0.5);">Quests</span></h2>
         </div>
-
-        <p style="text-align:center; margin-bottom:15px; font-family:var(--font-head); font-size:0.9rem; color:var(--accent-purple); letter-spacing:2px; text-shadow:0 0 10px rgba(189,0,255,0.5);">SUPPORTED TITLES</p>
-        <div class="marquee-container">
-            <div class="marquee-track">
-                <div class="game-pill"><i class="fa-solid fa-fire" style="color:orange"></i> FREE FIRE</div>
-                <div class="game-pill"><i class="fa-solid fa-crosshairs" style="color:yellow"></i> BGMI</div>
-                <div class="game-pill"><i class="fa-solid fa-v" style="color:red"></i> Valorant Mobile</div>
-                <div class="game-pill"><i class="fa-solid fa-skull" style="color:green"></i> COD: MOBILE</div>
-                <div class="game-pill"><i class="fa-solid fa-gamepad" style="color:cyan"></i> PUBG NEW STATE</div>
-                
-                <div class="game-pill"><i class="fa-solid fa-fire" style="color:orange"></i> FREE FIRE</div>
-                <div class="game-pill"><i class="fa-solid fa-crosshairs" style="color:yellow"></i> BGMI</div>
-                <div class="game-pill"><i class="fa-solid fa-v" style="color:red"></i> Valorant Mobile</div>
-                <div class="game-pill"><i class="fa-solid fa-skull" style="color:green"></i> COD: MOBILE</div>
-                <div class="game-pill"><i class="fa-solid fa-gamepad" style="color:cyan"></i> PUBG NEW STATE</div>
-            </div>
-        </div>
-    </section>
-
-    <section class="section-pad fade-up">
-        <h2 class="section-title">Platform <span style="color:var(--accent-cyan); text-shadow:0 0 15px rgba(0,242,255,0.5);">Arsenal</span></h2>
-        <div class="features-grid">
-            <div class="f-card"><i class="fa-solid fa-shield-halved f-icon"></i><div class="f-title">Clan Wars</div></div>
-            <div class="f-card"><i class="fa-solid fa-robot f-icon"></i><div class="f-title">AI Anti-Cheat</div></div>
-            <div class="f-card"><i class="fa-solid fa-wallet f-icon"></i><div class="f-title">Crypto Wallet</div></div>
-            <div class="f-card"><i class="fa-solid fa-bolt f-icon"></i><div class="f-title">Instant Payouts</div></div>
-            <div class="f-card"><i class="fa-solid fa-sitemap f-icon"></i><div class="f-title">Live Brackets</div></div>
-            <div class="f-card"><i class="fa-solid fa-chart-pie f-icon"></i><div class="f-title">Player Stats</div></div>
-            <div class="f-card"><i class="fa-solid fa-calendar-check f-icon"></i><div class="f-title">Daily Quests</div></div>
-            <div class="f-card"><i class="fa-solid fa-users-rays f-icon"></i><div class="f-title">Guild Tourneys</div></div>
-            <div class="f-card"><i class="fa-solid fa-crosshairs f-icon"></i><div class="f-title">Scrims Maker</div></div>
-            <div class="f-card"><i class="fa-solid fa-video f-icon"></i><div class="f-title">Streaming Hub</div></div>
-            <div class="f-card"><i class="fa-solid fa-key f-icon"></i><div class="f-title">Custom Lobbies</div></div>
-            <div class="f-card"><i class="fa-solid fa-handshake-angle f-icon"></i><div class="f-title">Sponsor Bounties</div></div>
-        </div>
-    </section>
-  
-    <section class="section-pad fade-up">
-        <h2 class="section-title">Community <span>Leaderboard</span></h2>
-        <div class="lb-tabs">
-            <div class="lb-tab active" onclick="switchTab('organizers', this)">Organizers</div>
-            <div class="lb-tab" onclick="switchTab('teams', this)">Teams</div>
-            <div class="lb-tab" onclick="switchTab('contributors', this)">Contributors</div>
-        </div>
-
-        <div id="organizers" class="lb-content people-list active">
-            <div class="person-row rank-1-border"><div class="rank-medal rank-1"><i class="fa-solid fa-medal"></i></div><img src="https://via.placeholder.com/100" class="person-img-small"><div class="person-info"><div class="person-name">Eagle Esports</div><div class="person-role">120 Tournaments Hosted</div></div></div>
-            <div class="person-row rank-2-border"><div class="rank-medal rank-2"><i class="fa-solid fa-medal"></i></div><img src="https://via.placeholder.com/100" class="person-img-small"><div class="person-info"><div class="person-name">Wolves Org</div><div class="person-role">85 Tournaments Hosted</div></div></div>
-            <div class="person-row rank-3-border"><div class="rank-medal rank-3"><i class="fa-solid fa-medal"></i></div><img src="https://via.placeholder.com/100" class="person-img-small"><div class="person-info"><div class="person-name">MGM Esports</div><div class="person-role">65 Tournaments Hosted</div></div></div>
-            <div class="person-row"><img src="https://via.placeholder.com/100" class="person-img-small"><div class="person-info"><div class="person-name">Titan Gaming</div><div class="person-role">42 Tournaments Hosted</div></div></div>
-            <div class="person-row"><img src="https://via.placeholder.com/100" class="person-img-small"><div class="person-info"><div class="person-name">Apex Predators</div><div class="person-role">30 Tournaments Hosted</div></div></div>
-            <div class="person-row"><img src="https://via.placeholder.com/100" class="person-img-small"><div class="person-info"><div class="person-name">Phoenix Core</div><div class="person-role">18 Tournaments Hosted</div></div></div>
-        </div>
-
-        <div id="teams" class="lb-content people-list">
-            <div class="person-row rank-1-border"><div class="rank-medal rank-1"><i class="fa-solid fa-medal"></i></div><img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:var(--accent-purple)"><div class="person-info"><div class="person-name">K9 Esports</div><div class="person-role" style="color:var(--accent-purple)">₹ 8,840 Won</div></div></div>
-            <div class="person-row rank-2-border"><div class="rank-medal rank-2"><i class="fa-solid fa-medal"></i></div><img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:var(--accent-purple)"><div class="person-info"><div class="person-name">BooWrath</div><div class="person-role" style="color:var(--accent-purple)">₹ 6,735 Won</div></div></div>
-            <div class="person-row rank-3-border"><div class="rank-medal rank-3"><i class="fa-solid fa-medal"></i></div><img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:var(--accent-purple)"><div class="person-info"><div class="person-name">True Impact</div><div class="person-role" style="color:var(--accent-purple)">₹ 5,200 Won</div></div></div>
-            <div class="person-row"><img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:var(--accent-purple)"><div class="person-info"><div class="person-name">Godlike</div><div class="person-role" style="color:var(--accent-purple)">₹ 4,150 Won</div></div></div>
-            <div class="person-row"><img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:var(--accent-purple)"><div class="person-info"><div class="person-name">Soul Esports</div><div class="person-role" style="color:var(--accent-purple)">₹ 3,900 Won</div></div></div>
-            <div class="person-row"><img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:var(--accent-purple)"><div class="person-info"><div class="person-name">XSpark Hub</div><div class="person-role" style="color:var(--accent-purple)">₹ 2,100 Won</div></div></div>
-        </div>
-
-        <div id="contributors" class="lb-content people-list">
-            <div class="person-row rank-1-border"><div class="rank-medal rank-1"><i class="fa-solid fa-medal"></i></div><img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:#ffd700"><div class="person-info"><div class="person-name">Serpent</div><div class="person-role" style="color:#ffd700">32 Contributions</div></div></div>
-            <div class="person-row rank-2-border"><div class="rank-medal rank-2"><i class="fa-solid fa-medal"></i></div><img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:#ffd700"><div class="person-info"><div class="person-name">SATAN</div><div class="person-role" style="color:#ffd700">28 Contributions</div></div></div>
-            <div class="person-row rank-3-border"><div class="rank-medal rank-3"><i class="fa-solid fa-medal"></i></div><img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:#ffd700"><div class="person-info"><div class="person-name">Lucifer</div><div class="person-role" style="color:#ffd700">21 Contributions</div></div></div>
-            <div class="person-row"><img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:#ffd700"><div class="person-info"><div class="person-name">Venom</div><div class="person-role" style="color:#ffd700">18 Contributions</div></div></div>
-            <div class="person-row"><img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:#ffd700"><div class="person-info"><div class="person-name">Ghost Protocol</div><div class="person-role" style="color:#ffd700">14 Contributions</div></div></div>
-            <div class="person-row"><img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:#ffd700"><div class="person-info"><div class="person-name">Shadow Strike</div><div class="person-role" style="color:#ffd700">9 Contributions</div></div></div>
-        </div>
-    </section>
-
-    <section class="section-pad glow-section fade-up">
-        <div class="slider-header">
-            <h2 class="section-title" style="margin:0; text-align:left; font-size:1.4rem;">Daily <span>Quests</span></h2>
-        </div>
+        <div style="text-align:center; font-size:0.8rem; color:#888; margin-bottom:15px;">Tasks reset 24 hours after claiming!</div>
         <div class="quests-wrapper" id="dynamicQuestsWrapper">
             <div class="quest-card" id="quest_play">
                 <div>
@@ -633,6 +579,95 @@
         </div>
     </section>
 
+    <section class="stats-area glow-section fade-up">
+        <div class="stats-grid">
+            <div class="stat-box"><span class="stat-val count-up" data-target="56">0</span>K+<br><span class="stat-label">Players</span></div>
+            <div class="stat-box"><span class="stat-val" style="color:var(--accent-green)">₹<span class="count-up" data-target="93">0</span>K+</span><br><span class="stat-label">Prizes</span></div>
+            <div class="stat-box"><span class="stat-val count-up" style="color:var(--accent-orange)" data-target="150">0</span>+<br><span class="stat-label">Events</span></div>
+            <div class="stat-box"><span class="stat-val count-up" style="color:var(--accent-cyan)" data-target="4">0</span>+<br><span class="stat-label">States</span></div>
+        </div>
+
+        <p style="text-align:center; margin-bottom:15px; font-family:var(--font-head); font-size:0.9rem; color:var(--accent-purple); letter-spacing:2px; text-shadow:0 0 10px rgba(189,0,255,0.5);">SUPPORTED TITLES</p>
+        <div class="marquee-container">
+            <div class="marquee-track">
+                <div class="game-pill"><i class="fa-solid fa-fire" style="color:orange"></i> FREE FIRE</div>
+                <div class="game-pill"><i class="fa-solid fa-crosshairs" style="color:yellow"></i> BGMI</div>
+                <div class="game-pill"><i class="fa-solid fa-v" style="color:red"></i> Valorant Mobile</div>
+                <div class="game-pill"><i class="fa-solid fa-skull" style="color:green"></i> COD: MOBILE</div>
+                <div class="game-pill"><i class="fa-solid fa-gamepad" style="color:cyan"></i> PUBG NEW STATE</div>
+                
+                <div class="game-pill"><i class="fa-solid fa-fire" style="color:orange"></i> FREE FIRE</div>
+                <div class="game-pill"><i class="fa-solid fa-crosshairs" style="color:yellow"></i> BGMI</div>
+                <div class="game-pill"><i class="fa-solid fa-v" style="color:red"></i> Valorant Mobile</div>
+                <div class="game-pill"><i class="fa-solid fa-skull" style="color:green"></i> COD: MOBILE</div>
+                <div class="game-pill"><i class="fa-solid fa-gamepad" style="color:cyan"></i> PUBG NEW STATE</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-pad fade-up">
+        <h2 class="section-title">Premium <span style="color:var(--accent-cyan); text-shadow:0 0 15px rgba(0,242,255,0.5);">Features</span></h2>
+        <div class="features-grid">
+            <div class="f-card"><i class="fa-solid fa-shield-halved f-icon"></i><div class="f-title">Anti-Cheat</div></div>
+            <div class="f-card"><i class="fa-solid fa-wallet f-icon"></i><div class="f-title">Secure Wallets</div></div>
+            <div class="f-card"><i class="fa-solid fa-bolt f-icon"></i><div class="f-title">Instant Payouts</div></div>
+            <div class="f-card"><i class="fa-solid fa-sitemap f-icon"></i><div class="f-title">Live Brackets</div></div>
+            <div class="f-card"><i class="fa-brands fa-discord f-icon"></i><div class="f-title">Dedicated Comms</div></div>
+            <div class="f-card"><i class="fa-solid fa-chart-line f-icon"></i><div class="f-title">Esports Stats</div></div>
+            <div class="f-card"><i class="fa-solid fa-server f-icon"></i><div class="f-title">128-Tick Servers</div></div>
+            <div class="f-card"><i class="fa-solid fa-video f-icon"></i><div class="f-title">Streamer Mode</div></div>
+            <div class="f-card"><i class="fa-solid fa-crown f-icon"></i><div class="f-title">Pro Lobbies</div></div>
+            <div class="f-card"><i class="fa-solid fa-lock f-icon"></i><div class="f-title">Roster Lock</div></div>
+            <div class="f-card"><i class="fa-solid fa-scale-balanced f-icon"></i><div class="f-title">Fair Play AI</div></div>
+            <div class="f-card"><i class="fa-solid fa-coins f-icon"></i><div class="f-title">Crypto / INR</div></div>
+            <div class="f-card"><i class="fa-solid fa-calculator f-icon"></i><div class="f-title">Auto-Scoring</div></div>
+            <div class="f-card"><i class="fa-solid fa-gavel f-icon"></i><div class="f-title">Pro Rulesets</div></div>
+            <div class="f-card"><i class="fa-solid fa-users f-icon"></i><div class="f-title">Clan Wars</div></div>
+        </div>
+    </section>
+
+    <section class="section-pad fade-up">
+        <div class="slider-header">
+            <h2 class="section-title" style="margin:0; text-align:left; font-size:1.4rem;">Featured <span>Events</span></h2>
+            <a href="explore.html" class="view-all">View All</a>
+        </div>
+        <div class="tourney-slider" id="featuredSlider">
+            <div class="tourney-card skeleton" style="height:350px; background:rgba(255,255,255,0.05); border:none;"></div>
+            <div class="tourney-card skeleton" style="height:350px; background:rgba(255,255,255,0.05); border:none;"></div>
+            <div class="tourney-card skeleton" style="height:350px; background:rgba(255,255,255,0.05); border:none;"></div>
+        </div>
+    </section>
+  
+    <section class="section-pad fade-up">
+        <h2 class="section-title">Community <span>Leaderboard</span></h2>
+        <div class="lb-tabs">
+            <div class="lb-tab active" onclick="switchTab('organizers', this)">Organizers</div>
+            <div class="lb-tab" onclick="switchTab('teams', this)">Teams</div>
+            <div class="lb-tab" onclick="switchTab('contributors', this)">Contributors</div>
+        </div>
+
+        <div id="organizers" class="lb-content people-list active">
+            <div class="person-row rank-1-border"><div class="rank-medal rank-1"><i class="fa-solid fa-medal"></i></div><img src="https://via.placeholder.com/100" class="person-img-small"><div class="person-info"><div class="person-name">Eagle Esports</div><div class="person-role">120 Tournaments Hosted</div></div></div>
+            <div class="person-row rank-2-border"><div class="rank-medal rank-2"><i class="fa-solid fa-medal"></i></div><img src="https://via.placeholder.com/100" class="person-img-small"><div class="person-info"><div class="person-name">Wolves Org</div><div class="person-role">85 Tournaments Hosted</div></div></div>
+            <div class="person-row rank-3-border"><div class="rank-medal rank-3"><i class="fa-solid fa-medal"></i></div><img src="https://via.placeholder.com/100" class="person-img-small"><div class="person-info"><div class="person-name">MGM Esports</div><div class="person-role">65 Tournaments Hosted</div></div></div>
+            <div class="person-row"><img src="https://via.placeholder.com/100" class="person-img-small"><div class="person-info"><div class="person-name">Titan Gaming</div><div class="person-role">42 Tournaments Hosted</div></div></div>
+        </div>
+
+        <div id="teams" class="lb-content people-list">
+            <div class="person-row rank-1-border"><div class="rank-medal rank-1"><i class="fa-solid fa-medal"></i></div><img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:var(--accent-purple)"><div class="person-info"><div class="person-name">K9 Esports</div><div class="person-role" style="color:var(--accent-purple)">₹ 8,840 Won</div></div></div>
+            <div class="person-row rank-2-border"><div class="rank-medal rank-2"><i class="fa-solid fa-medal"></i></div><img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:var(--accent-purple)"><div class="person-info"><div class="person-name">BooWrath</div><div class="person-role" style="color:var(--accent-purple)">₹ 6,735 Won</div></div></div>
+            <div class="person-row rank-3-border"><div class="rank-medal rank-3"><i class="fa-solid fa-medal"></i></div><img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:var(--accent-purple)"><div class="person-info"><div class="person-name">True Impact</div><div class="person-role" style="color:var(--accent-purple)">₹ 5,200 Won</div></div></div>
+            <div class="person-row"><img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:var(--accent-purple)"><div class="person-info"><div class="person-name">Godlike</div><div class="person-role" style="color:var(--accent-purple)">₹ 4,150 Won</div></div></div>
+        </div>
+
+        <div id="contributors" class="lb-content people-list">
+            <div class="person-row rank-1-border"><div class="rank-medal rank-1"><i class="fa-solid fa-medal"></i></div><img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:#ffd700"><div class="person-info"><div class="person-name">Serpent</div><div class="person-role" style="color:#ffd700">32 Contributions</div></div></div>
+            <div class="person-row rank-2-border"><div class="rank-medal rank-2"><i class="fa-solid fa-medal"></i></div><img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:#ffd700"><div class="person-info"><div class="person-name">SATAN</div><div class="person-role" style="color:#ffd700">28 Contributions</div></div></div>
+            <div class="person-row rank-3-border"><div class="rank-medal rank-3"><i class="fa-solid fa-medal"></i></div><img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:#ffd700"><div class="person-info"><div class="person-name">Lucifer</div><div class="person-role" style="color:#ffd700">21 Contributions</div></div></div>
+            <div class="person-row"><img src="https://via.placeholder.com/100" class="person-img-small" style="border-color:#ffd700"><div class="person-info"><div class="person-name">Venom</div><div class="person-role" style="color:#ffd700">18 Contributions</div></div></div>
+        </div>
+    </section>
+
     <section class="section-pad fade-up" id="workflowSection">
         <div class="toggle-container theme-purple" id="workflowToggle">
             <div class="toggle-bg"></div>
@@ -656,18 +691,6 @@
             </a>
             <div class="step-card"><div class="step-badge">2</div><div class="step-info"><h3>Manage</h3><p>Handle registrations and seeding.</p></div></div>
             <div class="step-card"><div class="step-badge">3</div><div class="step-info"><h3>Monetize</h3><p>Collect fees and grow your brand.</p></div></div>
-        </div>
-    </section>
-
-    <section class="section-pad fade-up">
-        <div class="slider-header">
-            <h2 class="section-title" style="margin:0; text-align:left; font-size:1.4rem;">Featured <span>Events</span></h2>
-            <a href="explore.html" class="view-all">View All</a>
-        </div>
-        <div class="tourney-slider" id="featuredSlider">
-            <div class="tourney-card skeleton" style="height:250px; background:rgba(255,255,255,0.05); border:none;"></div>
-            <div class="tourney-card skeleton" style="height:250px; background:rgba(255,255,255,0.05); border:none;"></div>
-            <div class="tourney-card skeleton" style="height:250px; background:rgba(255,255,255,0.05); border:none;"></div>
         </div>
     </section>
 
@@ -778,16 +801,23 @@
         document.addEventListener('DOMContentLoaded', () => {
             let user = JSON.parse(localStorage.getItem('tournyx_user'));
             
-            if (!user) {
-                window.location.href = "login.html";
-                return; 
+            // NO REDIRECT - Guest Mode enabled for SEO/Crawlers
+            if (user) {
+                document.getElementById('welcomeText').innerText = "Hi, " + (user.username || user.ign || "Player");
+                document.getElementById('menuUserName').innerText = user.username || "Player";
+                document.getElementById('menuUserImg').src = user.avatar || "https://via.placeholder.com/60";
+                fetchNextMatch(user);
+                syncLiveWalletPoints(user); 
+            } else {
+                document.getElementById('welcomeText').innerText = "Welcome, Guest";
+                document.getElementById('menuUserName').innerText = "Guest Player";
+                document.getElementById('menuUserImg').src = "https://via.placeholder.com/60";
+                document.querySelector('.menu-user-info-link').href = "login.html"; // Send guest to login
+                document.getElementById('homeWalletBalance').innerText = "0";
             }
 
             // Background pre-fetch
-            checkLoginStatus();
-            fetchNextMatch(user);
             loadFeaturedTournaments();
-            syncLiveWalletPoints(user); 
             
             // Dynamic Sheets Loading
             loadQuestsFromSheets(); 
@@ -872,7 +902,7 @@
             document.querySelectorAll('.fade-up').forEach((el) => { observer.observe(el); });
         }
 
-        // --- 4. LIVE NEXT MATCH FETCHING (AUTO-VANISH IF LEFT) ---
+        // --- 4. LIVE NEXT MATCH FETCHING ---
         async function fetchNextMatch(user) {
             try {
                 const [tRes, mRes] = await Promise.all([
@@ -907,7 +937,7 @@
             } catch(e) { console.log("Next match check failed silently."); }
         }
 
-        // --- 5. LIGHTNING FAST FEATURED TOURNAMENTS WITH CACHE ---
+        // --- 5. LIGHTNING FAST SLIDERS (LIVE & FEATURED) ---
         function formatImageUrl(url) {
             if (!url) return 'https://via.placeholder.com/600x300/15062e/00f2ff?text=Tournament+Banner';
             if (url.startsWith('data:image')) return url;
@@ -918,6 +948,57 @@
             return url;
         }
 
+        function calculateTimeRemaining(dateStr) {
+            if (!dateStr || dateStr === "TBD") return { text: "TBD", isClosed: false };
+            let d = new Date(dateStr);
+            if (isNaN(d.getTime())) return { text: dateStr, isClosed: false };
+            
+            let diff = d - new Date();
+            if (diff < 0) return { text: "Closed", isClosed: true };
+            
+            let hours = Math.floor(diff / (1000 * 60 * 60));
+            if (hours < 24) return { text: `Ends in ${hours}h`, isClosed: false };
+            let days = Math.floor(hours / 24);
+            return { text: `Ends in ${days}d`, isClosed: false };
+        }
+
+        function formatDateTime(dateStr) {
+            if (!dateStr || dateStr === "TBD") return "TBA";
+            try {
+                const d = new Date(dateStr);
+                if (isNaN(d.getTime())) return dateStr; 
+                return d.toLocaleString('en-US', { month: 'short', day: '2-digit', hour: 'numeric', minute: '2-digit', hour12: true });
+            } catch(e) { return dateStr; }
+        }
+
+        function loadLiveTournamentsSlider(allData) {
+            let liveData = allData.filter(t => t.status && t.status.toLowerCase().includes('live'));
+            const container = document.getElementById('liveSectionContainer');
+            const slider = document.getElementById('liveTourneySlider');
+            
+            if(liveData.length > 0) {
+                slider.innerHTML = "";
+                liveData.slice(0, 5).forEach(t => {
+                    let bg = formatImageUrl(t.banner);
+                    let prize = (!t.prize || t.prize == 0) ? "Glory" : "₹" + t.prize;
+                    slider.innerHTML += `
+                        <a href="explore.html?tournament=${t.id || t.title}" class="live-card">
+                            <img src="${bg}" class="live-img">
+                            <div class="live-info">
+                                <span class="live-badge"><i class="fa-solid fa-satellite-dish"></i> LIVE</span>
+                                <div class="live-title">${t.title}</div>
+                                <div class="live-prize">Prize Pool: <span>${prize}</span></div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right" style="color:var(--accent-green); opacity:0.7;"></i>
+                        </a>
+                    `;
+                });
+                container.style.display = 'block';
+            } else {
+                container.style.display = 'none';
+            }
+        }
+
         function renderFeaturedTournaments(featuredArray) {
             const slider = document.getElementById('featuredSlider');
             slider.innerHTML = "";
@@ -926,7 +1007,15 @@
                 const prize = (!t.prize || t.prize == 0) ? "Glory" : "₹" + t.prize;
                 const feeText = (!t.fee || t.fee == "0" || t.fee == "Free") ? "Free Entry" : "₹" + t.fee;
                 
-                let btnState = `onclick="window.location.href='explore.html?tournament=${t.id}'"`;
+                const totalSlots = parseInt(t.slots) || 48;
+                const slotsFilled = parseInt(t.filled_slots) || 0; 
+                let fillPct = (slotsFilled / totalSlots) * 100;
+                let isFull = slotsFilled >= totalSlots;
+                
+                let timeData = calculateTimeRemaining(t.date);
+                let formatDT = formatDateTime(t.date);
+                
+                let btnState = `onclick="window.location.href='explore.html?tournament=${t.id || t.title}'"`;
                 slider.innerHTML += `
                     <div class="tourney-card">
                         <div class="t-img-box" ${btnState} style="cursor:pointer;">
@@ -935,7 +1024,20 @@
                         </div>
                         <div class="t-content">
                             <div class="t-title">${t.title}</div>
-                            <div class="t-meta"><span><i class="fa-solid fa-ticket" style="color:var(--accent-purple);"></i> ${feeText}</span><span class="t-prize">${prize}</span></div>
+                            
+                            <div class="t-detail-item"><i class="fa-regular fa-calendar"></i> Starts: <strong style="color:white; margin-left:4px;">${formatDT}</strong></div>
+                            <div class="t-detail-item" style="color:${timeData.isClosed ? '#ff4d4d' : 'var(--accent-orange)'}"><i class="fa-solid fa-hourglass-half"></i> Registration: <strong>${timeData.text}</strong></div>
+                            
+                            <div class="t-meta" style="margin-bottom: 5px;"><span><i class="fa-solid fa-ticket" style="color:var(--accent-purple);"></i> ${feeText}</span><span class="t-prize">${prize}</span></div>
+                            
+                            <div style="margin-bottom: 15px;">
+                                <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-family:var(--font-head); font-weight:bold;">
+                                    <span style="color:#888;">Slots Filled</span>
+                                    <span style="color:var(--accent-cyan);">${slotsFilled}/${totalSlots}</span>
+                                </div>
+                                <div class="f-progress-container"><div class="f-progress-bar" style="width:${fillPct}%"></div></div>
+                            </div>
+                            
                             <button class="t-btn" ${btnState}>View Details</button>
                         </div>
                     </div>
@@ -944,18 +1046,20 @@
         }
 
         function loadFeaturedTournaments() {
-            // Instant load from memory if exists
             let cached = sessionStorage.getItem('tournyx_featured_cache');
-            if (cached) { renderFeaturedTournaments(JSON.parse(cached)); }
+            if (cached) { 
+                let data = JSON.parse(cached);
+                renderFeaturedTournaments(data.slice(0, 6)); 
+                loadLiveTournamentsSlider(data);
+            }
 
-            // Fetch fresh in background
             fetch(API_URL + "?action=get_tournaments")
             .then(res => res.json())
             .then(data => {
                 if (data.status === "success" && data.data.length > 0) {
-                    let featured = data.data.slice(0, 6);
-                    sessionStorage.setItem('tournyx_featured_cache', JSON.stringify(featured));
-                    renderFeaturedTournaments(featured);
+                    sessionStorage.setItem('tournyx_featured_cache', JSON.stringify(data.data));
+                    renderFeaturedTournaments(data.data.slice(0, 6));
+                    loadLiveTournamentsSlider(data.data);
                 }
             })
             .catch(err => console.log("Featured loading fallback."));
@@ -978,15 +1082,6 @@
                 }).catch(err => console.log("Sync skipped."));
             }
         }
-
-        function checkLoginStatus() {
-            let user = JSON.parse(localStorage.getItem('tournyx_user'));
-            if (user) {
-                document.getElementById('welcomeText').innerText = "Hi, " + (user.username || user.ign || "Player");
-                document.getElementById('menuUserName').innerText = user.username || "Player";
-                document.getElementById('menuUserImg').src = user.avatar || "https://via.placeholder.com/60";
-            }
-        }
         
         function logoutUser() {
             if(confirm("Are you sure you want to logout?")) {
@@ -1001,8 +1096,10 @@
             document.getElementById('menuBackdrop').classList.toggle('active');
         }
 
-        // --- 7. DYNAMIC QUESTS & STRICT VERIFICATION LOGIC ---
-        // Expected AppScript Return: { status: "success", data: [ { id: "q1", title: "Play 5 matches", reward: 100, reqType: "matches", reqVal: 5, redirect: "explore.html" } ] }
+        // --- 7. PERFECT 24HR RESET DAILY QUESTS LOGIC ---
+        // Sheets Return: { id: "q1", title: "Play 5 matches", reward: 100, reqType: "matches", reqVal: 5, redirect: "explore.html" }
+        // Instagram Example: { id: "quest_insta", title: "Follow Instagram", reward: 150, reqType: "open", reqVal: 1, redirect: "https://instagram.com/..." }
+        
         async function loadQuestsFromSheets() {
             try {
                 const res = await fetch(API_URL + "?action=get_quests");
@@ -1019,81 +1116,117 @@
                                     <div class="quest-info-title">${q.title}</div>
                                     <div class="quest-info-sub"><i class="fa-solid fa-coins"></i> Reward: ${q.reward} PTS</div>
                                 </div>
-                                <button class="quest-btn" onclick="claimQuest('${q.id}', ${q.reward}, '${q.reqType}', ${q.reqVal}, '${q.redirect}')">CLAIM</button>
+                                <button class="quest-btn" onclick="claimQuest('${q.id}', ${q.reward}, '${q.reqType}', '${q.reqVal}', '${q.redirect}')">CLAIM</button>
                             </div>
                         `;
                     });
                 }
             } catch(e) { console.log("Loading fallback default quests."); }
             
-            // Re-render state after dynamic load or fallback
             setTimeout(renderQuests, 500); 
         }
 
         function renderQuests() {
-            let claimed = JSON.parse(localStorage.getItem('tournyx_quests')) || [];
-            claimed.forEach(id => {
-                let btn = document.querySelector(`#${id} .quest-btn`);
-                if (btn) {
-                    btn.innerText = "CLAIMED";
-                    btn.classList.add("claimed");
-                    btn.onclick = null;
+            let claimedData = JSON.parse(localStorage.getItem('tournyx_quests_24h')) || {};
+            let now = Date.now();
+            let needsSave = false;
+
+            for (let id in claimedData) {
+                // If 24 hours (86,400,000 ms) have passed, reset it!
+                if (now - claimedData[id] > 24 * 60 * 60 * 1000) {
+                    delete claimedData[id];
+                    needsSave = true;
+                } else {
+                    let btn = document.querySelector(`#${id} .quest-btn`);
+                    if (btn) {
+                        btn.innerText = "CLAIMED";
+                        btn.classList.add("claimed");
+                        btn.onclick = null;
+                    }
                 }
-            });
+            }
+            if (needsSave) {
+                localStorage.setItem('tournyx_quests_24h', JSON.stringify(claimedData));
+            }
         }
 
         function claimQuest(questId, rewardPts, reqType, reqVal, redirectUrl) {
             let user = JSON.parse(localStorage.getItem('tournyx_user'));
-            if(!user) return;
+            if(!user) { showToast("Login Required!", true); return; }
 
-            let claimed = JSON.parse(localStorage.getItem('tournyx_quests')) || [];
-            if(claimed.includes(questId)) {
-                showToast("You have already claimed this quest!", true);
+            let claimedData = JSON.parse(localStorage.getItem('tournyx_quests_24h')) || {};
+            if(claimedData[questId]) {
+                showToast("You have already claimed this quest today!", true);
                 return;
             }
 
-            // Strict Verification Logic
-            let currentVal = 0;
-            reqVal = parseInt(reqVal) || 0; // Strict parse
-
-            if(reqType === 'matches') currentVal = parseInt(user.matches) || 0;
-            if(reqType === 'hosted') currentVal = parseInt(user.hosted) || 0;
-            if(reqType === 'clan') {
-                let clans = JSON.parse(localStorage.getItem('tournyx_my_clans_cache')) || [];
-                currentVal = clans.length > 0 ? 1 : 0;
-            }
-            if(reqType === 'share') {
-                if(navigator.share) { navigator.share({ title: 'Join Tournyx', url: window.location.href }); }
-                currentVal = 1; 
-            }
-
-            // Strictly verify before claiming
-            if(currentVal >= reqVal && reqVal > 0) {
-                user.points = (parseInt(user.points) || 0) + parseInt(rewardPts);
-                localStorage.setItem('tournyx_user', JSON.stringify(user));
+            // SMART INSTAGRAM / OPEN LINK VERIFICATION LOGIC
+            if(reqType === 'open') {
+                let pendingKey = `pending_quest_${questId}`;
+                let pendingTime = localStorage.getItem(pendingKey);
                 
-                claimed.push(questId);
-                localStorage.setItem('tournyx_quests', JSON.stringify(claimed));
-
-                document.getElementById('homeWalletBalance').innerText = user.points;
-                let btn = document.querySelector(`#${questId} .quest-btn`);
-                if(btn) {
-                    btn.innerText = "CLAIMED";
-                    btn.classList.add("claimed");
-                    btn.onclick = null;
-                    triggerConfetti(btn);
+                if (!pendingTime) {
+                    // First Click: Open the link and set a timestamp
+                    window.open(redirectUrl, '_blank');
+                    localStorage.setItem(pendingKey, Date.now());
+                    showToast("Task Started! Return here and click claim again to verify.");
+                    let btn = document.querySelector(`#${questId} .quest-btn`);
+                    if(btn) { btn.innerText = "VERIFY"; btn.style.borderColor = "var(--accent-orange)"; btn.style.color = "var(--accent-orange)"; }
+                    return;
+                } else {
+                    // Second Click: Verify they stayed at least 5 seconds
+                    if (Date.now() - parseInt(pendingTime) < 5000) {
+                        showToast("Task not verified. Make sure you completed the action!", true);
+                        return;
+                    }
+                    localStorage.removeItem(pendingKey); // Clear pending state to grant reward
                 }
-                
-                showToast(`+${rewardPts} PTS verified & added to Wallet!`);
-
-                fetch(API_URL, {
-                    method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: "update_wallet", email: user.email, points: user.points })
-                });
             } else {
-                showToast(`Verification Failed: Task Incomplete!`, true);
-                setTimeout(() => { window.location.href = redirectUrl; }, 1500);
+                // Regular Stats Verification Logic
+                let currentVal = 0;
+                let requiredValue = parseInt(reqVal) || 0; 
+                
+                if(reqType === 'matches') currentVal = parseInt(user.matches) || 0;
+                if(reqType === 'hosted') currentVal = parseInt(user.hosted) || 0;
+                if(reqType === 'clan') {
+                    let clans = JSON.parse(localStorage.getItem('tournyx_my_clans_cache')) || [];
+                    currentVal = clans.length > 0 ? 1 : 0;
+                }
+                if(reqType === 'share') {
+                    if(navigator.share) { navigator.share({ title: 'Join Tournyx', url: window.location.href }); }
+                    currentVal = 1; 
+                }
+
+                if (currentVal < requiredValue && requiredValue > 0) {
+                    showToast(`Task Incomplete!`, true);
+                    setTimeout(() => { window.location.href = redirectUrl; }, 1500);
+                    return;
+                }
             }
+
+            // GRANT REWARD AND LOCK FOR 24 HOURS
+            user.points = (parseInt(user.points) || 0) + parseInt(rewardPts);
+            localStorage.setItem('tournyx_user', JSON.stringify(user));
+            
+            claimedData[questId] = Date.now(); // Lock using current time
+            localStorage.setItem('tournyx_quests_24h', JSON.stringify(claimedData));
+
+            document.getElementById('homeWalletBalance').innerText = user.points;
+            let btn = document.querySelector(`#${questId} .quest-btn`);
+            if(btn) {
+                btn.innerText = "CLAIMED";
+                btn.style.borderColor = "#444"; btn.style.color = "var(--accent-green)";
+                btn.classList.add("claimed");
+                btn.onclick = null;
+                triggerConfetti(btn);
+            }
+            
+            showToast(`+${rewardPts} PTS verified & added to Wallet!`);
+
+            fetch(API_URL, {
+                method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: "update_wallet", email: user.email, points: user.points })
+            });
         }
 
         function switchWorkflow(role) {
