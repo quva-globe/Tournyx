@@ -3,328 +3,314 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Organizer Roster Portal | Tournyx TM</title>
+    <title>Organizer Portal | Tournyx TM</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        /* =========================================
-           🏆 TOURNYX GLOBAL THEME VARIABLES
-           ========================================= */
         :root {
-            --bg-color: #0f1016; /* Dark theme background */
-            --card-bg: #1a1c23; /* Darker card background */
-            --primary-accent: #8a2be2; /* Tournyx Purple/Violet */
-            --secondary-accent: #00ffcc; /* Tech Cyan/Teal */
+            --bg-dark: #0f1016;
+            --card-bg: rgba(26, 28, 35, 0.85);
+            --primary: #8a2be2;
+            --secondary: #00ffcc;
             --text-main: #ffffff;
             --text-sub: #aaaaaa;
-            --text-error: #ff4c4c;
-            --input-border: #2d303a;
-            --font-main: 'Poppins', sans-serif;
-            --shadow-purple: 0 10px 40px rgba(138, 43, 226, 0.2);
-            --shadow-teal: 0 10px 40px rgba(0, 255, 204, 0.1);
+            --glass-border: rgba(138, 43, 226, 0.3);
         }
 
-        /* Standard body setup with the dynamic background */
-        body { font-family: var(--font-main); background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 20px; box-sizing: border-box; position: relative; overflow-x: hidden; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0; min-height: 100vh;
+            display: flex; justify-content: center; align-items: center;
+            overflow: hidden; /* For background animations */
+        }
 
-        /* =========================================
-           🌌 DYNAMIC THEME BACKGROUND ANIMATION
-           ========================================= */
-        /* Creating a futuristic grid effect */
-        body::before { content: ''; position: absolute; width: 200%; height: 200%; top: -50%; left: -50%; background-image: linear-gradient(#1a1a1a 1px, transparent 1px), linear-gradient(90deg, #1a1a1a 1px, transparent 1px); background-size: 50px 50px; transform: rotate(15deg); opacity: 0.15; z-index: -1; animation: gridMovement 60s linear infinite; }
+        /* 🌌 ANIMATED BACKGROUND (Tournyx Theme) */
+        .bg-grid {
+            position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 40px 40px; transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px);
+            animation: gridMove 20s linear infinite; z-index: -3;
+        }
+        .orb {
+            position: absolute; border-radius: 50%; filter: blur(80px); z-index: -2; opacity: 0.5;
+        }
+        .orb-1 { width: 300px; height: 300px; background: var(--primary); top: 10%; left: 20%; animation: floatOrb 12s ease-in-out infinite alternate; }
+        .orb-2 { width: 250px; height: 250px; background: var(--secondary); bottom: 10%; right: 20%; animation: floatOrb 15s ease-in-out infinite alternate-reverse; }
 
-        /* Creating glowing purple particles moving through the background */
-        .bg-glow { position: fixed; width: 300px; height: 300px; background: radial-gradient(circle, rgba(138, 43, 226, 0.2) 0%, rgba(15, 16, 22, 0) 70%); border-radius: 50%; z-index: -2; pointer-events: none; }
-        .glow-1 { top: 10%; left: 10%; animation: glowFloat 15s ease-in-out infinite alternate; }
-        .glow-2 { bottom: 10%; right: 10%; animation: glowFloat 20s ease-in-out infinite alternate-reverse; }
+        /* 💎 GLASSMORPHISM CONTAINER */
+        .container {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            padding: 40px; border-radius: 16px; width: 90%; max-width: 450px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5), 0 0 20px rgba(138,43,226,0.1);
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 10;
+        }
 
-        /* The main centered container, designed to look "perfect" and attractive */
-        .container { background-color: var(--card-bg); padding: 50px; border-radius: 12px; width: 100%; max-width: 500px; box-shadow: var(--shadow-purple); border: 1px solid var(--input-border); position: relative; overflow: hidden; animation: fadeInUp 0.5s ease; transition: box-shadow 0.3s ease; }
-        .container:hover { box-shadow: 0 10px 50px rgba(138, 43, 226, 0.3); }
+        /* LOGO & HEADERS */
+        .logo {
+            font-size: 36px; font-weight: 700; text-align: center; text-transform: uppercase; margin: 0;
+            background: linear-gradient(to right, #b468ff, #00ffcc);
+            -webkit-background-clip: text; color: transparent;
+            text-shadow: 0 0 20px rgba(138,43,226,0.3);
+        }
+        .tagline { text-align: center; color: var(--text-sub); font-size: 11px; letter-spacing: 3px; margin: 0 0 30px 0; text-transform: uppercase; }
 
-        /* Subtle glowing corner light */
-        .container::after { content: ''; position: absolute; top: -100px; right: -100px; width: 200px; height: 200px; background: radial-gradient(circle, rgba(138, 43, 226, 0.1) 0%, rgba(15, 16, 22, 0) 70%); border-radius: 50%; pointer-events: none; }
+        /* INPUTS */
+        .input-group { margin-bottom: 20px; }
+        label { display: block; font-size: 12px; color: var(--text-sub); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;}
+        input {
+            width: 100%; padding: 14px; border-radius: 8px; background: rgba(0,0,0,0.4);
+            border: 1px solid #333; color: white; font-family: 'Poppins'; font-size: 15px; box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+        input:focus { border-color: var(--secondary); box-shadow: 0 0 15px rgba(0,255,204,0.2); outline: none; }
 
-        /* =========================================
-           💎 BRANDING & HEADER (Visuals)
-           ========================================= */
-        /* Creating the exact Tournyx logo text visuals from screenshots */
-        .logo-container { text-align: center; margin-bottom: 40px; cursor: default; }
-        
-        .logo-brand { font-size: 32px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; /* Applying the exact purple gradient font from screenshot */ background: linear-gradient(135deg, #a755f7 0%, #8a2be2 50%, #6a1b9a 100%); -webkit-background-clip: text; background-clip: text; color: transparent; margin: 0; text-shadow: 0 0 15px rgba(138, 43, 226, 0.2); }
-        
-        .logo-brand span.tm { font-size: 10px; vertical-align: super; color: #666; font-weight: 300; }
-        
-        .tagline { color: var(--text-sub); font-size: 11px; text-transform: uppercase; letter-spacing: 3px; font-weight: 300; margin: 5px 0 0 0; opacity: 0.8; }
+        /* FORMAT SELECTOR */
+        .format-grid { display: flex; gap: 10px; margin-bottom: 25px; }
+        .format-btn {
+            flex: 1; padding: 10px; background: rgba(0,0,0,0.4); border: 1px solid #333;
+            color: var(--text-sub); border-radius: 8px; cursor: pointer; transition: 0.3s;
+            font-size: 13px; font-weight: 600;
+        }
+        .format-btn:hover { background: rgba(255,255,255,0.05); }
+        .format-btn.active {
+            background: rgba(138,43,226,0.2); border-color: var(--primary);
+            color: white; box-shadow: 0 0 15px rgba(138,43,226,0.3);
+        }
 
-        /* Portal Title */
-        h2.portal-title { color: var(--text-main); font-weight: 600; font-size: 20px; text-align: center; margin-bottom: 35px; }
+        /* DOWNLOAD BUTTON */
+        .download-btn {
+            width: 100%; padding: 16px; border-radius: 8px; border: none;
+            background: linear-gradient(45deg, var(--primary), #6a1b9a);
+            color: white; font-size: 16px; font-weight: bold; font-family: 'Poppins';
+            text-transform: uppercase; letter-spacing: 1px; cursor: pointer;
+            transition: all 0.3s ease; display: flex; justify-content: center; align-items: center; gap: 10px;
+        }
+        .download-btn:hover { background: linear-gradient(45deg, #a755f7, var(--primary)); box-shadow: 0 5px 20px rgba(138,43,226,0.4); transform: translateY(-2px); }
+        .download-btn:disabled { background: #333; color: #777; cursor: not-allowed; box-shadow: none; transform: none; }
 
-        /* Input Styling - Pro, theme-matched */
-        .input-group { margin-bottom: 25px; position: relative; }
-        label { display: block; margin-bottom: 10px; font-size: 13px; font-weight: 600; color: var(--text-main); text-transform: uppercase; letter-spacing: 1px; }
-        
-        input { width: 100%; padding: 16px; border-radius: 8px; border: 2px solid var(--input-border); background-color: #121318; color: var(--text-main); box-sizing: border-box; font-size: 16px; transition: 0.2s ease; outline: none; }
-        input:focus { border-color: var(--primary-accent); box-shadow: 0 0 15px rgba(138, 43, 226, 0.2); }
+        /* LOADER ANIMATION */
+        .spinner { width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.2); border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite; display: none; }
 
-        /* Input icons on the right */
-        .input-icon { position: absolute; right: 16px; top: 43px; color: #444; transition: 0.3s ease; pointer-events: none; }
-        input:focus + .input-icon { color: var(--primary-accent); }
+        /* STATUS MESSAGE */
+        .status { margin-top: 20px; text-align: center; font-size: 13px; padding: 12px; border-radius: 8px; display: none; animation: popIn 0.3s ease; }
+        .status.success { background: rgba(0,255,204,0.1); border: 1px solid var(--secondary); color: var(--secondary); }
+        .status.error { background: rgba(255,76,76,0.1); border: 1px solid #ff4c4c; color: #ff4c4c; }
 
-        /* =========================================
-           🚀 ACTION BUTTONS & LOADERS
-           ========================================= */
-        /* Base button styles with attractive animations */
-        button { width: 100%; padding: 18px; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; text-transform: uppercase; letter-spacing: 1.5px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; }
-
-        /* The Main Download Button (Purple Gradient) */
-        button#fetchBtn { background: linear-gradient(135deg, #a755f7, #8a2be2, #6a1b9a); background-size: 200% auto; margin-top: 15px; }
-        button#fetchBtn:hover { background-position: right center; transform: translateY(-3px); box-shadow: 0 7px 20px rgba(138, 43, 226, 0.4); }
-        button#fetchBtn:active { transform: translateY(1px); }
-        button#fetchBtn:disabled { background: #3a3a3a !important; color: #777 !important; cursor: not-allowed; box-shadow: none !important; transform: none !important; }
-
-        /* THE CHASE LOADER ANIMATION (for verifying details) */
-        .loader { width: 20px; height: 20px; border: 3px solid rgba(255, 255, 255, 0.3); border-radius: 50%; border-top-color: white; animation: spin 0.8s ease infinite; display: none; margin-right: 12px; }
-
-        /* ERROR/SUCCESS MESSAGES */
-        .status-msg { margin-top: 20px; text-align: center; font-size: 14px; padding: 12px; border-radius: 8px; display: none; animation: fadeIn 0.3s ease; }
-        .status-msg.error { color: var(--text-error); background-color: rgba(255, 76, 76, 0.1); border: 1px solid var(--text-error); }
-        .status-msg.success { color: var(--secondary-accent); background-color: rgba(0, 255, 204, 0.1); border: 1px solid var(--secondary-accent); }
-
-        /* Footer Copyright */
-        .footer-text { margin-top: 50px; text-align: center; color: var(--text-sub); font-size: 12px; letter-spacing: 1px; opacity: 0.7; }
-
-        /* =========================================
-           🎞️ CSS KEYFRAME ANIMATIONS
-           ========================================= */
+        /* KEYFRAMES */
+        @keyframes gridMove { from { background-position: 0 0; } to { background-position: 0 40px; } }
+        @keyframes floatOrb { 0% { transform: translate(0, 0); } 100% { transform: translate(30px, -40px); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes gridMovement { from { background-position: 0 0; } to { background-position: 0 500px; } }
-        @keyframes glowFloat { 0% { opacity: 0.5; transform: scale(1) translate(0,0); } 100% { opacity: 1; transform: scale(1.1) translate(30px, -30px); } }
+        @keyframes popIn { 0% { opacity: 0; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
 
-        /* =========================================
-           Optimizing Mobile Display
-           ========================================= */
-        @media (max-width: 480px) { .container { padding: 30px; } .logo-brand { font-size: 26px; } h2.portal-title { font-size: 18px; } input, button { font-size: 15px; } .glow-1, .glow-2 { display: none; } /* Disabled glows on mobile to save performance */ }
-    
-        /* =========================================
-           PDF TEMPLATE STYLING (The generation layout)
-           ========================================= */
-        /* Note: This section is hidden on the webpage. html2pdf.js uses this to render the perfect PDF format. */
-        #pdfTemplate { display: none; font-family: var(--font-main); color: #000; padding: 40px; }
-        #pdfTemplate h1.pdf-brand { text-align: center; font-size: 32px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #8a2be2; margin-bottom: 5px; }
-        #pdfTemplate p.pdf-tagline { text-align: center; font-size: 10px; color: #777; font-weight: 300; text-transform: uppercase; letter-spacing: 3px; margin-top: 0; }
-        #pdfTemplate h2.pdf-header { text-align: center; font-size: 18px; font-weight: 600; border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 30px; }
-        
-        .team-block { page-break-inside: avoid; margin-bottom: 25px; border-bottom: 1px solid #f0f0f0; padding-bottom: 15px; }
-        .team-name { font-size: 15px; font-weight: 700; color: #000; margin-bottom: 5px; }
-        
-        table.player-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        table.player-table th { text-align: left; color: #555; text-transform: uppercase; font-size: 11px; padding: 8px 5px; border-bottom: 1px solid #eee; }
-        table.player-table td { padding: 10px 5px; color: #000; border-bottom: 1px solid #f9f9f9; }
-        
-        /* Monospace font for UIDs ensures consistency in alignment */
-        .uid-col { font-family: var(--font-monospace); letter-spacing: 1px; font-size: 12px; }
-        
-        .pdf-footer { position: fixed; bottom: 0; left: 0; width: 100%; text-align: center; font-size: 10px; color: #999; border-top: 1px solid #f0f0f0; padding-top: 10px; }
+        /* HIDDEN TEMPLATES FOR FILE GENERATION */
+        #docTemplate { display: none; }
     </style>
 </head>
 <body>
 
-<div class="bg-glow glow-1"></div>
-<div class="bg-glow glow-2"></div>
+    <div class="bg-grid"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
 
-<div class="container">
-    <div class="logo-container">
-        <h1 class="logo-brand">Tournyx <span class="tm">TM</span></h1>
-        <p class="tagline">Build your Tournament Career</p>
+    <div class="container">
+        <h1 class="logo">Tournyx</h1>
+        <p class="tagline">Organizer Roster Portal</p>
+
+        <div class="input-group">
+            <label>Tournament Match ID</label>
+            <input type="text" id="matchId" placeholder="e.g., TX-12345" autocomplete="off">
+        </div>
+
+        <div class="input-group">
+            <label>Registered Organizer Email</label>
+            <input type="email" id="email" placeholder="email@example.com" autocomplete="off">
+        </div>
+
+        <label>Select Download Format</label>
+        <div class="format-grid">
+            <button class="format-btn active" onclick="selectFormat(this, 'pdf')">📄 PDF</button>
+            <button class="format-btn" onclick="selectFormat(this, 'word')">📝 Word</button>
+            <button class="format-btn" onclick="selectFormat(this, 'txt')">🗒️ Document</button>
+        </div>
+
+        <button class="download-btn" id="downloadBtn" onclick="processDownload()">
+            <div class="spinner" id="loader"></div>
+            <span id="btnText">Verify & Download</span>
+        </button>
+
+        <div id="statusBox" class="status"></div>
     </div>
-    
-    <h2 class="portal-title">Organizer Roster Portal</h2>
-    
-    <div class="input-group">
-        <label for="matchId">Tournament ID</label>
-        <input type="text" id="matchId" placeholder="e.g., TX-12345" required autocomplete="off">
-        <svg class="input-icon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+
+    <div id="docTemplate">
+        <div style="font-family: sans-serif; color: #000; padding: 20px;">
+            <h1 style="color: #8a2be2; text-align: center;">TOURNYX ROSTER</h1>
+            <h3 id="docTitle" style="text-align: center; color: #333;"></h3>
+            <p id="docMeta" style="text-align: center; color: #666; font-size: 14px;"></p>
+            <hr style="border: 1px solid #ddd; margin-bottom: 20px;">
+            <div id="docContent"></div>
+            <p style="text-align: center; color: #aaa; font-size: 10px; margin-top: 40px;">Generated by Tournyx TM Organizer Portal</p>
+        </div>
     </div>
-    <div class="input-group">
-        <label for="email">Organizer Email</label>
-        <input type="email" id="email" placeholder="Verification Email" required autocomplete="email">
-        <svg class="input-icon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-    </div>
-    
-    <button id="fetchBtn" onclick="handleRosterExport()">
-        <span class="loader" id="loaderIcon"></span>
-        <span id="btnText">Verify & Generate PDF</span>
-    </button>
-    
-    <div id="statusBox" class="status-msg"></div>
-</div>
 
-<div class="footer-text">
-    &copy; 2026 Tournyx TM. All esports rights reserved.
-</div>
+    <script>
+        // 👉 PASTE YOUR LIVE WEB APP URL HERE:
+        const API_URL = "https://script.google.com/macros/s/AKfycbyqqTpgaflxKJ9xH0jq7mJ_jLzcoNhas3gNo0h5gvoa_6r5Ae9NFxJAJp7ZoYNnMRKl/exec";
 
-<div id="pdfTemplate">
-    <h1 class="pdf-brand">Tournyx</h1>
-    <p class="pdf-tagline">Build your Tournament Career</p>
-    
-    <h2 class="pdf-header">Tournament Roster Document</h2>
-    
-    <div class="meta-row" style="margin-bottom: 25px; font-size: 14px; display: flex; justify-content: space-between;">
-        <span id="pdfTourneyTitle">Event: Tournament Title</span>
-        <span id="pdfMatchId" style="color: #666;">ID: TX-12345</span>
-    </div>
-    <div style="margin-bottom: 30px; font-size: 14px;">Total Teams: <span id="pdfTotalTeams" font-weight: 700;">0</span></div>
+        let selectedFormat = 'pdf';
 
-    <div id="pdfTeamList"></div>
-
-    <div class="pdf-footer">
-        Generated perfectly by Tournyx TM Organizer Portal. Verification required.
-    </div>
-</div>
-
-<script>
-    // =========================================
-    // 🔗 API CONFIGURATION
-    // =========================================
-    // 👉 PASTE YOUR LIVE GOOGLE APPS SCRIPT WEB APP URL HERE:
-    const API_URL = "https://script.google.com/macros/s/AKfycbyqqTpgaflxKJ9xH0jq7mJ_jLzcoNhas3gNo0h5gvoa_6r5Ae9NFxJAJp7ZoYNnMRKl/exec";
-
-    // Main controller for the download button
-    async function handleRosterExport() {
-        const matchId = document.getElementById('matchId').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const fetchBtn = document.getElementById('fetchBtn');
-        const loaderIcon = document.getElementById('loaderIcon');
-        const btnText = document.getElementById('btnText');
-        const statusBox = document.getElementById('statusBox');
-
-        // Initial validation
-        if (!matchId || !email) {
-            updateStatus("error", "Format Error: Please enter Tournament ID and Email.");
-            return;
+        function selectFormat(btn, format) {
+            document.querySelectorAll('.format-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selectedFormat = format;
         }
 
-        // --- LOADING STATE (Attractive Animation) ---
-        btnText.innerText = "Verifying Organizer Identity...";
-        loaderIcon.style.display = "inline-block";
-        fetchBtn.disabled = true;
-        statusBox.style.display = "none";
+        async function processDownload() {
+            const matchId = document.getElementById('matchId').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const btn = document.getElementById('downloadBtn');
+            const loader = document.getElementById('loader');
+            const btnText = document.getElementById('btnText');
+            const statusBox = document.getElementById('statusBox');
 
-        try {
-            // Talk to the backend!
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify({
-                    action: 'get_roster_pdf_data',
-                    match_id: matchId,
-                    email: email
-                })
-            });
-
-            // Parse the backend response
-            const result = await response.json();
-
-            // Check if the backend verification passed
-            if (result.status === "success") {
-                // SUCCESS! Backend sent us structured team data.
-                updateStatus("success", "✅ Identity Verified. Generating PDF Document...");
-                btnText.innerText = "Perfecting Document Layout...";
-                
-                // Now, generate the PDF perfectly on the client-side!
-                generatePerfectPDF(result.data, matchId.toUpperCase());
-                
-            } else {
-                // ERROR: Show the red box with the denial message
-                updateStatus("error", "🛑 Access Denied: " + result.data);
+            if (!matchId || !email) {
+                showStatus('error', '⚠️ Please enter both Match ID and Email.');
+                return;
             }
 
-        } catch (error) {
-            // Server connection completely failed
-            updateStatus("error", "❌ Critical Server Error. Please contact Tournyx TM Support.");
-            console.error(error);
+            // Animation & UI locking
+            btn.disabled = true;
+            loader.style.display = 'block';
+            btnText.innerText = 'Extracting Data...';
+            statusBox.style.display = 'none';
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify({ action: 'get_roster_pdf_data', match_id: matchId, email: email })
+                });
+
+                const result = await response.json();
+
+                if (result.status === "success") {
+                    btnText.innerText = 'Generating File...';
+                    
+                    // Route to correct format generator
+                    if (selectedFormat === 'pdf') generatePDF(result.data, matchId);
+                    else if (selectedFormat === 'word') generateWord(result.data, matchId);
+                    else if (selectedFormat === 'txt') generateText(result.data, matchId);
+
+                    showStatus('success', `✨ Success! Your ${selectedFormat.toUpperCase()} is downloading.`);
+                } else {
+                    showStatus('error', '🛑 Access Denied: ' + result.data);
+                }
+
+            } catch (error) {
+                showStatus('error', '❌ Server Error. Please check your connection.');
+            }
+
+            // Reset UI
+            setTimeout(() => {
+                btn.disabled = false;
+                loader.style.display = 'none';
+                btnText.innerText = 'Verify & Download';
+            }, 2000);
         }
 
-        // --- RESET STATE ---
-        btnText.innerText = "Verify & Generate PDF";
-        loaderIcon.style.display = "none";
-        fetchBtn.disabled = false;
-    }
+        function showStatus(type, msg) {
+            const box = document.getElementById('statusBox');
+            box.className = `status ${type}`;
+            box.innerText = msg;
+            box.style.display = 'block';
+        }
 
-    // Helper to manage the status message bar
-    function updateStatus(type, message) {
-        const statusBox = document.getElementById('statusBox');
-        statusBox.innerText = message;
-        statusBox.className = "status-msg " + type;
-        statusBox.style.display = "block";
-    }
+        // --- GENERATORS ---
 
-    // =========================================
-    // 🏆 PERFECT PDF GENERATOR FUNCTION
-    // =========================================
-    function generatePerfectPDF(data, matchId) {
-        // 1. Fill the PDF Template (Meta Data)
-        document.getElementById('pdfTourneyTitle').innerText = "Event: " + data.tournament_title;
-        document.getElementById('pdfMatchId').innerText = "Tournament ID: " + matchId;
-        document.getElementById('pdfTotalTeams').innerText = data.total_teams;
-        
-        const teamListDiv = document.getElementById('pdfTeamList');
-        teamListDiv.innerHTML = ""; // Clear old data
-        
-        // 2. Build Team blocks dynamically
-        var teamCounter = 1;
-        data.teams.forEach(team => {
-            const teamBlock = document.createElement('div');
-            teamBlock.className = "team-block";
+        function populateTemplate(data) {
+            document.getElementById('docTitle').innerText = data.tournament_title;
+            document.getElementById('docMeta').innerText = `Match ID: ${data.match_id} | Total Teams: ${data.total_teams}`;
             
-            // Build the player table content
-            var playerRows = "";
-            if (team.roster && team.roster.length > 0) {
-                team.roster.forEach((player, idx) => {
-                    playerRows += `
-                        <tr>
-                            <td>${idx + 1}</td>
-                            <td>${player.name} (${player.role})</td>
-                            <td>${player.gameName}</td>
-                            <td class="uid-col">${player.uid}</td>
-                            <td>${player.phone}</td>
-                        </tr>
-                    `;
+            let html = '';
+            data.teams.forEach((team, i) => {
+                html += `<div style="margin-bottom: 20px;">`;
+                html += `<h4 style="background: #f0f0f0; padding: 8px; margin-bottom: 5px;">${i+1}. ${team.clan_name}</h4>`;
+                html += `<table style="width: 100%; border-collapse: collapse; font-size: 13px;">`;
+                html += `<tr style="border-bottom: 2px solid #ddd; text-align: left;"><th>Player</th><th>IGN</th><th>UID</th><th>Phone</th></tr>`;
+                
+                if (team.roster.length > 0) {
+                    team.roster.forEach(p => {
+                        html += `<tr style="border-bottom: 1px solid #eee;">
+                                    <td style="padding: 5px;">${p.name} (${p.role})</td>
+                                    <td>${p.gameName}</td>
+                                    <td style="font-family: monospace;">${p.uid}</td>
+                                    <td>${p.phone}</td>
+                                 </tr>`;
+                    });
+                } else {
+                    html += `<tr><td colspan="4">No player data found.</td></tr>`;
+                }
+                html += `</table></div>`;
+            });
+            document.getElementById('docContent').innerHTML = html;
+        }
+
+        function generatePDF(data, matchId) {
+            populateTemplate(data);
+            const element = document.getElementById('docTemplate');
+            element.style.display = 'block'; // Unhide for rendering
+            
+            html2pdf().from(element).set({
+                margin: 10,
+                filename: `Tournyx_${matchId}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            }).save().then(() => {
+                element.style.display = 'none'; // Hide again
+            });
+        }
+
+        function generateWord(data, matchId) {
+            populateTemplate(data);
+            const content = document.getElementById('docTemplate').innerHTML;
+            
+            // Standard MS Word Blob magic
+            const blob = new Blob(['\ufeff', `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head><meta charset='utf-8'></head><body>${content}</body></html>
+            `], { type: 'application/msword' });
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `Tournyx_${matchId}.doc`;
+            link.click();
+        }
+
+        function generateText(data, matchId) {
+            let text = `🏆 TOURNYX ROSTER: ${data.tournament_title}\nMatch ID: ${data.match_id}\nTotal Teams: ${data.total_teams}\n\n`;
+            
+            data.teams.forEach((team, i) => {
+                text += `===================================\n`;
+                text += `${i+1}. ${team.clan_name}\n`;
+                text += `===================================\n`;
+                team.roster.forEach(p => {
+                    text += `- ${p.name} (${p.role}) | IGN: ${p.gameName} | UID: ${p.uid} | Ph: ${p.phone}\n`;
                 });
-            } else { playerRows = '<tr><td colspan="5" style="color:#777;">No player roster details found.</td></tr>'; }
-            
-            teamBlock.innerHTML = `
-                <div class="team-name">🛡️ ${teamCounter}. ${team.clan_name} #${team.tag}</div>
-                <table class="player-table">
-                    <thead>
-                        <tr><th>#</th><th>Player (Role)</th><th>IGN</th><th>UID</th><th>Phone/Contact</th></tr>
-                    </thead>
-                    <tbody>${playerRows}</tbody>
-                </table>
-            `;
-            teamListDiv.appendChild(teamBlock);
-            teamCounter++;
-        });
+                text += `\n`;
+            });
 
-        // 3. pdf2html configuration (Forces perfect document formatting)
-        const pdfContent = document.getElementById('pdfTemplate');
-        
-        const options = {
-            margin:       10, // Millimeters
-            filename:     'Tournyx_Roster_' + matchId + '.pdf',
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2, logging: false }, // Higher scale for perfect sharpness
-            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }, // Official A4 format
-            pagebreak:    { mode: 'avoid-all', before: '.team-block' } // Avoid splitting a team table between pages
-        };
-
-        // 4. Generate the download instantly
-        html2pdf().from(pdfContent).set(options).save();
-    }
-</script>
-
+            const blob = new Blob([text], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `Tournyx_${matchId}.txt`;
+            link.click();
+        }
+    </script>
 </body>
 </html>
