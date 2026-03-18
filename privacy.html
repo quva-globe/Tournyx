@@ -98,6 +98,7 @@
         .pc-usage { border-left: 4px solid var(--accent-purple); }
         .pc-security { border-left: 4px solid var(--accent-green); }
         .pc-rights { border-left: 4px solid var(--accent-orange); }
+        .pc-compliance { border-left: 4px solid var(--accent-red); }
 
         .policy-header { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px; }
         .policy-icon { font-size: 1.4rem; }
@@ -105,6 +106,7 @@
         .pc-usage .policy-icon { color: var(--accent-purple); text-shadow: 0 0 10px rgba(189,0,255,0.5); }
         .pc-security .policy-icon { color: var(--accent-green); text-shadow: 0 0 10px rgba(0,255,127,0.5); }
         .pc-rights .policy-icon { color: var(--accent-orange); text-shadow: 0 0 10px rgba(255,153,0,0.5); }
+        .pc-compliance .policy-icon { color: var(--accent-red); text-shadow: 0 0 10px rgba(255,77,77,0.5); }
         
         .policy-title { font-family: var(--font-head); font-size: 1.2rem; color: white; letter-spacing: 1px; font-weight: bold; }
         
@@ -175,11 +177,11 @@
                 <i class="fa-solid fa-database policy-icon"></i>
                 <div class="policy-title">1. Information We Collect</div>
             </div>
-            <p class="policy-text">To provide a seamless matchmaking and wallet experience, Tournyx collects strictly necessary data:</p>
+            <p class="policy-text">To provide a seamless matchmaking and wallet experience, Tournyx Esports collects strictly necessary data:</p>
             <ul class="policy-list">
                 <li><span class="highlight">Account Info:</span> Your Email Address, unique Display Name, and encrypted password.</li>
                 <li><span class="highlight">Gaming Identity:</span> Specific In-Game Names (IGN) and Player UIDs (e.g., Free Fire, BGMI) required for match verification.</li>
-                <li><span class="highlight">Financial Data:</span> Transaction history regarding your Tournyx Wallet (Rupees and PTS). We do not store native bank or card details directly on our servers.</li>
+                <li><span class="highlight">Financial Data:</span> Transaction history regarding your Tournyx Wallet. <strong style="color:var(--accent-red);">We do NOT collect, store, or process full credit/debit card numbers or UPI PINs</strong> on our servers. All financial transactions are securely processed by RBI-regulated, PCI-DSS compliant payment aggregators.</li>
             </ul>
         </div>
 
@@ -191,8 +193,8 @@
             <p class="policy-text">Your data powers the Tournyx App Engine. We use it exclusively to:</p>
             <ul class="policy-list">
                 <li>Verify your identity in custom tournament lobbies to prevent ringers and account sharing.</li>
-                <li>Process automated wallet transactions, tournament entry fees, and prize distributions.</li>
-                <li>Deliver critical alerts, such as Room IDs and Passwords, via App Notifications or WhatsApp (if enabled).</li>
+                <li>Process automated wallet transactions, track tournament entry fees, and facilitate prize distributions securely.</li>
+                <li>Comply with legal obligations, resolve financial disputes, and prevent fraudulent transactions as per Indian regulatory guidelines.</li>
             </ul>
         </div>
 
@@ -203,9 +205,9 @@
             </div>
             <p class="policy-text">We treat your data like a secure payload. Tournyx uses secure database protocols to ensure your information cannot be intercepted.</p>
             <ul class="policy-list">
+                <li><span class="highlight">Payment Partners:</span> We share only strictly necessary transaction identifiers (like Order IDs and Amounts) with our secure payment gateway partners (e.g., Cashfree, Razorpay) to process your wallet top-ups.</li>
                 <li>We <span class="highlight" style="color:var(--accent-red); background:rgba(255,77,77,0.1)">never</span> sell, rent, or trade your personal data to third-party advertising agencies.</li>
-                <li>Your actual email and passwords are never visible to Tournament Organizers. Organizers only see your Display Name and IGN.</li>
-                <li>If you enable "Streamer Mode," we automatically mask your sensitive data on your local device to prevent stream-sniping.</li>
+                <li><span class="highlight">Legal Compliance:</span> We reserve the right to disclose necessary information to law enforcement agencies or regulatory authorities if mandated by Indian law.</li>
             </ul>
         </div>
 
@@ -221,9 +223,17 @@
             </ul>
         </div>
 
-        <div class="contact-box" onclick="triggerHaptic(); window.open('mailto:privacy@tournyx.com', '_blank');">
-            <p>Have concerns about how your data is handled?</p>
-            <div class="contact-email"><i class="fa-solid fa-shield-halved" style="margin-right:5px;"></i> privacy@tournyx.com</div>
+        <div class="policy-card pc-compliance">
+            <div class="policy-header">
+                <i class="fa-solid fa-scale-balanced policy-icon"></i>
+                <div class="policy-title">5. Grievance & Compliance</div>
+            </div>
+            <p class="policy-text">In accordance with the Information Technology Act, 2000, and consumer protection regulations, Tournyx Esports (MSME Registered) is committed to resolving any data or payment discrepancies. If you have any financial or data-related grievances, please contact our designated Grievance Officer via the support email below.</p>
+        </div>
+
+        <div class="contact-box" onclick="triggerHaptic(); window.open('mailto:privacy@tournyx.in', '_blank');">
+            <p>Have concerns about how your data is handled or need to reach our Grievance Officer?</p>
+            <div class="contact-email"><i class="fa-solid fa-shield-halved" style="margin-right:5px;"></i> privacy@tournyx.in</div>
         </div>
 
     </div>
@@ -231,7 +241,7 @@
     <div class="app-footer">
         <div class="footer-logo"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_20wCR-WBMpQmw3vxcYUf-vxIO1PYDJoQN_Sid3UDjA9tf0cuX0eH40jbzHoJad4cxbnjhPjqfCw1Z5V1LhgN9zFuIQC0fJjecTy3D9PFu5WjR2H1wHwTD1bUGnXY_NiApWn5gMs6velcQngSzKoP1yHzX0cVsFSUFM8zIefcbiPayY7680Kz0V0ZAAE/s1264/1000093706.png" style="width:20px;"> TOURNYX</div>
         <div>Built for Gamers, By Gamers.</div>
-        <div style="margin-top: 5px; font-size: 0.7rem; color: #666;">&copy; 2026 Tournyx eSports. All Rights Reserved.</div>
+        <div style="margin-top: 5px; font-size: 0.7rem; color: #666;">&copy; 2026 Tournyx Esports. All Rights Reserved.</div>
     </div>
 
     <nav class="bottom-nav">
