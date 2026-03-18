@@ -281,7 +281,7 @@
                 <span>Total Balance <i class="fa-solid fa-eye" id="eyeIcon" onclick="togglePrivacy(); triggerHaptic();" style="margin-left:8px; cursor: pointer; color:#888;"></i></span>
             </div>
             <div class="balance-amount" id="balanceWrapper">
-                Rs. <span id="displayRupees">0</span>
+                <span id="displayRupees">0</span> CR
             </div>
             
             <div class="pts-balance" id="ptsWrapper">
@@ -298,7 +298,7 @@
         <div class="quick-actions animate-section delay-2">
             <div class="action-btn btn-add" onclick="openAddMoney(); triggerHaptic();">
                 <i class="fa-solid fa-circle-plus"></i>
-                <span>Add Cash</span>
+                <span>Buy Credits</span>
             </div>
             <a href="withdraw.html" class="action-btn btn-withdraw" onclick="triggerHaptic();">
                 <i class="fa-solid fa-money-bill-transfer"></i>
@@ -312,8 +312,8 @@
         
         <div class="first-deposit-banner animate-section delay-3" id="firstDepositBanner" onclick="openAddMoney(); setAmt(59);" style="display:none;">
             <div>
-                <div style="font-family:var(--font-head); font-weight:bold; color:var(--accent-orange);"><i class="fa-solid fa-bolt"></i> FIRST DEPOSIT BONUS</div>
-                <div style="font-size:0.75rem; color:#ccc;">Add money now to instantly unlock massive Bonus Cash!</div>
+                <div style="font-family:var(--font-head); font-weight:bold; color:var(--accent-orange);"><i class="fa-solid fa-bolt"></i> FIRST PURCHASE BONUS</div>
+                <div style="font-size:0.75rem; color:#ccc;">Buy credits now to instantly unlock massive Bonus Credits!</div>
             </div>
             <i class="fa-solid fa-chevron-right" style="color:var(--accent-orange);"></i>
         </div>
@@ -340,14 +340,14 @@
     <div class="bottom-sheet-overlay" id="addMoneyOverlay">
         <div class="bottom-sheet">
             <div class="sheet-header">
-                <div class="sheet-title"><i class="fa-solid fa-wallet" style="color:var(--accent-cyan);"></i> Deposit Funds</div>
+                <div class="sheet-title"><i class="fa-solid fa-wallet" style="color:var(--accent-cyan);"></i> Buy Tournyx Credits</div>
                 <i class="fa-solid fa-xmark close-sheet" onclick="closeAddMoney()"></i>
             </div>
             
             <div class="add-money-flex">
                 <div class="add-money-left">
                     <div class="amt-input-wrapper">
-                        <div class="amt-currency">Rs.</div>
+                        <div class="amt-currency">CR</div>
                         <input type="number" id="addAmtInput" class="amt-input" placeholder="0" oninput="updateQR()">
                     </div>
 
@@ -355,13 +355,13 @@
                         </div>
                     
                     <div id="mobilePayBtn" style="display:none;">
-                        <button class="pay-btn" onclick="openUPIApp(); triggerHaptic();">Pay via UPI App <i class="fa-solid fa-bolt"></i></button>
+                        <button class="pay-btn" onclick="openUPIApp(); triggerHaptic();">Purchase via UPI <i class="fa-solid fa-bolt"></i></button>
                         <div style="text-align:center; margin:15px 0; color:#888; font-family:var(--font-head); font-size:0.8rem;">OR SCAN QR / SUBMIT UTR</div>
                     </div>
 
                     <div style="background:rgba(0,242,255,0.05); border:1px solid rgba(0,242,255,0.2); padding:20px; border-radius:15px; margin-top:20px;">
                         <div style="font-family:var(--font-head); color:white; margin-bottom:10px; font-size:1.1rem;"><i class="fa-solid fa-shield-halved" style="color:var(--accent-cyan);"></i> Verify Payment</div>
-                        <p style="font-size:0.8rem; color:#aaa; margin-bottom:15px;">After paying via App or QR, paste the 12-digit UTR below to securely add funds.</p>
+                        <p style="font-size:0.8rem; color:#aaa; margin-bottom:15px;">After paying via App or QR, paste the 12-digit UTR below to securely add credits.</p>
                         <input type="number" id="utrInput" placeholder="Enter 12-digit UTR" class="utr-input-field">
                         <button class="pay-btn" style="background: transparent; border: 1px solid var(--accent-green); color: var(--accent-green); box-shadow:none; margin-bottom:0;" onclick="submitStrictUTR(); triggerHaptic();">Verify UTR <i class="fa-solid fa-check-double"></i></button>
                     </div>
@@ -380,6 +380,11 @@
                         <div style="font-size:0.7rem; color:#ff9900;"><i class="fa-regular fa-clock"></i> QR Expires in <span id="qrTimer">05:00</span></div>
                     </div>
                 </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="pay-btn" style="background: var(--card-border); color: var(--text-muted); cursor: not-allowed; box-shadow: none;" disabled>COMING SOON <i class="fa-solid fa-hourglass-half"></i></button>
+                <p style="font-size: 0.75rem; color: #888; margin-top: 5px;">Payments are currently disabled for verification. Please check back later.</p>
             </div>
         </div>
     </div>
@@ -404,7 +409,7 @@
             
             <div id="receiptContent">
                 <div class="rcpt-icon" id="rcptIcon"></div>
-                <div class="rcpt-amt" id="rcptAmt">Rs. 0</div>
+                <div class="rcpt-amt" id="rcptAmt">0 CR</div>
                 <div class="rcpt-title" id="rcptTitle">Payment</div>
                 <div class="rcpt-row"><span class="rcpt-lbl">Transaction Status</span><span class="rcpt-val" id="rcptStatusVal"></span></div>
                 <div class="rcpt-row"><span class="rcpt-lbl">Category</span><span class="rcpt-val" id="rcptCat"><i class="fa-solid fa-gamepad"></i> Entry Fee</span></div>
@@ -446,7 +451,7 @@
                 </tr>
                 <tr style="border-bottom:1px solid #eeeeee;">
                     <td style="padding:15px 0; color:#555555;">Description</td>
-                    <td style="padding:15px 0; text-align:right; font-weight:bold; color:#000000;" id="pdfTitle">Wallet Top-up</td>
+                    <td style="padding:15px 0; text-align:right; font-weight:bold; color:#000000;" id="pdfTitle">Wallet Action</td>
                 </tr>
                 <tr style="border-bottom:1px solid #eeeeee;">
                     <td style="padding:15px 0; color:#555555;">Status</td>
@@ -454,7 +459,7 @@
                 </tr>
                 <tr>
                     <td style="padding:20px 0; color:#000000; font-size:18px; font-weight:bold;">Total Amount</td>
-                    <td style="padding:20px 0; text-align:right; font-size:24px; font-weight:bold;" id="pdfAmt">Rs. 0</td>
+                    <td style="padding:20px 0; text-align:right; font-size:24px; font-weight:bold;" id="pdfAmt">0 CR</td>
                 </tr>
             </table>
             <div style="text-align:center; margin-top:40px; color:#999999; font-size:12px;">
@@ -588,7 +593,7 @@
             txns.forEach(t => {
                 let cat = String(t.category || t.title || "").toLowerCase();
                 let typ = String(t.type || "").toLowerCase();
-                if(typ === 'credit' && (cat.includes('deposit') || cat.includes('top-up'))) {
+                if(typ === 'credit' && (cat.includes('deposit') || cat.includes('top-up') || cat.includes('purchase'))) {
                     hasDeposit = true;
                 }
             });
@@ -623,19 +628,19 @@
             let qrBox = document.getElementById('qrContainer');
             if(isNaN(amt) || amt < 10) { if(/Android|iPhone/i.test(navigator.userAgent)) qrBox.classList.remove('active'); return; }
             qrBox.classList.add('active');
-            document.getElementById('qrAmtText').innerText = `Rs. ${amt}`;
+            document.getElementById('qrAmtText').innerText = `${amt} CR`;
             let upiLink = `upi://pay?pa=${OFFICIAL_UPI}&pn=Tournyx%20Esports&am=${amt}&cu=INR`;
             document.getElementById('dynamicQR').src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiLink)}`;
         }
         
         function startQRTimer() {
             let time = 300; let el = document.getElementById('qrTimer'); clearInterval(qrTimerInterval);
-            qrTimerInterval = setInterval(() => { let m = Math.floor(time/60); let s = time % 60; el.innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`; if(time <= 0) { clearInterval(qrTimerInterval); closeAddMoney(); showToast("QR Session Expired.", true); } time--; }, 1000);
+            qrTimerInterval = setInterval(() => { let m = Math.floor(time/60); let s = time % 60; el.innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`; if(time <= 0) { clearInterval(qrTimerInterval); closeAddMoney(); showToast("Session Expired.", true); } time--; }, 1000);
         }
         
         function openUPIApp() {
             let amt = parseInt(document.getElementById('addAmtInput').value);
-            if(isNaN(amt) || amt < 10) { triggerError('addAmtInput'); showToast("Enter minimum Rs 10", true); return; }
+            if(isNaN(amt) || amt < 10) { triggerError('addAmtInput'); showToast("Enter minimum 10 CR", true); return; }
             window.location.href = `upi://pay?pa=${OFFICIAL_UPI}&pn=Tournyx%20Esports&am=${amt}&cu=INR`;
         }
         function copyUPI() { navigator.clipboard.writeText(OFFICIAL_UPI).then(()=>showToast("UPI ID Copied!")); triggerHaptic(); }
@@ -662,12 +667,12 @@
             sInner.style.background = "rgba(0,242,255,0.2)";
 
             // Multi-Stage Loader Sequence (8.5 seconds)
-            setTimeout(() => { sText.innerText = "VERIFYING UTR..."; sDesc.innerText = "Connecting to banking APIs..."; }, 3000);
-            setTimeout(() => { sText.innerText = "SYNCING WEBHOOK..."; sDesc.innerText = "Awaiting bank confirmation..."; sCircle.style.borderColor = "var(--accent-purple)"; sInner.style.background = "rgba(189,0,255,0.2)"; }, 6000);
+            setTimeout(() => { sText.innerText = "VERIFYING UTR..."; sDesc.innerText = "Connecting to APIs..."; }, 3000);
+            setTimeout(() => { sText.innerText = "SYNCING WEBHOOK..."; sDesc.innerText = "Awaiting confirmation..."; sCircle.style.borderColor = "var(--accent-purple)"; sInner.style.background = "rgba(189,0,255,0.2)"; }, 6000);
 
             setTimeout(() => {
                 scanner.classList.remove('active');
-                showToast("Pending bank confirmation. Will be added shortly.");
+                showToast("Pending confirmation. Will be added shortly.");
                 
                 // Determine Specific First Time Bonus mapping
                 let bonusAmt = 0;
@@ -679,11 +684,11 @@
                 let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
                 let dateStr = new Date().toLocaleString('en-US', { month:'short', day:'2-digit', year:'numeric', hour:'numeric', minute:'2-digit', hour12:true });
                 
-                let newTxn = { id: "TXN" + utr.substring(6), title: "Wallet Top-up (UPI)", amount: amt, type: "Credit", status: "Pending", category: "Deposit", date: dateStr };
+                let newTxn = { id: "TXN" + utr.substring(6), title: "Credits Purchase (UPI)", amount: amt, type: "Credit", status: "Pending", category: "Deposit", date: dateStr };
                 txns.unshift(newTxn);
 
                 if(bonusAmt > 0) {
-                    let bonusTxn = { id: "BONUS" + Math.floor(Math.random()*10000), title: "First Deposit Bonus", amount: bonusAmt, type: "Credit", status: "Pending", category: "Bonus", date: dateStr };
+                    let bonusTxn = { id: "BONUS" + Math.floor(Math.random()*10000), title: "First Purchase Bonus", amount: bonusAmt, type: "Credit", status: "Pending", category: "Bonus", date: dateStr };
                     txns.unshift(bonusTxn);
                     showToast("UTR & Bonus Pending Verification!");
                 }
@@ -693,7 +698,7 @@
                 
                 fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "submit_utr", email: currentUser.email, amount: amt, utr: utr }) });
                 if(bonusAmt > 0) {
-                    fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "claim_offer", email: currentUser.email, offerName: "First Deposit Bonus Setup", reward: bonusAmt }) });
+                    fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "claim_offer", email: currentUser.email, offerName: "First Purchase Bonus Setup", reward: bonusAmt }) });
                 }
             }, 8500);
         }
@@ -755,7 +760,7 @@
             let titleLower = String(t.title || "").toLowerCase();
             if(titleLower.includes('tournament') || titleLower.includes('entry') || titleLower.includes('joined')) { cat = "Entry Fee"; catIcon = "fa-gamepad"; iconClass = "icon-debit"; mainIcon = "fa-gamepad"; }
             if(titleLower.includes('prize') || titleLower.includes('won')) { cat = "Prize Won"; catIcon = "fa-trophy"; iconClass = "icon-credit"; mainIcon = "fa-trophy"; }
-            if(titleLower.includes('deposit') || titleLower.includes('top-up')) { cat = "Deposit"; catIcon = "fa-wallet"; }
+            if(titleLower.includes('deposit') || titleLower.includes('top-up') || titleLower.includes('purchase')) { cat = "Purchase"; catIcon = "fa-wallet"; }
             if(titleLower.includes('bonus')) { cat = "Bonus"; catIcon = "fa-bolt"; iconClass = "icon-credit"; mainIcon = "fa-bolt"; }
             if(titleLower.includes('withdraw')) { cat = "Payout"; catIcon = "fa-money-bill-transfer"; }
             
@@ -765,7 +770,7 @@
             let amtClass = isCredit ? "amt-credit" : "amt-debit";
             let statusColor = isSuccess ? "var(--accent-green)" : (isFailed ? "var(--accent-red)" : "#ff9900");
             
-            let inOutLabel = isCredit ? `<div class="in-out-label in-label">MONEY IN</div>` : `<div class="in-out-label out-label">MONEY OUT</div>`;
+            let inOutLabel = isCredit ? `<div class="in-out-label in-label">CREDITS IN</div>` : `<div class="in-out-label out-label">CREDITS OUT</div>`;
             let displayDate = t.date ? (t.date.includes(',') ? t.date.split(',')[0] : t.date.split(' ')[0]) : "Today";
 
             return `
@@ -779,7 +784,7 @@
                     </div>
                     <div class="txn-right">
                         ${inOutLabel}
-                        <div class="txn-amt ${amtClass}">${isCredit?'+':'-'} ₹${formatNum(t.amount)}</div>
+                        <div class="txn-amt ${amtClass}">${isCredit?'+':'-'} ${formatNum(t.amount)} CR</div>
                         <div class="txn-status" style="color:${statusColor};">${t.status}</div>
                     </div>
                 </div>`;
@@ -801,7 +806,7 @@
             
             let catStr = `<i class="fa-solid fa-gamepad"></i> General`;
             let titleLower = String(t.title || "").toLowerCase();
-            if (titleLower.includes("top-up") || titleLower.includes("deposit")) catStr = `<i class="fa-solid fa-wallet"></i> Deposit`;
+            if (titleLower.includes("top-up") || titleLower.includes("deposit") || titleLower.includes("purchase")) catStr = `<i class="fa-solid fa-wallet"></i> Purchase`;
             else if (titleLower.includes("bonus")) catStr = `<i class="fa-solid fa-bolt"></i> Bonus`;
             else if (titleLower.includes("prize")) catStr = `<i class="fa-solid fa-trophy"></i> Prize Won`;
             else if (titleLower.includes("withdraw")) catStr = `<i class="fa-solid fa-money-bill-transfer"></i> Payout`;
@@ -812,7 +817,7 @@
             iconEl.className = `rcpt-icon ${isPending ? 'icon-debit' : (isCredit ? 'icon-credit' : 'icon-debit')}`;
             if(isFailed) iconEl.className = `rcpt-icon icon-debit`;
             
-            document.getElementById('rcptAmt').innerText = `${isCredit?'+':'-'} Rs. ${formatNum(t.amount)}`;
+            document.getElementById('rcptAmt').innerText = `${isCredit?'+':'-'} ${formatNum(t.amount)} CR`;
             document.getElementById('rcptAmt').className = `rcpt-amt ${isCredit ? 'amt-credit' : 'amt-debit'}`;
             document.getElementById('rcptTitle').innerText = t.title;
             document.getElementById('rcptCat').innerHTML = catStr;
@@ -832,7 +837,7 @@
             document.getElementById('pdfTitle').innerText = t.title;
             document.getElementById('pdfStatus').innerText = t.status;
             document.getElementById('pdfStatus').style.color = isSuccess ? "#00b300" : (isFailed ? "#ff0000" : "#ff9900");
-            document.getElementById('pdfAmt').innerText = `${isCredit?'+':'-'} Rs. ${formatNum(t.amount)}`;
+            document.getElementById('pdfAmt').innerText = `${isCredit?'+':'-'} ${formatNum(t.amount)} CR`;
             document.getElementById('pdfAmt').style.color = isCredit ? "#00b300" : "#ff0000";
 
             document.getElementById('receiptOverlay').classList.add('active');
@@ -882,7 +887,7 @@
                             <th style="padding:10px;">Txn ID</th>
                             <th style="padding:10px;">Description</th>
                             <th style="padding:10px;">Status</th>
-                            <th style="padding:10px; text-align:right;">Amount</th>
+                            <th style="padding:10px; text-align:right;">Credits</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -901,7 +906,7 @@
                         <td style="padding:10px;">${t.id}</td>
                         <td style="padding:10px;">${t.title}</td>
                         <td style="padding:10px; font-weight:bold; color:${statusCol};">${t.status}</td>
-                        <td style="padding:10px; text-align:right; font-weight:bold; color:${amtCol};">${isCredit?'+':'-'} Rs. ${formatNum(t.amount)}</td>
+                        <td style="padding:10px; text-align:right; font-weight:bold; color:${amtCol};">${isCredit?'+':'-'} ${formatNum(t.amount)} CR</td>
                     </tr>
                 `;
             });
@@ -922,7 +927,7 @@
         function contactSupportTxn() {
             triggerHaptic();
             if(!activeReceiptData) return;
-            let msg = `Hello Tournyx Support, I need help with my recent transaction.%0A%0A*Transaction ID:* ${activeReceiptData.id}%0A*Amount:* Rs. ${activeReceiptData.amount}%0A*Date:* ${activeReceiptData.date}%0A*Status:* ${activeReceiptData.status}%0A*User:* ${currentUser.email}%0A%0APlease assist me with this.`;
+            let msg = `Hello Tournyx Support, I need help with my recent transaction.%0A%0A*Transaction ID:* ${activeReceiptData.id}%0A*Credits:* ${activeReceiptData.amount} CR%0A*Date:* ${activeReceiptData.date}%0A*Status:* ${activeReceiptData.status}%0A*User:* ${currentUser.email}%0A%0APlease assist me with this.`;
             window.open(`https://wa.me/918608183838?text=${msg}`, '_blank');
         }
     </script>
