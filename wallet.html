@@ -3,7 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Wallet - Tournyx</title>
+    
+    <title>Wallet - Tournyx Esports</title>
+    <meta name="description" content="Manage your Tournyx Esports wallet. Add funds securely via UPI, withdraw your tournament winnings instantly, and view your complete encrypted transaction ledger.">
+    <meta name="keywords" content="Tournyx wallet, esports payment, free fire tournament entry, gaming wallet, secure UPI payments, instant withdrawal esports">
+    <meta name="author" content="Tournyx Esports">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Wallet - Tournyx Esports">
+    <meta property="og:description" content="Manage your esports wallet securely. Add funds and withdraw winnings instantly.">
+    <meta property="og:type" content="website">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -89,6 +97,22 @@
         .header-profile-img { width: 45px; height: 45px; border-radius: 12px; border: 1px solid var(--card-border); object-fit: cover; cursor: pointer; box-shadow: 0 0 15px rgba(189,0,255,0.2); transition: 0.3s; flex-shrink: 0; background:#000; }
         .header-profile-img:active { transform:scale(0.9); border-color:var(--accent-cyan);}
 
+        /* TOP BAR SUPPORT ICON */
+        .support-pulse-icon {
+            color: var(--accent-cyan);
+            font-size: 1.5rem;
+            cursor: pointer;
+            margin-right: 5px;
+            animation: ringGlow 2s infinite;
+            transition: 0.3s;
+        }
+        .support-pulse-icon:active { transform: scale(0.9); }
+        @keyframes ringGlow {
+            0% { filter: drop-shadow(0 0 0 rgba(0,242,255,0.7)); transform: scale(1); }
+            50% { filter: drop-shadow(0 0 12px rgba(0,242,255,0.9)); transform: scale(1.05); }
+            100% { filter: drop-shadow(0 0 0 rgba(0,242,255,0)); transform: scale(1); }
+        }
+
         .container { padding: 15px; margin-top: 0; }
 
         /* --- WALLET CARD --- */
@@ -123,7 +147,7 @@
         .first-deposit-banner { background: linear-gradient(90deg, rgba(255,153,0,0.2), rgba(0,0,0,0)); border: 1px solid var(--accent-orange); border-radius: 12px; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; cursor: pointer; animation: pulseGlow 2s infinite alternate; }
         @keyframes pulseGlow { from{box-shadow: 0 0 10px rgba(255,153,0,0.2);} to{box-shadow: 0 0 20px rgba(255,153,0,0.5);} }
 
-        /* --- TRANSACTION HISTORY (OVERFLOW FIXED) --- */
+        /* --- TRANSACTION HISTORY --- */
         .section-title { font-family: var(--font-head); font-size: 1.15rem; color: white; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
         .section-title span { font-size: 0.8rem; color: var(--accent-cyan); cursor: pointer; text-transform: uppercase; padding: 5px 10px; border-radius: 8px; transition: 0.3s; border: 1px solid transparent;}
         
@@ -131,19 +155,16 @@
         .txn-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.3s; animation: slideInUp 0.4s ease both;}
         .txn-item:active { background: rgba(255,255,255,0.05); border-color: var(--accent-cyan); transform: scale(0.98); }
         
-        /* Flex adjustments for strict boundaries */
         .txn-left { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1; padding-right: 10px; }
         .txn-icon { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
         .icon-credit { background: rgba(0,255,127,0.1); color: var(--accent-green); border: 1px solid rgba(0,255,127,0.3); }
         .icon-debit { background: rgba(255,77,77,0.1); color: var(--accent-red); border: 1px solid rgba(255,77,77,0.3); }
         
-        /* Truncate long titles safely */
         .txn-info { display: flex; flex-direction: column; min-width: 0; width: 100%; }
         .txn-info h4 { font-family: var(--font-head); font-size: 0.95rem; color: white; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; display: block; }
         .txn-info p { font-size: 0.75rem; color: #888; display:flex; gap:5px; align-items:center;}
         .cat-tag { font-size: 0.6rem; padding: 2px 6px; border-radius: 5px; background:rgba(255,255,255,0.1); text-transform:uppercase;}
         
-        /* Keep right section compact and un-squished */
         .txn-right { text-align: right; flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; min-width: 75px; }
         .in-out-label { font-size: 0.65rem; text-transform: uppercase; font-family: var(--font-head); font-weight: bold; padding: 2px 6px; border-radius: 4px; margin-bottom: 3px; letter-spacing: 1px; }
         .in-label { background: rgba(0,255,127,0.15); color: var(--accent-green); border: 1px solid rgba(0,255,127,0.3); }
@@ -153,13 +174,12 @@
         .amt-debit { color: var(--accent-red); text-shadow: 0 0 10px rgba(255,77,77,0.3); }
         .txn-status { font-size: 0.7rem; color: #aaa; text-transform: uppercase; margin-top: 3px; background: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 6px; display: inline-block; font-weight:bold;}
 
-        /* --- ADD MONEY (BOTTOM SHEET) --- */
+        /* --- ADD MONEY & MODALS (BOTTOM SHEET) --- */
         .bottom-sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 5000; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(5px); opacity: 0; transition: 0.4s; }
         .bottom-sheet-overlay.active { display: flex; opacity: 1; }
-        .bottom-sheet { width: 100%; max-width: 800px; background: var(--secondary-bg); border-radius: 25px 25px 0 0; border-top: 1px solid var(--card-border); padding: 30px 20px calc(20px + env(safe-area-inset-bottom)); transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 90vh; overflow-y: auto; box-shadow: 0 -10px 40px rgba(0,0,0,0.8); }
+        .bottom-sheet { width: 100%; max-width: 800px; background: var(--secondary-bg); border-radius: 25px 25px 0 0; border-top: 1px solid var(--card-border); padding: 30px 20px calc(20px + env(safe-area-inset-bottom)); transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 95vh; overflow-y: auto; box-shadow: 0 -10px 40px rgba(0,0,0,0.8); }
         .bottom-sheet-overlay.active .bottom-sheet { transform: translateY(0); }
         
-        /* Desktop Centered Popup Fix */
         @media (min-width: 850px) {
             .bottom-sheet-overlay { align-items: center; justify-content: center; }
             .bottom-sheet { border-radius: 25px; transform: scale(0.9); opacity: 0; transition: all 0.3s ease; max-height:85vh;}
@@ -174,6 +194,21 @@
         .sheet-title { font-family: var(--font-head); font-size: 1.3rem; color: white; display: flex; align-items: center; gap: 10px; }
         .close-sheet { color: #888; font-size: 1.8rem; cursor: pointer; padding: 5px; transition: 0.3s; }
         
+        /* GUEST LOGIN PROMPT */
+        .login-prompt-content { text-align: center; padding: 20px 10px; }
+        .login-prompt-icon { font-size: 4rem; color: var(--accent-purple); margin-bottom: 15px; filter: drop-shadow(0 0 15px rgba(189,0,255,0.5)); animation: float 3s ease-in-out infinite;}
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        
+        /* --- SERVERS UI --- */
+        .server-container { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; }
+        .server-card { flex: 1; min-width: 100px; background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); border-radius: 12px; padding: 12px 10px; text-align: center; cursor: pointer; transition: 0.3s; position: relative; }
+        .server-card.active { background: rgba(0,242,255,0.1); border-color: var(--accent-cyan); box-shadow: 0 0 15px rgba(0,242,255,0.2); transform: scale(1.02); }
+        .server-name { font-family: var(--font-head); font-weight: bold; font-size: 0.9rem; color: white; margin-bottom: 5px; }
+        .server-tag { font-size: 0.6rem; font-weight: bold; padding: 2px 6px; border-radius: 4px; display: inline-block; letter-spacing: 1px; }
+        .tag-fast { background: var(--accent-green); color: black; }
+        .tag-stable { background: var(--accent-cyan); color: black; }
+        .tag-new { background: var(--accent-purple); color: white; }
+
         .amt-input-wrapper { position: relative; margin-bottom: 15px; }
         .amt-currency { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); font-family: var(--font-head); font-size: 1.5rem; color: white; font-weight: bold; }
         .amt-input { width: 100%; background: #070311; border: 2px solid var(--card-border); padding: 20px 20px 20px 60px; border-radius: 15px; color: white; font-family: var(--font-head); font-size: 1.8rem; font-weight: bold; outline: none; transition: 0.3s; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
@@ -195,6 +230,15 @@
         .pay-btn { width: 100%; padding: 18px; background: var(--accent-gradient); border: none; border-radius: 15px; color: white; font-family: var(--font-head); font-size: 1.1rem; font-weight: bold; text-transform: uppercase; cursor: pointer; box-shadow: 0 5px 20px rgba(189,0,255,0.4); display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 10px;}
         .utr-input-field { width: 100%; background: #070311; border: 2px solid var(--card-border); padding: 16px; border-radius: 12px; color: white; font-family: var(--font-body); font-size: 1.1rem; outline: none; margin-bottom: 15px; transition: 0.3s; letter-spacing: 2px; font-weight:bold; text-align:center;}
 
+        /* SUPPORT BOT MODAL */
+        .support-option-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); padding: 15px; border-radius: 12px; color: white; font-family: var(--font-head); margin-bottom: 10px; cursor: pointer; transition: 0.3s; display:flex; justify-content:space-between; align-items:center; }
+        .support-option-btn:active { transform: scale(0.98); background: rgba(189,0,255,0.1); border-color: var(--accent-purple); }
+        .support-msg-box { width: 100%; background: #070311; border: 1px solid var(--card-border); padding: 15px; border-radius: 12px; color: white; font-family: var(--font-body); font-size: 1rem; outline: none; margin-bottom: 15px; resize: none; min-height: 80px;}
+        .support-msg-box:focus { border-color: var(--accent-cyan); }
+        
+        .support-bot-box { border: 2px dashed var(--card-border); padding: 30px; border-radius: 15px; text-align: center; cursor: pointer; background: rgba(255,255,255,0.02); transition: 0.3s; margin-bottom: 15px; }
+        .support-bot-box:hover { border-color: var(--accent-purple); background: rgba(189,0,255,0.05); }
+
         /* FULL LEDGER MODAL */
         .ledger-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary-bg); z-index: 4000; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; overflow: hidden; }
         .ledger-modal.active { transform: translateX(0); }
@@ -209,7 +253,6 @@
         .rcpt-title { text-align: center; color: #888; font-size: 1rem; margin-bottom: 30px; }
         .rcpt-row { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px dashed rgba(255,255,255,0.1); font-size: 0.95rem; }
 
-        /* HIDDEN WHITE PDF CONTAINER (For flawless Paytm-style receipts) */
         #pdfContainerWrapper { position: absolute; left: -9999px; top: -9999px; width: 600px; }
 
         /* CYBER SCANNER LOADER */
@@ -268,7 +311,8 @@
                 <a href="profile.html">Profile</a>
             </div>
             <div class="header-actions">
-                <img src="https://tournyx.in/favicon.png" class="header-profile-img" id="headerProfilePic" onclick="window.location.href='profile.html'">
+                <i class="fa-solid fa-headset support-pulse-icon" onclick="openGlobalSupport(); triggerHaptic();"></i>
+                <img src="https://tournyx.in/favicon.png" class="header-profile-img" id="headerProfilePic" onclick="handleProfileClick()">
             </div>
         </div>
     </header>
@@ -278,10 +322,10 @@
         <div class="wallet-card animate-section delay-1">
             <div class="vip-badge" id="vipBadge"><i class="fa-solid fa-medal"></i> BRONZE TIER</div>
             <div class="balance-label">
-                <span>Total Balance <i class="fa-solid fa-eye" id="eyeIcon" onclick="togglePrivacy(); triggerHaptic();" style="margin-left:8px; cursor: pointer; color:#888;"></i></span>
+                <span>Total Balance <i class="fa-solid fa-eye" id="eyeIcon" onclick="if(isGuest) return showLoginModal(); togglePrivacy(); triggerHaptic();" style="margin-left:8px; cursor: pointer; color:#888;"></i></span>
             </div>
             <div class="balance-amount" id="balanceWrapper">
-                <span id="displayRupees">0</span> CR
+                Rs. <span id="displayRupees">0</span>
             </div>
             
             <div class="pts-balance" id="ptsWrapper">
@@ -296,24 +340,24 @@
         </div>
 
         <div class="quick-actions animate-section delay-2">
-            <div class="action-btn btn-add" onclick="openAddMoney(); triggerHaptic();">
+            <div class="action-btn btn-add" onclick="if(isGuest) return showLoginModal(); openAddMoney(); triggerHaptic();">
                 <i class="fa-solid fa-circle-plus"></i>
-                <span>Buy Credits</span>
+                <span>Add Cash</span>
             </div>
-            <a href="withdraw.html" class="action-btn btn-withdraw" onclick="triggerHaptic();">
+            <a href="withdraw.html" class="action-btn btn-withdraw" onclick="return handleProtectedAction(event, 'withdraw.html')">
                 <i class="fa-solid fa-money-bill-transfer"></i>
                 <span>Withdraw</span>
             </a>
-            <a href="redeem.html" class="action-btn btn-redeem" onclick="triggerHaptic();">
+            <a href="redeem.html" class="action-btn btn-redeem" onclick="return handleProtectedAction(event, 'redeem.html')">
                 <i class="fa-solid fa-gift"></i>
                 <span>Redeem</span>
             </a>
         </div>
         
-        <div class="first-deposit-banner animate-section delay-3" id="firstDepositBanner" onclick="openAddMoney(); setAmt(59);" style="display:none;">
+        <div class="first-deposit-banner animate-section delay-3" id="firstDepositBanner" onclick="if(isGuest) return showLoginModal(); openAddMoney(); setAmt(50);" style="display:none;">
             <div>
-                <div style="font-family:var(--font-head); font-weight:bold; color:var(--accent-orange);"><i class="fa-solid fa-bolt"></i> FIRST PURCHASE BONUS</div>
-                <div style="font-size:0.75rem; color:#ccc;">Buy credits now to instantly unlock massive Bonus Credits!</div>
+                <div style="font-family:var(--font-head); font-weight:bold; color:var(--accent-orange);"><i class="fa-solid fa-bolt"></i> FIRST DEPOSIT BONUS</div>
+                <div style="font-size:0.75rem; color:#ccc;">Add money now to instantly unlock massive Bonus Cash!</div>
             </div>
             <i class="fa-solid fa-chevron-right" style="color:var(--accent-orange);"></i>
         </div>
@@ -321,8 +365,8 @@
         <div class="section-title animate-section delay-4">
             Recent Transactions 
             <div>
-                <i class="fa-solid fa-download header-action-icon" onclick="downloadAllTxnsPDF(); triggerHaptic();" style="color:var(--accent-cyan); margin-right:15px; font-size:1rem;"></i>
-                <span onclick="openAllTxns(); triggerHaptic();">View All <i class="fa-solid fa-chevron-right" style="font-size:0.7rem; margin-left:3px;"></i></span>
+                <i class="fa-solid fa-download header-action-icon" onclick="if(isGuest) return showLoginModal(); downloadAllTxnsPDF(); triggerHaptic();" style="color:var(--accent-cyan); margin-right:15px; font-size:1rem;"></i>
+                <span onclick="if(isGuest) return showLoginModal(); openAllTxns(); triggerHaptic();">View All <i class="fa-solid fa-chevron-right" style="font-size:0.7rem; margin-left:3px;"></i></span>
             </div>
         </div>
         
@@ -333,21 +377,53 @@
         </div>
 
         <div style="text-align:center; color:#666; font-size:0.75rem; margin-top:20px; margin-bottom: 20px; display:flex; align-items:center; justify-content:center; gap:8px;">
-            <i class="fa-solid fa-lock"></i> Secured by 256-bit Encryption • RBI Compliant - © 2026 Tournyx Esports. Owned and operated by THILAKESHWARAN. All rights reserved
+            <i class="fa-solid fa-lock"></i> Secured by 256-bit Encryption • RBI Compliant
+        </div>
+    </div>
+
+    <div class="bottom-sheet-overlay" id="loginPromptModal">
+        <div class="bottom-sheet" style="max-height: auto;">
+            <div class="sheet-header">
+                <div class="sheet-title">Access Required</div>
+                <i class="fa-solid fa-xmark close-sheet" onclick="document.getElementById('loginPromptModal').classList.remove('active')"></i>
+            </div>
+            <div class="login-prompt-content">
+                <i class="fa-solid fa-user-lock login-prompt-icon"></i>
+                <h2 style="font-family: var(--font-head); margin-bottom: 10px; color: white;">Guest Mode Active</h2>
+                <p style="color: #aaa; font-size: 0.95rem; margin-bottom: 25px; line-height: 1.5;">Please log in or sign up to access the wallet, make secure deposits, withdraw your winnings, and view transaction history.</p>
+                <button class="pay-btn" style="margin-bottom: 15px; box-shadow: 0 5px 20px rgba(0,242,255,0.3);" onclick="window.location.href='login.html'">LOGIN TO ACCOUNT <i class="fa-solid fa-arrow-right-to-bracket"></i></button>
+                <button class="pay-btn" style="background: transparent; border: 1px solid var(--accent-purple); box-shadow: none;" onclick="window.location.href='signup.html'">CREATE NEW ACCOUNT</button>
+            </div>
         </div>
     </div>
 
     <div class="bottom-sheet-overlay" id="addMoneyOverlay">
         <div class="bottom-sheet">
             <div class="sheet-header">
-                <div class="sheet-title"><i class="fa-solid fa-wallet" style="color:var(--accent-cyan);"></i> Buy Tournyx Credits</div>
+                <div class="sheet-title"><i class="fa-solid fa-building-columns" style="color:var(--accent-cyan);"></i> Deposit Funds</div>
                 <i class="fa-solid fa-xmark close-sheet" onclick="closeAddMoney()"></i>
             </div>
             
             <div class="add-money-flex">
                 <div class="add-money-left">
+                    <div style="margin-bottom: 5px; font-size: 0.8rem; color: #aaa; text-transform: uppercase;">Select Payment Server</div>
+                    <div class="server-container">
+                        <div class="server-card active" id="sCard1" onclick="selectServer(1); triggerHaptic();">
+                            <div class="server-name">Server 1</div>
+                            <div class="server-tag tag-fast">FAST</div>
+                        </div>
+                        <div class="server-card" id="sCard2" onclick="selectServer(2); triggerHaptic();">
+                            <div class="server-name">Server 2</div>
+                            <div class="server-tag tag-stable">STABLE</div>
+                        </div>
+                        <div class="server-card" id="sCard3" onclick="selectServer(3); triggerHaptic();">
+                            <div class="server-name">Server 3</div>
+                            <div class="server-tag tag-new">NEW</div>
+                        </div>
+                    </div>
+
                     <div class="amt-input-wrapper">
-                        <div class="amt-currency">CR</div>
+                        <div class="amt-currency">Rs.</div>
                         <input type="number" id="addAmtInput" class="amt-input" placeholder="0" oninput="updateQR()">
                     </div>
 
@@ -355,15 +431,19 @@
                         </div>
                     
                     <div id="mobilePayBtn" style="display:none;">
-                        <button class="pay-btn" onclick="openUPIApp(); triggerHaptic();">Purchase via UPI <i class="fa-solid fa-bolt"></i></button>
+                        <button class="pay-btn" onclick="openUPIApp(); triggerHaptic();">Pay via UPI App <i class="fa-solid fa-bolt"></i></button>
                         <div style="text-align:center; margin:15px 0; color:#888; font-family:var(--font-head); font-size:0.8rem;">OR SCAN QR / SUBMIT UTR</div>
                     </div>
 
                     <div style="background:rgba(0,242,255,0.05); border:1px solid rgba(0,242,255,0.2); padding:20px; border-radius:15px; margin-top:20px;">
                         <div style="font-family:var(--font-head); color:white; margin-bottom:10px; font-size:1.1rem;"><i class="fa-solid fa-shield-halved" style="color:var(--accent-cyan);"></i> Verify Payment</div>
-                        <p style="font-size:0.8rem; color:#aaa; margin-bottom:15px;">After paying via App or QR, paste the 12-digit UTR below to securely add credits.</p>
+                        <p style="font-size:0.8rem; color:#aaa; margin-bottom:15px;">After paying via App or QR, paste the 12-digit UTR below to securely add funds.</p>
                         <input type="number" id="utrInput" placeholder="Enter 12-digit UTR" class="utr-input-field">
-                        <button class="pay-btn" style="background: transparent; border: 1px solid var(--accent-green); color: var(--accent-green); box-shadow:none; margin-bottom:0;" onclick="submitStrictUTR(); triggerHaptic();">Verify UTR <i class="fa-solid fa-check-double"></i></button>
+                        <button class="pay-btn" style="background: transparent; border: 1px solid var(--accent-green); color: var(--accent-green); box-shadow:none; margin-bottom:15px;" onclick="submitStrictUTR(); triggerHaptic();">Verify UTR <i class="fa-solid fa-check-double"></i></button>
+                        
+                        <div style="text-align: center;">
+                            <span style="font-size: 0.8rem; color: #888; text-decoration: underline; cursor: pointer;" onclick="openGlobalSupport(); triggerHaptic();">Money deducted but not added? Need help?</span>
+                        </div>
                     </div>
                 </div>
                 
@@ -377,14 +457,46 @@
                         <div class="upi-copy-box" onclick="copyUPI()">
                             <span id="officialUPI">86081838383@ask</span> <i class="fa-regular fa-copy" style="color:var(--accent-cyan);"></i>
                         </div>
-                        <div style="font-size:0.7rem; color:#ff9900;"><i class="fa-regular fa-clock"></i> QR Expires in <span id="qrTimer">05:00</span></div>
+                        <div style="font-size:0.7rem; color:#ff9900;"><i class="fa-regular fa-clock"></i> Gateway Session Expires in <span id="qrTimer">05:00</span></div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="bottom-sheet-overlay" id="supportBotOverlay">
+        <div class="bottom-sheet">
+            <div class="sheet-header">
+                <div class="sheet-title"><i class="fa-solid fa-robot" style="color:var(--accent-purple);"></i> Intelligent Support Bot</div>
+                <i class="fa-solid fa-xmark close-sheet" onclick="closeSupportBot()"></i>
+            </div>
             
-            <div style="text-align: center; margin-top: 20px;">
-                <button class="pay-btn" style="background: var(--card-border); color: var(--text-muted); cursor: not-allowed; box-shadow: none;" disabled>COMING SOON <i class="fa-solid fa-hourglass-half"></i></button>
-                <p style="font-size: 0.75rem; color: #888; margin-top: 5px;">Payments are currently disabled for verification. Please check back later.</p>
+            <div id="supportStep1">
+                <p style="color: #ccc; font-size: 0.95rem; margin-bottom: 20px; text-align:center; line-height: 1.4;">Hi! I'm the Tournyx AI Assistant. What do you need help with today?</p>
+                <div class="support-option-btn" onclick="supportProceed('Deposit Issue'); triggerHaptic();">Money deducted but not added <i class="fa-solid fa-chevron-right" style="color:var(--accent-cyan)"></i></div>
+                <div class="support-option-btn" onclick="supportProceed('Withdrawal Issue'); triggerHaptic();">Withdrawal is pending or failed <i class="fa-solid fa-chevron-right" style="color:var(--accent-cyan)"></i></div>
+                <div class="support-option-btn" onclick="supportProceed('Tournament Entry'); triggerHaptic();">Match entry fee or prize issue <i class="fa-solid fa-chevron-right" style="color:var(--accent-cyan)"></i></div>
+                <div class="support-option-btn" onclick="supportProceed('Other'); triggerHaptic();">Other inquiries <i class="fa-solid fa-chevron-right" style="color:var(--accent-cyan)"></i></div>
+            </div>
+
+            <div id="supportStep2" style="display:none;">
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:15px; cursor:pointer; color:var(--accent-cyan); font-size:0.9rem; font-family:var(--font-head); text-transform:uppercase;" onclick="supportBack(); triggerHaptic();"><i class="fa-solid fa-arrow-left"></i> Back</div>
+                <p style="color: #ccc; font-size: 0.9rem; margin-bottom: 15px;">Please describe your issue briefly and upload your payment screenshot or a screen-recording video.</p>
+                
+                <textarea id="supportMsg" class="support-msg-box" placeholder="Type your message here..."></textarea>
+                
+                <div class="support-bot-box" onclick="document.getElementById('screenshotInput').click()">
+                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2.5rem; color: var(--accent-cyan); margin-bottom: 10px;"></i>
+                    <div style="font-family: var(--font-head); color: white; font-weight: bold;">Upload Screenshot or Video</div>
+                    <div style="font-size: 0.75rem; color: #888; margin-top: 5px;">JPG, PNG, MP4 (Max 10MB)</div>
+                    <input type="file" id="screenshotInput" accept="image/*,video/*" style="display: none;" onchange="previewScreenshot(event)">
+                </div>
+                
+                <div id="screenshotPreviewBox" style="display: none; text-align: center;">
+                    <img id="ssPreview" style="max-width: 100%; border-radius: 10px; max-height: 200px; margin-bottom: 15px; border: 1px solid var(--card-border); display:none;">
+                    <video id="vidPreview" style="max-width: 100%; border-radius: 10px; max-height: 200px; margin-bottom: 15px; border: 1px solid var(--card-border); display:none;" controls></video>
+                    <button class="pay-btn" style="background: var(--accent-purple); box-shadow: 0 5px 20px rgba(189,0,255,0.4);" onclick="analyzeAndSubmitScreenshot(); triggerHaptic();">Submit Ticket <i class="fa-solid fa-paper-plane"></i></button>
+                </div>
             </div>
         </div>
     </div>
@@ -409,7 +521,7 @@
             
             <div id="receiptContent">
                 <div class="rcpt-icon" id="rcptIcon"></div>
-                <div class="rcpt-amt" id="rcptAmt">0 CR</div>
+                <div class="rcpt-amt" id="rcptAmt">Rs. 0</div>
                 <div class="rcpt-title" id="rcptTitle">Payment</div>
                 <div class="rcpt-row"><span class="rcpt-lbl">Transaction Status</span><span class="rcpt-val" id="rcptStatusVal"></span></div>
                 <div class="rcpt-row"><span class="rcpt-lbl">Category</span><span class="rcpt-val" id="rcptCat"><i class="fa-solid fa-gamepad"></i> Entry Fee</span></div>
@@ -451,7 +563,7 @@
                 </tr>
                 <tr style="border-bottom:1px solid #eeeeee;">
                     <td style="padding:15px 0; color:#555555;">Description</td>
-                    <td style="padding:15px 0; text-align:right; font-weight:bold; color:#000000;" id="pdfTitle">Wallet Action</td>
+                    <td style="padding:15px 0; text-align:right; font-weight:bold; color:#000000;" id="pdfTitle">Wallet Top-up</td>
                 </tr>
                 <tr style="border-bottom:1px solid #eeeeee;">
                     <td style="padding:15px 0; color:#555555;">Status</td>
@@ -459,7 +571,7 @@
                 </tr>
                 <tr>
                     <td style="padding:20px 0; color:#000000; font-size:18px; font-weight:bold;">Total Amount</td>
-                    <td style="padding:20px 0; text-align:right; font-size:24px; font-weight:bold;" id="pdfAmt">0 CR</td>
+                    <td style="padding:20px 0; text-align:right; font-size:24px; font-weight:bold;" id="pdfAmt">Rs. 0</td>
                 </tr>
             </table>
             <div style="text-align:center; margin-top:40px; color:#999999; font-size:12px;">
@@ -495,43 +607,81 @@
             inp.addEventListener('blur', () => { if(bNav) setTimeout(() => bNav.style.bottom = '0', 100); });
         });
 
-        // --- CONSTANTS ---
+        // --- CONSTANTS & SERVERS ---
         const API_URL = 'https://script.google.com/macros/s/AKfycbyqqTpgaflxKJ9xH0jq7mJ_jLzcoNhas3gNo0h5gvoa_6r5Ae9NFxJAJp7ZoYNnMRKl/exec';
-        const OFFICIAL_UPI = "8608159825@ybl"; 
         
+        const SERVER_UPIS = {
+            1: "SERVER_1_UPI@HERE", 
+            2: "SERVER_2_UPI@HERE", 
+            3: "SERVER_3_UPI@HERE"  
+        };
+        let currentServer = 1;
+        
+        let isGuest = false;
         let currentUser = JSON.parse(localStorage.getItem('tournyx_user'));
+        if(!currentUser) {
+            isGuest = true;
+            // Create a temporary mock profile for guest viewing
+            currentUser = { username: "Guest Player", rupees: 0, points: 0, email: "", avatar: "https://tournyx.in/favicon.png" };
+        }
+
         let activeReceiptId = "";
         let activeReceiptData = null;
         let qrTimerInterval;
         
         let isFirstDepositEligible = true;
+        
+        // FIXED AMOUNTS AS REQUESTED
         const FIRST_DEPOSIT_OFFERS = [
-            { amt: 59, bonus: 50 }, { amt: 109, bonus: 50 },
-            { amt: 200, bonus: 159 }, { amt: 300, bonus: 150 }, { amt: 500, bonus: 250 }
+            { amt: 50, bonus: 20 }, { amt: 100, bonus: 50 },
+            { amt: 250, bonus: 100 }, { amt: 500, bonus: 250 }
         ];
         const STANDARD_OFFERS = [50, 100, 250, 500];
 
+        // --- GUEST LOGIN PROTECTION LOGIC ---
+        function showLoginModal() {
+            document.getElementById('loginPromptModal').classList.add('active');
+            triggerHaptic();
+            return false;
+        }
+        
+        function handleProtectedAction(event, url) {
+            if(isGuest) {
+                if(event) event.preventDefault();
+                return showLoginModal();
+            }
+            if(url) window.location.href = url;
+            return true;
+        }
+        
+        function handleProfileClick() {
+            if(isGuest) return showLoginModal();
+            window.location.href='profile.html';
+        }
+
         document.addEventListener("DOMContentLoaded", function() {
-            if(!currentUser) { window.location.href = "login.html"; return; }
             if(currentUser.avatar) document.getElementById('headerProfilePic').src = currentUser.avatar;
             setDynamicGreeting();
             
             let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
             if(isMobile) { document.getElementById('mobilePayBtn').style.display = 'block'; }
-            else { document.getElementById('qrContainer').classList.add('active'); setAmt(59); }
+            else { document.getElementById('qrContainer').classList.add('active'); setAmt(50); }
             
-            // Load from cache first
             let cached = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
-            if(cached.length > 0) { renderTransactions(); checkFirstDeposit(cached); updateWalletDisplay(); }
-            else { updateWalletDisplay(); renderQuickAmts(); }
+            if(cached.length > 0 && !isGuest) { 
+                renderTransactions(); checkFirstDeposit(cached); updateWalletDisplay(); 
+            } else { 
+                updateWalletDisplay(); renderQuickAmts(); 
+            }
             
-            // Fire sync, hide loader when done
-            syncLiveTransactions().finally(() => {
-                document.getElementById('mainLoader').classList.add('hidden');
-            });
+            if(!isGuest) {
+                syncLiveTransactions().finally(() => { document.getElementById('mainLoader').classList.add('hidden'); });
+                setInterval(() => syncLiveTransactions(), 5000); 
+            } else {
+                setTimeout(() => document.getElementById('mainLoader').classList.add('hidden'), 800);
+            }
             
-            // Background Live Sync (Every 5 seconds)
-            setInterval(() => syncLiveTransactions(), 5000); 
+            selectServer(1);
         });
 
         function triggerHaptic() { if(navigator.vibrate) navigator.vibrate(40); }
@@ -559,8 +709,7 @@
             const hr = new Date().getHours(); let greet = "Welcome,";
             if (hr < 12) greet = "Good Morning,"; else if (hr < 18) greet = "Good Afternoon,"; else greet = "Good Evening,";
             let name = currentUser.username ? currentUser.username.split(" ")[0] : "Player";
-            let isPremium = currentUser.isPremium || currentUser.premium || false;
-            let tagHTML = isPremium ? '<span style="background:var(--accent-purple); color:white; padding:2px 6px; border-radius:4px; font-size:0.6rem; margin-left:8px; font-family:var(--font-head); font-weight:bold;">PRO</span>' : '<span style="background:rgba(255,255,255,0.1); color:#ccc; padding:2px 6px; border-radius:4px; font-size:0.6rem; margin-left:8px; font-family:var(--font-head); font-weight:bold;">NORMAL</span>';
+            let tagHTML = isGuest ? '<span style="background:rgba(255,255,255,0.1); color:#ccc; padding:2px 6px; border-radius:4px; font-size:0.6rem; margin-left:8px; font-family:var(--font-head); font-weight:bold;">GUEST</span>' : '<span style="background:var(--accent-purple); color:white; padding:2px 6px; border-radius:4px; font-size:0.6rem; margin-left:8px; font-family:var(--font-head); font-weight:bold;">PLAYER</span>';
             document.getElementById('dynamicGreeting').innerHTML = `${greet} ${name} ${tagHTML}`;
         }
 
@@ -587,19 +736,15 @@
             else { badge.innerHTML = '<i class="fa-solid fa-medal"></i> BRONZE TIER'; badge.className = 'vip-badge vip-bronze'; prog.style.width = ((rs/1000)*100)+'%'; nTier.innerText = "Silver"; }
         }
 
-        // --- FIRST DEPOSIT LOGIC ---
         function checkFirstDeposit(txns) {
             let hasDeposit = false;
             txns.forEach(t => {
                 let cat = String(t.category || t.title || "").toLowerCase();
                 let typ = String(t.type || "").toLowerCase();
-                if(typ === 'credit' && (cat.includes('deposit') || cat.includes('top-up') || cat.includes('purchase'))) {
-                    hasDeposit = true;
-                }
+                if(typ === 'credit' && (cat.includes('deposit') || cat.includes('top-up'))) { hasDeposit = true; }
             });
-
             isFirstDepositEligible = !hasDeposit;
-            if(isFirstDepositEligible) { document.getElementById('firstDepositBanner').style.display = 'flex'; } 
+            if(isFirstDepositEligible && !isGuest) { document.getElementById('firstDepositBanner').style.display = 'flex'; } 
             else { document.getElementById('firstDepositBanner').style.display = 'none'; }
             renderQuickAmts();
         }
@@ -618,34 +763,55 @@
             }
         }
 
-        // --- UTR SYSTEM ---
-        function openAddMoney() { document.getElementById('addMoneyOverlay').classList.add('active'); startQRTimer(); }
+        // --- DEPOSIT SYSTEM ---
+        function openAddMoney() { 
+            let hr = new Date().getHours();
+            if (hr >= 3 && hr < 9) {
+                showToast("Deposit Gateway is closed. Server opens at 9:00 AM.", true);
+                return;
+            }
+            document.getElementById('addMoneyOverlay').classList.add('active'); 
+            startQRTimer(); 
+        }
+        
         function closeAddMoney() { document.getElementById('addMoneyOverlay').classList.remove('active'); document.getElementById('addAmtInput').value = ""; document.getElementById('utrInput').value = ""; clearInterval(qrTimerInterval); }
         function setAmt(val) { document.getElementById('addAmtInput').value = val; updateQR(); }
         
+        function selectServer(num) {
+            currentServer = num;
+            document.getElementById('sCard1').classList.remove('active');
+            document.getElementById('sCard2').classList.remove('active');
+            document.getElementById('sCard3').classList.remove('active');
+            document.getElementById(`sCard${num}`).classList.add('active');
+            
+            document.getElementById('officialUPI').innerText = SERVER_UPIS[currentServer] || "Set_UPI_In_Code";
+            updateQR();
+        }
+
         function updateQR() {
             let amt = parseInt(document.getElementById('addAmtInput').value);
             let qrBox = document.getElementById('qrContainer');
             if(isNaN(amt) || amt < 10) { if(/Android|iPhone/i.test(navigator.userAgent)) qrBox.classList.remove('active'); return; }
             qrBox.classList.add('active');
-            document.getElementById('qrAmtText').innerText = `${amt} CR`;
-            let upiLink = `upi://pay?pa=${OFFICIAL_UPI}&pn=Tournyx%20Esports&am=${amt}&cu=INR`;
+            document.getElementById('qrAmtText').innerText = `Rs. ${amt}`;
+            let upiId = SERVER_UPIS[currentServer];
+            let upiLink = `upi://pay?pa=${upiId}&pn=Tournyx%20Esports&am=${amt}&cu=INR`;
             document.getElementById('dynamicQR').src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiLink)}`;
         }
         
         function startQRTimer() {
             let time = 300; let el = document.getElementById('qrTimer'); clearInterval(qrTimerInterval);
-            qrTimerInterval = setInterval(() => { let m = Math.floor(time/60); let s = time % 60; el.innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`; if(time <= 0) { clearInterval(qrTimerInterval); closeAddMoney(); showToast("Session Expired.", true); } time--; }, 1000);
+            qrTimerInterval = setInterval(() => { let m = Math.floor(time/60); let s = time % 60; el.innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`; if(time <= 0) { clearInterval(qrTimerInterval); closeAddMoney(); showToast("Gateway Session Expired.", true); } time--; }, 1000);
         }
         
         function openUPIApp() {
             let amt = parseInt(document.getElementById('addAmtInput').value);
-            if(isNaN(amt) || amt < 10) { triggerError('addAmtInput'); showToast("Enter minimum 10 CR", true); return; }
-            window.location.href = `upi://pay?pa=${OFFICIAL_UPI}&pn=Tournyx%20Esports&am=${amt}&cu=INR`;
+            if(isNaN(amt) || amt < 10) { triggerError('addAmtInput'); showToast("Enter minimum Rs 10", true); return; }
+            let upiId = SERVER_UPIS[currentServer];
+            window.location.href = `upi://pay?pa=${upiId}&pn=Tournyx%20Esports&am=${amt}&cu=INR`;
         }
-        function copyUPI() { navigator.clipboard.writeText(OFFICIAL_UPI).then(()=>showToast("UPI ID Copied!")); triggerHaptic(); }
+        function copyUPI() { navigator.clipboard.writeText(SERVER_UPIS[currentServer]).then(()=>showToast("UPI ID Copied!")); triggerHaptic(); }
 
-        // --- ADVANCED UTR LOADER ---
         function submitStrictUTR() {
             let amt = parseInt(document.getElementById('addAmtInput').value);
             let utr = document.getElementById('utrInput').value.trim();
@@ -662,19 +828,17 @@
             
             scanner.classList.add('active');
             sText.innerText = "AUTHORIZING...";
-            sDesc.innerText = "Initiating secure 256-bit connection...";
+            sDesc.innerText = "Connecting to Secure Gateway...";
             sCircle.style.borderColor = "var(--accent-cyan)";
             sInner.style.background = "rgba(0,242,255,0.2)";
 
-            // Multi-Stage Loader Sequence (8.5 seconds)
-            setTimeout(() => { sText.innerText = "VERIFYING UTR..."; sDesc.innerText = "Connecting to APIs..."; }, 3000);
-            setTimeout(() => { sText.innerText = "SYNCING WEBHOOK..."; sDesc.innerText = "Awaiting confirmation..."; sCircle.style.borderColor = "var(--accent-purple)"; sInner.style.background = "rgba(189,0,255,0.2)"; }, 6000);
+            setTimeout(() => { sText.innerText = "VERIFYING UTR..."; sDesc.innerText = "Connecting to banking APIs..."; }, 3000);
+            setTimeout(() => { sText.innerText = "SYNCING WEBHOOK..."; sDesc.innerText = "Awaiting bank confirmation..."; sCircle.style.borderColor = "var(--accent-purple)"; sInner.style.background = "rgba(189,0,255,0.2)"; }, 6000);
 
             setTimeout(() => {
                 scanner.classList.remove('active');
-                showToast("Pending confirmation. Will be added shortly.");
+                showToast("Pending bank confirmation. Will be added shortly.");
                 
-                // Determine Specific First Time Bonus mapping
                 let bonusAmt = 0;
                 if(isFirstDepositEligible) {
                     let offer = FIRST_DEPOSIT_OFFERS.find(o => o.amt === amt);
@@ -684,11 +848,11 @@
                 let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
                 let dateStr = new Date().toLocaleString('en-US', { month:'short', day:'2-digit', year:'numeric', hour:'numeric', minute:'2-digit', hour12:true });
                 
-                let newTxn = { id: "TXN" + utr.substring(6), title: "Credits Purchase (UPI)", amount: amt, type: "Credit", status: "Pending", category: "Deposit", date: dateStr };
+                let newTxn = { id: "TXN" + utr.substring(6), title: "Wallet Top-up (UPI)", amount: amt, type: "Credit", status: "Pending", category: "Deposit", date: dateStr };
                 txns.unshift(newTxn);
 
                 if(bonusAmt > 0) {
-                    let bonusTxn = { id: "BONUS" + Math.floor(Math.random()*10000), title: "First Purchase Bonus", amount: bonusAmt, type: "Credit", status: "Pending", category: "Bonus", date: dateStr };
+                    let bonusTxn = { id: "BONUS" + Math.floor(Math.random()*10000), title: "First Deposit Bonus", amount: bonusAmt, type: "Credit", status: "Pending", category: "Bonus", date: dateStr };
                     txns.unshift(bonusTxn);
                     showToast("UTR & Bonus Pending Verification!");
                 }
@@ -698,12 +862,89 @@
                 
                 fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "submit_utr", email: currentUser.email, amount: amt, utr: utr }) });
                 if(bonusAmt > 0) {
-                    fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "claim_offer", email: currentUser.email, offerName: "First Purchase Bonus Setup", reward: bonusAmt }) });
+                    fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "claim_offer", email: currentUser.email, offerName: "First Deposit Bonus Setup", reward: bonusAmt }) });
                 }
             }, 8500);
         }
 
-        // --- BACKGROUND SYNC ---
+        // --- NEW INTERACTIVE SUPPORT BOT SCRIPT ---
+        let currentSupportCategory = "";
+        
+        function openGlobalSupport() {
+            if(isGuest) return showLoginModal();
+            closeAddMoney();
+            document.getElementById('supportBotOverlay').classList.add('active');
+            supportBack(); 
+        }
+        
+        function supportProceed(category) {
+            currentSupportCategory = category;
+            document.getElementById('supportStep1').style.display = 'none';
+            document.getElementById('supportStep2').style.display = 'block';
+        }
+        
+        function supportBack() {
+            document.getElementById('supportStep1').style.display = 'block';
+            document.getElementById('supportStep2').style.display = 'none';
+            document.getElementById('screenshotInput').value = "";
+            document.getElementById('supportMsg').value = "";
+            document.getElementById('screenshotPreviewBox').style.display = "none";
+        }
+        
+        function closeSupportBot() {
+            document.getElementById('supportBotOverlay').classList.remove('active');
+        }
+        
+        function previewScreenshot(event) {
+            const file = event.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                let isVid = file.type.startsWith('video/');
+                reader.onload = function(e) {
+                    if(isVid) {
+                        document.getElementById('ssPreview').style.display = 'none';
+                        document.getElementById('vidPreview').style.display = 'inline-block';
+                        document.getElementById('vidPreview').src = e.target.result;
+                    } else {
+                        document.getElementById('vidPreview').style.display = 'none';
+                        document.getElementById('ssPreview').style.display = 'inline-block';
+                        document.getElementById('ssPreview').src = e.target.result;
+                    }
+                    document.getElementById('screenshotPreviewBox').style.display = "block";
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        function analyzeAndSubmitScreenshot() {
+            closeSupportBot();
+            let scanner = document.getElementById('cyberScanner');
+            let sText = document.getElementById('scannerText');
+            let sDesc = document.getElementById('scannerDesc');
+            
+            scanner.classList.add('active');
+            sText.innerText = "EXTRACTING DATA...";
+            sDesc.innerText = "Bot reading file and details...";
+
+            setTimeout(() => { sText.innerText = "CROSS-CHECKING..."; sDesc.innerText = "Verifying with bank ledger..."; }, 3000);
+            
+            setTimeout(() => {
+                scanner.classList.remove('active');
+                
+                let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
+                let dateStr = new Date().toLocaleString('en-US', { month:'short', day:'2-digit', year:'numeric', hour:'numeric', minute:'2-digit', hour12:true });
+                let newTxn = { id: "REV" + Math.floor(1000 + Math.random()*9000), title: currentSupportCategory, amount: 0, type: "Credit", status: "Pending", category: "Support", date: dateStr };
+                txns.unshift(newTxn);
+                localStorage.setItem('tournyx_txns', JSON.stringify(txns));
+                renderTransactions();
+                
+                // Alert the backend to send WhatsApp & Email
+                fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "support_ticket", email: currentUser.email, category: currentSupportCategory }) });
+
+                showToast("Success! Admin has been alerted for priority review.");
+            }, 6500);
+        }
+
         async function syncLiveTransactions() {
             try {
                 let userRes = await fetch(API_URL + "?action=sync_user&email=" + encodeURIComponent(currentUser.email));
@@ -727,9 +968,12 @@
             } catch(e) {}
         }
 
-        // --- RENDER LEDGER ---
         function renderTransactions() {
             const container = document.getElementById('txnListContainer');
+            if(isGuest) {
+                container.innerHTML = `<div style="text-align:center; padding:30px; color:#666; font-size:0.9rem;"><i class="fa-solid fa-lock" style="display:block; font-size:2rem; margin-bottom:10px; color:#444;"></i> Log in to view your secure transaction ledger.</div>`;
+                return;
+            }
             let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
             container.innerHTML = "";
             if (txns.length === 0) { container.innerHTML = `<div style="text-align:center; padding:30px; color:#666;">No recent transactions.</div>`; return; }
@@ -760,9 +1004,10 @@
             let titleLower = String(t.title || "").toLowerCase();
             if(titleLower.includes('tournament') || titleLower.includes('entry') || titleLower.includes('joined')) { cat = "Entry Fee"; catIcon = "fa-gamepad"; iconClass = "icon-debit"; mainIcon = "fa-gamepad"; }
             if(titleLower.includes('prize') || titleLower.includes('won')) { cat = "Prize Won"; catIcon = "fa-trophy"; iconClass = "icon-credit"; mainIcon = "fa-trophy"; }
-            if(titleLower.includes('deposit') || titleLower.includes('top-up') || titleLower.includes('purchase')) { cat = "Purchase"; catIcon = "fa-wallet"; }
+            if(titleLower.includes('deposit') || titleLower.includes('top-up')) { cat = "Deposit"; catIcon = "fa-wallet"; }
             if(titleLower.includes('bonus')) { cat = "Bonus"; catIcon = "fa-bolt"; iconClass = "icon-credit"; mainIcon = "fa-bolt"; }
             if(titleLower.includes('withdraw')) { cat = "Payout"; catIcon = "fa-money-bill-transfer"; }
+            if(titleLower.includes('support') || titleLower.includes('review') || titleLower.includes('issue')) { cat = "Support"; catIcon = "fa-headset"; iconClass = "icon-debit"; mainIcon = "fa-robot"; }
             
             if(isPending) { iconClass = "icon-debit"; mainIcon = "fa-clock"; }
             if(isFailed) { mainIcon = "fa-xmark"; iconClass = "icon-debit"; }
@@ -770,8 +1015,10 @@
             let amtClass = isCredit ? "amt-credit" : "amt-debit";
             let statusColor = isSuccess ? "var(--accent-green)" : (isFailed ? "var(--accent-red)" : "#ff9900");
             
-            let inOutLabel = isCredit ? `<div class="in-out-label in-label">CREDITS IN</div>` : `<div class="in-out-label out-label">CREDITS OUT</div>`;
+            let inOutLabel = isCredit ? `<div class="in-out-label in-label">MONEY IN</div>` : `<div class="in-out-label out-label">MONEY OUT</div>`;
             let displayDate = t.date ? (t.date.includes(',') ? t.date.split(',')[0] : t.date.split(' ')[0]) : "Today";
+            
+            let amtHTML = t.amount > 0 ? `${isCredit?'+':'-'} ₹${formatNum(t.amount)}` : `---`;
 
             return `
                 <div class="txn-item glow-hover" style="animation-delay:${delay*0.1}s" onclick="openReceipt('${t.id}')">
@@ -784,13 +1031,12 @@
                     </div>
                     <div class="txn-right">
                         ${inOutLabel}
-                        <div class="txn-amt ${amtClass}">${isCredit?'+':'-'} ${formatNum(t.amount)} CR</div>
+                        <div class="txn-amt ${amtClass}">${amtHTML}</div>
                         <div class="txn-status" style="color:${statusColor};">${t.status}</div>
                     </div>
                 </div>`;
         }
 
-        // --- RECEIPT & PDF SUPPORT ---
         function openReceipt(id) {
             let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
             let t = txns.find(x => x.id === id); if(!t) return;
@@ -806,10 +1052,11 @@
             
             let catStr = `<i class="fa-solid fa-gamepad"></i> General`;
             let titleLower = String(t.title || "").toLowerCase();
-            if (titleLower.includes("top-up") || titleLower.includes("deposit") || titleLower.includes("purchase")) catStr = `<i class="fa-solid fa-wallet"></i> Purchase`;
+            if (titleLower.includes("top-up") || titleLower.includes("deposit")) catStr = `<i class="fa-solid fa-wallet"></i> Deposit`;
             else if (titleLower.includes("bonus")) catStr = `<i class="fa-solid fa-bolt"></i> Bonus`;
             else if (titleLower.includes("prize")) catStr = `<i class="fa-solid fa-trophy"></i> Prize Won`;
             else if (titleLower.includes("withdraw")) catStr = `<i class="fa-solid fa-money-bill-transfer"></i> Payout`;
+            else if (titleLower.includes("support") || titleLower.includes("issue")) catStr = `<i class="fa-solid fa-headset"></i> Support`;
             
             let mainIcon = isFailed ? "fa-xmark" : (isPending ? "fa-clock" : (isCredit ? "fa-check" : "fa-arrow-up"));
             let iconEl = document.getElementById('rcptIcon');
@@ -817,7 +1064,7 @@
             iconEl.className = `rcpt-icon ${isPending ? 'icon-debit' : (isCredit ? 'icon-credit' : 'icon-debit')}`;
             if(isFailed) iconEl.className = `rcpt-icon icon-debit`;
             
-            document.getElementById('rcptAmt').innerText = `${isCredit?'+':'-'} ${formatNum(t.amount)} CR`;
+            document.getElementById('rcptAmt').innerText = t.amount > 0 ? `${isCredit?'+':'-'} Rs. ${formatNum(t.amount)}` : `Review Pending`;
             document.getElementById('rcptAmt').className = `rcpt-amt ${isCredit ? 'amt-credit' : 'amt-debit'}`;
             document.getElementById('rcptTitle').innerText = t.title;
             document.getElementById('rcptCat').innerHTML = catStr;
@@ -829,7 +1076,6 @@
             sEl.innerHTML = `<i class="fa-solid ${mainIcon}"></i> ${t.status}`;
             sEl.style.color = statusColor;
 
-            // Populate Hidden PDF Template
             document.getElementById('pdfUserName').innerText = currentUser.username || "User";
             document.getElementById('pdfUserEmail').innerText = currentUser.email || "";
             document.getElementById('pdfTxnId').innerText = t.id;
@@ -837,7 +1083,7 @@
             document.getElementById('pdfTitle').innerText = t.title;
             document.getElementById('pdfStatus').innerText = t.status;
             document.getElementById('pdfStatus').style.color = isSuccess ? "#00b300" : (isFailed ? "#ff0000" : "#ff9900");
-            document.getElementById('pdfAmt').innerText = `${isCredit?'+':'-'} ${formatNum(t.amount)} CR`;
+            document.getElementById('pdfAmt').innerText = t.amount > 0 ? `${isCredit?'+':'-'} Rs. ${formatNum(t.amount)}` : `0`;
             document.getElementById('pdfAmt').style.color = isCredit ? "#00b300" : "#ff0000";
 
             document.getElementById('receiptOverlay').classList.add('active');
@@ -887,7 +1133,7 @@
                             <th style="padding:10px;">Txn ID</th>
                             <th style="padding:10px;">Description</th>
                             <th style="padding:10px;">Status</th>
-                            <th style="padding:10px; text-align:right;">Credits</th>
+                            <th style="padding:10px; text-align:right;">Amount</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -906,7 +1152,7 @@
                         <td style="padding:10px;">${t.id}</td>
                         <td style="padding:10px;">${t.title}</td>
                         <td style="padding:10px; font-weight:bold; color:${statusCol};">${t.status}</td>
-                        <td style="padding:10px; text-align:right; font-weight:bold; color:${amtCol};">${isCredit?'+':'-'} ${formatNum(t.amount)} CR</td>
+                        <td style="padding:10px; text-align:right; font-weight:bold; color:${amtCol};">${isCredit?'+':'-'} Rs. ${formatNum(t.amount)}</td>
                     </tr>
                 `;
             });
@@ -927,7 +1173,7 @@
         function contactSupportTxn() {
             triggerHaptic();
             if(!activeReceiptData) return;
-            let msg = `Hello Tournyx Support, I need help with my recent transaction.%0A%0A*Transaction ID:* ${activeReceiptData.id}%0A*Credits:* ${activeReceiptData.amount} CR%0A*Date:* ${activeReceiptData.date}%0A*Status:* ${activeReceiptData.status}%0A*User:* ${currentUser.email}%0A%0APlease assist me with this.`;
+            let msg = `Hello Tournyx Support, I need help with my recent transaction.%0A%0A*Transaction ID:* ${activeReceiptData.id}%0A*Amount:* Rs. ${activeReceiptData.amount}%0A*Date:* ${activeReceiptData.date}%0A*Status:* ${activeReceiptData.status}%0A*User:* ${currentUser.email}%0A%0APlease assist me with this.`;
             window.open(`https://wa.me/918608183838?text=${msg}`, '_blank');
         }
     </script>
