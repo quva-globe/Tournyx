@@ -1631,7 +1631,7 @@
             }
         }
 
-        // --- FETCH TEAM PLAYERS REAL-TIME & HANDLE JSON ARRAY ---
+        /// --- ULTIMATE TEAM ROSTER EXTRACTOR ---
         function fetchClanPlayers(clanName, element) {
             triggerHaptic();
             let existing = element.querySelector('.players-list');
@@ -1661,30 +1661,36 @@
                 let captainName = "Unknown";
                 
                 if(data.status === 'success' && data.data) {
-                    // Bulletproof JSON Extraction to catch ANY format
                     let raw = data.data;
                     let targetObj = Array.isArray(raw) ? raw[0] : raw;
+                    let foundJson = null;
 
+                    // BULLETPROOF SCANNER: Searches every column returned for the roster JSON
                     if (targetObj) {
-                        if (targetObj.team_json) {
-                            try {
-                                let parsed = typeof targetObj.team_json === 'string' ? JSON.parse(targetObj.team_json) : targetObj.team_json;
-                                if (Array.isArray(parsed)) {
-                                    roster = parsed[0].roster || parsed;
-                                    captainName = parsed[0].captain || targetObj.captain || "Unknown";
-                                } else {
-                                    roster = parsed.roster || [];
-                                    captainName = parsed.captain || targetObj.captain || "Unknown";
-                                }
-                            } catch(e){}
-                        } else if (targetObj.roster) {
-                            try {
-                                roster = typeof targetObj.roster === 'string' ? JSON.parse(targetObj.roster) : targetObj.roster;
-                            } catch(e) { roster = targetObj.roster; }
-                            captainName = targetObj.captain || "Unknown";
-                        } else if (Array.isArray(raw)) {
-                            roster = raw;
+                        let values = Object.values(targetObj);
+                        for (let val of values) {
+                            if (typeof val === 'string' && (val.includes('"roster"') || val.includes('"captain"'))) {
+                                try {
+                                    foundJson = JSON.parse(val);
+                                    break;
+                                } catch(e) {}
+                            }
                         }
+                        // Fallbacks if it was already parsed natively
+                        if (!foundJson && targetObj.roster) { foundJson = targetObj; }
+                    }
+
+                    if (foundJson) {
+                        // Extract based on object structure
+                        if (Array.isArray(foundJson)) {
+                            roster = foundJson[0].roster || foundJson;
+                            captainName = foundJson[0].captain || "Unknown";
+                        } else {
+                            roster = foundJson.roster || [];
+                            captainName = foundJson.captain || "Unknown";
+                        }
+                    } else if (Array.isArray(raw) && raw.length > 0 && raw[0].name) {
+                        roster = raw; // direct array format
                     }
                 }
 
