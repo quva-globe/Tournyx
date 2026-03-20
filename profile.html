@@ -6,25 +6,27 @@
 <link rel="apple-touch-icon" href="https://tournyx.in/apple-touch-icon.png">
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
         <title>Player Profile & Stats - Tournyx</title>
     <meta name="description" content="View your Tournyx player profile, track your esports tournament stats, update your in-game name (IGN), and manage your account settings.">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
 
     <style>
         /* --- GLOBAL VARIABLES --- */
         :root {
-            --primary-bg: #070311;
-            --secondary-bg: #0d061e;
-            --card-bg: rgba(20, 10, 35, 0.7);
-            --card-border: rgba(189, 0, 255, 0.2);
+            --primary-bg: #05020c;
+            --secondary-bg: #0a0514;
+            --card-bg: rgba(20, 10, 35, 0.35);
+            --card-border: rgba(255, 255, 255, 0.08);
             --accent-cyan: #00f2ff;
             --accent-purple: #bd00ff;
             --accent-orange: #ff9900;
             --accent-green: #00ff7f;
             --accent-danger: #ff4d4d;
-            --accent-gradient: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan));
+            --accent-gradient: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
             --font-head: 'Orbitron', sans-serif;
             --font-body: 'Rajdhani', sans-serif;
         }
@@ -35,29 +37,32 @@
         body {
             background-color: var(--primary-bg); color: white; font-family: var(--font-body);
             padding-bottom: calc(90px + env(safe-area-inset-bottom)); overflow-x: hidden;
-            padding-top: calc(65px + env(safe-area-inset-top)); 
+            padding-top: calc(75px + env(safe-area-inset-top)); 
         }
 
         .tier-container, .role-switch-container, .dashboard-section, .settings-list, .app-footer, .profile-header, .top-status-bar {
             max-width: 800px; margin-left: auto !important; margin-right: auto !important; width: 100%;
         }
+        
+        .glass-panel { background: var(--card-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--card-border); border-radius: 16px; }
 
         #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at 50% 20%, #15062e 0%, #070311 100%); transform: translateZ(0);}
 
-        .top-header { position: fixed; top: 0; left: 0; width: 100%; padding: env(safe-area-inset-top) 15px 15px; background: rgba(7, 3, 17, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--card-border); z-index: 2000; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); }
-        .header-wrapper { display: flex; align-items: center; justify-content: space-between; max-width: 1000px; margin: 0 auto; width: 100%; }
-        .header-left { display: flex; align-items: center; gap: 10px; }
-        .app-logo { width: 30px; height: 30px; border-radius: 50%; object-fit: contain; box-shadow: 0 0 10px var(--accent-purple); flex-shrink: 0;}
-        .app-title { font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px; }
+        /* --- HEADER (MOBILE OPTIMIZED SIZES) --- */
+        .top-header { position: fixed; top: 0; left: 0; width: 100%; padding: calc(12px + env(safe-area-inset-top)) 10px 12px; background: rgba(5, 2, 12, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); z-index: 2000; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); transform: translateZ(0); }
+        .header-wrapper { display: flex; align-items: center; justify-content: space-between; max-width: 1000px; margin: 0 auto; width: 100%; gap: 5px; }
+        .header-left { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+        .app-logo { width: 28px; height: 28px; border-radius: 50%; object-fit: contain; box-shadow: 0 0 15px var(--accent-purple); border: 1px solid rgba(255,255,255,0.2); flex-shrink: 0;}
+        .app-title { font-family: var(--font-head); font-size: 0.9rem; font-weight: 700; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 0px; white-space: normal; line-height: 1.1; word-break: break-word; text-transform: uppercase;}
         
         .desktop-nav { display: none; align-items: center; gap: 25px; }
         .desktop-nav a { color: var(--text-muted); text-decoration: none; font-family: var(--font-head); font-size: 0.95rem; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: 1px;}
         .desktop-nav a:hover, .desktop-nav a.active { color: var(--accent-cyan); text-shadow: 0 0 10px rgba(0,242,255,0.4); }
         @media (min-width: 850px) { .desktop-nav { display: flex; } }
 
-        .header-right { display: flex; align-items: center; gap: 20px; font-size: 1.2rem; color: var(--accent-cyan); }
-        .header-right i { cursor: pointer; transition: 0.3s; }
-        .header-right i:active { transform: scale(0.8); }
+        .header-right { display: flex; align-items: center; gap: 15px; font-size: 1.2rem; color: var(--accent-cyan); flex-shrink: 0;}
+        .header-right i { cursor: pointer; transition: 0.3s; padding: 5px;}
+        .header-right i:active { transform: scale(0.8); text-shadow: 0 0 10px var(--accent-cyan);}
 
         .top-status-bar {
             display: flex; justify-content: space-between; align-items: center;
@@ -66,50 +71,50 @@
             font-family: var(--font-head); letter-spacing: 1px; text-transform: uppercase; margin-top: 0px; margin-bottom: 0px;
         }
 
-        .guest-cta-wrapper { position: fixed; bottom: 0; left: 0; width: 100%; padding: 15px; background: rgba(7,3,17,0.98); backdrop-filter: blur(20px); border-top: 1px solid var(--accent-cyan); z-index: 5000; box-shadow: 0 -10px 40px rgba(0,242,255,0.2); padding-bottom: calc(15px + env(safe-area-inset-bottom)); display: none; text-align: center;}
+        .guest-cta-wrapper { position: fixed; bottom: 0; left: 0; width: 100%; padding: 15px; background: rgba(5,2,12,0.8); backdrop-filter: blur(20px); border-top: 1px solid var(--accent-cyan); z-index: 5000; box-shadow: 0 -10px 40px rgba(0,242,255,0.2); padding-bottom: calc(15px + env(safe-area-inset-bottom)); display: none; text-align: center;}
         .guest-cta-wrapper.active { display: block; animation: slideInUp 0.6s ease; }
         .guest-cta-btn { width: 100%; max-width: 800px; margin: 0 auto; padding: 16px; background: linear-gradient(90deg, #ff4d4d, #ff9900); border: none; border-radius: 12px; color: white; font-family: var(--font-head); font-size: 1.1rem; font-weight: bold; text-transform: uppercase; cursor: pointer; box-shadow: 0 5px 20px rgba(255, 77, 77, 0.4); transition: 0.3s; letter-spacing: 1px; display: flex; justify-content: center; align-items: center; gap: 10px; }
         .guest-cta-btn:active { transform: scale(0.96); box-shadow: 0 2px 10px rgba(255, 77, 77, 0.4); }
 
         .profile-header {
             position: relative; padding: 20px 20px 30px;
-            background: linear-gradient(180deg, rgba(20,10,35,0.9) 0%, rgba(7,3,17,0) 100%);
+            background: linear-gradient(180deg, rgba(20,10,35,0.6) 0%, rgba(7,3,17,0) 100%);
             display: flex; align-items: center; gap: 20px; border-bottom: 1px solid rgba(255,255,255,0.05);
             animation: fadeIn 0.4s ease;
         }
         
         .avatar-container { position: relative; cursor: pointer; transition: 0.3s; will-change: transform; flex-shrink: 0; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center;}
         .completion-ring { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform: rotate(-90deg); pointer-events: none; }
-        .ring-bg { fill: none; stroke: rgba(255,255,255,0.1); stroke-width: 4; }
+        .ring-bg { fill: none; stroke: rgba(255,255,255,0.05); stroke-width: 4; }
         .ring-fill { fill: none; stroke: var(--accent-cyan); stroke-width: 4; stroke-dasharray: 283; stroke-dashoffset: 283; transition: stroke-dashoffset 1.5s ease-out; filter: drop-shadow(0 0 5px var(--accent-cyan)); stroke-linecap: round; }
 
-        .profile-avatar { width: 84px; height: 84px; border-radius: 50%; border: 3px solid transparent; background: #111; object-fit: cover; transition: 0.3s; z-index: 2; box-shadow: 0 0 20px rgba(0,0,0,0.8);}
+        .profile-avatar { width: 84px; height: 84px; border-radius: 50%; border: 3px solid transparent; background: #000; object-fit: cover; transition: 0.3s; z-index: 2; box-shadow: 0 0 20px rgba(0,0,0,0.8);}
         .avatar-container:active { transform: scale(0.95); }
-        .edit-avatar-btn { position: absolute; bottom: 5px; right: 0px; width: 30px; height: 30px; background: var(--accent-purple); border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; border: 2px solid var(--primary-bg); box-shadow: 0 0 10px rgba(189,0,255,0.5); z-index: 3;}
+        .edit-avatar-btn { position: absolute; bottom: 5px; right: 0px; width: 30px; height: 30px; background: var(--accent-gradient); border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; border: 2px solid var(--primary-bg); box-shadow: 0 0 10px rgba(189,0,255,0.5); z-index: 3;}
         
         .user-info { flex: 1; min-width: 0; }
         .user-info h2 { font-family: var(--font-head); font-size: 1.15rem; margin-bottom: 5px; text-shadow: 0 0 10px rgba(255,255,255,0.2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 5px;}
         .ai-greeting { font-size: 0.8rem; color: var(--accent-cyan); font-family: var(--font-body); display: block; line-height: 1; margin-bottom: 2px;}
 
-        .user-ign { color: var(--accent-cyan); font-size: 0.85rem; font-weight: bold; cursor: pointer; background: rgba(0,242,255,0.1); padding: 5px 12px; border-radius: 8px; display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(0,242,255,0.3); transition: 0.3s; will-change: transform;}
+        .user-ign { color: var(--accent-cyan); font-size: 0.85rem; font-weight: bold; cursor: pointer; background: rgba(0,242,255,0.05); padding: 5px 12px; border-radius: 8px; display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(0,242,255,0.2); transition: 0.3s; will-change: transform; backdrop-filter: blur(5px);}
         .user-ign:active { background: var(--accent-cyan); color: black; transform: scale(0.95);}
         
         .user-extras { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 8px; font-size: 0.75rem; color: #a0a0b0; font-family: var(--font-head);}
-        .game-tag { background: rgba(255,255,255,0.05); padding: 3px 8px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.1); }
+        .game-tag { background: rgba(255,255,255,0.05); padding: 3px 8px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.05); }
         .yt-link { color: #ff0000; font-size: 1rem; cursor: pointer; transition: 0.3s;}
         .yt-link:hover { filter: drop-shadow(0 0 5px #ff0000); }
 
-        .logout-btn { color: #ff4d4d; font-size: 1.5rem; cursor: pointer; padding: 12px; background: rgba(255,77,77,0.1); border-radius: 15px; border: 1px solid rgba(255,77,77,0.2); transition: 0.3s; will-change: transform; flex-shrink: 0;}
+        .logout-btn { color: #ff4d4d; font-size: 1.5rem; cursor: pointer; padding: 12px; background: rgba(255,77,77,0.05); border-radius: 15px; border: 1px solid rgba(255,77,77,0.1); transition: 0.3s; will-change: transform; flex-shrink: 0; backdrop-filter: blur(5px);}
         .logout-btn:active { background: #ff4d4d; color: white; transform: scale(0.9);}
 
         .tier-container { padding: 0 20px; margin-top: -15px; margin-bottom: 25px; position: relative; z-index: 2;}
         .tier-header { display: flex; justify-content: space-between; font-size: 0.85rem; font-family: var(--font-head); font-weight: bold; margin-bottom: 8px; color: #ccc; text-transform: uppercase; letter-spacing: 1px;}
         .tier-rank { color: var(--accent-orange); text-shadow: 0 0 10px rgba(255,153,0,0.5); }
-        .tier-bar-bg { width: 100%; height: 10px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); }
-        .tier-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple)); border-radius: 10px; transition: width 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); width: 0%; box-shadow: 0 0 10px rgba(0,242,255,0.5);}
+        .tier-bar-bg { width: 100%; height: 10px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05);}
+        .tier-bar-fill { height: 100%; background: var(--accent-gradient); border-radius: 10px; transition: width 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); width: 0%; box-shadow: 0 0 10px rgba(0,242,255,0.5);}
 
         .role-switch-container { padding: 0 20px; margin-bottom: 25px; }
-        .role-switch { display: flex; background: #110822; border-radius: 15px; padding: 6px; border: 1px solid var(--card-border); position: relative; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);}
+        .role-switch { display: flex; background: rgba(0,0,0,0.4); border-radius: 15px; padding: 6px; border: 1px solid var(--card-border); position: relative; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);}
         .role-btn { flex: 1; padding: 14px; text-align: center; font-family: var(--font-head); font-size: 0.95rem; font-weight: bold; border-radius: 10px; color: #888; transition: 0.3s; cursor: pointer; z-index: 2; text-transform: uppercase; letter-spacing: 1px;}
         .role-btn.active { color: white; text-shadow: 0 0 5px rgba(255,255,255,0.5); }
         .role-slider { position: absolute; top: 6px; left: 6px; width: calc(50% - 6px); height: calc(100% - 12px); background: var(--accent-gradient); border-radius: 10px; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 1; box-shadow: 0 0 20px rgba(189,0,255,0.5); will-change: transform, left, background;}
@@ -118,42 +123,42 @@
         .dashboard-section.active { display: block; }
         @keyframes slideInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .milestone-box { background: linear-gradient(145deg, rgba(0,242,255,0.05), rgba(189,0,255,0.05)); border: 1px solid var(--card-border); border-radius: 18px; padding: 20px; margin-bottom: 25px; position: relative; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.4); cursor: pointer; transition: transform 0.2s; }
+        .milestone-box { background: linear-gradient(145deg, rgba(0,242,255,0.05), rgba(189,0,255,0.05)); border: 1px solid var(--card-border); border-radius: 18px; padding: 20px; margin-bottom: 25px; position: relative; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.4); cursor: pointer; transition: transform 0.2s; backdrop-filter: blur(10px);}
         .milestone-box:active { transform: scale(0.98); }
         .ms-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-family: var(--font-head); }
         .ms-header h4 { font-size: 1.05rem; color: white; display: flex; align-items: center; gap: 8px; text-shadow: 0 0 5px rgba(255,255,255,0.3);}
         
-        .ms-fee-badge { background: rgba(0,242,255,0.15); border: 1px solid var(--accent-cyan); color: var(--accent-cyan); padding: 4px 10px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; box-shadow: 0 0 10px rgba(0,242,255,0.2); cursor: pointer; transition: 0.3s; will-change: transform;}
+        .ms-fee-badge { background: rgba(0,242,255,0.1); border: 1px solid var(--accent-cyan); color: var(--accent-cyan); padding: 4px 10px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; box-shadow: 0 0 10px rgba(0,242,255,0.2); cursor: pointer; transition: 0.3s; will-change: transform;}
         .ms-fee-badge:hover { background: var(--accent-cyan); color: black; transform: scale(1.05); }
-        .ms-fee-badge.elite { background: rgba(255,215,0,0.15); border-color: #FFD700; color: #FFD700; box-shadow: 0 0 10px rgba(255,215,0,0.3); }
+        .ms-fee-badge.elite { background: rgba(255,215,0,0.1); border-color: #FFD700; color: #FFD700; box-shadow: 0 0 10px rgba(255,215,0,0.3); }
         .ms-fee-badge.elite:hover { background: #FFD700; color: black; }
         
-        .ms-progress-wrap { width: 100%; height: 10px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; margin-bottom: 10px; box-shadow: inset 0 0 5px rgba(0,0,0,0.6);}
+        .ms-progress-wrap { width: 100%; height: 10px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; margin-bottom: 10px; box-shadow: inset 0 0 5px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.05);}
         .ms-progress-fill { height: 100%; background: var(--accent-gradient); width: 0%; transition: width 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 0 15px var(--accent-cyan); position: relative;}
         .ms-progress-fill::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; left: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent); animation: shimmer 2s infinite linear; }
         .ms-footer { display: flex; justify-content: space-between; font-size: 0.8rem; color: #a0a0b0; font-family: var(--font-head); font-weight: bold; text-transform: uppercase;}
 
         .stats-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 25px; perspective: 1000px;}
-        .stat-card { background: var(--secondary-bg); border: 1px solid var(--card-border); padding: 20px 15px; border-radius: 18px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); transition: transform 0.1s ease-out, border-color 0.3s; will-change: transform; transform-style: preserve-3d; overflow: hidden;}
+        .stat-card { background: var(--card-bg); backdrop-filter: blur(10px); border: 1px solid var(--card-border); padding: 20px 15px; border-radius: 18px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); transition: transform 0.1s ease-out, border-color 0.3s; will-change: transform; transform-style: preserve-3d; overflow: hidden;}
         .stat-card:active { transform: scale(0.95) !important; border-color: var(--accent-cyan); }
         .stat-card-inner { transform: translateZ(20px); } 
         .stat-val { font-family: var(--font-head); font-size: 1.8rem; display: flex; justify-content: center; margin-bottom: 5px; font-weight: bold; text-shadow: 0 0 15px rgba(255,255,255,0.2); }
         .stat-label { font-size: 0.8rem; color: #888; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px; }
         
-        .action-card { background: linear-gradient(135deg, rgba(0,242,255,0.1), rgba(0,0,0,0)); border: 1px solid rgba(0,242,255,0.3); border-radius: 18px; padding: 25px 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; cursor: pointer; text-decoration: none; color: white; transition: 0.3s; box-shadow: 0 5px 20px rgba(0,0,0,0.3); will-change: transform;}
+        .action-card { background: linear-gradient(135deg, rgba(0,242,255,0.05), rgba(0,0,0,0)); border: 1px solid rgba(0,242,255,0.2); border-radius: 18px; padding: 25px 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; cursor: pointer; text-decoration: none; color: white; transition: 0.3s; box-shadow: 0 5px 20px rgba(0,0,0,0.3); will-change: transform; backdrop-filter: blur(10px);}
         .action-card:active { transform: scale(0.98); border-color: var(--accent-cyan); box-shadow: 0 10px 30px rgba(0,242,255,0.2);}
         .action-text h4 { font-family: var(--font-head); font-size: 1.15rem; margin-bottom: 5px; text-shadow: 0 0 5px rgba(255,255,255,0.2);}
         .action-text p { font-size: 0.85rem; color: #888; line-height: 1.4;}
-        .action-icon { font-size: 1.8rem; color: var(--accent-cyan); background: rgba(0,242,255,0.15); width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(0,242,255,0.4); flex-shrink: 0;}
+        .action-icon { font-size: 1.8rem; color: var(--accent-cyan); background: rgba(0,242,255,0.1); width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(0,242,255,0.3); flex-shrink: 0; border: 1px solid rgba(0,242,255,0.2);}
         
-        .ac-purple { background: linear-gradient(135deg, rgba(189,0,255,0.1), rgba(0,0,0,0)); border-color: rgba(189,0,255,0.3); }
-        .ac-purple .action-icon { color: var(--accent-purple); background: rgba(189,0,255,0.15); box-shadow: 0 0 20px rgba(189,0,255,0.4); }
+        .ac-purple { background: linear-gradient(135deg, rgba(189,0,255,0.05), rgba(0,0,0,0)); border-color: rgba(189,0,255,0.2); }
+        .ac-purple .action-icon { color: var(--accent-purple); background: rgba(189,0,255,0.1); box-shadow: 0 0 20px rgba(189,0,255,0.3); border-color: rgba(189,0,255,0.2);}
 
-        .ac-green { background: linear-gradient(135deg, rgba(0,255,127,0.1), rgba(0,0,0,0)); border-color: rgba(0,255,127,0.3); }
-        .ac-green .action-icon { color: var(--accent-green); background: rgba(0,255,127,0.15); box-shadow: 0 0 20px rgba(0,255,127,0.4); }
+        .ac-green { background: linear-gradient(135deg, rgba(0,255,127,0.05), rgba(0,0,0,0)); border-color: rgba(0,255,127,0.2); }
+        .ac-green .action-icon { color: var(--accent-green); background: rgba(0,255,127,0.1); box-shadow: 0 0 20px rgba(0,255,127,0.3); border-color: rgba(0,255,127,0.2);}
 
         .org-list-header { font-family: var(--font-head); font-size: 1.2rem; color: white; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--card-border); padding-top: 25px; text-transform: uppercase; letter-spacing: 1px;}
-        .managed-item { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 15px; padding: 18px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.2); gap: 10px;}
+        .managed-item { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 15px; padding: 18px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.2); gap: 10px; backdrop-filter: blur(10px);}
         .managed-item:hover { border-color: var(--accent-cyan); background: rgba(0,242,255,0.05); }
         .mi-info { flex: 1; min-width: 0; }
         .mi-info h5 { font-family: var(--font-head); font-size: 1.1rem; color: white; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
@@ -162,33 +167,35 @@
         .mi-btn-group { display: flex; gap: 8px;}
         .mi-btn { background: var(--accent-gradient); border: none; color: white; padding: 8px 15px; border-radius: 10px; font-size: 0.85rem; font-family: var(--font-head); font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; box-shadow: 0 0 15px rgba(0,242,255,0.3); will-change: transform;}
         .mi-btn:active { transform: scale(0.95);}
-        .mi-share { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 8px 12px; border-radius: 10px; color: white; cursor: pointer; transition: 0.3s; font-size: 0.9rem;}
+        .mi-share { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 10px; color: white; cursor: pointer; transition: 0.3s; font-size: 0.9rem;}
         .mi-share:active { background: var(--accent-cyan); color: black; transform: scale(0.95); }
 
         .settings-list { margin-top: 15px; border-top: 1px solid var(--card-border); padding-top: 15px; padding: 0 20px; }
         .setting-item { display: flex; align-items: center; padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.3s; will-change: transform;}
         .setting-item:active { transform: translateX(10px); }
-        .setting-icon { width: 45px; height: 45px; background: rgba(255,255,255,0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--accent-purple); font-size: 1.2rem; margin-right: 15px; transition: 0.3s; border: 1px solid rgba(189,0,255,0.2);}
+        .setting-icon { width: 45px; height: 45px; background: rgba(255,255,255,0.03); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--accent-purple); font-size: 1.2rem; margin-right: 15px; transition: 0.3s; border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(5px);}
         .setting-item:hover .setting-icon { background: rgba(0,242,255,0.1); color: var(--accent-cyan); border-color: var(--accent-cyan); box-shadow: 0 0 15px rgba(0,242,255,0.3);}
         .setting-name { flex: 1; font-size: 1rem; font-weight: bold; color: #ddd; font-family: var(--font-head); letter-spacing: 0.5px;}
         .setting-arrow { color: #555; font-size: 1rem; transition: 0.3s; }
         .setting-item:hover .setting-arrow { color: white; transform: translateX(5px); }
 
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 5000; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); opacity: 0; transition: 0.4s; }
+        /* --- GLASSMORPHISM MODALS --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 5000; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); opacity: 0; transition: 0.4s; }
         .modal-overlay.active { display: flex; opacity: 1; }
-        .modal-card { width: 100%; max-width: 800px; background: var(--secondary-bg); border-radius: 25px 25px 0 0; border-top: 1px solid var(--card-border); padding: 30px 20px calc(20px + env(safe-area-inset-bottom)); transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 90vh; overflow-y: auto; box-shadow: 0 -10px 40px rgba(0,0,0,0.8); }
+        .modal-card { width: 100%; max-width: 800px; background: rgba(10,5,20,0.85); border-radius: 25px 25px 0 0; border-top: 1px solid var(--card-border); border-left: 1px solid rgba(255,255,255,0.05); border-right: 1px solid rgba(255,255,255,0.05); padding: 30px 20px calc(20px + env(safe-area-inset-bottom)); transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 90vh; overflow-y: auto; box-shadow: 0 -10px 40px rgba(0,0,0,0.8); backdrop-filter: blur(20px);}
         .modal-overlay.active .modal-card { transform: translateY(0); }
         
         .full-screen-modal .modal-card { height: 95vh; max-height: 95vh; border-radius: 25px 25px 0 0; display: flex; flex-direction: column;}
         .fs-content { flex: 1; overflow-y: auto; padding-bottom: 20px;}
+        .fs-content::-webkit-scrollbar { display: none !important; }
 
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .modal-title { font-family: var(--font-head); font-size: 1.3rem; color: white; display: flex; align-items: center; gap: 10px;}
         .close-modal { color: #888; font-size: 1.8rem; cursor: pointer; padding: 5px; transition: 0.3s; }
         .close-modal:hover { color: white; transform: rotate(90deg); }
 
-        .form-control { width: 100%; background: #070311; border: 1px solid var(--card-border); padding: 16px 15px; color: white; border-radius: 12px; outline: none; font-family: var(--font-body); font-size: 1.1rem; transition: 0.3s; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);}
-        .form-control:focus { border-color: var(--accent-cyan); box-shadow: 0 0 15px rgba(0,242,255,0.3), inset 0 0 5px rgba(0,0,0,0.5); }
+        .form-control { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); padding: 16px 15px; color: white; border-radius: 12px; outline: none; font-family: var(--font-body); font-size: 1.1rem; transition: 0.3s; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);}
+        .form-control:focus { border-color: var(--accent-cyan); box-shadow: 0 0 15px rgba(0,242,255,0.2), inset 0 0 5px rgba(0,0,0,0.5); background: rgba(0,0,0,0.6);}
         select.form-control { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23a0a0b0'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 15px center; background-size: 20px; }
         
         input[type="date"].form-control, input[type="time"].form-control, input[type="datetime-local"].form-control { color: white; padding-right: 15px; }
@@ -199,34 +206,35 @@
         .save-btn { width: 100%; padding: 18px; background: var(--accent-gradient); border: none; color: white; font-family: var(--font-head); font-weight: bold; font-size: 1.1rem; border-radius: 12px; cursor: pointer; box-shadow: 0 5px 20px rgba(189,0,255,0.4); text-transform: uppercase; transition: 0.3s; letter-spacing: 1px; will-change: transform; margin-bottom: 15px;}
         .save-btn:active { transform: scale(0.96); box-shadow: 0 2px 10px rgba(189,0,255,0.4); }
 
-        .delete-btn { width: 100%; padding: 18px; background: rgba(255,77,77,0.1); border: 1px solid rgba(255,77,77,0.4); color: var(--accent-danger); font-family: var(--font-head); font-weight: bold; font-size: 1.1rem; border-radius: 12px; cursor: pointer; text-transform: uppercase; transition: 0.3s; letter-spacing: 1px;}
+        .delete-btn { width: 100%; padding: 18px; background: rgba(255,77,77,0.05); border: 1px solid rgba(255,77,77,0.2); color: var(--accent-danger); font-family: var(--font-head); font-weight: bold; font-size: 1.1rem; border-radius: 12px; cursor: pointer; text-transform: uppercase; transition: 0.3s; letter-spacing: 1px; backdrop-filter: blur(5px);}
         .delete-btn:active { background: var(--accent-danger); color: white; transform: scale(0.96); }
 
         .qr-box { background: white; padding: 20px; border-radius: 15px; text-align: center; width: max-content; margin: 0 auto 20px; border: 5px solid var(--accent-cyan); box-shadow: 0 0 30px rgba(0,242,255,0.4);}
-        #avatarUploadInp, #tourneyBannerInp { display: none; }
-        .skeleton { background: linear-gradient(90deg, #110822 25%, #1a0a3a 50%, #110822 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite linear; border-radius: 8px; transform: translateZ(0);}
+        #avatarUploadInp, #tourneyBannerInp, #prizeInput, #bracketInput { display: none; }
+        .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.02) 25%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.02) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite linear; border-radius: 8px; transform: translateZ(0);}
         @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .confetti { position: absolute; width: 8px; height: 16px; opacity: 0; z-index: 9999; border-radius: 4px; pointer-events: none;}
         @keyframes fall { 0% { opacity: 1; transform: translateY(-50px) rotate(0deg); } 100% { opacity: 0; transform: translateY(150px) rotate(720deg); } }
 
-        #customToast { visibility: hidden; min-width: 250px; background-color: var(--accent-cyan); color: #000; text-align: center; border-radius: 12px; padding: 16px; position: fixed; z-index: 9999; left: 50%; bottom: -50px; transform: translateX(-50%); font-family: var(--font-head); font-weight: bold; box-shadow: 0 8px 25px rgba(0,242,255,0.6); opacity: 0; transition: opacity 0.4s, bottom 0.4s; }
+        #customToast { visibility: hidden; min-width: 250px; background: rgba(0,242,255,0.9); backdrop-filter: blur(10px); color: #000; text-align: center; border-radius: 12px; padding: 16px; position: fixed; z-index: 9999; left: 50%; bottom: -50px; transform: translateX(-50%); font-family: var(--font-head); font-weight: bold; box-shadow: 0 8px 30px rgba(0,242,255,0.5); opacity: 0; transition: opacity 0.4s, bottom 0.4s; }
         #customToast.show { visibility: visible; opacity: 1; bottom: 100px; }
 
         .app-footer { text-align: center; padding: 20px 20px 110px 20px; color: #555; font-size: 0.75rem; font-family: var(--font-body); letter-spacing: 1px; }
 
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 5px env(safe-area-inset-bottom); border-top: 1px solid var(--card-border); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.8); transform: translateZ(0);}
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; color: #666; text-decoration: none; font-size: 0.65rem; font-family: var(--font-head); font-weight: bold; flex: 1; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; will-change: transform, color;}
-        .nav-item span { margin-top: 4px; transition: 0.3s; }
-        .nav-item i { font-size: 1.3rem; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        /* --- PERFECT BOTTOM NAVIGATION (MOBILE OPTIMIZED) --- */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(5, 2, 12, 0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 2px env(safe-area-inset-bottom); border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); transform: translateZ(0);}
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; color: #666; text-decoration: none; font-size: 0.6rem; font-family: var(--font-head); font-weight: bold; flex: 1; transition: 0.3s; position: relative; padding: 0 2px; text-align: center;}
+        .nav-item span { margin-top: 4px; transition: 0.3s; letter-spacing: -0.3px;}
+        .nav-item i { font-size: 1.2rem; transition: 0.3s; }
         .nav-item.active { color: var(--accent-cyan); }
         .nav-item.active i { transform: translateY(-4px); color: var(--accent-cyan); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
-        .nav-item.active span { transform: translateY(2px); color: white; }
+        .nav-item.active span { transform: translateY(2px); color: white; text-shadow: 0 0 5px rgba(255,255,255,0.5);}
         .fab-slot { flex: 1.2; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
-        .floating-plus { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); width: 58px; height: 58px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 4px solid var(--primary-bg); box-shadow: 0 10px 25px rgba(189,0,255,0.5); color: #fff; font-size: 1.8rem; cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 10; will-change: transform;}
-        .floating-plus:active { transform: translateX(-50%) scale(0.95); box-shadow: 0 5px 15px rgba(189,0,255,0.4); }
+        .floating-plus { position: absolute; top: -25px; left: 50%; transform: translateX(-50%); width: 54px; height: 54px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 4px solid var(--primary-bg); box-shadow: 0 10px 25px rgba(189,0,255,0.4); color: #fff; font-size: 1.6rem; cursor: pointer; transition: 0.3s; z-index: 10; }
+        .floating-plus:hover { transform: translateX(-50%) scale(1.1) rotate(90deg); box-shadow: 0 15px 35px rgba(0,242,255,0.6); }
 
-        @media (min-width: 850px) { .bottom-nav { display: none !important; } }
+        @media (min-width: 850px) { .bottom-nav { display: none !important; } body { padding-bottom: 0; } }
         
         .tier-list { margin-top: 15px; }
         .tier-item { display: flex; align-items: center; justify-content: space-between; padding: 15px; border-radius: 12px; background: rgba(255,255,255,0.03); margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.05); }
@@ -245,28 +253,39 @@
         
         .claim-btn { background: var(--accent-green); color: black; border: none; padding: 8px 15px; border-radius: 8px; font-family: var(--font-head); font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 0 10px rgba(0,255,127,0.4); text-transform: uppercase; font-size: 0.8rem; margin-top: 5px;}
         .claim-btn:active { transform: scale(0.95); }
-        .claim-btn:disabled { background: #555; color: #aaa; cursor: not-allowed; box-shadow: none; transform: none; }
+        .claim-btn:disabled { background: rgba(255,255,255,0.05); color: #888; border: 1px solid rgba(255,255,255,0.1); cursor: not-allowed; box-shadow: none; transform: none; }
 
         /* --- TOURNAMENT MANAGER STYLES --- */
         .image-upload-box {
-            border: 1px dashed var(--accent-cyan);
+            border: 1px dashed rgba(0,242,255,0.5);
             border-radius: 12px;
             padding: 30px 20px;
             text-align: center;
-            background: rgba(0,242,255,0.05);
+            background: rgba(0,242,255,0.02);
             cursor: pointer;
             transition: 0.3s;
             margin-bottom: 20px;
             position: relative;
             overflow: hidden;
         }
-        .image-upload-box:hover { background: rgba(0,242,255,0.1); }
+        .image-upload-box:hover { background: rgba(0,242,255,0.08); border-color: var(--accent-cyan);}
         .image-upload-box i { font-size: 2.5rem; color: var(--accent-cyan); margin-bottom: 10px; text-shadow: 0 0 15px rgba(0,242,255,0.4);}
         .image-upload-box p { font-size: 0.85rem; color: #aaa; font-family: var(--font-body); }
-        .image-preview { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: 0.3s; z-index: 2; pointer-events: none;}
+        .image-preview { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: 0.3s; z-index: 2; pointer-events: none; background: #000;}
         .image-preview.has-image { opacity: 1; }
-        .change-banner-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 8px; background: rgba(0,0,0,0.7); font-size: 0.75rem; color: white; z-index: 3; opacity: 0; transition: 0.3s;}
+        .change-banner-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 8px; background: rgba(0,0,0,0.8); font-size: 0.75rem; color: white; z-index: 3; opacity: 0; transition: 0.3s; backdrop-filter: blur(5px);}
         .image-upload-box:hover .change-banner-overlay { opacity: 1; }
+
+        /* --- CROPPER MODAL --- */
+        .cropper-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
+        .cropper-modal.active { display: flex; }
+        .cropper-container-wrapper { width: 90%; max-width: 600px; height: 60vh; background: #000; border: 2px solid var(--accent-cyan); border-radius: 12px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 0 30px rgba(0,242,255,0.2); }
+        .cropper-actions { display: flex; gap: 15px; width: 90%; max-width: 600px; }
+        .cropper-btn { flex: 1; padding: 12px; border-radius: 10px; font-family: var(--font-head); font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; border: none; }
+        .btn-crop-cancel { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3); }
+        .btn-crop-cancel:active { background: rgba(255,255,255,0.2); }
+        .btn-crop-confirm { background: var(--accent-gradient); color: white; box-shadow: 0 5px 15px rgba(189,0,255,0.4); }
+        .btn-crop-confirm:active { transform: scale(0.95); }
     </style>
     
     <script>
@@ -280,7 +299,7 @@
             if(THEMES[tIndex]) {
                 document.documentElement.style.setProperty('--accent-cyan', THEMES[tIndex].cyan);
                 document.documentElement.style.setProperty('--accent-purple', THEMES[tIndex].purple);
-                document.documentElement.style.setProperty('--accent-gradient', `linear-gradient(90deg, ${THEMES[tIndex].purple}, ${THEMES[tIndex].cyan})`);
+                document.documentElement.style.setProperty('--accent-gradient', `linear-gradient(135deg, ${THEMES[tIndex].purple}, ${THEMES[tIndex].cyan})`);
             }
         }
         applyGlobalTheme();
@@ -364,7 +383,7 @@
     </div>
 
     <div id="playerDash" class="dashboard-section active">
-        <div class="milestone-box" id="playerMilestoneBox" onclick="openMilestoneModal('player'); triggerHaptic();">
+        <div class="milestone-box glass-panel" id="playerMilestoneBox" onclick="openMilestoneModal('player'); triggerHaptic();">
             <div class="ms-header">
                 <h4><i class="fa-solid fa-medal"></i> Player Rank</h4>
                 <span class="ms-fee-badge" id="playerRankBadge">Scout</span>
@@ -430,7 +449,7 @@
     </div>
 
     <div id="organizerDash" class="dashboard-section">
-        <div class="milestone-box" id="orgMilestoneBox" onclick="openMilestoneModal('organizer'); triggerHaptic();">
+        <div class="milestone-box glass-panel" id="orgMilestoneBox" onclick="openMilestoneModal('organizer'); triggerHaptic();">
             <div class="ms-header">
                 <h4><i class="fa-solid fa-chart-line"></i> Organizer Milestone</h4>
                 <span class="ms-fee-badge" id="orgFeeBadge">15% Comm.</span>
@@ -497,12 +516,12 @@
             <div class="action-icon"><i class="fa-solid fa-shield-halved"></i></div>
         </a>
 
-        <div class="action-card" style="border-color: #555; background: rgba(255,255,255,0.02);" onclick="shareOrgProfile(); triggerHaptic();">
+        <div class="action-card" style="border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.02);" onclick="shareOrgProfile(); triggerHaptic();">
             <div class="action-text">
                 <h4>Share Organizer Profile</h4>
                 <p>Invite players to follow your upcoming tournaments.</p>
             </div>
-            <div class="action-icon" style="background: rgba(255,255,255,0.1); color: #fff; box-shadow: none;"><i class="fa-solid fa-share-nodes"></i></div>
+            <div class="action-icon" style="background: rgba(255,255,255,0.05); color: #fff; box-shadow: none; border-color: rgba(255,255,255,0.1);"><i class="fa-solid fa-share-nodes"></i></div>
         </div>
     </div>
 
@@ -550,6 +569,9 @@
     <div class="app-footer">
         © 2026 TOURNYX. All rights reserved.<br>
         <div style="margin-top: 5px; font-style: italic; color: #777; font-size: 0.8rem;">made with ⚡ for gamers</div>
+        <div style="margin-top: 15px; font-size: 0.85rem; color: #888; font-family: var(--font-head); letter-spacing: 1px;">
+            Powered by <span style="font-weight: 900; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 2px;">QUVA</span>
+        </div>
     </div>
 
     <div class="guest-cta-wrapper" id="guestCtaWrapper">
@@ -559,15 +581,17 @@
     </div>
 
     <div class="modal-overlay" id="guestLoginModal">
-        <div class="modal-card" style="text-align: center; padding-bottom: 40px;">
-            <div class="modal-header">
-                <div class="modal-title"><i class="fa-solid fa-lock" style="color:var(--accent-orange);"></i> Access Restricted</div>
+        <div class="modal-card" style="text-align: center; padding-bottom: 40px; transform: scale(0.95);">
+            <div class="modal-header" style="justify-content: flex-end;">
                 <i class="fa-solid fa-xmark close-modal" onclick="document.getElementById('guestLoginModal').classList.remove('active');"></i>
             </div>
             <i class="fa-solid fa-user-astronaut" style="font-size: 4rem; color: var(--accent-cyan); margin-bottom: 15px; filter: drop-shadow(0 0 15px var(--accent-cyan));"></i>
             <h3 style="font-family: var(--font-head); font-size: 1.5rem; margin-bottom: 10px; color: white;">Join the Elite!</h3>
             <p style="color: #aaa; font-size: 0.95rem; margin-bottom: 25px; line-height: 1.5;">Create an account to track your stats, manage tournaments, earn rewards, and secure your place on the leaderboard.</p>
             <button class="save-btn" style="background: linear-gradient(90deg, #ff4d4d, #ff9900); box-shadow: 0 5px 20px rgba(255, 77, 77, 0.4);" onclick="window.location.href='login.html'">Login / Sign Up</button>
+            <div style="margin-top: 15px; font-size: 0.8rem; color: #888; font-family: var(--font-head); letter-spacing: 1px;">
+                Powered by <span style="font-weight: 900; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px;">QUVA</span>
+            </div>
         </div>
     </div>
     
@@ -600,7 +624,7 @@
             <label class="form-label">Registered Email</label>
             <div style="display:flex; gap:10px; margin-bottom: 20px;">
                 <input type="email" id="editEmailInfo" class="form-control" disabled style="opacity: 0.6; padding: 12px 15px;">
-                <button class="mi-btn" onclick="window.open('https://forms.gle/YOUR_GOOGLE_FORM_LINK_HERE', '_blank'); triggerHaptic();" style="white-space:nowrap;">Change</button>
+                <button class="mi-btn" style="background:var(--accent-gradient); border:none; padding:0 15px; border-radius:10px; font-family:var(--font-head); font-weight:bold; color:white; white-space:nowrap;" onclick="window.open('https://forms.gle/YOUR_GOOGLE_FORM_LINK_HERE', '_blank'); triggerHaptic();">Change</button>
             </div>
 
             <label class="form-label">Display Name</label>
@@ -664,16 +688,15 @@
     </div>
 
     <div class="modal-overlay" id="qrModal">
-        <div class="modal-card" style="text-align: center;">
-            <div class="modal-header">
-                <div class="modal-title"><i class="fa-solid fa-qrcode" style="color:var(--accent-cyan);"></i> Player ID</div>
+        <div class="modal-card" style="text-align: center; padding-bottom: 30px; transform: scale(0.95);">
+            <div class="modal-header" style="justify-content: flex-end; margin-bottom: 10px;">
                 <i class="fa-solid fa-xmark close-modal" onclick="closeQrModal(); triggerHaptic();"></i>
             </div>
             <div class="qr-box">
                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://tournyx.in/profile.html?user=guest" id="dynamicQrImg" alt="QR Code">
             </div>
-            <div style="font-family:var(--font-head); font-size:1.2rem; color:white; margin-bottom:5px;" id="qrName">Player</div>
-            <div style="color:var(--accent-cyan); font-size:0.9rem; margin-bottom:20px;" id="qrIgn">IGN</div>
+            <div style="font-family:var(--font-head); font-size:1.4rem; color:white; margin-bottom:5px;" id="qrName">Player</div>
+            <div style="color:var(--accent-cyan); font-size:1rem; margin-bottom:25px;" id="qrIgn">IGN</div>
             <button class="save-btn" onclick="shareOrgProfile(); triggerHaptic();"><i class="fa-solid fa-share-nodes"></i> Share Link</button>
         </div>
     </div>
@@ -696,25 +719,28 @@
         </div>
     </div>
 
-    <div class="modal-overlay" id="manageTourneyModal" style="z-index: 5005;">
-        <div class="modal-card" style="max-height: 95vh;">
+    <div class="modal-overlay full-screen-modal" id="manageTourneyModal" style="z-index: 5005;">
+        <div class="modal-card">
             <div class="modal-header" style="margin-bottom: 15px;">
                 <div class="modal-title"><i class="fa-solid fa-pen-to-square" style="color:var(--accent-cyan);"></i> Edit Event</div>
                 <i class="fa-solid fa-xmark close-modal" onclick="closeManageModal(); triggerHaptic();"></i>
             </div>
             
-            <div style="overflow-y: auto; max-height: calc(90vh - 140px); padding-right: 5px;">
+            <div class="fs-content" style="padding-right: 5px;">
                 <input type="hidden" id="editTourneyId">
                 <input type="hidden" id="editTourneyBannerStr">
+                <input type="hidden" id="editTourneyPrizeStr">
+                <input type="hidden" id="editTourneyBracketStr">
                 
                 <label class="form-label"><i class="fa-solid fa-image"></i> Visual Identity</label>
                 <div class="image-upload-box" onclick="document.getElementById('tourneyBannerInp').click(); triggerHaptic();">
                     <i class="fa-solid fa-cloud-arrow-up"></i>
-                    <p>Upload Banner Image *<br>High-quality banner (16:9 ratio) • Max 5MB</p>
+                    <p style="color: white; font-family: var(--font-head); font-weight: bold; margin-bottom: 5px;">Upload Banner Image *</p>
+                    <p>High-quality banner (16:9 ratio) • Max 5MB</p>
                     <img src="" id="editTourneyBannerPreview" class="image-preview">
                     <div class="change-banner-overlay">Tap to Change Banner</div>
                 </div>
-                <input type="file" id="tourneyBannerInp" accept="image/*" onchange="handleBannerUpload(event)">
+                <input type="file" id="tourneyBannerInp" accept="image/*" onchange="initCropper(event, 'editTourneyBannerPreview', 'editTourneyBannerStr', 16/9)">
                 
                 <label class="form-label" style="margin-top: 10px;"><i class="fa-solid fa-pen"></i> Basic Information</label>
                 <input type="text" id="editTourneyTitle" class="form-control" placeholder="Tournament Title *" style="margin-bottom: 20px;">
@@ -753,11 +779,29 @@
                 <label class="form-label"><i class="fa-solid fa-money-bill-wave"></i> Economics & Prize</label>
                 <input type="text" id="editTourneyPrize" class="form-control" placeholder="Prize Pool (₹) *" style="margin-bottom: 20px;">
                 
+                <label class="form-label" style="font-size: 0.75rem; text-transform:none; margin-bottom: 5px; color:#888;">Prize Distribution Image (Optional)</label>
+                <div class="image-upload-box" style="padding: 15px;" onclick="document.getElementById('prizeInput').click(); triggerHaptic();">
+                    <i class="fa-solid fa-trophy" style="font-size: 1.5rem;"></i>
+                    <p style="color: white; font-family: var(--font-head); font-weight: bold; margin-bottom: 0;">Upload Prize Graphic</p>
+                    <img src="" id="editTourneyPrizePreview" class="image-preview" style="object-fit: contain; background: #000;">
+                    <div class="change-banner-overlay">Tap to Change Image</div>
+                </div>
+                <input type="file" id="prizeInput" accept="image/*" onchange="initCropper(event, 'editTourneyPrizePreview', 'editTourneyPrizeStr', NaN)">
+
+                <label class="form-label" style="font-size: 0.75rem; text-transform:none; margin-bottom: 5px; color:#888;">Match Bracket / Schedule Image (Optional)</label>
+                <div class="image-upload-box" style="padding: 15px;" onclick="document.getElementById('bracketInput').click(); triggerHaptic();">
+                    <i class="fa-solid fa-sitemap" style="font-size: 1.5rem;"></i>
+                    <p style="color: white; font-family: var(--font-head); font-weight: bold; margin-bottom: 0;">Upload Bracket Image</p>
+                    <img src="" id="editTourneyBracketPreview" class="image-preview" style="object-fit: contain; background: #000;">
+                    <div class="change-banner-overlay">Tap to Change Image</div>
+                </div>
+                <input type="file" id="bracketInput" accept="image/*" onchange="initCropper(event, 'editTourneyBracketPreview', 'editTourneyBracketStr', NaN)">
+
                 <label class="form-label"><i class="fa-brands fa-youtube"></i> Live Stream URL (Optional)</label>
                 <input type="url" id="editTourneyStream" class="form-control" placeholder="https://youtube.com/..." style="margin-bottom: 20px;">
 
                 <label class="form-label"><i class="fa-solid fa-book"></i> Tournament Rules & Info</label>
-                <textarea id="editTourneyDesc" class="form-control" placeholder="Enter rules and details..." style="height: 120px; resize: none; margin-bottom: 20px; padding-left: 15px;"></textarea>
+                <textarea id="editTourneyDesc" class="form-control" placeholder="Enter rules and details..." style="height: 120px; resize: none; margin-bottom: 20px;"></textarea>
                 
                 <label class="form-label"><i class="fa-solid fa-toggle-on"></i> Event Status</label>
                 <select id="editTourneyStatus" class="form-control" style="margin-bottom: 25px;">
@@ -766,12 +810,22 @@
                     <option value="Completed">Completed</option>
                     <option value="Cancelled">Cancelled</option>
                 </select>
+
+                <div style="padding-top: 15px; border-top: 1px solid var(--card-border); margin-top: 5px;">
+                    <button class="save-btn" id="saveTourneyBtn" onclick="saveTournamentChanges(); triggerHaptic();" style="margin-bottom: 10px;">Update Tournament</button>
+                    <button class="delete-btn" id="deleteTourneyBtn" onclick="deleteTournament(); triggerHaptic();"><i class="fa-solid fa-trash-can"></i> Delete Permanently</button>
+                </div>
             </div>
-            
-            <div style="padding-top: 15px; border-top: 1px solid var(--card-border); margin-top: 5px;">
-                <button class="save-btn" id="saveTourneyBtn" onclick="saveTournamentChanges(); triggerHaptic();" style="margin-bottom: 10px;">Update Tournament</button>
-                <button class="delete-btn" id="deleteTourneyBtn" onclick="deleteTournament(); triggerHaptic();" style="background: transparent; padding: 12px;"><i class="fa-solid fa-trash-can"></i> Delete</button>
-            </div>
+        </div>
+    </div>
+
+    <div class="cropper-modal" id="cropperModal">
+        <div class="cropper-container-wrapper">
+            <img id="cropperImage" src="" style="max-width: 100%;">
+        </div>
+        <div class="cropper-actions">
+            <button class="cropper-btn btn-crop-cancel" onclick="cancelCrop()">Cancel</button>
+            <button class="cropper-btn btn-crop-confirm" onclick="confirmCrop()">Crop & Save</button>
         </div>
     </div>
 
@@ -802,6 +856,8 @@
             <i class="fa-solid fa-user"></i><span>Profile</span>
         </a>
     </nav>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
     <script>
         const canvas = document.getElementById('particles-canvas');
@@ -1017,6 +1073,12 @@
             return isNaN(p) ? fallback : p;
         }
 
+        function formatImageUrl(url) {
+            if (!url) return '';
+            if (url.includes('drive.google.com/file/d/')) { let id = url.split('/d/')[1].split('/')[0]; return `https://drive.google.com/uc?export=view&id=${id}`; }
+            return url;
+        }
+
         document.addEventListener("DOMContentLoaded", () => {
             let hr = new Date().getHours();
             let greet = "Good Evening,";
@@ -1097,7 +1159,7 @@
             document.getElementById('userIgn').innerText = data.ign ? data.ign : "Tap to set IGN";
             
             if(data.avatar && data.avatar.length > 5) {
-                document.getElementById('userAvatar').src = data.avatar;
+                document.getElementById('userAvatar').src = formatImageUrl(data.avatar);
             } else {
                 document.getElementById('userAvatar').src = `https://api.dicebear.com/7.x/bottts/svg?seed=${data.username || 'user'}`;
             }
@@ -1427,6 +1489,15 @@
             }
         }
 
+        function shareSpecificTournament(title) {
+            let msg = `🎮 Register for the epic ${title} Esports Tournament on Tournyx now! Let's go! https://tournyx.in/explore.html`;
+            if (navigator.share) {
+                navigator.share({ title: title, text: msg }).catch(() => showToast("Share cancelled"));
+            } else {
+                navigator.clipboard.writeText(msg).then(() => showToast("Invite Copied to Clipboard!"));
+            }
+        }
+
         function fetchMyTournaments() {
             const container = document.getElementById('orgTourneysList');
             const refBtn = document.getElementById('refreshTourneysBtn');
@@ -1457,7 +1528,14 @@
             });
         }
 
-        // --- EXPANDED MANAGER POPULATOR ---
+        // --- EXPANDED MANAGER POPULATOR WITH ADVANCED CROPPER LOGIC ---
+        let cropper = null;
+        let currentUploadState = {
+            previewId: '',
+            base64Id: '',
+            aspectRatio: NaN // NaN means free crop
+        };
+
         function openManageModal(match_id) {
             let t = myHostedEvents.find(x => String(x.id) === String(match_id) || String(x.match_id) === String(match_id));
             if(!t) return;
@@ -1465,20 +1543,43 @@
             document.getElementById('editTourneyId').value = t.id || t.match_id || "";
             document.getElementById('editTourneyTitle').value = t.title || "";
             
-            // NEW ROOM ID/PASS LOGIC
             document.getElementById('editTourneyRoomId').value = (t.room_id && t.room_id !== "WAITING") ? t.room_id : "";
             document.getElementById('editTourneyRoomPass').value = (t.room_pass && t.room_pass !== "WAITING") ? t.room_pass : "";
 
-            // Image Preview Logic
+            // Pre-fill Banner
             let bannerUrl = t.banner || t.image_url || "";
             document.getElementById('editTourneyBannerStr').value = bannerUrl;
-            let previewImg = document.getElementById('editTourneyBannerPreview');
+            let previewBannerImg = document.getElementById('editTourneyBannerPreview');
             if (bannerUrl.length > 10) {
-                previewImg.src = bannerUrl;
-                previewImg.classList.add('has-image');
+                previewBannerImg.src = formatImageUrl(bannerUrl);
+                previewBannerImg.classList.add('has-image');
             } else {
-                previewImg.src = "";
-                previewImg.classList.remove('has-image');
+                previewBannerImg.src = "";
+                previewBannerImg.classList.remove('has-image');
+            }
+
+            // Pre-fill Prize Image
+            let prizeUrl = t.prize_distribution_image || "";
+            document.getElementById('editTourneyPrizeStr').value = prizeUrl;
+            let previewPrizeImg = document.getElementById('editTourneyPrizePreview');
+            if (prizeUrl.length > 10) {
+                previewPrizeImg.src = formatImageUrl(prizeUrl);
+                previewPrizeImg.classList.add('has-image');
+            } else {
+                previewPrizeImg.src = "";
+                previewPrizeImg.classList.remove('has-image');
+            }
+
+            // Pre-fill Bracket Image
+            let bracketUrl = t.bracket_image || "";
+            document.getElementById('editTourneyBracketStr').value = bracketUrl;
+            let previewBracketImg = document.getElementById('editTourneyBracketPreview');
+            if (bracketUrl.length > 10) {
+                previewBracketImg.src = formatImageUrl(bracketUrl);
+                previewBracketImg.classList.add('has-image');
+            } else {
+                previewBracketImg.src = "";
+                previewBracketImg.classList.remove('has-image');
             }
 
             // Dual Date Handling for Tournament Dates
@@ -1514,39 +1615,81 @@
 
         function closeManageModal() { document.getElementById('manageTourneyModal').classList.remove('active'); }
 
-        function handleBannerUpload(event) {
+        // --- CROPPER FOR ALL 3 UPLOADS ---
+        function initCropper(event, previewId, base64Id, aspectRatio) {
             const file = event.target.files[0];
             if (!file) return;
 
-            showToast("Processing Banner Image...");
-            const previewImg = document.getElementById('editTourneyBannerPreview');
+            if(file.size > 5 * 1024 * 1024) { 
+                showToast("File exceeds 5MB limit.", true); 
+                return; 
+            }
+
+            currentUploadState = { previewId, base64Id, aspectRatio };
 
             const reader = new FileReader();
             reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 800; // 16:9 ratio optimization
-                    const MAX_HEIGHT = 450;
-                    let width = img.width; let height = img.height;
+                const imageEl = document.getElementById('cropperImage');
+                imageEl.src = e.target.result;
+                
+                document.getElementById('cropperModal').classList.add('active');
 
-                    if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } } 
-                    else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
-
-                    canvas.width = width; canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-
-                    const compressedB64 = canvas.toDataURL('image/jpeg', 0.6); // Compress heavy
-                    
-                    document.getElementById('editTourneyBannerStr').value = compressedB64;
-                    previewImg.src = compressedB64;
-                    previewImg.classList.add('has-image');
-                    showToast("Banner loaded! Press update to save.");
-                }
-                img.src = e.target.result;
+                if (cropper) { cropper.destroy(); }
+                
+                cropper = new Cropper(imageEl, {
+                    aspectRatio: currentUploadState.aspectRatio,
+                    viewMode: 1,
+                    autoCropArea: 1,
+                    background: false,
+                    responsive: true
+                });
             };
             reader.readAsDataURL(file);
+            event.target.value = ""; // Reset
+        }
+
+        function cancelCrop() {
+            document.getElementById('cropperModal').classList.remove('active');
+            if (cropper) { cropper.destroy(); cropper = null; }
+        }
+
+        function confirmCrop() {
+            if (!cropper) return;
+            
+            const canvas = cropper.getCroppedCanvas({
+                maxWidth: 1280,
+                maxHeight: 1280
+            });
+
+            const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+            
+            let previewImg = document.getElementById(currentUploadState.previewId);
+            previewImg.src = compressedBase64;
+            previewImg.classList.add('has-image');
+            
+            cancelCrop();
+            showToast("Compressing and generating secure link...");
+
+            const base64Data = compressedBase64.split(',')[1];
+            const formData = new FormData();
+            formData.append("image", base64Data);
+            
+            fetch("https://api.imgbb.com/1/upload?key=727c66ecfe2882d63fee08fee7495850", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(result => {
+                if(result.success) {
+                    document.getElementById(currentUploadState.base64Id).value = result.data.url;
+                    showToast("Image processed successfully!");
+                } else {
+                    document.getElementById(currentUploadState.base64Id).value = compressedBase64;
+                }
+            })
+            .catch(error => {
+                document.getElementById(currentUploadState.base64Id).value = compressedBase64;
+            });
         }
 
         async function saveTournamentChanges() {
@@ -1568,6 +1711,8 @@
                 email: userData.email, 
                 title: document.getElementById('editTourneyTitle').value,
                 banner: document.getElementById('editTourneyBannerStr').value,
+                prize_distribution_image: document.getElementById('editTourneyPrizeStr').value,
+                bracket_image: document.getElementById('editTourneyBracketStr').value,
                 room_id: document.getElementById('editTourneyRoomId').value,
                 room_pass: document.getElementById('editTourneyRoomPass').value,
                 match_period: finalMatchPeriod, 
