@@ -86,22 +86,27 @@
         .guest-banner { display: none; background: linear-gradient(90deg, #ff4d4d, #ff9900); padding: 10px; text-align: center; color: white; font-family: var(--font-head); font-weight: bold; font-size: 0.85rem; letter-spacing: 1px; z-index: 2500; position: sticky; top: 0; text-transform: uppercase; box-shadow: 0 5px 15px rgba(255, 77, 77, 0.4); cursor: pointer; }
         .guest-banner.active { display: block; }
 
-        /* --- HEADER --- */
-        .top-header { position: fixed; top: 0; left: 0; width: 100%; padding: env(safe-area-inset-top) 15px 15px; background: rgba(7, 3, 17, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--card-border); z-index: 2000; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); }
-        .header-wrapper { display: flex; align-items: center; justify-content: space-between; }
-        .header-left { display: flex; align-items: center; gap: 10px; }
-        .app-logo { width: 30px; height: 30px; border-radius: 50%; object-fit: contain; box-shadow: 0 0 10px var(--accent-purple); flex-shrink: 0;}
-        .app-title { font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px; }
+        /* --- HEADER (OPTIMIZED FOR FULL NAME VISIBILITY) --- */
+        .top-header { 
+            position: fixed; top: 0; left: 0; width: 100%; 
+            padding: calc(12px + env(safe-area-inset-top)) 10px 12px; 
+            background: rgba(5, 2, 12, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05); z-index: 2000; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); transform: translateZ(0);
+        }
+        .header-wrapper { max-width: 1000px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 5px;}
+        .header-left { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+        .app-logo { width: 28px; height: 28px; border-radius: 50%; object-fit: contain; box-shadow: 0 0 15px var(--accent-purple); border: 1px solid rgba(255,255,255,0.2); flex-shrink: 0;}
+        .app-title { font-family: var(--font-head); font-size: 0.9rem; font-weight: 700; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 0px; white-space: normal; line-height: 1.1; word-break: break-word;}
         
         .desktop-nav { display: none; align-items: center; gap: 25px; }
         .desktop-nav a { color: var(--text-muted); text-decoration: none; font-family: var(--font-head); font-size: 0.95rem; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: 1px;}
         .desktop-nav a:hover, .desktop-nav a.active { color: var(--accent-cyan); text-shadow: 0 0 10px rgba(0,242,255,0.4); }
         @media (min-width: 850px) { .desktop-nav { display: flex; } }
 
-        .header-right { display: flex; align-items: center; gap: 12px; }
-        .header-community-icon { color: var(--accent-cyan); font-size: 1.25rem; cursor: pointer; transition: 0.3s; text-shadow: 0 0 10px rgba(0,242,255,0.4); margin-right: 5px; }
+        .header-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0;}
+        .header-community-icon { color: var(--accent-cyan); font-size: 1.1rem; cursor: pointer; transition: 0.3s; text-shadow: 0 0 10px rgba(0,242,255,0.4); margin-right: 5px; }
         .header-community-icon:active { transform: scale(0.9); }
-        .header-profile-img { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--accent-cyan); object-fit: cover; cursor: pointer; box-shadow: 0 0 10px rgba(0,242,255,0.4); transition: 0.3s; flex-shrink: 0;}
+        .header-profile-img { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--accent-cyan); object-fit: cover; cursor: pointer; box-shadow: 0 0 10px rgba(0,242,255,0.4); transition: 0.3s; flex-shrink: 0;}
 
         /* --- SEARCH & ACTIONS --- */
         .search-row { display: flex; gap: 10px; padding: 15px 15px 15px 15px; align-items: center; }
@@ -320,17 +325,16 @@
 
         .app-footer { text-align: center; padding: 40px 20px 100px 20px; color: #555; font-size: 0.75rem; font-family: var(--font-body); letter-spacing: 1px; border-top: 1px solid var(--card-border); margin-top: 20px; }
 
-        /* PERFECTLY ALIGNED BOTTOM NAVIGATION */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(7, 3, 17, 0.92); backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 5px env(safe-area-inset-bottom); border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.6); }
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; color: #666; text-decoration: none; font-size: 0.65rem; font-family: var(--font-head); font-weight: bold; flex: 1; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; }
-        .nav-item span { margin-top: 4px; transition: 0.3s; }
-        .nav-item i { font-size: 1.3rem; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        /* PERFECTLY ALIGNED BOTTOM NAVIGATION (MOBILE OPTIMIZED) */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(5, 2, 12, 0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 2px env(safe-area-inset-bottom); border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); transform: translateZ(0);}
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; color: #666; text-decoration: none; font-size: 0.6rem; font-family: var(--font-head); font-weight: bold; flex: 1; transition: 0.3s; position: relative; padding: 0 2px; text-align: center;}
+        .nav-item span { margin-top: 4px; transition: 0.3s; letter-spacing: -0.3px;}
+        .nav-item i { font-size: 1.2rem; transition: 0.3s; }
         .nav-item.active { color: var(--accent-cyan); }
         .nav-item.active i { transform: translateY(-4px); color: var(--accent-cyan); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
-        .nav-item.active span { transform: translateY(2px); color: white; }
+        .nav-item.active span { transform: translateY(2px); color: white; text-shadow: 0 0 5px rgba(255,255,255,0.5);}
         .fab-slot { flex: 1.2; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
-        .floating-plus { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); width: 58px; height: 58px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 4px solid var(--primary-bg); box-shadow: 0 10px 25px rgba(189,0,255,0.5); color: #fff; font-size: 1.8rem; cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 10; }
-        .floating-plus:hover { transform: translateX(-50%) scale(1.1) rotate(90deg); box-shadow: 0 15px 35px rgba(0,242,255,0.6); }
+        .floating-plus { position: absolute; top: -25px; left: 50%; transform: translateX(-50%); width: 54px; height: 54px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 4px solid var(--primary-bg); box-shadow: 0 10px 25px rgba(189,0,255,0.4); color: #fff; font-size: 1.6rem; cursor: pointer; transition: 0.3s; z-index: 10; }
 
         @media (min-width: 850px) {
             .tourney-card { flex: 0 0 calc(50% - 10px); }
@@ -1392,7 +1396,8 @@
             
             let orgId = t.org_username || t.email || 'Verified Organizer';
             document.getElementById('dtOrgName').innerHTML = `${t.org_username || 'Verified Organizer'}`;
-            let hostAvatar = t.org_avatar ? formatImageUrl(t.org_avatar) : `https://ui-avatars.com/api/?name=${encodeURIComponent(orgId)}&background=070311&color=00f2ff&bold=true&border=1`;
+            // Corrected avatar checking sequence as per users sheet
+            let hostAvatar = t.avatar ? formatImageUrl(t.avatar) : (t.org_avatar ? formatImageUrl(t.org_avatar) : `https://ui-avatars.com/api/?name=${encodeURIComponent(orgId)}&background=070311&color=00f2ff&bold=true&border=1`);
             document.getElementById('orgAvatarImg').src = hostAvatar;
             
             let hostedCount = t.org_hosted_count ? parseInt(t.org_hosted_count) : Math.max(localTournamentsData.filter(x => x.org_username === orgId || x.email === orgId).length, 1);
@@ -1421,7 +1426,7 @@
             document.getElementById('dtDescription').innerHTML = t.rules || "Standard competitive rules apply.";
             document.getElementById('dtRulesText').innerHTML = t.rules || "No specific rules provided.";
             
-            // PRIZE TAB DYNAMIC LOGIC (Single Prize vs Distribution)
+            // PRIZE TAB DYNAMIC LOGIC
             const prizeArea = document.getElementById('prizeDistributionArea');
             let rawPrizeStr = t.prize || "0";
             document.getElementById('dtPrizeTotalHead').innerText = getPrizeText(rawPrizeStr);
@@ -1448,7 +1453,6 @@
             }
             prizeArea.innerHTML = prizeHTML;
 
-            // BRACKET/SCHEDULE IMAGE LOGIC (Column S mapped to bracket_image)
             const bracketArea = document.getElementById('bracketDisplayArea');
             if (t.bracket_image && t.bracket_image.trim() !== "") {
                 bracketArea.innerHTML = `<img src="${formatImageUrl(t.bracket_image)}" style="width: 100%; border-radius: 12px; border: 1px solid var(--card-border); margin-top: 10px;">`;
@@ -1580,7 +1584,7 @@
             document.getElementById('tourneyDetailModal').classList.add('active');
         }
 
-        // --- NEW: REAL HOST PROFILE FETCHING ---
+        // --- REAL HOST PROFILE FETCHING (INSTANT LOAD FIX) ---
         function openHostProfile() {
             triggerHaptic();
             let t = activeTournament;
@@ -1589,25 +1593,30 @@
             let orgId = t.org_username || t.email || 'Verified Organizer';
             document.getElementById('hostProfileOverlay').classList.add('active');
             
+            // 1. INSTANT FALLBACK (Populate immediately from current tournament data)
+            let fallbackAvatar = t.avatar ? formatImageUrl(t.avatar) : (t.org_avatar ? formatImageUrl(t.org_avatar) : `https://ui-avatars.com/api/?name=${encodeURIComponent(orgId)}&background=070311&color=00f2ff&bold=true&border=1`);
+            let fallbackHosted = t.org_hosted_count ? parseInt(t.org_hosted_count) : Math.max(localTournamentsData.filter(x => x.org_username === orgId || x.email === orgId).length, 1);
+            
             document.getElementById('hpName').innerText = orgId;
-            document.getElementById('hpHosted').innerText = "...";
-            document.getElementById('hpSuccess').innerText = "...";
-            document.getElementById('hpRating').innerText = "...";
+            document.getElementById('hpAvatar').src = fallbackAvatar;
+            document.getElementById('hpHosted').innerText = fallbackHosted;
+            document.getElementById('hpSuccess').innerText = "100%"; // Default until fetch
+            document.getElementById('hpRating').innerText = "4.9"; // Default until fetch
 
+            // 2. BACKGROUND FETCH (Updates silently if user has a dedicated profile sheet)
             fetch(API_URL + "?action=get_user_profile&username=" + encodeURIComponent(orgId))
             .then(res => res.json())
             .then(data => {
                 if(data.status === 'success' && data.data) {
                     let hostData = data.data;
-                    let hostAvatar = hostData.avatar ? formatImageUrl(hostData.avatar) : `https://ui-avatars.com/api/?name=${encodeURIComponent(orgId)}&background=070311&color=00f2ff&bold=true&border=1`;
-                    document.getElementById('hpAvatar').src = hostAvatar;
+                    if(hostData.avatar) document.getElementById('hpAvatar').src = formatImageUrl(hostData.avatar);
                     
                     let hostedCount = hostData.hosted_count || Math.max(localTournamentsData.filter(x => x.org_username === orgId || x.email === orgId).length, 1);
                     document.getElementById('hpHosted').innerText = hostedCount;
-                    document.getElementById('hpSuccess').innerText = hostData.success_rate || "100%"; 
-                    document.getElementById('hpRating').innerText = hostData.rating || "4.9";
+                    if(hostData.success_rate) document.getElementById('hpSuccess').innerText = hostData.success_rate; 
+                    if(hostData.rating) document.getElementById('hpRating').innerText = hostData.rating;
                 }
-            }).catch(e => console.log(e));
+            }).catch(e => console.log("Profile fetch skipped, using instant fallback data."));
         }
         
         function closeHostProfile() { triggerHaptic(); document.getElementById('hostProfileOverlay').classList.remove('active'); }
@@ -1622,7 +1631,7 @@
             }
         }
 
-        // --- NEW: FETCH TEAM PLAYERS REAL-TIME ---
+        // --- FETCH TEAM PLAYERS REAL-TIME & HANDLE JSON ARRAY ---
         function fetchClanPlayers(clanName, element) {
             triggerHaptic();
             let existing = element.querySelector('.players-list');
@@ -1649,50 +1658,67 @@
             .then(res => res.json())
             .then(data => {
                 let roster = [];
+                let captainName = "Unknown";
+                
                 if(data.status === 'success' && data.data) {
-                    if(Array.isArray(data.data)) {
-                        if(data.data[0] && data.data[0].team_json) {
-                            try { roster = JSON.parse(data.data[0].team_json).roster || []; } catch(e){}
-                        } else if (data.data[0] && data.data[0].roster) {
-                            roster = data.data[0].roster;
-                        } else {
-                            roster = data.data; 
+                    // Bulletproof JSON Extraction to catch ANY format
+                    let raw = data.data;
+                    let targetObj = Array.isArray(raw) ? raw[0] : raw;
+
+                    if (targetObj) {
+                        if (targetObj.team_json) {
+                            try {
+                                let parsed = typeof targetObj.team_json === 'string' ? JSON.parse(targetObj.team_json) : targetObj.team_json;
+                                if (Array.isArray(parsed)) {
+                                    roster = parsed[0].roster || parsed;
+                                    captainName = parsed[0].captain || targetObj.captain || "Unknown";
+                                } else {
+                                    roster = parsed.roster || [];
+                                    captainName = parsed.captain || targetObj.captain || "Unknown";
+                                }
+                            } catch(e){}
+                        } else if (targetObj.roster) {
+                            try {
+                                roster = typeof targetObj.roster === 'string' ? JSON.parse(targetObj.roster) : targetObj.roster;
+                            } catch(e) { roster = targetObj.roster; }
+                            captainName = targetObj.captain || "Unknown";
+                        } else if (Array.isArray(raw)) {
+                            roster = raw;
                         }
-                    } else if(data.data.team_json) {
-                        try { roster = JSON.parse(data.data.team_json).roster || []; } catch(e){}
-                    } else if (data.data.roster) {
-                        roster = data.data.roster;
                     }
                 }
 
-                if(roster.length > 0) {
+                if(roster && roster.length > 0) {
                     let pHTML = '<div style="margin-top:10px; display:flex; flex-direction:column; gap:10px; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px; width: 100%;">';
+                    pHTML += `<div style="font-size:0.85rem; color:var(--accent-orange); font-family:var(--font-head); margin-bottom: 5px;"><i class="fa-solid fa-crown"></i> Captain: ${captainName}</div>`;
+                    
                     roster.forEach(p => {
                         let pName = p.name || p.username || "Unknown";
                         let pIgn = p.gameName || p.ign || p.inGameName || "N/A";
-                        let pId = p.id || p.uid || p.role || "Player";
+                        let pUid = p.uid || p.id || p.playerId || "N/A";
+                        let pRole = p.role || "Player";
                         let pAvatar = p.avatar ? formatImageUrl(p.avatar) : `https://ui-avatars.com/api/?name=${encodeURIComponent(pName)}&background=random`;
                         
                         pHTML += `
                             <div style="display:flex; align-items:center; gap:12px; background: rgba(0,0,0,0.3); padding: 8px 12px; border-radius: 8px; border-left: 2px solid var(--accent-cyan);">
                                 <img src="${pAvatar}" style="width:35px; height:35px; border-radius:50%; border: 1px solid var(--accent-cyan); object-fit: cover;"> 
                                 <div style="display:flex; flex-direction:column; flex:1;">
-                                    <span style="font-size:0.95rem; color:white; font-weight:bold; font-family:var(--font-head);">${pName}</span>
-                                    <span style="font-size:0.75rem; color:#888;">IGN: <span style="color:#ccc;">${pIgn}</span> &nbsp;|&nbsp; ID/Role: <span style="color:#ccc;">${pId}</span></span>
+                                    <span style="font-size:0.95rem; color:white; font-weight:bold; font-family:var(--font-head);">${pName} <span style="font-size:0.7rem; color:var(--accent-orange);">(${pRole})</span></span>
+                                    <span style="font-size:0.75rem; color:#888;">IGN: <span style="color:#ccc;">${pIgn}</span> &nbsp;|&nbsp; UID: <span style="color:#ccc;">${pUid}</span></span>
                                 </div>
                             </div>`;
                     });
                     pHTML += '</div>';
                     loader.innerHTML = pHTML;
                 } else {
-                    loader.innerHTML = '<div style="font-size:0.8rem; color:#888; padding-top:10px; text-align:center;">Roster is hidden or empty.</div>';
+                    loader.innerHTML = '<div style="font-size:0.8rem; color:#888; padding-top:10px; text-align:center;">No players found in this roster.</div>';
                 }
             }).catch(err => {
                 loader.innerHTML = '<div style="font-size:0.8rem; color:#ff4d4d; padding-top:10px; text-align:center;">Failed to load players.</div>';
             });
         }
 
-        // --- NEW: SOLO PLAYER & CLAN LOGO RENDERING ---
+        // --- SOLO PLAYER & CLAN LOGO RENDERING ---
         function fetchLiveTeams() {
             if(!activeTournament.title) return;
             const container = document.getElementById('liveTeamsList');
@@ -1731,7 +1757,7 @@
                                 </div>
                             `;
                         } else {
-                            let clanLogo = team.logo ? formatImageUrl(team.logo) : `https://ui-avatars.com/api/?name=${encodeURIComponent(displayClanName)}&background=random&color=fff&bold=true`;
+                            let clanLogo = team.logo ? formatImageUrl(team.logo) : (team.clan_logo ? formatImageUrl(team.clan_logo) : `https://ui-avatars.com/api/?name=${encodeURIComponent(displayClanName)}&background=random&color=fff&bold=true`);
                             container.innerHTML += `
                                 <div class="clan-item ${highlightClass}" onclick="fetchClanPlayers('${displayClanName.replace(/'/g, "\\'")}', this)">
                                     <div class="clan-item-header">
