@@ -260,8 +260,9 @@
         .cyber-scanner-overlay.active { opacity:1; pointer-events:all; }
         .cyber-circle { width: 100px; height: 100px; border: 3px dashed var(--accent-cyan); border-radius: 50%; animation: spin 2s linear infinite; display: flex; align-items: center; justify-content: center; position: relative; transition: 0.3s;}
         .cyber-inner { width: 60px; height: 60px; background: rgba(0,242,255,0.2); border-radius: 50%; box-shadow: 0 0 30px var(--accent-cyan); animation: pulse 1s infinite alternate; transition: 0.3s;}
-        .cyber-text { font-family: var(--font-head); color: var(--accent-cyan); font-size: 1.2rem; margin-top: 20px; letter-spacing: 2px; text-transform: uppercase; text-shadow: 0 0 10px var(--accent-cyan); transition: 0.3s;}
-        .cyber-desc { color:#888; font-size:0.8rem; margin-top:10px; transition: 0.3s; text-align: center;}
+        .cyber-text { font-family: var(--font-head); color: var(--accent-cyan); font-size: 1.2rem; margin-top: 20px; letter-spacing: 2px; text-transform: uppercase; text-shadow: 0 0 10px var(--accent-cyan); transition: 0.3s; text-align: center; padding: 0 20px;}
+        .cyber-desc { color:#888; font-size:0.8rem; margin-top:10px; transition: 0.3s; text-align: center; padding: 0 20px;}
+        .cyber-timer { font-family: var(--font-head); color: white; font-size: 2.5rem; font-weight: bold; margin-top: 15px; text-shadow: 0 0 20px var(--accent-cyan); transition: 0.3s; }
 
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes pulse { 0%{transform:scale(0.8); opacity:0.5;} 100%{transform:scale(1.2); opacity:1;} }
@@ -488,7 +489,7 @@
                 <div class="support-bot-box" onclick="document.getElementById('screenshotInput').click()">
                     <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2.5rem; color: var(--accent-cyan); margin-bottom: 10px;"></i>
                     <div style="font-family: var(--font-head); color: white; font-weight: bold;">Upload Screenshot or Video</div>
-                    <div style="font-size: 0.75rem; color: #888; margin-top: 5px;">JPG, PNG, MP4 (Max 10MB)</div>
+                    <div style="font-size: 0.75rem; color: #888; margin-top: 5px;">JPG/PNG (Max 15MB), MP4 (Max 100MB)</div>
                     <input type="file" id="screenshotInput" accept="image/*,video/*" style="display: none;" onchange="previewScreenshot(event)">
                 </div>
                 
@@ -584,6 +585,7 @@
         <div class="cyber-circle" id="scannerCircle"><div class="cyber-inner" id="scannerInner"></div></div>
         <div class="cyber-text" id="scannerText">AUTHORIZING...</div>
         <div class="cyber-desc" id="scannerDesc">Initiating secure 256-bit connection</div>
+        <div class="cyber-timer" id="scannerTimer" style="display:none;">20s</div>
     </div>
 
     <div id="customToast">Notification</div>
@@ -621,24 +623,20 @@
         let currentUser = JSON.parse(localStorage.getItem('tournyx_user'));
         if(!currentUser) {
             isGuest = true;
-            // Create a temporary mock profile for guest viewing
             currentUser = { username: "Guest Player", rupees: 0, points: 0, email: "", avatar: "https://tournyx.in/favicon.png" };
         }
 
         let activeReceiptId = "";
         let activeReceiptData = null;
         let qrTimerInterval;
-        
         let isFirstDepositEligible = true;
         
-        // FIXED AMOUNTS AS REQUESTED
         const FIRST_DEPOSIT_OFFERS = [
             { amt: 50, bonus: 20 }, { amt: 100, bonus: 50 },
             { amt: 250, bonus: 100 }, { amt: 500, bonus: 250 }
         ];
         const STANDARD_OFFERS = [50, 100, 250, 500];
 
-        // --- GUEST LOGIN PROTECTION LOGIC ---
         function showLoginModal() {
             document.getElementById('loginPromptModal').classList.add('active');
             triggerHaptic();
@@ -763,7 +761,6 @@
             }
         }
 
-        // --- DEPOSIT SYSTEM ---
         function openAddMoney() { 
             let hr = new Date().getHours();
             if (hr >= 3 && hr < 9) {
@@ -825,12 +822,14 @@
             let sDesc = document.getElementById('scannerDesc');
             let sCircle = document.getElementById('scannerCircle');
             let sInner = document.getElementById('scannerInner');
+            let sTimer = document.getElementById('scannerTimer');
             
             scanner.classList.add('active');
             sText.innerText = "AUTHORIZING...";
             sDesc.innerText = "Connecting to Secure Gateway...";
             sCircle.style.borderColor = "var(--accent-cyan)";
             sInner.style.background = "rgba(0,242,255,0.2)";
+            sTimer.style.display = "none"; // Hide timer for standard UTR
 
             setTimeout(() => { sText.innerText = "VERIFYING UTR..."; sDesc.innerText = "Connecting to banking APIs..."; }, 3000);
             setTimeout(() => { sText.innerText = "SYNCING WEBHOOK..."; sDesc.innerText = "Awaiting bank confirmation..."; sCircle.style.borderColor = "var(--accent-purple)"; sInner.style.background = "rgba(189,0,255,0.2)"; }, 6000);
@@ -867,7 +866,7 @@
             }, 8500);
         }
 
-        // --- NEW INTERACTIVE SUPPORT BOT SCRIPT ---
+        // --- INTERACTIVE SUPPORT BOT SCRIPT ---
         let currentSupportCategory = "";
         
         function openGlobalSupport() {
@@ -895,11 +894,25 @@
             document.getElementById('supportBotOverlay').classList.remove('active');
         }
         
+        // --- UPDATED PREVIEW WITH SIZE VALIDATION ---
         function previewScreenshot(event) {
             const file = event.target.files[0];
             if(file) {
-                const reader = new FileReader();
                 let isVid = file.type.startsWith('video/');
+                
+                // Max limits: 15MB Image, 100MB Video
+                if (isVid && file.size > 100 * 1024 * 1024) {
+                    showToast("Video exceeds 100MB limit", true);
+                    event.target.value = "";
+                    return;
+                }
+                if (!isVid && file.size > 15 * 1024 * 1024) {
+                    showToast("Image exceeds 15MB limit", true);
+                    event.target.value = "";
+                    return;
+                }
+
+                const reader = new FileReader();
                 reader.onload = function(e) {
                     if(isVid) {
                         document.getElementById('ssPreview').style.display = 'none';
@@ -916,20 +929,52 @@
             }
         }
         
+        // --- 20-SECOND PROFESSIONAL LOADER ---
         function analyzeAndSubmitScreenshot() {
+            let msgText = document.getElementById('supportMsg').value.trim();
+            let ssPreview = document.getElementById('ssPreview');
+            let vidPreview = document.getElementById('vidPreview');
+            let fileData = "";
+
+            if (ssPreview.style.display !== 'none' && ssPreview.src) {
+                fileData = ssPreview.src;
+            } else if (vidPreview.style.display !== 'none' && vidPreview.src) {
+                fileData = vidPreview.src;
+            }
+
             closeSupportBot();
             let scanner = document.getElementById('cyberScanner');
             let sText = document.getElementById('scannerText');
             let sDesc = document.getElementById('scannerDesc');
+            let sTimer = document.getElementById('scannerTimer');
             
             scanner.classList.add('active');
-            sText.innerText = "EXTRACTING DATA...";
-            sDesc.innerText = "Bot reading file and details...";
+            sText.innerText = "INITIALIZING SECURE UPLOAD...";
+            sDesc.innerText = "Establishing end-to-end encryption...";
+            sTimer.innerText = "20s";
+            sTimer.style.display = "block";
 
-            setTimeout(() => { sText.innerText = "CROSS-CHECKING..."; sDesc.innerText = "Verifying with bank ledger..."; }, 3000);
+            let timeLeft = 20;
+            let countdown = setInterval(() => {
+                timeLeft--;
+                sTimer.innerText = timeLeft + "s";
+                
+                if(timeLeft === 15) {
+                    sText.innerText = "ENCRYPTING MEDIA PAYLOAD...";
+                    sDesc.innerText = "Processing high-res data packets...";
+                } else if(timeLeft === 10) {
+                    sText.innerText = "TRANSMITTING TO ADMIN LEDGER...";
+                    sDesc.innerText = "Uploading securely to cloud servers...";
+                } else if(timeLeft === 5) {
+                    sText.innerText = "FINALIZING PRIORITY TICKET...";
+                    sDesc.innerText = "Queueing for immediate admin review...";
+                }
+            }, 1000);
             
             setTimeout(() => {
+                clearInterval(countdown);
                 scanner.classList.remove('active');
+                sTimer.style.display = "none";
                 
                 let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
                 let dateStr = new Date().toLocaleString('en-US', { month:'short', day:'2-digit', year:'numeric', hour:'numeric', minute:'2-digit', hour12:true });
@@ -938,11 +983,22 @@
                 localStorage.setItem('tournyx_txns', JSON.stringify(txns));
                 renderTransactions();
                 
-                // Alert the backend to send WhatsApp & Email
-                fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "support_ticket", email: currentUser.email, category: currentSupportCategory }) });
+                let payload = { 
+                    action: "support_ticket", 
+                    email: currentUser.email, 
+                    category: currentSupportCategory,
+                    message: msgText,
+                    fileBase64: fileData
+                };
+                
+                fetch(API_URL, { 
+                    method: 'POST', 
+                    mode: 'no-cors', 
+                    body: JSON.stringify(payload) 
+                });
 
                 showToast("Success! Admin has been alerted for priority review.");
-            }, 6500);
+            }, 20000);
         }
 
         async function syncLiveTransactions() {
