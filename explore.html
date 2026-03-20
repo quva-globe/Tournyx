@@ -82,10 +82,6 @@
             background: transparent !important;
         }
 
-        /* --- GUEST MODE BANNER --- */
-        .guest-banner { display: none; background: linear-gradient(90deg, #ff4d4d, #ff9900); padding: 10px; text-align: center; color: white; font-family: var(--font-head); font-weight: bold; font-size: 0.85rem; letter-spacing: 1px; z-index: 2500; position: sticky; top: 0; text-transform: uppercase; box-shadow: 0 5px 15px rgba(255, 77, 77, 0.4); cursor: pointer; }
-        .guest-banner.active { display: block; }
-
         /* --- HEADER --- */
         .top-header { position: fixed; top: 0; left: 0; width: 100%; padding: env(safe-area-inset-top) 15px 15px; background: rgba(7, 3, 17, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--card-border); z-index: 2000; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); }
         .header-wrapper { display: flex; align-items: center; justify-content: space-between; }
@@ -121,7 +117,7 @@
 
         /* --- TOURNAMENT CARDS & GLOW EFFECTS --- */
         .tourney-list { padding: 0 15px; display: flex; flex-direction: column; gap: 20px; min-height: 400px; }
-        .tourney-card { background: var(--card-bg); border-radius: 15px; overflow: hidden; animation: slideUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; transition: 0.3s; cursor: pointer; background-clip: padding-box; }
+        .tourney-card { background: var(--card-bg); border-radius: 15px; overflow: hidden; animation: slideUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; transition: 0.3s; cursor: pointer; background-clip: padding-box; pointer-events: auto; }
         .tourney-card:active { transform: scale(0.98); }
         
         @keyframes goldenPulse {
@@ -141,7 +137,8 @@
         .tourney-card.upcoming-glow { border: 1px solid rgba(0,242,255,0.3); box-shadow: 0 5px 20px rgba(0,242,255,0.1); }
         .tourney-card.upcoming-glow:hover { box-shadow: 0 5px 25px rgba(0,242,255,0.3); border-color: var(--accent-cyan); }
         
-        .tourney-card.is-full { opacity: 0.65; filter: grayscale(70%); animation: none !important; border-color: #444 !important; box-shadow: 0 5px 15px rgba(0,0,0,0.5) !important; }
+        /* Fully interactive even if full/closed */
+        .tourney-card.is-full { opacity: 0.65; filter: grayscale(70%); animation: none !important; border-color: #444 !important; box-shadow: 0 5px 15px rgba(0,0,0,0.5) !important; cursor: pointer; pointer-events: auto; }
 
         @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
@@ -272,7 +269,8 @@
         .pc-rank { font-family: var(--font-head); font-weight: bold; font-size: 1rem; display: flex; align-items: center; gap: 10px; }
         .pc-val { font-size: 1rem; font-weight: bold; color: var(--accent-cyan); text-shadow: 0 0 5px rgba(0,242,255,0.3); }
 
-        .clan-item { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); padding: 12px; border-radius: 12px; margin-bottom: 10px; transition: 0.3s; cursor: pointer; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); }
+        /* --- BLIND ROSTER ITEM LOGIC --- */
+        .clan-item { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); padding: 12px; border-radius: 12px; margin-bottom: 10px; transition: 0.3s; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); }
         .clan-item.my-clan { border: 1px solid var(--accent-cyan); background: rgba(0,242,255,0.1); box-shadow: 0 0 10px rgba(0,242,255,0.2); }
         .clan-item-header { display: flex; align-items: center; width: 100%; gap: 12px; }
         .clan-item-icon { width: 35px; height: 35px; border-radius: 8px; background: rgba(0,242,255,0.1); color: var(--accent-cyan); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; overflow: hidden; }
@@ -315,15 +313,15 @@
         .app-footer { text-align: center; padding: 40px 20px 100px 20px; color: #555; font-size: 0.75rem; font-family: var(--font-body); letter-spacing: 1px; border-top: 1px solid var(--card-border); margin-top: 20px; }
 
         /* PERFECTLY ALIGNED BOTTOM NAVIGATION */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(7, 3, 17, 0.92); backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 5px env(safe-area-inset-bottom); border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.6); }
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; color: #666; text-decoration: none; font-size: 0.65rem; font-family: var(--font-head); font-weight: bold; flex: 1; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; }
-        .nav-item span { margin-top: 4px; transition: 0.3s; }
-        .nav-item i { font-size: 1.3rem; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(7, 3, 17, 0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 2px env(safe-area-inset-bottom); border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.6); transform: translateZ(0);}
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; color: #666; text-decoration: none; font-size: 0.6rem; font-family: var(--font-head); font-weight: bold; flex: 1; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; padding: 0 2px; text-align: center;}
+        .nav-item span { margin-top: 4px; transition: 0.3s; letter-spacing: -0.3px;}
+        .nav-item i { font-size: 1.2rem; transition: 0.3s; }
         .nav-item.active { color: var(--accent-cyan); }
         .nav-item.active i { transform: translateY(-4px); color: var(--accent-cyan); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
-        .nav-item.active span { transform: translateY(2px); color: white; }
+        .nav-item.active span { transform: translateY(2px); color: white; text-shadow: 0 0 5px rgba(255,255,255,0.5);}
         .fab-slot { flex: 1.2; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
-        .floating-plus { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); width: 58px; height: 58px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 4px solid var(--primary-bg); box-shadow: 0 10px 25px rgba(189,0,255,0.5); color: #fff; font-size: 1.8rem; cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 10; }
+        .floating-plus { position: absolute; top: -25px; left: 50%; transform: translateX(-50%); width: 54px; height: 54px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 4px solid var(--primary-bg); box-shadow: 0 10px 25px rgba(189,0,255,0.4); color: #fff; font-size: 1.6rem; cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 10; }
         .floating-plus:hover { transform: translateX(-50%) scale(1.1) rotate(90deg); box-shadow: 0 15px 35px rgba(0,242,255,0.6); }
 
         @media (min-width: 850px) {
@@ -343,13 +341,7 @@
         .single-page-mode .detail-modal { position: fixed !important; transform: none !important; transition: none !important; height: 100vh !important; width: 100vw !important; top: 0 !important; left: 0 !important; }
         .single-page-mode .locked-footer { position: fixed; bottom: 0; width: 100%; z-index: 9999; }
         .single-page-mode .guest-banner { position: fixed; top: 0; width: 100%; z-index: 9999; }
-        .single-page-mode .dm-header { margin-top: 40px; } /* Space for banner */
-
-        /* Unique Share Features Grid */
-        #proFeaturesBlock { display: none; padding: 20px 15px; border-top: 1px solid var(--card-border); background: #0a0418; }
-        .pro-feat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-top: 15px; }
-        .pro-feat-badge { background: rgba(0,242,255,0.05); border: 1px solid rgba(0,242,255,0.2); border-radius: 8px; padding: 10px; text-align: center; color: #ccc; font-size: 0.75rem; font-family: var(--font-head); }
-        .pro-feat-badge i { color: var(--accent-cyan); font-size: 1.2rem; margin-bottom: 5px; display: block; }
+        .single-page-mode .dm-header { margin-top: 40px; } 
 
         /* Share Page Initial Loader */
         #shareLoader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary-bg); z-index: 99999; align-items: center; justify-content: center; flex-direction: column; }
@@ -1144,10 +1136,9 @@
                 document.getElementById('shareLoader').style.display = 'flex';
             }
 
-            // GUEST MODE REMOVAL OF REDIRECT & HEADER
+            // GUEST MODE
             if(!user || !user.email) { 
                 isGuestMode = true;
-                document.getElementById('headerProfilePic').style.display = 'none';
             } else {
                 if(user.avatar) document.getElementById('headerProfilePic').src = user.avatar;
                 fetch(API_URL + "?action=get_matches&email=" + encodeURIComponent(user.email))
@@ -1681,7 +1672,7 @@
             document.getElementById('tourneyDetailModal').classList.add('active');
         }
 
-        // --- REAL HOST PROFILE FETCHING ---
+        // --- REAL HOST PROFILE FETCHING (INSTANT LOAD FIX) ---
         function openHostProfile() {
             triggerHaptic();
             let t = activeTournament;
@@ -1690,15 +1681,17 @@
             let orgId = t.org_username || t.email || 'Verified Organizer';
             document.getElementById('hostProfileOverlay').classList.add('active');
             
+            // 1. INSTANT FALLBACK (Populate immediately from current tournament data)
             let fallbackAvatar = t.avatar ? formatImageUrl(t.avatar) : (t.org_avatar ? formatImageUrl(t.org_avatar) : `https://ui-avatars.com/api/?name=${encodeURIComponent(orgId)}&background=070311&color=00f2ff&bold=true&border=1`);
             let fallbackHosted = t.org_hosted_count ? parseInt(t.org_hosted_count) : Math.max(localTournamentsData.filter(x => x.org_username === orgId || x.email === orgId).length, 1);
             
             document.getElementById('hpName').innerText = orgId;
             document.getElementById('hpAvatar').src = fallbackAvatar;
             document.getElementById('hpHosted').innerText = fallbackHosted;
-            document.getElementById('hpSuccess').innerText = "100%"; 
-            document.getElementById('hpRating').innerText = "4.9"; 
+            document.getElementById('hpSuccess').innerText = "100%"; // Default until fetch
+            document.getElementById('hpRating').innerText = "4.9"; // Default until fetch
 
+            // 2. BACKGROUND FETCH (Updates silently if user has a dedicated profile sheet)
             fetch(API_URL + "?action=get_user_profile&username=" + encodeURIComponent(orgId))
             .then(res => res.json())
             .then(data => {
@@ -1711,7 +1704,7 @@
                     if(hostData.success_rate) document.getElementById('hpSuccess').innerText = hostData.success_rate; 
                     if(hostData.rating) document.getElementById('hpRating').innerText = hostData.rating;
                 }
-            }).catch(e => console.log("Profile fetch skipped."));
+            }).catch(e => console.log("Profile fetch skipped, using instant fallback data."));
         }
         
         function closeHostProfile() { triggerHaptic(); document.getElementById('hostProfileOverlay').classList.remove('active'); }
@@ -1720,7 +1713,7 @@
             triggerHaptic(); 
             if(activeCountdown) clearInterval(activeCountdown);
             if(window.location.hash === '#tournamentDetails') {
-                history.back(); 
+                history.back(); // triggers popstate properly
             } else {
                 document.getElementById('tourneyDetailModal').classList.remove('active'); 
             }
@@ -1786,6 +1779,7 @@
             triggerHaptic();
             if(document.getElementById('masterJoinBtn').disabled) return;
             
+            // IF GUEST - TRIGGER GUEST POPUP INSTEAD OF REDIRECT
             if(isGuestMode) {
                 document.getElementById('guestLoginModal').classList.add('active');
                 return;
