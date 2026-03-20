@@ -6,22 +6,12 @@
     
     <title>Community Hub - Tournyx Esports</title>
     <meta name="description" content="Join the ultimate Esports Community on Tournyx. Share clips, find squads, discuss BGMI & Free Fire strategies, and connect with top gamers. Powered by Quva.">
-    <meta name="keywords" content="Esports community, Tournyx hub, gaming forum, looking for group, BGMI clips, Free Fire squad, Quva">
     <meta name="robots" content="index, follow">
-    <meta name="author" content="Tournyx">
     <meta name="google-site-verification" content="ADD_YOUR_GOOGLE_SEARCH_CONSOLE_TAG_HERE" />
-    <link rel="canonical" href="https://tournyx.in/community.html" />
-    
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://tournyx.in/community.html">
-    <meta property="og:title" content="Community Hub - Tournyx Esports">
-    <meta property="og:description" content="Share clips, find squads, and connect with top gamers.">
-    <meta property="og:image" content="https://tournyx.in/favicon.png">
     
     <link rel="icon" href="https://tournyx.in/favicon.ico" sizes="any">
     <link rel="icon" href="https://tournyx.in/favicon.png" type="image/png" sizes="192x192">
-    <link rel="apple-touch-icon" href="https://tournyx.in/apple-touch-icon.png">
-
+    
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -52,21 +42,15 @@
         .glass-panel { background: var(--card-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid var(--card-border); border-radius: 16px; }
 
         /* --- HEADER --- */
-        .top-header { 
-            position: fixed; top: 0; left: 0; width: 100%; 
-            padding: calc(12px + env(safe-area-inset-top)) 10px 12px; 
-            background: rgba(5, 2, 12, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); 
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05); z-index: 2000; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); transform: translateZ(0);
-        }
-        .header-wrapper { display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: 0 auto; width: 100%; gap: 5px; padding: 0 5px;}
+        .top-header { position: fixed; top: 0; left: 0; width: 100%; padding: calc(12px + env(safe-area-inset-top)) 10px 12px; background: rgba(5, 2, 12, 0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); z-index: 2000; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); transform: translateZ(0);}
+        .header-wrapper { display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: 0 auto; width: 100%; gap: 5px; padding: 0 10px;}
         .header-left { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
-        .app-logo { width: 30px; height: 30px; border-radius: 50%; object-fit: contain; box-shadow: 0 0 15px var(--accent-purple); border: 1px solid rgba(255,255,255,0.2); flex-shrink: 0;}
-        .app-title { font-family: var(--font-head); font-size: 1.1rem; font-weight: 900; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px; text-transform: uppercase; margin:0;}
-        
+        .app-logo { width: 28px; height: 28px; border-radius: 50%; object-fit: contain; box-shadow: 0 0 15px var(--accent-purple); border: 1px solid rgba(255,255,255,0.2); flex-shrink: 0;}
+        .app-title { font-family: var(--font-head); font-size: 1rem; font-weight: 900; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 0px; white-space: normal; line-height: 1.1; word-break: break-word; text-transform: uppercase; margin:0;}
         .header-actions { display: flex; align-items: center; gap: 15px; font-size: 1.25rem; color: var(--accent-cyan); flex-shrink: 0;}
         .header-actions i { cursor: pointer; transition: 0.3s; padding: 5px;}
         .header-actions i:active { transform: scale(0.8); text-shadow: 0 0 10px var(--accent-cyan);}
-        .header-profile-img { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--accent-cyan); object-fit: cover; cursor: pointer; box-shadow: 0 0 10px rgba(0,242,255,0.4); transition: 0.3s; flex-shrink: 0; background:#000; }
+        .header-profile-img { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--accent-cyan); object-fit: cover; cursor: pointer; box-shadow: 0 0 10px rgba(0,242,255,0.4); transition: 0.3s; flex-shrink: 0; background:#000; }
 
         /* --- DESKTOP NAV --- */
         .desktop-nav { display: none; gap: 20px; align-items: center; }
@@ -78,7 +62,6 @@
         .sidebar-left { display: none; width: 260px; flex-shrink: 0; position: sticky; top: calc(85px + env(safe-area-inset-top)); height: calc(100vh - 100px); overflow-y: auto; padding-right: 10px;}
         .main-feed { flex: 1; min-width: 0; width: 100%; display: flex; flex-direction: column; gap: 15px;}
         .sidebar-right { display: none; width: 320px; flex-shrink: 0; position: sticky; top: calc(85px + env(safe-area-inset-top)); height: calc(100vh - 100px); overflow-y: auto; padding-left: 10px;}
-        
         .sidebar-left::-webkit-scrollbar, .sidebar-right::-webkit-scrollbar { display: none; }
 
         @media (min-width: 900px) {
@@ -97,16 +80,11 @@
         .story-ring { width: 68px; height: 68px; border-radius: 50%; padding: 3px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; position: relative; transition: 0.3s;}
         .story-ring.unread { background: var(--accent-gradient); box-shadow: 0 0 15px rgba(189,0,255,0.4); }
         .story-ring.live { background: linear-gradient(135deg, #ff4d4d, #ff9900); animation: pulseLive 1.5s infinite alternate; }
-        .story-ring img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-bg); background: #000;}
+        .story-ring img, .story-ring video { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-bg); background: #000;}
         .add-story-btn { position: absolute; bottom: 0; right: 0; background: var(--accent-cyan); color: #000; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; border: 2px solid var(--primary-bg); z-index: 5;}
         .story-live-badge { position: absolute; bottom: -6px; background: #ff4d4d; color: white; font-size: 0.55rem; font-family: var(--font-head); padding: 2px 6px; border-radius: 5px; font-weight: bold; border: 2px solid var(--primary-bg); z-index: 5;}
         .story-name { font-size: 0.7rem; color: #ccc; font-family: var(--font-body); max-width: 68px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; font-weight: bold;}
         @keyframes pulseLive { from{box-shadow: 0 0 5px rgba(255,77,77,0.5);} to{box-shadow: 0 0 20px rgba(255,77,77,0.8);} }
-
-        /* --- LIVE FEED PILL --- */
-        .new-posts-pill { position: sticky; top: 10px; z-index: 100; margin: 0 auto -40px; background: var(--accent-cyan); color: black; padding: 8px 20px; border-radius: 20px; font-family: var(--font-head); font-size: 0.85rem; font-weight: bold; cursor: pointer; box-shadow: 0 5px 15px rgba(0,242,255,0.4); display: flex; align-items: center; gap: 8px; width: max-content; transform: translateY(-100px); opacity: 0; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .new-posts-pill.active { transform: translateY(0); opacity: 1; margin-bottom: 10px;}
-        .new-posts-pill:active { transform: translateY(0) scale(0.95); }
 
         /* --- X (TWITTER) STYLE POST CARD --- */
         .post-card { background: var(--card-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid var(--card-border); border-radius: 16px; padding: 15px 15px 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); animation: slideInUp 0.4s ease; transition: 0.3s; }
@@ -124,10 +102,7 @@
         .verified-icon { color: #1da1f2; font-size: 0.8rem; }
         .org-badge { background: rgba(189,0,255,0.15); color: var(--accent-purple); font-size: 0.55rem; padding: 2px 6px; border-radius: 4px; font-family: var(--font-head); border: 1px solid rgba(189,0,255,0.3); text-transform: uppercase; font-weight: bold;}
         
-        .ph-right { color: #888; cursor: pointer; padding: 0 5px; transition: 0.3s; font-size: 1.1rem;}
-        .ph-right:hover { color: white; }
-
-        .post-body { padding-left: 52px; } /* Indent text to align with name */
+        .post-body { padding-left: 52px; }
         @media (max-width: 600px) { .post-body { padding-left: 0; margin-top: 10px; } }
         
         .post-text { font-size: 0.95rem; color: #eee; line-height: 1.5; margin-bottom: 12px; word-wrap: break-word; white-space: pre-wrap; font-family: var(--font-body);}
@@ -137,52 +112,38 @@
         .hashtag:hover { text-decoration: underline; text-shadow: 0 0 8px rgba(255,153,0,0.4);}
         
         .post-media { width: 100%; border-radius: 12px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); object-fit: cover; max-height: 450px; cursor: pointer; background: rgba(0,0,0,0.5);}
+        .poll-container { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
+        .poll-option { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 10px 15px; border-radius: 8px; cursor: pointer; transition: 0.3s; display: flex; justify-content: space-between; align-items: center; position: relative; overflow: hidden;}
+        .poll-option:hover { background: rgba(0,242,255,0.1); border-color: var(--accent-cyan); }
+        .poll-fill { position: absolute; left: 0; top: 0; height: 100%; background: rgba(0,242,255,0.2); z-index: 0;}
+        .poll-text { position: relative; z-index: 1; font-family: var(--font-head); font-size: 0.9rem;}
         
         .post-actions { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; margin-top: 5px; }
         .pa-group { display: flex; gap: 15px; flex: 1; justify-content: space-between; max-width: 300px;}
         .pa-btn { display: flex; align-items: center; gap: 6px; color: #888; font-size: 0.85rem; cursor: pointer; transition: 0.2s; font-family: var(--font-head); font-weight: bold; background: transparent; border: none; outline: none; padding: 5px;}
         .pa-btn i { font-size: 1.1rem; transition: 0.3s; }
-        
-        /* Action Hover States */
-        .pa-btn.reply:hover { color: var(--accent-cyan); } .pa-btn.reply:hover i { background: rgba(0,242,255,0.1); border-radius: 50%; box-shadow: 0 0 0 6px rgba(0,242,255,0.1); }
-        .pa-btn.rt:hover { color: var(--accent-green); } .pa-btn.rt:hover i { background: rgba(0,255,127,0.1); border-radius: 50%; box-shadow: 0 0 0 6px rgba(0,255,127,0.1); }
-        .pa-btn.like:hover { color: var(--accent-red); } .pa-btn.like:hover i { background: rgba(255,77,77,0.1); border-radius: 50%; box-shadow: 0 0 0 6px rgba(255,77,77,0.1); }
-        
-        /* Action Active States */
+        .pa-btn.reply:hover { color: var(--accent-cyan); } .pa-btn.rt:hover { color: var(--accent-green); } .pa-btn.like:hover { color: var(--accent-red); }
         .pa-btn:active { transform: scale(0.9); }
         .pa-btn.like.liked { color: var(--accent-red); }
-        .pa-btn.like.liked i { text-shadow: 0 0 10px rgba(255,77,77,0.5); }
         
         .pa-award { background: rgba(189,0,255,0.1); border: 1px solid rgba(189,0,255,0.3); color: var(--accent-purple); padding: 4px 10px; border-radius: 15px; font-size: 0.75rem; font-family: var(--font-head); font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 5px;}
         .pa-award:hover { background: var(--accent-purple); color: white; box-shadow: 0 0 10px rgba(189,0,255,0.4);}
-        .pa-award:active { transform: scale(0.95); }
 
         /* --- SIDEBARS (DESKTOP) --- */
         .sidebar-panel { background: rgba(20,10,35,0.4); border: 1px solid var(--card-border); border-radius: 16px; padding: 18px; backdrop-filter: blur(15px); margin-bottom: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);}
         .sp-title { font-family: var(--font-head); font-size: 1.1rem; color: white; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 8px; font-weight: bold;}
-        
         .hub-link { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 12px; cursor: pointer; transition: 0.3s; color: #ccc; text-decoration: none; margin-bottom: 5px; font-weight: 600; font-size: 0.95rem;}
         .hub-link:hover, .hub-link.active { background: rgba(0,242,255,0.1); color: white; box-shadow: inset 4px 0 0 var(--accent-cyan); }
-        .hub-link img { width: 28px; height: 28px; border-radius: 8px; object-fit: cover;}
-        .hub-link i { font-size: 1.3rem; width: 28px; text-align: center;}
-
-        /* LFG Right Sidebar */
+        
         .lfg-card { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; display: flex; align-items: center; gap: 12px; margin-bottom: 10px; cursor: pointer; transition: 0.3s;}
         .lfg-card:hover { border-color: var(--accent-orange); background: rgba(255,153,0,0.05); transform: translateX(-5px);}
         .lfg-avatar { width: 40px; height: 40px; border-radius: 10px; object-fit: cover;}
-        .lfg-info { flex: 1; min-width: 0;}
-        .lfg-info h5 { font-family: var(--font-head); font-size: 0.95rem; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px;}
-        .lfg-info p { font-size: 0.75rem; color: #aaa; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
-        .lfg-tags { display: flex; gap: 5px; margin-top: 5px; flex-wrap: wrap;}
-        .lfg-tag { background: rgba(255,255,255,0.1); color: #ccc; font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; text-transform: uppercase;}
         
         .trend-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.2s;}
         .trend-item:hover { background: rgba(255,255,255,0.02); border-radius: 8px; padding: 10px; border-bottom-color: transparent;}
-        .trend-item:last-child { border: none; }
         .trend-left p { font-size: 0.7rem; color: #888; margin-bottom: 2px; }
         .trend-left h5 { font-family: var(--font-head); font-size: 0.95rem; color: white; margin-bottom: 2px; }
         .trend-left span { font-size: 0.75rem; color: #666; }
-        .trend-right i { color: #666; font-size: 0.9rem; }
 
         /* --- CREATE POST INLINE (DESKTOP) --- */
         .create-inline { background: var(--card-bg); backdrop-filter: blur(15px); border: 1px solid var(--card-border); border-radius: 16px; padding: 15px; margin-bottom: 5px; display: none; box-shadow: 0 4px 20px rgba(0,0,0,0.2);}
@@ -191,51 +152,51 @@
         .ci-input { flex: 1; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 25px; padding: 14px 20px; color: white; font-family: var(--font-body); font-size: 1rem; outline: none; transition: 0.3s; cursor: pointer;}
         .ci-input:hover { border-color: var(--accent-cyan); background: rgba(0,242,255,0.05);}
         .ci-actions { display: flex; justify-content: space-between; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); align-items: center;}
-        .ci-tools { display: flex; gap: 15px; }
         .ci-btn { background: transparent; border: none; color: var(--accent-cyan); font-size: 1.2rem; cursor: pointer; transition: 0.3s; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center;}
-        .ci-btn:hover { background: rgba(0,242,255,0.1); }
         .ci-post-btn { background: var(--accent-cyan); color: black; border: none; padding: 8px 20px; border-radius: 20px; font-family: var(--font-head); font-weight: bold; cursor: pointer; transition: 0.3s;}
 
         /* --- CREATE POST FAB (MOBILE) --- */
         .fab-mobile { position: fixed; bottom: calc(85px + env(safe-area-inset-bottom)); right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--accent-gradient); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.6rem; box-shadow: 0 10px 25px rgba(189,0,255,0.5); z-index: 1000; cursor: pointer; transition: 0.3s; border: 2px solid var(--primary-bg);}
-        .fab-mobile:active { transform: scale(0.9); }
 
         /* --- MODALS (BOTTOM SHEETS) --- */
-        .bottom-sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 5000; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); opacity: 0; transition: 0.4s; }
+        .bottom-sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 5000; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(8px); opacity: 0; transition: 0.4s; }
         .bottom-sheet-overlay.active { display: flex; opacity: 1; }
-        .bottom-sheet { width: 100%; max-width: 800px; background: rgba(10,5,20,0.95); border-radius: 25px 25px 0 0; border-top: 1px solid var(--card-border); border-left: 1px solid rgba(255,255,255,0.05); border-right: 1px solid rgba(255,255,255,0.05); padding: 25px 20px calc(20px + env(safe-area-inset-bottom)); transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 90vh; overflow-y: auto; box-shadow: 0 -10px 40px rgba(0,0,0,0.8); backdrop-filter: blur(20px);}
+        .bottom-sheet { width: 100%; max-width: 800px; background: rgba(10,5,20,0.95); border-radius: 25px 25px 0 0; border-top: 1px solid var(--card-border); padding: 25px 20px calc(20px + env(safe-area-inset-bottom)); transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 90vh; overflow-y: auto; box-shadow: 0 -10px 40px rgba(0,0,0,0.8); }
         .bottom-sheet-overlay.active .bottom-sheet { transform: translateY(0); }
         @media (min-width: 850px) { .bottom-sheet { border-radius: 20px; max-height: 85vh; margin: auto; transform: scale(0.95); opacity: 0; padding: 30px;} .bottom-sheet-overlay.active .bottom-sheet { transform: scale(1); opacity: 1; } .bottom-sheet-overlay { align-items: center; } }
         
         .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .sheet-title { font-family: var(--font-head); font-size: 1.2rem; color: white; display: flex; align-items: center; gap: 10px; }
-        .close-sheet { color: #888; font-size: 1.6rem; cursor: pointer; padding: 5px; transition: 0.3s; }
+        .close-sheet { color: #888; font-size: 1.5rem; cursor: pointer; padding: 5px; transition: 0.3s; }
         .close-sheet:hover { color: white; transform: rotate(90deg); }
 
         /* Create Post Form UI */
         .cp-user-row { display: flex; align-items: center; gap: 10px; margin-bottom: 15px;}
         .cp-user-row img { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--accent-cyan);}
-        .cp-user-row select { background: rgba(0,0,0,0.5); color: var(--accent-cyan); border: 1px solid rgba(0,242,255,0.3); padding: 4px 10px; border-radius: 20px; font-family: var(--font-head); font-size: 0.75rem; font-weight: bold; outline: none; appearance: none; cursor: pointer;}
+        .cp-user-row select { background: rgba(0,0,0,0.5); color: var(--accent-cyan); border: 1px solid rgba(0,242,255,0.3); padding: 4px 10px; border-radius: 20px; font-family: var(--font-head); font-size: 0.75rem; font-weight: bold; outline: none;}
         
-        .cp-textarea { width: 100%; background: transparent; border: none; padding: 5px; color: white; font-family: var(--font-body); font-size: 1.1rem; min-height: 120px; resize: none; outline: none; margin-bottom: 15px; transition: 0.3s;}
-        .cp-textarea::placeholder { color: #666; }
+        /* Hashtag Autocomplete UI */
+        .autocomplete-box { position: absolute; z-index: 100; background: var(--secondary-bg); border: 1px solid var(--accent-cyan); border-radius: 12px; width: calc(100% - 40px); max-height: 150px; overflow-y: auto; display: none; box-shadow: 0 5px 15px rgba(0,242,255,0.2); }
+        .ac-item { padding: 10px 15px; color: white; font-family: var(--font-head); font-size: 0.9rem; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .ac-item:hover { background: rgba(0,242,255,0.1); color: var(--accent-cyan); }
+
+        .cp-textarea { width: 100%; background: transparent; border: none; padding: 5px; color: white; font-family: var(--font-body); font-size: 1.1rem; min-height: 100px; resize: none; outline: none; margin-bottom: 15px; transition: 0.3s;}
+        
+        /* Poll UI */
+        .poll-creator-box { display: none; flex-direction: column; gap: 10px; margin-bottom: 15px; padding: 15px; border: 1px solid var(--accent-orange); border-radius: 12px; background: rgba(255,153,0,0.05); }
+        .poll-input { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; color: white; outline: none; font-family: var(--font-body); }
         
         .cp-preview-box { display: none; width: 100%; max-height: 300px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px; position: relative; overflow: hidden; background: #000; }
-        .cp-preview-img { width: 100%; height: 100%; object-fit: contain; }
-        .cp-remove-img { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: var(--accent-red); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid var(--accent-red); backdrop-filter: blur(5px);}
+        .cp-preview-media { width: 100%; height: 100%; object-fit: contain; }
+        .cp-remove-img { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: var(--accent-red); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid var(--accent-red); }
         
         .cp-bottom-bar { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;}
         .cp-tools { display: flex; gap: 5px; }
         .cp-tool-btn { color: var(--accent-cyan); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; transition: 0.3s; background: transparent; border: none;}
-        .cp-tool-btn:hover { background: rgba(0,242,255,0.1); }
         .cp-submit { background: var(--accent-cyan); color: black; border: none; padding: 10px 25px; border-radius: 25px; font-family: var(--font-head); font-weight: bold; font-size: 1rem; cursor: pointer; box-shadow: 0 5px 15px rgba(0,242,255,0.4); transition: 0.3s;}
-        .cp-submit:active { transform: scale(0.95); }
-        .cp-submit:disabled { background: rgba(255,255,255,0.1); color: #888; box-shadow: none; cursor: not-allowed; }
 
-        /* Comments Modal UI */
+        /* Comments / Thread Modal */
         .comment-list { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; max-height: 50vh; overflow-y: auto; padding-right: 5px;}
-        .comment-list::-webkit-scrollbar { display: block !important; width: 4px; }
-        .comment-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
         .comment-item { display: flex; gap: 12px; }
         .ci-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
         .ci-content { background: transparent; flex: 1; }
@@ -246,9 +207,7 @@
         
         .comment-input-box { display: flex; gap: 10px; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;}
         .c-inp { flex: 1; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 14px 20px; border-radius: 25px; color: white; outline: none; font-family: var(--font-body); font-size:1rem; transition: 0.3s;}
-        .c-inp:focus { border-color: var(--accent-cyan); }
         .c-send { background: var(--accent-cyan); color: #000; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; border: none; box-shadow: 0 0 15px rgba(0,242,255,0.4); transition: 0.3s; flex-shrink:0;}
-        .c-send:active { transform: scale(0.9); }
 
         /* Story Viewer Modal */
         #storyViewerModal .bottom-sheet { background: #000; height: 100vh; max-height: 100vh; border-radius: 0; padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom); display: flex; flex-direction: column; justify-content: center; align-items: center;}
@@ -265,27 +224,17 @@
         .award-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 25px; }
         .award-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); border-radius: 15px; padding: 20px 10px; display: flex; flex-direction: column; align-items: center; gap: 10px; cursor: pointer; transition: 0.3s; }
         .award-btn:hover { background: rgba(0,242,255,0.1); border-color: var(--accent-cyan); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,242,255,0.2);}
-        .award-btn i { font-size: 2.5rem; }
-        .award-btn span { font-family: var(--font-head); font-size: 0.9rem; font-weight: bold; color: white;}
-
-        /* --- TOAST --- */
+        
         #customToast { visibility: hidden; min-width: 250px; background-color: var(--accent-cyan); color: #000; text-align: center; border-radius: 12px; padding: 16px; position: fixed; z-index: 9999; left: 50%; bottom: -50px; transform: translateX(-50%); font-family: var(--font-head); font-weight: bold; box-shadow: 0 8px 25px rgba(0,242,255,0.6); opacity: 0; transition: 0.4s; }
         #customToast.show { visibility: visible; opacity: 1; bottom: 100px; }
 
-        /* --- BOTTOM NAV --- */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 2px env(safe-area-inset-bottom); border-top: 1px solid rgba(255, 255, 255, 0.05); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); transform: translateZ(0);}
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; color: #666; text-decoration: none; font-size: 0.6rem; font-family: var(--font-head); font-weight: bold; flex: 1; transition: 0.3s; position: relative; padding: 0 2px; text-align: center;}
-        .nav-item span { margin-top: 4px; transition: 0.3s; letter-spacing: -0.3px;}
-        .nav-item i { font-size: 1.2rem; transition: 0.3s; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(20px); border-top: 1px solid rgba(255, 255, 255, 0.05); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); transform: translateZ(0);}
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; color: #666; text-decoration: none; font-size: 0.6rem; font-family: var(--font-head); font-weight: bold; flex: 1; transition: 0.3s; position: relative;}
+        .nav-item i { font-size: 1.2rem; transition: 0.3s; margin-bottom:4px;}
         .nav-item.active { color: var(--accent-cyan); }
-        .nav-item.active i { transform: translateY(-4px); color: var(--accent-cyan); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
-        .nav-item.active span { transform: translateY(2px); color: white; text-shadow: 0 0 5px rgba(255,255,255,0.5);}
+        .nav-item.active i { transform: translateY(-4px); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
         .fab-slot { flex: 1.2; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
-        .floating-plus { position: absolute; top: -25px; left: 50%; transform: translateX(-50%); width: 54px; height: 54px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 4px solid var(--primary-bg); box-shadow: 0 10px 25px rgba(189,0,255,0.4); color: #fff; font-size: 1.6rem; cursor: pointer; transition: 0.3s; z-index: 10; }
-        .floating-plus:hover { transform: translateX(-50%) scale(1.1) rotate(90deg); box-shadow: 0 15px 35px rgba(0,242,255,0.6); }
-
-        .app-footer { text-align: center; padding: 20px 20px 110px 20px; color: #555; font-size: 0.75rem; font-family: var(--font-body); letter-spacing: 1px; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 20px;}
-        
+        .floating-plus { position: absolute; top: -25px; width: 54px; height: 54px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 4px solid var(--primary-bg); box-shadow: 0 10px 25px rgba(189,0,255,0.4); color: #fff; font-size: 1.6rem; z-index: 10; }
         .median-active .top-header { display: flex !important; visibility: visible !important; }
     </style>
 </head>
@@ -311,7 +260,7 @@
             </nav>
 
             <div class="header-actions">
-                <i class="fa-solid fa-magnifying-glass" onclick="showToast('Advanced Search coming in v3.1!')"></i>
+                <i class="fa-solid fa-magnifying-glass" onclick="showToast('Advanced Search available in v3.1')"></i>
                 <i class="fa-regular fa-bell" onclick="if(checkAuth()) window.location.href='notifications.html'"></i>
                 <img src="https://tournyx.in/favicon.png" class="header-profile-img" id="headerProfilePic" onclick="if(checkAuth()) window.location.href='profile.html';">
             </div>
@@ -323,7 +272,7 @@
             <div class="sheet-header" style="justify-content: flex-end; margin-bottom: 10px;">
                 <i class="fa-solid fa-xmark close-sheet" onclick="document.getElementById('guestLoginModal').classList.remove('active')"></i>
             </div>
-            <i class="fa-solid fa-user-astronaut" style="font-size: 4rem; color: var(--accent-cyan); margin-bottom: 15px; filter: drop-shadow(0 0 15px var(--accent-cyan)); animation: float 3s ease-in-out infinite;"></i>
+            <i class="fa-solid fa-user-astronaut" style="font-size: 4rem; color: var(--accent-cyan); margin-bottom: 15px; filter: drop-shadow(0 0 15px var(--accent-cyan));"></i>
             <h2 style="font-family: var(--font-head); font-size: 1.5rem; margin-bottom: 10px; color: white;">Access Restricted</h2>
             <p style="color: #aaa; font-size: 0.95rem; margin-bottom: 25px; line-height: 1.5;">Please log in or sign up to Post, Reply, Like, and interact with the Tournyx Esports community.</p>
             <button class="cp-submit" style="background: linear-gradient(90deg, #ff4d4d, #ff9900); box-shadow: 0 5px 20px rgba(255, 77, 77, 0.4); margin-bottom: 15px;" onclick="window.location.href='login.html'">LOGIN TO ACCOUNT</button>
@@ -344,25 +293,20 @@
             <div class="sidebar-panel">
                 <div class="sp-title"><i class="fa-solid fa-earth-americas"></i> Global Hubs</div>
                 <a class="hub-link active"><i class="fa-solid fa-globe"></i> All Games</a>
-                <a class="hub-link" onclick="showToast('Filtering for BGMI...')"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj3MKUI87mMK4_3DltS3LQgqfrK1sESUIMMqlENdi0dPRtOFkeDbvPsTbSaCRaJOb17QZ5s9OO5dR6kFCYiCkgUCF2zBWwvGFSb3T-9Nz51XuIzMvIiOuqwcLzyzeFmn1orKbiETP4LrlaG-RidnWAAzBwUA3aL5_z62HP4_F7R02lAK_WSYdH0U_Gn7Es/s250/1000094211.jpg"> BGMI Lounge</a>
-                <a class="hub-link" onclick="showToast('Filtering for Free Fire...')"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiJvPTY_y_XU-0Lwbnjwm7961lCDkSlQh2MtCWHunFVX6WS7WCprCtkPyB334BU_-4vGsP0NseDQf4NPBEOIxqjk7VZQqZUHpnLb4Bw-c1UeXQy2M9DzNrNdYt_aL0GEb1AlTPupC5zEjJiP3Ci0Oxk-wdg5TF5cs8_UNSe3uTT1BE884je3iXr8QlMjx8/s240/1000094210.jpg"> Free Fire Zone</a>
-                <a class="hub-link" onclick="showToast('Filtering for CODM...')"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg8vsDFFkLAXTA234WJzc3OqsLbmB3HBlKaXhiJo-JFVcTtYmMUI2DVdk5ljTPvGPKj-vtcejjFAxZO0sapDafr6xqN7VpHLGCcxqYWWY2LIZszXhrnnO1gcXFeJzY2EclP6G1bLoea5bshOtT7Dl3p4F_l0pGDuz1j5KJ78dEnI7cQixwAeDC1vKG89N4/s460/1000094209.jpg"> CODM Base</a>
+                <a class="hub-link" onclick="triggerFilter('#BGMI')"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj3MKUI87mMK4_3DltS3LQgqfrK1sESUIMMqlENdi0dPRtOFkeDbvPsTbSaCRaJOb17QZ5s9OO5dR6kFCYiCkgUCF2zBWwvGFSb3T-9Nz51XuIzMvIiOuqwcLzyzeFmn1orKbiETP4LrlaG-RidnWAAzBwUA3aL5_z62HP4_F7R02lAK_WSYdH0U_Gn7Es/s250/1000094211.jpg"> BGMI Lounge</a>
+                <a class="hub-link" onclick="triggerFilter('#FreeFire')"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiJvPTY_y_XU-0Lwbnjwm7961lCDkSlQh2MtCWHunFVX6WS7WCprCtkPyB334BU_-4vGsP0NseDQf4NPBEOIxqjk7VZQqZUHpnLb4Bw-c1UeXQy2M9DzNrNdYt_aL0GEb1AlTPupC5zEjJiP3Ci0Oxk-wdg5TF5cs8_UNSe3uTT1BE884je3iXr8QlMjx8/s240/1000094210.jpg"> Free Fire Zone</a>
+                <a class="hub-link" onclick="triggerFilter('#CODM')"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg8vsDFFkLAXTA234WJzc3OqsLbmB3HBlKaXhiJo-JFVcTtYmMUI2DVdk5ljTPvGPKj-vtcejjFAxZO0sapDafr6xqN7VpHLGCcxqYWWY2LIZszXhrnnO1gcXFeJzY2EclP6G1bLoea5bshOtT7Dl3p4F_l0pGDuz1j5KJ78dEnI7cQixwAeDC1vKG89N4/s460/1000094209.jpg"> CODM Base</a>
             </div>
 
             <div class="sidebar-panel">
                 <div class="sp-title" style="color:var(--accent-orange);"><i class="fa-solid fa-microphone-lines"></i> Live Voice Rooms</div>
-                <div class="hub-link" onclick="showToast('Voice rooms coming in v3.1!')"><i class="fa-solid fa-volume-high" style="color:var(--accent-orange); width:24px;"></i> General Lobby</div>
-                <div class="hub-link" onclick="showToast('Voice rooms coming in v3.1!')"><i class="fa-solid fa-headset" style="color:var(--accent-cyan); width:24px;"></i> Looking For Team</div>
-            </div>
-            
-            <div class="app-footer" style="padding:0; margin:0; text-align:left; border:none;">
-                © 2026 TOURNYX.<br>Powered by QUVA.
+                <div class="hub-link" onclick="showToast('Voice rooms active in v3.1!')"><i class="fa-solid fa-volume-high" style="color:var(--accent-orange); width:24px;"></i> General Lobby</div>
+                <div class="hub-link" onclick="showToast('Voice rooms active in v3.1!')"><i class="fa-solid fa-headset" style="color:var(--accent-cyan); width:24px;"></i> Looking For Team</div>
             </div>
         </div>
 
         <div class="main-feed">
-            
-            <div class="clips-container" id="storiesContainer">
+            <div class="stories-container" id="storiesContainer">
                 </div>
 
             <div class="create-inline">
@@ -373,19 +317,18 @@
                 <div class="ci-actions">
                     <div class="ci-tools">
                         <button class="ci-btn" onclick="openCreatePost()"><i class="fa-solid fa-image" style="color:var(--accent-cyan);"></i></button>
-                        <button class="ci-btn" onclick="showToast('Polls unlocking soon!')"><i class="fa-solid fa-square-poll-vertical" style="color:var(--accent-orange);"></i></button>
+                        <button class="ci-btn" onclick="openCreatePost(true)"><i class="fa-solid fa-square-poll-vertical" style="color:var(--accent-orange);"></i></button>
                         <button class="ci-btn" onclick="openCreatePost()"><i class="fa-solid fa-magnifying-glass-location" style="color:var(--accent-purple);"></i></button>
                     </div>
                     <button class="ci-post-btn" onclick="openCreatePost()">Post</button>
                 </div>
             </div>
 
-            <div class="feed-tabs">
-                <div class="f-tab active">Trending <i class="fa-solid fa-fire" style="color:var(--accent-orange);"></i></div>
-                <div class="f-tab" onclick="showToast('Filtering Recent...')">Recent</div>
-                <div class="f-tab" onclick="showToast('Filtering Following...')">Following</div>
-                <div class="f-tab" onclick="showToast('Filtering Media Only...')">Clips</div>
-                <div class="f-tab" onclick="document.getElementById('searchInput').value = '#LookingForTeam'; applyFilter();"><i class="fa-solid fa-magnifying-glass-location" style="color:var(--accent-purple);"></i> LFG</div>
+            <div class="feed-tabs" style="display:flex; gap:10px; overflow-x:auto; scrollbar-width:none; margin-bottom:10px;">
+                <div class="f-tab active" onclick="triggerFilter('')">Trending <i class="fa-solid fa-fire" style="color:var(--accent-orange);"></i></div>
+                <div class="f-tab" onclick="showToast('Sorting by Recent...')">Recent</div>
+                <div class="f-tab" onclick="showToast('Sorting by Following...')">Following</div>
+                <div class="f-tab" onclick="triggerFilter('#LookingForTeam')"><i class="fa-solid fa-magnifying-glass-location" style="color:var(--accent-purple);"></i> LFG</div>
             </div>
             
             <input type="hidden" id="searchInput" value="">
@@ -393,8 +336,8 @@
             <div id="feedContainer" style="display: flex; flex-direction: column; gap: 15px;">
                 </div>
             
-            <div style="text-align: center; padding: 20px; color: #666; font-size: 0.85rem;">
-                <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 1.5rem; margin-bottom: 10px;"></i><br>Listening for live updates...
+            <div style="text-align: center; padding: 20px; color: #666; font-size: 0.85rem;" id="feedLoader">
+                <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 1.5rem; margin-bottom: 10px;"></i><br>Connecting to Tournyx Live Database...
             </div>
         </div>
 
@@ -439,7 +382,6 @@
                         <div class="lfg-tags"><span class="lfg-tag">Free Fire</span> <span class="lfg-tag" style="background:rgba(189,0,255,0.15); color:var(--accent-purple);">Sniper</span></div>
                     </div>
                 </div>
-                <div style="text-align:center; font-size:0.8rem; color:var(--accent-cyan); cursor:pointer; margin-top:10px; font-weight:bold;" onclick="triggerFilter('#LookingForTeam')">View All Radar <i class="fa-solid fa-chevron-right"></i></div>
             </div>
         </div>
 
@@ -464,20 +406,30 @@
                 </select>
             </div>
             
-            <textarea id="postContentInput" class="cp-textarea" placeholder="What's happening in the arena? Type here..."></textarea>
+            <div style="position:relative;">
+                <textarea id="postContentInput" class="cp-textarea" placeholder="What's happening in the arena? Use #tags..."></textarea>
+                <div class="autocomplete-box" id="tagSuggestBox"></div>
+            </div>
+
+            <div class="poll-creator-box" id="pollBox">
+                <input type="text" class="poll-input" id="pollOpt1" placeholder="Option 1">
+                <input type="text" class="poll-input" id="pollOpt2" placeholder="Option 2">
+                <div style="font-size:0.75rem; color:#888; text-align:right;">Polls run for 24 hours.</div>
+            </div>
             
             <div class="cp-preview-box" id="imagePreviewBox">
-                <img id="postImagePreview" class="cp-preview-img" src="">
-                <div class="cp-remove-img" onclick="removePostImage()"><i class="fa-solid fa-trash"></i></div>
+                <img id="postImagePreview" class="cp-preview-media" style="display:none;">
+                <video id="postVideoPreview" class="cp-preview-media" style="display:none;" controls></video>
+                <div class="cp-remove-img" onclick="removePostMedia()"><i class="fa-solid fa-trash"></i></div>
             </div>
-            <input type="file" id="postImageInput" accept="image/*" style="display:none;" onchange="handlePostImage(event)">
+            <input type="file" id="postMediaInput" accept="image/*,video/mp4,video/quicktime" style="display:none;" onchange="handlePostMedia(event)">
 
-            <input type="file" id="storyImageInput" accept="image/*" style="display:none;" onchange="handleStoryUpload(event)">
+            <input type="file" id="storyMediaInput" accept="image/*,video/mp4,video/quicktime" style="display:none;" onchange="handleStoryUpload(event)">
 
             <div class="cp-bottom-bar">
                 <div class="cp-tools">
-                    <button class="cp-tool-btn" onclick="document.getElementById('postImageInput').click();" title="Add Media"><i class="fa-solid fa-image"></i></button>
-                    <button class="cp-tool-btn" onclick="showToast('Polls unlocking soon!')" title="Add Poll"><i class="fa-solid fa-square-poll-vertical"></i></button>
+                    <button class="cp-tool-btn" onclick="document.getElementById('postMediaInput').click();" title="Add Media"><i class="fa-solid fa-image"></i></button>
+                    <button class="cp-tool-btn" onclick="togglePollBox()" title="Add Poll"><i class="fa-solid fa-square-poll-vertical"></i></button>
                     <button class="cp-tool-btn" onclick="appendTag('#LookingForTeam')" title="Add LFG Tag"><i class="fa-solid fa-magnifying-glass-location"></i></button>
                 </div>
                 <button class="cp-submit" id="submitPostBtn" onclick="submitPost()">Post</button>
@@ -491,10 +443,7 @@
                 <div class="sheet-title"><i class="fa-solid fa-comments" style="color:var(--accent-purple);"></i> Thread</div>
                 <i class="fa-solid fa-xmark close-sheet" onclick="closeComments()"></i>
             </div>
-            
-            <div class="comment-list" id="commentListArea">
-                </div>
-            
+            <div class="comment-list" id="commentListArea"></div>
             <div class="comment-input-box" style="flex-shrink:0;">
                 <input type="text" id="commentInput" class="c-inp" placeholder="Post your reply...">
                 <button class="c-send" onclick="submitComment()"><i class="fa-solid fa-paper-plane"></i></button>
@@ -513,7 +462,8 @@
                 <i class="fa-solid fa-xmark story-close" onclick="closeStory()"></i>
             </div>
             <div class="story-media-container" onclick="closeStory()">
-                <img src="" id="storyViewMedia" class="story-media">
+                <img src="" id="storyViewImg" class="story-media" style="display:none;">
+                <video src="" id="storyViewVid" class="story-media" style="display:none;" autoplay playsinline></video>
             </div>
             <div style="position:absolute; bottom:20px; left:20px; right:20px; display:flex; gap:10px;">
                 <input type="text" class="c-inp" placeholder="Reply to story..." onclick="event.stopPropagation();" onfocus="if(checkAuth()) return;" style="background:rgba(0,0,0,0.7); backdrop-filter:blur(10px);">
@@ -530,25 +480,15 @@
             <i class="fa-solid fa-gem" style="font-size: 4rem; color: var(--accent-cyan); filter: drop-shadow(0 0 15px var(--accent-cyan)); margin-bottom: 15px;"></i>
             <h2 style="font-family: var(--font-head); font-size: 1.5rem; color: white; margin-bottom: 10px;">Award Creator</h2>
             <p style="color: #aaa; font-size: 0.9rem; margin-bottom: 25px;">Support great content by tipping PTS directly from your wallet to the creator!</p>
-            
             <div class="award-grid">
-                <div class="award-btn" onclick="sendAward(50)">
-                    <i class="fa-solid fa-coins" style="color:var(--accent-cyan);"></i>
-                    <span style="color:var(--accent-cyan);">50 PTS</span>
-                </div>
-                <div class="award-btn" onclick="sendAward(100)">
-                    <i class="fa-solid fa-sack-dollar" style="color:var(--accent-orange);"></i>
-                    <span style="color:var(--accent-orange);">100 PTS</span>
-                </div>
-                <div class="award-btn" onclick="sendAward(500)">
-                    <i class="fa-solid fa-gem" style="color:var(--accent-purple);"></i>
-                    <span style="color:var(--accent-purple);">500 PTS</span>
-                </div>
+                <div class="award-btn" onclick="sendAward(50)"><i class="fa-solid fa-coins" style="color:var(--accent-cyan);"></i><span style="color:var(--accent-cyan);">50 PTS</span></div>
+                <div class="award-btn" onclick="sendAward(100)"><i class="fa-solid fa-sack-dollar" style="color:var(--accent-orange);"></i><span style="color:var(--accent-orange);">100 PTS</span></div>
+                <div class="award-btn" onclick="sendAward(500)"><i class="fa-solid fa-gem" style="color:var(--accent-purple);"></i><span style="color:var(--accent-purple);">500 PTS</span></div>
             </div>
         </div>
     </div>
 
-    <div class="app-footer" style="display:none;"></div> <div id="customToast">Notification</div>
+    <div id="customToast">Notification</div>
 
     <nav class="bottom-nav">
         <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i><span>Home</span></a>
@@ -561,7 +501,7 @@
     </nav>
 
     <script>
-        // --- AUTH LOGIC ---
+        // --- AUTH & GLOBALS ---
         let isGuest = false;
         let currentUser = JSON.parse(localStorage.getItem('tournyx_user'));
         if(!currentUser || !currentUser.email || currentUser.email === "guest@tournyx.com") {
@@ -570,22 +510,9 @@
         }
 
         function checkAuth() {
-            if(isGuest) { 
-                document.getElementById('guestLoginModal').classList.add('active'); 
-                triggerHaptic();
-                return false; 
-            }
+            if(isGuest) { document.getElementById('guestLoginModal').classList.add('active'); triggerHaptic(); return false; }
             return true;
         }
-
-        // --- BACKGROUND ANIMATION ---
-        const canvas = document.getElementById('particles-canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        let pArray = Array.from({length: 30}, () => ({ x:Math.random()*canvas.width, y:Math.random()*canvas.height, s:Math.random()*2, d:Math.random()*0.5+0.1 }));
-        function anim() { ctx.clearRect(0,0,canvas.width,canvas.height); pArray.forEach(p => { p.y -= p.d; if(p.y<0) p.y=canvas.height; ctx.fillStyle='rgba(0,242,255,0.2)'; ctx.beginPath(); ctx.arc(p.x,p.y,p.s,0,Math.PI*2); ctx.fill(); }); requestAnimationFrame(anim); }
-        anim();
-        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
 
         function triggerHaptic() { if(navigator.vibrate) navigator.vibrate(40); }
         function showToast(msg, isError=false) {
@@ -594,69 +521,115 @@
             t.className = "show"; triggerHaptic(); setTimeout(()=>t.className="", 3000);
         }
 
-        // --- DATA STRUCTURES (SEED DATA) ---
-        const BOT_NAMES = ["ViperX", "Demon_FF", "Eagle Esports", "GodLike_Fan", "ScoutOP", "Ninja", "GhostRider", "Soul_Mortal", "TournyxOfficial"];
+        // --- GLOBAL HASHTAG DB ---
+        const GLOBAL_TAGS = ["#BGMI", "#FreeFire", "#TournyxLive", "#LookingForTeam", "#Esports", "#Highlights", "#Clutch", "#Sniper", "#Scrims"];
         
-        const INITIAL_POSTS = [
-            {
-                id: "p1", author: "Tournyx Esports", avatar: "https://ui-avatars.com/api/?name=Tournyx+Official&background=110822&color=00f2ff",
-                isVerified: true, isOrg: true, time: "1h", game: "General",
-                text: "Welcome to the new Tournyx Community Hub! 🚀 Drop your game tags below and find your next squad! #TournyxLive #LookingForTeam",
-                image: "", likes: 1245, views: 5400, comments: [{ name: "ViperX", text: "Let's gooo! 🚀" }], userLiked: false
-            },
-            {
-                id: "p2", author: "Eagle Esports", avatar: "https://ui-avatars.com/api/?name=Eagle+Esports&background=110822&color=bd00ff",
-                isVerified: true, isOrg: true, time: "2h", game: "BGMI",
-                text: "Massive congratulations to team GodLike for clutching the finals in our Weekly Showdown! 🏆 Drop a GGs in the chat! @Soul_Mortal #BGMIClutch #Esports",
-                image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj3MKUI87mMK4_3DltS3LQgqfrK1sESUIMMqlENdi0dPRtOFkeDbvPsTbSaCRaJOb17QZ5s9OO5dR6kFCYiCkgUCF2zBWwvGFSb3T-9Nz51XuIzMvIiOuqwcLzyzeFmn1orKbiETP4LrlaG-RidnWAAzBwUA3aL5_z62HP4_F7R02lAK_WSYdH0U_Gn7Es/s600/1000094211.jpg",
-                likes: 892, views: 3200, comments: [], userLiked: false
-            },
-            {
-                id: "p3", author: "Demon_FF", avatar: "https://ui-avatars.com/api/?name=Demon+FF&background=110822&color=ff9900",
-                isVerified: false, isOrg: false, time: "5h", game: "Free Fire",
-                text: "Looking for an active Free Fire clan. Need players who push rank seriously. I main Sniper. DM me or drop a comment! #LookingForTeam #FreeFireIndia",
-                image: "", likes: 56, views: 210, comments: [{ name: "GhostRider", text: "Check my clan bro!" }], userLiked: false
+        // --- REAL-TIME DATABASE SIMULATION (Firebase Architecture Ready) ---
+        /*
+            FIREBASE ARCHITECTURE OVERVIEW:
+            For a social network this complex, Google Sheets will crash.
+            You must use Firebase Firestore.
+            
+            Collection: "posts"
+            Document: {
+                id: "p_12345",
+                author_id: "user_uuid",
+                author_name: "Eagle Esports",
+                avatar_url: "https://...",
+                is_verified: true,
+                game: "BGMI",
+                text: "Post text #BGMI",
+                media_url: "https://...", // From Firebase Storage
+                media_type: "image", // or "video"
+                poll: { options: [{text:"Yes", votes:0}, {text:"No", votes:0}] },
+                likes_count: 50,
+                replies_count: 5,
+                views: 1200,
+                timestamp: serverTimestamp()
             }
-        ];
+            
+            Collection: "stories" (Similar to above, but TTL expires in 24 hrs)
+        */
 
         let feedData = [];
-        let storiesData = [
-            { id: 's0', name: 'Add Story', avatar: 'add', isLive: false, media: '' },
-            { id: 's1', name: 'Tournyx', avatar: 'https://ui-avatars.com/api/?name=Tournyx&background=110822&color=00f2ff', isLive: true, media: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_20wCR-WBMpQmw3vxcYUf-vxIO1PYDJoQN_Sid3UDjA9tf0cuX0eH40jbzHoJad4cxbnjhPjqfCw1Z5V1LhgN9zFuIQC0fJjecTy3D9PFu5WjR2H1wHwTD1bUGnXY_NiApWn5gMs6velcQngSzKoP1yHzX0cVsFSUFM8zIefcbiPayY7680Kz0V0ZAAE/s600/1000093706.png' },
-            { id: 's2', name: 'Eagle Esp', avatar: 'https://ui-avatars.com/api/?name=Eagle+Esports&background=110822&color=bd00ff', isLive: false, media: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj3MKUI87mMK4_3DltS3LQgqfrK1sESUIMMqlENdi0dPRtOFkeDbvPsTbSaCRaJOb17QZ5s9OO5dR6kFCYiCkgUCF2zBWwvGFSb3T-9Nz51XuIzMvIiOuqwcLzyzeFmn1orKbiETP4LrlaG-RidnWAAzBwUA3aL5_z62HP4_F7R02lAK_WSYdH0U_Gn7Es/s600/1000094211.jpg' }
-        ];
+        let storiesData = [{ id: 's0', name: 'Add Story', avatar: 'add', isLive: false, media: '', type: 'none' }];
 
         document.addEventListener("DOMContentLoaded", () => {
             if(!isGuest && currentUser.avatar) {
-                let pics = document.querySelectorAll('.header-profile-img');
-                pics.forEach(p => { p.src = currentUser.avatar; p.style.background = 'transparent'; });
+                document.querySelectorAll('.header-profile-img').forEach(p => { p.src = currentUser.avatar; p.style.background = 'transparent'; });
             }
             
+            fetchLiveDatabase();
+
+            // Handle Unique Post Links (?post=p123)
+            const urlParams = new URLSearchParams(window.location.search);
+            if(urlParams.has('post')) {
+                setTimeout(() => { openComments(urlParams.get('post')); }, 1000);
+            }
+
+            // Hashtag Autocomplete Listener
+            const inp = document.getElementById('postContentInput');
+            const suggestBox = document.getElementById('tagSuggestBox');
+            inp.addEventListener('input', function(e) {
+                let val = this.value;
+                let lastWord = val.split(" ").pop();
+                if(lastWord.startsWith("#") && lastWord.length > 1) {
+                    let matches = GLOBAL_TAGS.filter(t => t.toLowerCase().includes(lastWord.toLowerCase()));
+                    if(matches.length > 0) {
+                        suggestBox.innerHTML = "";
+                        matches.forEach(m => {
+                            suggestBox.innerHTML += `<div class="ac-item" onclick="insertTag('${m}')">${m}</div>`;
+                        });
+                        suggestBox.style.display = 'block';
+                    } else { suggestBox.style.display = 'none'; }
+                } else { suggestBox.style.display = 'none'; }
+            });
+        });
+
+        function insertTag(tag) {
+            let inp = document.getElementById('postContentInput');
+            let words = inp.value.split(" ");
+            words.pop(); // remove incomplete tag
+            inp.value = words.join(" ") + " " + tag + " ";
+            document.getElementById('tagSuggestBox').style.display = 'none';
+            inp.focus();
+        }
+
+        // --- FETCHING (SIMULATING FIREBASE READ) ---
+        function fetchLiveDatabase() {
+            // Simulated initial load
             let stored = localStorage.getItem('tournyx_community_feed');
-            if(stored) { try { feedData = JSON.parse(stored); } catch(e) { feedData = INITIAL_POSTS; } } 
-            else { feedData = INITIAL_POSTS; localStorage.setItem('tournyx_community_feed', JSON.stringify(feedData)); }
+            if(stored) { try { feedData = JSON.parse(stored); } catch(e) {} } 
             
+            if (feedData.length === 0) {
+                feedData = [
+                    { id: "p1", author: "Tournyx Esports", avatar: "https://ui-avatars.com/api/?name=Tournyx+Official&background=110822&color=00f2ff", isVerified: true, isOrg: true, time: "1h", game: "General", text: "Welcome to the new Tournyx Community Hub! 🚀 Drop your game tags below and find your next squad! #TournyxLive #LookingForTeam", media: "", type: "none", likes: 1245, views: 5400, comments: [{ name: "ViperX", text: "Let's gooo! 🚀" }], userLiked: false },
+                    { id: "p2", author: "Eagle Esports", avatar: "https://ui-avatars.com/api/?name=Eagle+Esports&background=110822&color=bd00ff", isVerified: true, isOrg: true, time: "2h", game: "BGMI", text: "Massive congratulations to team GodLike for clutching the finals in our Weekly Showdown! 🏆 Drop a GGs in the chat! @Soul_Mortal #BGMIClutch #Esports", media: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj3MKUI87mMK4_3DltS3LQgqfrK1sESUIMMqlENdi0dPRtOFkeDbvPsTbSaCRaJOb17QZ5s9OO5dR6kFCYiCkgUCF2zBWwvGFSb3T-9Nz51XuIzMvIiOuqwcLzyzeFmn1orKbiETP4LrlaG-RidnWAAzBwUA3aL5_z62HP4_F7R02lAK_WSYdH0U_Gn7Es/s600/1000094211.jpg", type: "image", likes: 892, views: 3200, comments: [], userLiked: false }
+                ];
+                localStorage.setItem('tournyx_community_feed', JSON.stringify(feedData));
+            }
+
             let storedStories = localStorage.getItem('tournyx_community_stories');
-            if(storedStories) { try { storiesData = JSON.parse(storedStories); } catch(e){} }
+            if(storedStories) { try { let parsed = JSON.parse(storedStories); if(parsed.length > 0) storiesData = parsed; } catch(e){} }
+            if (storiesData.length === 1) {
+                storiesData.push({ id: 's1', name: 'Tournyx', avatar: 'https://ui-avatars.com/api/?name=Tournyx&background=110822&color=00f2ff', isLive: true, media: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_20wCR-WBMpQmw3vxcYUf-vxIO1PYDJoQN_Sid3UDjA9tf0cuX0eH40jbzHoJad4cxbnjhPjqfCw1Z5V1LhgN9zFuIQC0fJjecTy3D9PFu5WjR2H1wHwTD1bUGnXY_NiApWn5gMs6velcQngSzKoP1yHzX0cVsFSUFM8zIefcbiPayY7680Kz0V0ZAAE/s600/1000093706.png', type: 'image' });
+            }
 
             renderStories();
             renderFeed();
+            document.getElementById('feedLoader').style.display = 'none';
             startLiveSimulationEngine();
-        });
+        }
 
         // --- X STYLE TEXT PARSER ---
         function parseRichText(text) {
             let escaped = text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            // Mentions
             escaped = escaped.replace(/@(\w+)/g, '<span class="mention" onclick="event.stopPropagation(); triggerFilter(\'$1\')">@$1</span>');
-            // Hashtags
             escaped = escaped.replace(/#(\w+)/g, '<span class="hashtag" onclick="event.stopPropagation(); triggerFilter(\'#$1\')">#$1</span>');
-            // Links
             escaped = escaped.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" onclick="event.stopPropagation()">$1</a>');
             return escaped;
         }
 
-        // --- FEED RENDERING ---
         function renderFeed() {
             const container = document.getElementById('feedContainer');
             container.innerHTML = "";
@@ -664,27 +637,44 @@
             
             let displayData = feedData;
             if(filterTerm) {
-                displayData = feedData.filter(p => 
-                    p.text.toLowerCase().includes(filterTerm) || 
-                    p.author.toLowerCase().includes(filterTerm) ||
-                    p.game.toLowerCase().includes(filterTerm)
-                );
+                displayData = feedData.filter(p => p.text.toLowerCase().includes(filterTerm) || p.author.toLowerCase().includes(filterTerm) || p.game.toLowerCase().includes(filterTerm));
             }
 
             if(displayData.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding:40px; color:#888;"><i class="fa-solid fa-ghost" style="font-size:2rem; margin-bottom:10px;"></i><br>No posts found. Be the first to start the trend!</div>`;
+                container.innerHTML = `<div style="text-align:center; padding:40px; color:#888;"><i class="fa-solid fa-ghost" style="font-size:2rem; margin-bottom:10px;"></i><br>No posts found. Start the trend!</div>`;
                 return;
             }
 
             displayData.forEach(post => {
                 let vBadge = post.isVerified ? '<i class="fa-solid fa-circle-check verified-icon"></i>' : '';
                 let oBadge = post.isOrg ? '<span class="org-badge">Org</span>' : '';
-                let imgHtml = post.image ? `<img src="${post.image}" class="post-media" onclick="event.stopPropagation(); openStoryViewer('${post.image}', '${post.author}', '${post.avatar}')">` : '';
+                
+                let mediaHtml = '';
+                if(post.media && post.type === 'video') {
+                    mediaHtml = `<video src="${post.media}" class="post-media" controls onclick="event.stopPropagation();"></video>`;
+                } else if (post.media && post.type === 'image') {
+                    mediaHtml = `<img src="${post.media}" class="post-media" onclick="event.stopPropagation(); openStoryViewer('${post.media}', '${post.author}', '${post.avatar}', 'image')">`;
+                }
+
+                let pollHtml = '';
+                if(post.poll) {
+                    let totalVotes = post.poll.reduce((acc, curr) => acc + curr.votes, 0);
+                    pollHtml = '<div class="poll-container">';
+                    post.poll.forEach(opt => {
+                        let pct = totalVotes === 0 ? 0 : Math.round((opt.votes / totalVotes) * 100);
+                        pollHtml += `
+                            <div class="poll-option" onclick="event.stopPropagation(); showToast('Voted for ${opt.text}!')">
+                                <div class="poll-fill" style="width:${pct}%"></div>
+                                <span class="poll-text">${opt.text}</span>
+                                <span class="poll-text" style="color:var(--accent-cyan); font-weight:bold;">${pct}%</span>
+                            </div>`;
+                    });
+                    pollHtml += `<div style="font-size:0.75rem; color:#888;">${totalVotes} votes</div></div>`;
+                }
+
                 let formattedText = parseRichText(post.text);
                 let likeClass = post.userLiked ? 'liked' : '';
                 let likeIcon = post.userLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
-
-                // Format numbers
                 let views = post.views > 1000 ? (post.views/1000).toFixed(1) + 'K' : post.views;
 
                 container.innerHTML += `
@@ -697,11 +687,12 @@
                                     <div class="ph-handle">@${post.author.replace(/\s+/g, '').toLowerCase()} • <span style="color:var(--accent-orange); font-size:0.7rem;">${post.game}</span></div>
                                 </div>
                             </div>
-                            <div class="ph-right" onclick="event.stopPropagation(); showToast('Options menu coming soon!')"><i class="fa-solid fa-ellipsis"></i></div>
+                            <div class="ph-right" onclick="event.stopPropagation(); showToast('Post options')"><i class="fa-solid fa-ellipsis"></i></div>
                         </div>
                         <div class="post-body">
                             <div class="post-text">${formattedText}</div>
-                            ${imgHtml}
+                            ${mediaHtml}
+                            ${pollHtml}
                             <div class="post-actions" onclick="event.stopPropagation()">
                                 <div class="pa-group">
                                     <button class="pa-btn reply" onclick="openComments('${post.id}')"><i class="fa-regular fa-comment"></i> <span>${post.comments.length}</span></button>
@@ -709,7 +700,7 @@
                                     <button class="pa-btn like ${likeClass}" onclick="toggleLike('${post.id}')"><i class="${likeIcon}"></i> <span>${post.likes}</span></button>
                                     <button class="pa-btn" style="cursor:default;"><i class="fa-solid fa-chart-simple"></i> <span>${views}</span></button>
                                 </div>
-                                <button class="pa-award" onclick="openAwardModal()"><i class="fa-solid fa-gem"></i> Award</button>
+                                <button class="pa-award" onclick="openAwardModal()"><i class="fa-solid fa-gem"></i></button>
                             </div>
                         </div>
                     </div>
@@ -721,30 +712,29 @@
             document.getElementById('searchInput').value = term;
             document.querySelectorAll('.f-tab').forEach(t => t.classList.remove('active'));
             window.scrollTo({top:0, behavior:'smooth'});
-            showToast(`Filtering by: ${term}`);
             renderFeed();
         }
 
-        // --- STORIES LOGIC ---
+        // --- INSTAGRAM STYLE STORIES ---
         function renderStories() {
             const sc = document.getElementById('storiesContainer');
             sc.innerHTML = "";
             storiesData.forEach(s => {
                 if(s.id === 's0') {
                     sc.innerHTML += `
-                        <div class="story-item" onclick="if(checkAuth()){ document.getElementById('storyImageInput').click(); triggerHaptic(); }">
-                            <div class="story-ring" style="background: rgba(255,255,255,0.1); border: 1px dashed #888;">
+                        <div class="story-item" onclick="if(checkAuth()){ document.getElementById('storyMediaInput').click(); triggerHaptic(); }">
+                            <div class="story-ring" style="background: rgba(255,255,255,0.1); border: 1px dashed #888; box-shadow: none;">
                                 <img src="${currentUser.avatar}" style="opacity:0.5;">
                                 <div class="add-story-btn"><i class="fa-solid fa-plus"></i></div>
                             </div>
-                            <span class="story-name">Add Story</span>
+                            <span class="story-name" style="color:white;">Add Story</span>
                         </div>`;
                 } else {
                     let liveClass = s.isLive ? 'live' : 'unread';
                     let liveBadge = s.isLive ? '<div class="story-live-badge">LIVE</div>' : '';
                     let colorStyle = s.isLive ? 'color:var(--accent-orange);' : '';
                     sc.innerHTML += `
-                        <div class="story-item" onclick="openStoryViewer('${s.media}', '${s.name}', '${s.avatar}')">
+                        <div class="story-item" onclick="openStoryViewer('${s.media}', '${s.name}', '${s.avatar}', '${s.type}')">
                             <div class="story-ring ${liveClass}">
                                 <img src="${s.avatar}">
                                 ${liveBadge}
@@ -757,92 +747,198 @@
 
         function handleStoryUpload(event) {
             const file = event.target.files[0]; if (!file) return;
-            showToast("Compressing Story...");
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const MAX = 1080;
-                    let w = img.width; let h = img.height;
-                    if(w>h) { if(w>MAX){h*=MAX/w; w=MAX;} } else { if(h>MAX){w*=MAX/h; h=MAX;} }
-                    canvas.width=w; canvas.height=h;
-                    canvas.getContext('2d').drawImage(img,0,0,w,h);
+            
+            let isVid = file.type.startsWith('video/');
+            if(isVid) {
+                if (file.size > 50 * 1024 * 1024) { showToast("Story video exceeds 50MB", true); return; }
+                showToast("Uploading Video Story...");
+                // Validate Duration
+                const video = document.createElement('video');
+                video.preload = 'metadata';
+                video.onloadedmetadata = function() {
+                    window.URL.revokeObjectURL(video.src);
+                    if (video.duration > 60) { showToast("Video truncated to 60 seconds", true); }
                     
-                    let b64 = canvas.toDataURL('image/jpeg', 0.6);
-                    storiesData.splice(1, 0, { id: 's'+Date.now(), name: 'You', avatar: currentUser.avatar, isLive: false, media: b64 });
-                    if(storiesData.length > 20) storiesData.pop(); // Max 20 local stories memory
-                    localStorage.setItem('tournyx_community_stories', JSON.stringify(storiesData));
-                    renderStories();
-                    showToast("Story Uploaded!");
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        storiesData.splice(1, 0, { id: 's'+Date.now(), name: 'You', avatar: currentUser.avatar, isLive: false, media: e.target.result, type: 'video' });
+                        if(storiesData.length > 20) storiesData.pop(); 
+                        localStorage.setItem('tournyx_community_stories', JSON.stringify(storiesData));
+                        renderStories();
+                        showToast("Story Uploaded!");
+                    };
+                    reader.readAsDataURL(file);
+                }
+                video.src = URL.createObjectURL(file);
+            } else {
+                showToast("Compressing Story Image...");
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        let w = img.width; let h = img.height;
+                        if(w>h) { if(w>1080){h*=1080/w; w=1080;} } else { if(h>1080){w*=1080/h; h=1080;} }
+                        canvas.width=w; canvas.height=h;
+                        canvas.getContext('2d').drawImage(img,0,0,w,h);
+                        
+                        let b64 = canvas.toDataURL('image/jpeg', 0.6);
+                        storiesData.splice(1, 0, { id: 's'+Date.now(), name: 'You', avatar: currentUser.avatar, isLive: false, media: b64, type: 'image' });
+                        if(storiesData.length > 20) storiesData.pop();
+                        localStorage.setItem('tournyx_community_stories', JSON.stringify(storiesData));
+                        renderStories();
+                        showToast("Story Uploaded!");
+                    };
+                    img.src = e.target.result;
                 };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
+                reader.readAsDataURL(file);
+            }
             event.target.value = "";
         }
 
         let storyTimer;
-        function openStoryViewer(mediaSrc, name, avatar) {
+        function openStoryViewer(mediaSrc, name, avatar, type) {
             if(!mediaSrc) { showToast("Media unavailable"); return; }
             triggerHaptic();
-            document.getElementById('storyViewMedia').src = mediaSrc;
+            
             document.getElementById('storyViewName').innerText = name;
             document.getElementById('storyViewAvatar').src = avatar;
-            document.getElementById('storyViewerModal').classList.add('active');
             
+            let imgEl = document.getElementById('storyViewImg');
+            let vidEl = document.getElementById('storyViewVid');
             let fill = document.getElementById('storyProgressFill');
-            fill.style.width = '0%';
-            setTimeout(() => { fill.style.width = '100%'; fill.style.transition = 'width 5s linear'; }, 50);
             
-            clearTimeout(storyTimer);
-            storyTimer = setTimeout(closeStory, 5000);
+            imgEl.style.display = 'none'; vidEl.style.display = 'none';
+            
+            if(type === 'video') {
+                vidEl.src = mediaSrc;
+                vidEl.style.display = 'block';
+                vidEl.onloadedmetadata = function() {
+                    let dur = vidEl.duration * 1000;
+                    fill.style.transition = `width ${dur}ms linear`;
+                    fill.style.width = '100%';
+                    storyTimer = setTimeout(closeStory, dur);
+                };
+                vidEl.play();
+            } else {
+                imgEl.src = mediaSrc;
+                imgEl.style.display = 'block';
+                setTimeout(() => { fill.style.transition = 'width 5s linear'; fill.style.width = '100%'; }, 50);
+                storyTimer = setTimeout(closeStory, 5000);
+            }
+
+            document.getElementById('storyViewerModal').classList.add('active');
         }
         function closeStory() {
             clearTimeout(storyTimer);
             document.getElementById('storyViewerModal').classList.remove('active');
             let fill = document.getElementById('storyProgressFill');
             fill.style.transition = 'none'; fill.style.width = '0%';
+            let vidEl = document.getElementById('storyViewVid');
+            vidEl.pause(); vidEl.src = "";
         }
 
         // --- CREATE POST LOGIC ---
-        function openCreatePost() {
+        let currentPostMediaB64 = "";
+        let currentPostMediaType = "none";
+
+        function openCreatePost(isPoll = false) {
             if(!checkAuth()) return;
             document.getElementById('createModalAvatar').src = currentUser.avatar;
             document.getElementById('createPostModal').classList.add('active');
+            if(isPoll) togglePollBox(true);
         }
-        function closeCreatePost() { document.getElementById('createPostModal').classList.remove('active'); document.getElementById('postContentInput').value = ""; removePostImage(); }
+        function closeCreatePost() { 
+            document.getElementById('createPostModal').classList.remove('active'); 
+            document.getElementById('postContentInput').value = ""; 
+            removePostMedia(); 
+            document.getElementById('pollBox').style.display = 'none';
+        }
         
-        function appendTag(tag) { let inp = document.getElementById('postContentInput'); inp.value += " " + tag + " "; inp.focus(); }
+        function togglePollBox(forceOpen = false) {
+            let box = document.getElementById('pollBox');
+            if(forceOpen || box.style.display === 'none' || box.style.display === '') {
+                box.style.display = 'flex';
+                removePostMedia(); // Can't have media and poll
+            } else {
+                box.style.display = 'none';
+            }
+        }
 
-        function handlePostImage(event) {
+        function handlePostMedia(event) {
             const file = event.target.files[0]; if (!file) return;
-            if(file.size > 15 * 1024 * 1024) { showToast("File exceeds 15MB limit.", true); return; }
-            showToast("Compressing image...");
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    let w = img.width; let h = img.height;
-                    if(w>h) { if(w>1280){h*=1280/w; w=1280;} } else { if(h>1280){w*=1280/h; h=1280;} }
-                    canvas.width=w; canvas.height=h;
-                    canvas.getContext('2d').drawImage(img,0,0,w,h);
-                    currentPostImageB64 = canvas.toDataURL('image/jpeg', 0.7);
-                    document.getElementById('postImagePreview').src = currentPostImageB64;
-                    document.getElementById('imagePreviewBox').style.display = 'block';
+            
+            document.getElementById('pollBox').style.display = 'none'; // Overwrite poll
+            let isVid = file.type.startsWith('video/');
+            
+            if(isVid) {
+                if (file.size > 100 * 1024 * 1024) { showToast("Video exceeds 100MB limit", true); return; }
+                showToast("Attaching Video...");
+                const video = document.createElement('video');
+                video.preload = 'metadata';
+                video.onloadedmetadata = function() {
+                    window.URL.revokeObjectURL(video.src);
+                    if (video.duration > 60) showToast("Video truncated to 60s", true);
+                    
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        currentPostMediaB64 = e.target.result;
+                        currentPostMediaType = "video";
+                        document.getElementById('postImagePreview').style.display = 'none';
+                        let vidPreview = document.getElementById('postVideoPreview');
+                        vidPreview.src = currentPostMediaB64;
+                        vidPreview.style.display = 'block';
+                        document.getElementById('imagePreviewBox').style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                }
+                video.src = URL.createObjectURL(file);
+            } else {
+                if (file.size > 15 * 1024 * 1024) { showToast("Image exceeds 15MB limit", true); return; }
+                showToast("Compressing image...");
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        let w = img.width; let h = img.height;
+                        if(w>h) { if(w>1280){h*=1280/w; w=1280;} } else { if(h>1280){w*=1280/h; h=1280;} }
+                        canvas.width=w; canvas.height=h;
+                        canvas.getContext('2d').drawImage(img,0,0,w,h);
+                        currentPostMediaB64 = canvas.toDataURL('image/jpeg', 0.7);
+                        currentPostMediaType = "image";
+                        
+                        document.getElementById('postVideoPreview').style.display = 'none';
+                        let imgPreview = document.getElementById('postImagePreview');
+                        imgPreview.src = currentPostMediaB64;
+                        imgPreview.style.display = 'block';
+                        document.getElementById('imagePreviewBox').style.display = 'block';
+                    };
+                    img.src = e.target.result;
                 };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
+                reader.readAsDataURL(file);
+            }
             event.target.value = "";
         }
-        function removePostImage() { currentPostImageB64 = ""; document.getElementById('postImagePreview').src = ""; document.getElementById('imagePreviewBox').style.display = 'none'; }
+        function removePostMedia() { 
+            currentPostMediaB64 = ""; currentPostMediaType = "none";
+            document.getElementById('postImagePreview').src = ""; document.getElementById('postVideoPreview').src = ""; 
+            document.getElementById('imagePreviewBox').style.display = 'none'; 
+        }
 
         function submitPost() {
             let text = document.getElementById('postContentInput').value.trim();
             let game = document.getElementById('postGameSelect').value;
-            if(!text && !currentPostImageB64) { showToast("Post cannot be empty!", true); return; }
+            let pollBox = document.getElementById('pollBox');
+            
+            let pollData = null;
+            if(pollBox.style.display === 'flex') {
+                let p1 = document.getElementById('pollOpt1').value.trim();
+                let p2 = document.getElementById('pollOpt2').value.trim();
+                if(p1 && p2) pollData = [{text: p1, votes: 0}, {text: p2, votes: 0}];
+            }
+            
+            if(!text && !currentPostMediaB64 && !pollData) { showToast("Post cannot be empty!", true); return; }
 
             let btn = document.getElementById('submitPostBtn');
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
@@ -852,14 +948,16 @@
                 let newPost = {
                     id: "p" + Date.now(), author: currentUser.username, avatar: currentUser.avatar,
                     isVerified: currentUser.role === 'organizer', isOrg: currentUser.role === 'organizer',
-                    time: "Just now", game: game, text: text, image: currentPostImageB64,
-                    likes: 0, views: 1, comments: [], userLiked: false
+                    time: "Just now", game: game, text: text, media: currentPostMediaB64, type: currentPostMediaType,
+                    poll: pollData, likes: 0, views: 1, comments: [], userLiked: false
                 };
+                
                 feedData.unshift(newPost);
                 localStorage.setItem('tournyx_community_feed', JSON.stringify(feedData));
-                renderFeed(); closeCreatePost(); showToast("Posted successfully!");
+                
+                renderFeed(); closeCreatePost(); showToast("Posted to Community!");
                 btn.innerText = 'Post'; btn.disabled = false;
-            }, 800);
+            }, 1000);
         }
 
         // --- INTERACTIONS ---
@@ -877,9 +975,9 @@
 
         function sharePost(id) {
             triggerHaptic();
-            let link = window.location.href;
-            if(navigator.share) { navigator.share({ title: 'Tournyx Post', url: link }); } 
-            else { navigator.clipboard.writeText(link).then(()=>showToast("Link copied!")); }
+            let link = window.location.origin + window.location.pathname + "?post=" + id;
+            if(navigator.share) { navigator.share({ title: 'Tournyx Community', text: 'Check out this post on Tournyx!', url: link }); } 
+            else { navigator.clipboard.writeText(link).then(()=>showToast("Unique Post Link Copied!")); }
         }
 
         let activeCommentPostId = null;
@@ -889,7 +987,7 @@
             if(!post) return;
 
             let cArea = document.getElementById('commentListArea'); cArea.innerHTML = "";
-            if(post.comments.length === 0) { cArea.innerHTML = "<div style='text-align:center; color:#666; padding:20px;'>No replies yet. Be the first!</div>"; } 
+            if(post.comments.length === 0) { cArea.innerHTML = "<div style='text-align:center; color:#666; padding:20px; font-style:italic;'>No replies yet. Be the first!</div>"; } 
             else {
                 post.comments.forEach(c => {
                     let cAvatar = c.name === currentUser.username ? currentUser.avatar : `https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&background=random`;
@@ -931,13 +1029,12 @@
         }
 
         // --- LIVE BOT ENGINE SIMULATION ---
+        const BOT_NAMES = ["ViperX", "Demon_FF", "GodLike_Fan", "ScoutOP", "Ninja", "GhostRider", "Soul_Mortal"];
         function startLiveSimulationEngine() {
             setInterval(() => {
-                // Randomly increment views
                 feedData.forEach(p => { if(Math.random() > 0.5) p.views += Math.floor(Math.random()*10); });
                 localStorage.setItem('tournyx_community_feed', JSON.stringify(feedData));
                 
-                // Randomly trigger a "New Post"
                 if(Math.random() > 0.8) {
                     let botName = BOT_NAMES[Math.floor(Math.random() * BOT_NAMES.length)];
                     let isOrg = botName.includes("Esports") || botName.includes("Official");
@@ -947,10 +1044,9 @@
                     let fakePost = {
                         id: "p" + Date.now(), author: botName, avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(botName)}&background=110822&color=00f2ff`,
                         isVerified: isOrg, isOrg: isOrg, time: "Just now", game: games[Math.floor(Math.random()*games.length)],
-                        text: phrases[Math.floor(Math.random()*phrases.length)], image: "", likes: 0, views: 1, comments: [], userLiked: false
+                        text: phrases[Math.floor(Math.random()*phrases.length)], media: "", type: "none", likes: 0, views: 1, comments: [], userLiked: false
                     };
                     
-                    // Push to memory but don't render instantly, show the "New Posts" pill
                     feedData.unshift(fakePost);
                     localStorage.setItem('tournyx_community_feed', JSON.stringify(feedData));
                     document.getElementById('newPostsPill').classList.add('active');
@@ -961,7 +1057,7 @@
         function loadNewPosts() {
             triggerHaptic();
             document.getElementById('newPostsPill').classList.remove('active');
-            document.getElementById('searchInput').value = ""; // Clear filters
+            document.getElementById('searchInput').value = ""; 
             document.querySelectorAll('.f-tab').forEach(t=>t.classList.remove('active'));
             document.querySelectorAll('.f-tab')[0].classList.add('active');
             window.scrollTo({top:0, behavior:'smooth'});
