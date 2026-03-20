@@ -8,25 +8,28 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<script>
-            (function() {
-                try {
-                    const THEMES = [
-                        {cyan: '#00f2ff', purple: '#bd00ff'},
-                        {cyan: '#00ff7f', purple: '#00b09b'},
-                        {cyan: '#ff9900', purple: '#ff4d4d'}
-                    ];
-                    let tIndex = parseInt(localStorage.getItem('tournyx_theme_index')) || 0;
-                    if(THEMES[tIndex]) {
-                        document.documentElement.style.setProperty('--accent-cyan', THEMES[tIndex].cyan);
-                        document.documentElement.style.setProperty('--accent-purple', THEMES[tIndex].purple);
-                        document.documentElement.style.setProperty('--accent-gradient', `linear-gradient(90deg, ${THEMES[tIndex].purple}, ${THEMES[tIndex].cyan})`);
-                    }
-                } catch(e) {
-                    console.log("Theme setting bypassed - strict browser settings.");
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+
+    <script>
+        (function() {
+            try {
+                const THEMES = [
+                    {cyan: '#00f2ff', purple: '#bd00ff'},
+                    {cyan: '#00ff7f', purple: '#00b09b'},
+                    {cyan: '#ff9900', purple: '#ff4d4d'}
+                ];
+                let tIndex = parseInt(localStorage.getItem('tournyx_theme_index')) || 0;
+                if(THEMES[tIndex]) {
+                    document.documentElement.style.setProperty('--accent-cyan', THEMES[tIndex].cyan);
+                    document.documentElement.style.setProperty('--accent-purple', THEMES[tIndex].purple);
+                    document.documentElement.style.setProperty('--accent-gradient', `linear-gradient(90deg, ${THEMES[tIndex].purple}, ${THEMES[tIndex].cyan})`);
                 }
-            })();
-        </script>
+            } catch(e) {
+                console.log("Theme setting bypassed - strict browser settings.");
+            }
+        })();
+    </script>
     <style>
         /* --- GLOBAL VARIABLES --- */
         :root {
@@ -70,7 +73,7 @@
         .header-actions i { cursor: pointer; transition: 0.3s; }
         .header-actions i:active { color: var(--accent-red); transform: scale(0.9); }
 
-        /* --- FORM CONTAINER (MASSIVE PADDING ADDED TO FIX OVERLAP) --- */
+        /* --- FORM CONTAINER --- */
         .form-container { padding: 20px 15px 150px 15px; max-width: 800px; margin: 0 auto; width: 100%; }
 
         /* Form Sections */
@@ -112,8 +115,10 @@
         .upload-box-wrapper:hover { border-color: var(--accent-cyan); background: rgba(0,242,255,0.05); }
         .upload-box-wrapper.error { border-color: var(--accent-red); animation: shake 0.4s; }
         .upload-icon-circle { width: 60px; height: 60px; background: var(--accent-gradient); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; margin: 0 auto 15px; box-shadow: 0 5px 15px rgba(189,0,255,0.4); pointer-events: none;}
+        .upload-title { font-family: var(--font-head); font-weight: bold; color: white; font-size: 1rem; margin-bottom: 5px; pointer-events: none;}
+        .upload-desc { font-size: 0.8rem; color: #888; pointer-events: none;}
         .file-input { display: none; }
-        .preview-img { width: 100%; height: 180px; object-fit: cover; border-radius: 12px; display: none; margin-top: 10px; border: 1px solid var(--accent-cyan); box-shadow: 0 5px 15px rgba(0,242,255,0.2); }
+        .preview-img { width: 100%; height: 180px; object-fit: contain; border-radius: 12px; display: none; margin-top: 10px; border: 1px solid var(--accent-cyan); box-shadow: 0 5px 15px rgba(0,242,255,0.2); background: #000; }
         .remove-img { background: rgba(255,77,77,0.1); color: var(--accent-red); border: 1px solid rgba(255,77,77,0.3); padding: 8px 15px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; display: none; margin: 15px auto 0; text-align: center; font-weight: bold; width: max-content; transition: 0.3s; }
 
         /* --- NATIVE RICH TEXT EDITOR --- */
@@ -163,7 +168,7 @@
         .custom-toggle.active .toggle-check { background: var(--accent-cyan); border-color: var(--accent-cyan); }
         .custom-toggle.active .toggle-check::after { content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900; color: #000; font-size: 0.8rem; }
 
-        /* --- SUBMIT BUTTON (FIXED STICKY OVERLAP) --- */
+        /* --- SUBMIT BUTTON --- */
         .submit-wrapper { position: fixed; bottom: 0; left: 0; width: 100%; padding: 15px; background: rgba(7,3,17,0.95); backdrop-filter: blur(15px); border-top: 1px solid var(--card-border); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.8); padding-bottom: calc(15px + env(safe-area-inset-bottom)); }
         .submit-btn { width: 100%; max-width: 800px; margin: 0 auto; padding: 16px; background: var(--accent-gradient); border: none; border-radius: 12px; color: white; font-family: var(--font-head); font-size: 1.1rem; font-weight: bold; text-transform: uppercase; cursor: pointer; box-shadow: 0 5px 20px rgba(189, 0, 255, 0.4); transition: 0.3s; letter-spacing: 1px; display: flex; justify-content: center; align-items: center; gap: 10px; position: relative; overflow: hidden; }
         .submit-btn:active { transform: scale(0.98); box-shadow: 0 2px 10px rgba(189, 0, 255, 0.4); }
@@ -191,6 +196,17 @@
         
         /* Median override to ensure visibility */
         .median-active .top-header { display: flex !important; }
+
+        /* --- CROPPER MODAL --- */
+        .cropper-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
+        .cropper-modal.active { display: flex; }
+        .cropper-container-wrapper { width: 90%; max-width: 600px; height: 60vh; background: #000; border: 2px solid var(--accent-cyan); border-radius: 12px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 0 30px rgba(0,242,255,0.2); }
+        .cropper-actions { display: flex; gap: 15px; width: 90%; max-width: 600px; }
+        .cropper-btn { flex: 1; padding: 12px; border-radius: 10px; font-family: var(--font-head); font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; border: none; }
+        .btn-crop-cancel { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3); }
+        .btn-crop-cancel:active { background: rgba(255,255,255,0.2); }
+        .btn-crop-confirm { background: var(--accent-gradient); color: white; box-shadow: 0 5px 15px rgba(189,0,255,0.4); }
+        .btn-crop-confirm:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
@@ -229,7 +245,7 @@
                 </div>
                 <img src="" id="bannerPreview" class="preview-img">
                 <div id="removeBanner" class="remove-img" onclick="removeImage('bannerInput', 'bannerBase64', 'bannerArea', 'bannerPreview', 'removeBanner'); triggerHaptic();"><i class="fa-solid fa-trash"></i> Remove Banner</div>
-                <input type="file" id="bannerInput" class="file-input" accept="image/*" onchange="handleImageUpload(event, 'bannerPreview', 'bannerBase64', 'bannerArea', 'removeBanner')" required>
+                <input type="file" id="bannerInput" class="file-input" accept="image/*" onchange="initCropper(event, 'bannerPreview', 'bannerBase64', 'bannerArea', 'removeBanner', 16/9)" required>
                 <input type="hidden" name="banner_base64" id="bannerBase64">
             </div>
         </div>
@@ -394,6 +410,20 @@
                         <div class="calc-val" id="calcRevPts" style="font-size: 0.95rem; color: var(--accent-cyan); text-shadow: none; margin-top: 2px;">0 PTS</div>
                     </div>
                 </div>
+
+                <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05);">
+                    <label class="input-label">Prize Distribution Image (Optional)</label>
+                    <div class="input-sublabel" style="margin-bottom: 10px;">Upload a graphic showing how the prize pool is split.</div>
+                    <div class="upload-box-wrapper" id="prizeImgArea" style="padding: 20px 15px;" onclick="document.getElementById('prizeInput').click(); triggerHaptic();">
+                        <div class="upload-icon-circle" style="width:40px; height:40px; font-size:1rem; margin-bottom:10px;"><i class="fa-solid fa-trophy"></i></div>
+                        <div class="upload-title" style="font-size:0.9rem;">Upload Distribution Graphic</div>
+                    </div>
+                    <img src="" id="prizeImgPreview" class="preview-img" style="height: auto; max-height: 250px;">
+                    <div id="removePrizeImg" class="remove-img" onclick="removeImage('prizeInput', 'prizeBase64', 'prizeImgArea', 'prizeImgPreview', 'removePrizeImg'); triggerHaptic();"><i class="fa-solid fa-trash"></i> Remove Image</div>
+                    <input type="file" id="prizeInput" class="file-input" accept="image/*" onchange="initCropper(event, 'prizeImgPreview', 'prizeBase64', 'prizeImgArea', 'removePrizeImg', NaN)">
+                    <input type="hidden" name="prize_distribution_image" id="prizeBase64">
+                </div>
+
             </div>
         </div>
 
@@ -413,6 +443,19 @@
                     <label class="input-label">Tournament Date *</label>
                     <input type="date" name="match_period" class="form-control" required>
                     <div class="input-sublabel">Shows exactly when the matches will take place.</div>
+                </div>
+
+                <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05);">
+                    <label class="input-label">Match Bracket / Schedule Image (Optional)</label>
+                    <div class="input-sublabel" style="margin-bottom: 10px;">Upload a visual bracket or schedule layout for players.</div>
+                    <div class="upload-box-wrapper" id="bracketImgArea" style="padding: 20px 15px;" onclick="document.getElementById('bracketInput').click(); triggerHaptic();">
+                        <div class="upload-icon-circle" style="width:40px; height:40px; font-size:1rem; margin-bottom:10px;"><i class="fa-solid fa-sitemap"></i></div>
+                        <div class="upload-title" style="font-size:0.9rem;">Upload Bracket Image</div>
+                    </div>
+                    <img src="" id="bracketImgPreview" class="preview-img" style="height: auto; max-height: 250px;">
+                    <div id="removeBracketImg" class="remove-img" onclick="removeImage('bracketInput', 'bracketBase64', 'bracketImgArea', 'bracketImgPreview', 'removeBracketImg'); triggerHaptic();"><i class="fa-solid fa-trash"></i> Remove Image</div>
+                    <input type="file" id="bracketInput" class="file-input" accept="image/*" onchange="initCropper(event, 'bracketImgPreview', 'bracketBase64', 'bracketImgArea', 'removeBracketImg', NaN)">
+                    <input type="hidden" name="bracket_image" id="bracketBase64">
                 </div>
 
                 <div class="input-group" style="margin-top:25px; position:relative;">
@@ -440,6 +483,16 @@
         </button>
     </div>
 
+    <div class="cropper-modal" id="cropperModal">
+        <div class="cropper-container-wrapper">
+            <img id="cropperImage" src="" style="max-width: 100%;">
+        </div>
+        <div class="cropper-actions">
+            <button class="cropper-btn btn-crop-cancel" onclick="cancelCrop()">Cancel</button>
+            <button class="cropper-btn btn-crop-confirm" onclick="confirmCrop()">Crop & Save</button>
+        </div>
+    </div>
+
     <div class="loading-overlay" id="loadingOverlay">
         <div class="loader-ring" id="spinnerEl"></div>
         <i class="fa-solid fa-circle-check success-icon-anim" id="successIcon"></i>
@@ -449,6 +502,8 @@
     </div>
 
     <div id="customToast">Notification</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
     <script>
         // --- 1. CORE CONFIGURATION & INIT ---
@@ -670,8 +725,17 @@
             }, 4000);
         }
 
-        // --- 6. IMAGE UPLOAD HANDLING ---
-        function handleImageUpload(event, previewId, base64Id, areaId, removeBtnId) {
+        // --- 6. ADVANCED CROPPER & COMPRESSOR LOGIC ---
+        let cropper = null;
+        let currentUploadState = {
+            previewId: '',
+            base64Id: '',
+            areaId: '',
+            removeBtnId: '',
+            aspectRatio: NaN // NaN means free crop
+        };
+
+        function initCropper(event, previewId, base64Id, areaId, removeBtnId, aspectRatio) {
             const file = event.target.files[0];
             if (!file) return;
 
@@ -681,74 +745,80 @@
                 return; 
             }
 
+            // Save state so the modal knows where to output
+            currentUploadState = { previewId, base64Id, areaId, removeBtnId, aspectRatio };
+
             const reader = new FileReader();
             reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    // Compress Image using Canvas
-                    const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 1280; // HD width
-                    const MAX_HEIGHT = 720;
-                    let width = img.width;
-                    let height = img.height;
+                const imageEl = document.getElementById('cropperImage');
+                imageEl.src = e.target.result;
+                
+                document.getElementById('cropperModal').classList.add('active');
 
-                    if (width > height) {
-                        if (width > MAX_WIDTH) {
-                            height *= MAX_WIDTH / width;
-                            width = MAX_WIDTH;
-                        }
-                    } else {
-                        if (height > MAX_HEIGHT) {
-                            width *= MAX_HEIGHT / height;
-                            height = MAX_HEIGHT;
-                        }
-                    }
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-                    
-                    // Compress to JPEG with 0.7 quality
-                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
-                    
-                    document.getElementById(areaId).style.display = 'none';
-                    document.getElementById(previewId).src = compressedBase64;
-                    document.getElementById(previewId).style.display = 'block';
-                    document.getElementById(removeBtnId).style.display = 'block';
-                    document.getElementById(areaId).classList.remove('error');
-                    
-                    showToast("Compressing and generating short link...");
-
-                    // Upload to ImgBB to get Short Link
-                    const base64Data = compressedBase64.split(',')[1];
-                    const formData = new FormData();
-                    formData.append("image", base64Data);
-                    
-                    /* IMPORTANT: Replace YOUR_IMGBB_API_KEY with an actual key from api.imgbb.com to get a real short link.
-                       If the API key is invalid, it falls back to the compressed base64 code automatically. */
-                    fetch("https://api.imgbb.com/1/upload?key=727c66ecfe2882d63fee08fee7495850", {
-                        method: "POST",
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(result => {
-                        if(result.success) {
-                            document.getElementById(base64Id).value = result.data.url;
-                            showToast("Image short link generated!");
-                            calculateProgress();
-                        } else {
-                            document.getElementById(base64Id).value = compressedBase64;
-                            calculateProgress();
-                        }
-                    })
-                    .catch(error => {
-                        document.getElementById(base64Id).value = compressedBase64;
-                        calculateProgress();
-                    });
-                };
-                img.src = e.target.result;
+                if (cropper) { cropper.destroy(); }
+                
+                cropper = new Cropper(imageEl, {
+                    aspectRatio: currentUploadState.aspectRatio,
+                    viewMode: 1,
+                    autoCropArea: 1,
+                    background: false,
+                    responsive: true
+                });
             };
             reader.readAsDataURL(file);
+            event.target.value = ""; // Reset input so same file can be selected again if cancelled
+        }
+
+        function cancelCrop() {
+            document.getElementById('cropperModal').classList.remove('active');
+            if (cropper) { cropper.destroy(); cropper = null; }
+        }
+
+        function confirmCrop() {
+            if (!cropper) return;
+            
+            const canvas = cropper.getCroppedCanvas({
+                maxWidth: 1280, // Enforce HD max width for compression
+                maxHeight: 1280
+            });
+
+            // Compress to JPEG with 0.7 quality
+            const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+            
+            // Apply to UI immediately
+            document.getElementById(currentUploadState.areaId).style.display = 'none';
+            document.getElementById(currentUploadState.previewId).src = compressedBase64;
+            document.getElementById(currentUploadState.previewId).style.display = 'block';
+            document.getElementById(currentUploadState.removeBtnId).style.display = 'block';
+            document.getElementById(currentUploadState.areaId).classList.remove('error');
+            
+            cancelCrop();
+            showToast("Compressing and generating secure link...");
+
+            // Upload to ImgBB to get Short Link (so Google Sheets doesn't crash from huge base64 strings)
+            const base64Data = compressedBase64.split(',')[1];
+            const formData = new FormData();
+            formData.append("image", base64Data);
+            
+            fetch("https://api.imgbb.com/1/upload?key=727c66ecfe2882d63fee08fee7495850", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(result => {
+                if(result.success) {
+                    document.getElementById(currentUploadState.base64Id).value = result.data.url;
+                    showToast("Image processed successfully!");
+                    calculateProgress();
+                } else {
+                    document.getElementById(currentUploadState.base64Id).value = compressedBase64;
+                    calculateProgress();
+                }
+            })
+            .catch(error => {
+                document.getElementById(currentUploadState.base64Id).value = compressedBase64;
+                calculateProgress();
+            });
         }
 
         function removeImage(inputId, base64Id, areaId, previewId, removeBtnId) {
@@ -765,6 +835,8 @@
                 document.getElementById('createForm').reset();
                 document.getElementById('editor').innerHTML = "";
                 removeImage('bannerInput', 'bannerBase64', 'bannerArea', 'bannerPreview', 'removeBanner');
+                removeImage('prizeInput', 'prizeBase64', 'prizeImgArea', 'prizeImgPreview', 'removePrizeImg');
+                removeImage('bracketInput', 'bracketBase64', 'bracketImgArea', 'bracketImgPreview', 'removeBracketImg');
                 updateCalc();
                 calculateProgress();
                 showToast("Form cleared.");
@@ -820,8 +892,8 @@
 
             const payload = {
                 action: 'create_tournament',
-                organizer_email: currentUser.email, // MATCHED TO SHEET
-                organizer_username: useOrg ? currentUser.username : "Verified Organizer", // MATCHED TO SHEET
+                organizer_email: currentUser.email, 
+                organizer_username: useOrg ? currentUser.username : "Verified Organizer", 
                 title: rawData.tournament_name,
                 game: document.getElementById('finalGamePayload').value, 
                 format: rawData.format,
@@ -833,6 +905,11 @@
                 prize: rawData.prize_pool,
                 rules: rawData.rules, 
                 banner: rawData.banner_base64 || 'https://via.placeholder.com/1200x380/15062e/00f2ff?text=Tournament+Banner',
+                
+                // NEW OPTIONAL IMAGE FIELDS
+                prize_distribution_image: rawData.prize_distribution_image || "",
+                bracket_image: rawData.bracket_image || "",
+
                 status: "Upcoming",
                 stream_url: rawData.stream_url || ""
             };
