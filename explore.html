@@ -2,35 +2,44 @@
 <html lang="en">
 <head>
     <link rel="icon" href="https://tournyx.in/favicon.ico" sizes="any">
-<link rel="icon" href="https://tournyx.in/favicon.png" type="image/png" sizes="192x192">
-<link rel="apple-touch-icon" href="https://tournyx.in/apple-touch-icon.png">
+    <link rel="icon" href="https://tournyx.in/favicon.png" type="image/png" sizes="192x192">
+    <link rel="apple-touch-icon" href="https://tournyx.in/apple-touch-icon.png">
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Explore Tournaments - Tournyx</title>
-<meta name="description" content="Browse upcoming, live, and mega esports tournaments on Tournyx. Filter by BGMI, Free Fire, and entry fees to find your perfect match.">
+    
+    <meta name="description" content="Browse upcoming, live, and mega esports tournaments on Tournyx. Filter by BGMI, Free Fire, and entry fees to find your perfect match.">
+    <meta name="keywords" content="esports, tournaments, BGMI, Free Fire, Tournyx, gaming, competitive gaming">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://tournyx.in/explore.html">
+    <meta property="og:title" content="Explore Tournaments - Tournyx">
+    <meta property="og:description" content="Browse upcoming, live, and mega esports tournaments on Tournyx. Filter by BGMI, Free Fire, and entry fees to find your perfect match.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://tournyx.in/explore.html">
 
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-                 <script>
-            (function() {
-                try {
-                    const THEMES = [
-                        {cyan: '#00f2ff', purple: '#bd00ff'},
-                        {cyan: '#00ff7f', purple: '#00b09b'},
-                        {cyan: '#ff9900', purple: '#ff4d4d'}
-                    ];
-                    let tIndex = parseInt(localStorage.getItem('tournyx_theme_index')) || 0;
-                    if(THEMES[tIndex]) {
-                        document.documentElement.style.setProperty('--accent-cyan', THEMES[tIndex].cyan);
-                        document.documentElement.style.setProperty('--accent-purple', THEMES[tIndex].purple);
-                        document.documentElement.style.setProperty('--accent-gradient', `linear-gradient(90deg, ${THEMES[tIndex].purple}, ${THEMES[tIndex].cyan})`);
-                    }
-                } catch(e) {
-                    console.log("Theme setting bypassed - strict browser settings.");
+    
+    <script>
+        (function() {
+            try {
+                const THEMES = [
+                    {cyan: '#00f2ff', purple: '#bd00ff'},
+                    {cyan: '#00ff7f', purple: '#00b09b'},
+                    {cyan: '#ff9900', purple: '#ff4d4d'}
+                ];
+                let tIndex = parseInt(localStorage.getItem('tournyx_theme_index')) || 0;
+                if(THEMES[tIndex]) {
+                    document.documentElement.style.setProperty('--accent-cyan', THEMES[tIndex].cyan);
+                    document.documentElement.style.setProperty('--accent-purple', THEMES[tIndex].purple);
+                    document.documentElement.style.setProperty('--accent-gradient', `linear-gradient(90deg, ${THEMES[tIndex].purple}, ${THEMES[tIndex].cyan})`);
                 }
-            })();
-        </script>
+            } catch(e) {
+                console.log("Theme setting bypassed - strict browser settings.");
+            }
+        })();
+    </script>
 
     <style>
         /* --- GLOBAL VARIABLES --- */
@@ -61,6 +70,18 @@
         /* --- BACKGROUND --- */
         #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at 50% 0%, #15062e 0%, #070311 100%); }
 
+        /* --- IMAGE LOADER EFFECT --- */
+        .img-loading {
+            background: linear-gradient(90deg, #110822 25%, #1a0a3a 50%, #110822 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite linear;
+            color: transparent !important;
+        }
+        .img-loaded {
+            animation: none !important;
+            background: transparent !important;
+        }
+
         /* --- GUEST MODE BANNER --- */
         .guest-banner { display: none; background: linear-gradient(90deg, #ff4d4d, #ff9900); padding: 10px; text-align: center; color: white; font-family: var(--font-head); font-weight: bold; font-size: 0.85rem; letter-spacing: 1px; z-index: 2500; position: sticky; top: 0; text-transform: uppercase; box-shadow: 0 5px 15px rgba(255, 77, 77, 0.4); cursor: pointer; }
         .guest-banner.active { display: block; }
@@ -78,6 +99,8 @@
         @media (min-width: 850px) { .desktop-nav { display: flex; } }
 
         .header-right { display: flex; align-items: center; gap: 12px; }
+        .header-community-icon { color: var(--accent-cyan); font-size: 1.25rem; cursor: pointer; transition: 0.3s; text-shadow: 0 0 10px rgba(0,242,255,0.4); margin-right: 5px; }
+        .header-community-icon:active { transform: scale(0.9); }
         .header-profile-img { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--accent-cyan); object-fit: cover; cursor: pointer; box-shadow: 0 0 10px rgba(0,242,255,0.4); transition: 0.3s; flex-shrink: 0;}
 
         /* --- SEARCH & ACTIONS --- */
@@ -193,16 +216,22 @@
         .fee-tag { padding: 8px 15px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; font-size: 0.85rem; font-family: var(--font-head); color: #ccc; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; white-space: nowrap; text-align: center;}
         .fee-tag.active { background: rgba(0,242,255,0.15); border-color: var(--accent-cyan); color: var(--accent-cyan); box-shadow: 0 0 10px rgba(0,242,255,0.3); transform: scale(1.05); }
 
-        /* --- FULL SCREEN DETAIL MODAL --- */
-        .detail-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary-bg); z-index: 3000; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; overflow: hidden; }
-        .detail-modal.active { transform: translateX(0); }
+        /* --- FULL SCREEN DETAIL MODAL (Smoother App-Like Opening) --- */
+        .detail-modal { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: var(--primary-bg); z-index: 3000; 
+            transform: translateY(100%); 
+            transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.4s;
+            display: flex; flex-direction: column; overflow: hidden; opacity: 0;
+        }
+        .detail-modal.active { transform: translateY(0); opacity: 1; }
         
         .dm-header { background: rgba(7,3,17,0.95); padding: env(safe-area-inset-top) 15px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); flex-shrink: 0; z-index: 10; backdrop-filter: blur(10px);}
         .dm-back { font-size: 1.3rem; cursor: pointer; color: white; padding: 5px; }
         .dm-title { font-family: var(--font-head); font-weight: bold; flex: 1; text-align: center; font-size: 1.1rem; text-shadow: 0 0 5px rgba(255,255,255,0.5); }
         .dm-share { font-size: 1.3rem; color: var(--accent-cyan); cursor: pointer; padding: 5px; }
 
-        .dm-scroll-area { flex: 1; overflow-y: auto; padding-bottom: 20px; animation: fadeIn 0.4s; }
+        .dm-scroll-area { flex: 1; overflow-y: auto; padding-bottom: 20px; animation: fadeIn 0.4s; transition: opacity 0.3s ease-in-out; }
         .dm-scroll-content { max-width: 800px; margin: 0 auto; position: relative; padding-bottom: 80px;} 
         
         .dm-banner { width: 100%; height: 220px; object-fit: cover; }
@@ -225,13 +254,14 @@
         .b-fast { color: var(--accent-orange); border-color: var(--accent-orange); }
         .b-free { color: var(--accent-green); border-color: var(--accent-green); }
 
+        /* --- GLASSMORPHISM APPLYED TO SECTIONS --- */
         .dm-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
-        .stat-box { background: var(--secondary-bg); border: 1px solid var(--card-border); padding: 15px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .stat-box { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); padding: 15px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); }
         .stat-box i { font-size: 1.5rem; margin-bottom: 8px; color: var(--accent-purple); text-shadow: 0 0 10px rgba(189,0,255,0.4); }
         .stat-box .val { font-family: var(--font-head); font-size: 1.1rem; font-weight: bold; color: white; text-shadow: 0 0 5px rgba(255,255,255,0.3); text-align: center; width: 100%; }
         .stat-box .lbl { font-size: 0.7rem; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; }
 
-        .dm-section { background: rgba(255,255,255,0.02); border: 1px solid var(--card-border); border-radius: 15px; padding: 20px; margin-bottom: 20px; }
+        .dm-section { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2); }
         .dm-sec-title { font-family: var(--font-head); font-size: 1.1rem; margin-bottom: 15px; color: var(--accent-cyan); display: flex; align-items: center; gap: 8px; }
         
         .timeline-item { display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); align-items: center; gap:10px; }
@@ -241,20 +271,22 @@
         .tl-val { font-family: var(--font-body); font-size: 0.95rem; color: white; white-space: normal; }
         .tl-status { background: rgba(0,255,127,0.1); color: var(--accent-green); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; border: 1px solid var(--accent-green); text-transform: uppercase; white-space: nowrap; }
 
-        .prize-card { background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); border-radius: 12px; padding: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
-        .prize-card.gold { border-color: rgba(255, 215, 0, 0.4); background: rgba(255, 215, 0, 0.05); }
-        .prize-card.silver { border-color: rgba(192, 192, 192, 0.4); background: rgba(192, 192, 192, 0.05); }
-        .prize-card.bronze { border-color: rgba(205, 127, 50, 0.4); background: rgba(205, 127, 50, 0.05); }
+        .prize-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); }
+        .prize-card.gold { border-color: rgba(255, 215, 0, 0.4); background: rgba(255, 215, 0, 0.08); }
+        .prize-card.silver { border-color: rgba(192, 192, 192, 0.4); background: rgba(192, 192, 192, 0.08); }
+        .prize-card.bronze { border-color: rgba(205, 127, 50, 0.4); background: rgba(205, 127, 50, 0.08); }
         .pc-rank { font-family: var(--font-head); font-weight: bold; font-size: 1rem; display: flex; align-items: center; gap: 10px; }
         .pc-val { font-size: 1rem; font-weight: bold; color: var(--accent-cyan); text-shadow: 0 0 5px rgba(0,242,255,0.3); }
 
-        .clan-item { display: flex; align-items: center; gap: 12px; background: rgba(20,10,35,0.5); border: 1px solid rgba(189,0,255,0.1); padding: 12px; border-radius: 12px; margin-bottom: 10px; transition: 0.3s; }
+        .clan-item { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); padding: 12px; border-radius: 12px; margin-bottom: 10px; transition: 0.3s; cursor: pointer; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); }
         .clan-item.my-clan { border: 1px solid var(--accent-cyan); background: rgba(0,242,255,0.1); box-shadow: 0 0 10px rgba(0,242,255,0.2); }
-        .clan-item-icon { width: 35px; height: 35px; border-radius: 8px; background: rgba(0,242,255,0.1); color: var(--accent-cyan); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+        .clan-item-header { display: flex; align-items: center; width: 100%; gap: 12px; }
+        .clan-item-icon { width: 35px; height: 35px; border-radius: 8px; background: rgba(0,242,255,0.1); color: var(--accent-cyan); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; overflow: hidden; }
+        .clan-item-icon img { width: 100%; height: 100%; border-radius: 8px; object-fit: cover; }
         .clan-item-name { font-family: var(--font-head); font-size: 1rem; color: white; flex: 1; }
 
         /* LOCKED FOOTER */
-        .locked-footer { background: #070311; padding: 15px 15px calc(15px + env(safe-area-inset-bottom)); border-top: 1px solid var(--card-border); display: flex; gap: 10px; flex-shrink: 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); z-index: 50;}
+        .locked-footer { background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(10px); padding: 15px 15px calc(15px + env(safe-area-inset-bottom)); border-top: 1px solid var(--card-border); display: flex; gap: 10px; flex-shrink: 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); z-index: 50;}
         .btn-primary { flex: 1; background: var(--accent-gradient); color: white; border: none; padding: 14px; border-radius: 12px; font-family: var(--font-head); font-weight: bold; font-size: 1rem; cursor: pointer; box-shadow: 0 5px 15px rgba(189,0,255,0.4); text-transform: uppercase; transition: 0.3s; display:flex; align-items:center; justify-content:center; gap:8px;}
         .btn-primary:active { transform: scale(0.98); }
         .btn-primary:disabled { background: #2a2a3a; color: #666; border: 1px solid #444; box-shadow: none; cursor: default; }
@@ -335,7 +367,7 @@
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 5000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
         .modal-overlay.active { display: flex; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes popIn { from{transform:scale(0.9); opacity:0;} to{transform:scale(1); opacity:1;} }
-        .modal-box { background: var(--primary-bg); width: 90%; max-width: 400px; border-radius: 20px; border: 1px solid var(--card-border); padding: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); text-align: center; position: relative;}
+        .modal-box { background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(15px); width: 90%; max-width: 400px; border-radius: 20px; border: 1px solid var(--card-border); padding: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); text-align: center; position: relative;}
         .modal-close { position: absolute; top: 15px; right: 15px; color: #888; font-size: 1.3rem; cursor: pointer; transition: 0.3s;}
         .modal-close:hover { color: white; transform: rotate(90deg); }
     </style>
@@ -356,10 +388,6 @@
         <div style="font-family: var(--font-head); color: white; letter-spacing: 2px;">LOADING MATCH DATA...</div>
     </div>
 
-    <div class="guest-banner" id="guestBanner" onclick="document.getElementById('guestLoginModal').classList.add('active');">
-        <i class="fa-solid fa-lock"></i> Browsing as guest. Tap here to Login/Register!
-    </div>
-
     <header class="top-header">
         <div class="header-wrapper">
             <div class="header-left">
@@ -376,6 +404,7 @@
             </nav>
 
             <div class="header-right">
+                <i class="fa-solid fa-users header-community-icon" onclick="window.location.href='community.html'"></i>
                 <img src="https://via.placeholder.com/40" class="header-profile-img" id="headerProfilePic" onclick="if(isGuestMode) { document.getElementById('guestLoginModal').classList.add('active'); } else { window.location.href='profile.html'; }">
             </div>
         </div>
@@ -481,7 +510,7 @@
         <div class="dm-scroll-area">
             <div class="dm-scroll-content">
                 <div style="position:relative;">
-                    <img src="" id="dtBanner" class="dm-banner">
+                    <img src="" id="dtBanner" class="dm-banner img-loading" onload="this.classList.remove('img-loading'); this.classList.add('img-loaded');">
                     <div class="live-viewer-bubble"><div class="dot"></div> <span id="realViewerCount">1</span> Views</div>
                 </div>
                 
@@ -498,7 +527,7 @@
                 
                     <h2 id="dtTitle" class="t-title" style="font-size: 1.5rem; white-space: normal; margin-bottom: 5px;">Tournament Title</h2>
                     
-                    <div style="background: rgba(255,255,255,0.05); border: 1px solid var(--accent-cyan); padding:10px; border-radius:10px; margin-bottom: 20px; display:flex; align-items:center; gap:10px; cursor: pointer; transition: 0.3s;" onclick="openHostProfile()">
+                    <div class="dm-section" style="padding:10px; margin-bottom: 20px; display:flex; align-items:center; gap:10px; cursor: pointer; transition: 0.3s; border-color: var(--accent-cyan) !important;" onclick="openHostProfile()">
                         <img id="orgAvatarImg" src="https://via.placeholder.com/40" style="width:40px; height:40px; border-radius:50%; border:2px solid var(--accent-cyan); object-fit: cover;">
                         <div style="flex:1;">
                             <div style="color: #a0a0b0; font-size: 0.75rem;">Organized by</div>
@@ -518,7 +547,7 @@
                             <div class="val" id="dtPrize">0 Rs.</div>
                             <div class="lbl">Prize Pool</div>
                         </div>
-                        <div class="stat-box" style="border-color: var(--accent-orange);">
+                        <div class="stat-box" style="border-color: rgba(255, 153, 0, 0.4) !important;">
                             <i class="fa-solid fa-ticket" style="color: var(--accent-orange);"></i>
                             <div class="val" id="dtFee">Free</div>
                             <div class="lbl">Entry Fee</div>
@@ -535,7 +564,7 @@
                         </div>
                     </div>
 
-                    <div class="dm-section" id="dtStreamSection" style="display:none; border-color:#FF0000;">
+                    <div class="dm-section" id="dtStreamSection" style="display:none; border-color:rgba(255,0,0,0.5) !important;">
                         <div class="dm-sec-title" style="color:#FF0000;"><i class="fa-solid fa-tv"></i> Live Stream Preview</div>
                         <div style="font-size:0.85rem; color:#ccc; margin-bottom:15px;">The organizer has provided a live stream link for this event.</div>
                         <button class="btn-primary" style="background:#FF0000; box-shadow:0 5px 15px rgba(255,0,0,0.4);" id="dtStreamBtn"><i class="fa-brands fa-youtube"></i> Watch Live Stream</button>
@@ -597,13 +626,16 @@
                 </div>
 
                 <div class="dm-tab-content" id="dtTabMatches">
-                    <div class="dm-sec-title"><i class="fa-solid fa-key"></i> Room Details</div>
-                    
-                    <div id="roomDetailsArea">
+                    <div class="dm-section">
+                        <div class="dm-sec-title"><i class="fa-solid fa-key"></i> Room Details</div>
+                        <div id="roomDetailsArea"></div>
+                    </div>
+                    <div class="dm-section">
+                        <div class="dm-sec-title"><i class="fa-solid fa-sitemap"></i> Match Schedule & Brackets</div>
+                        <div id="bracketDisplayArea">
+                            <div style="text-align:center; color:#888; padding:20px;">Brackets have not been generated yet.</div>
                         </div>
-
-                    <div class="dm-sec-title"><i class="fa-solid fa-sitemap"></i> Match Schedule & Brackets</div>
-                    <div style="text-align:center; color:#888; padding:40px;">Brackets have not been generated yet.</div>
+                    </div>
                 </div>
                 
                 <div class="dm-tab-content" id="dtTabTeams">
@@ -618,18 +650,8 @@
                     <div style="text-align:center; font-family:var(--font-head); color:var(--accent-orange); font-size:1.5rem; font-weight:bold; margin-bottom:5px;" id="dtPrizeTotalHead">0 Rs.</div>
                     <div style="text-align:center; color:#888; font-size:0.8rem; margin-bottom:20px;">Total Prize Pool</div>
 
-                    <div class="prize-card gold">
-                        <div class="pc-rank"><i class="fa-solid fa-medal" style="color:#FFD700; font-size:1.5rem;"></i> 1st Place</div>
-                        <div class="pc-val" id="prize1">0 Rs.</div>
-                    </div>
-                    <div class="prize-card silver">
-                        <div class="pc-rank"><i class="fa-solid fa-medal" style="color:#C0C0C0; font-size:1.5rem;"></i> 2nd Place</div>
-                        <div class="pc-val" id="prize2">0 Rs.</div>
-                    </div>
-                    <div class="prize-card bronze">
-                        <div class="pc-rank"><i class="fa-solid fa-medal" style="color:#CD7F32; font-size:1.5rem;"></i> 3rd Place</div>
-                        <div class="pc-val" id="prize3">0 Rs.</div>
-                    </div>
+                    <div id="prizeDistributionArea">
+                        </div>
                 </div>
 
                 <div class="dm-tab-content" id="dtTabRules">
@@ -641,6 +663,13 @@
                         <i class="fa-solid fa-shield"></i> By registering, you automatically agree to these terms.
                     </div>
                 </div>
+
+                <div class="dm-section" id="orgOtherTourneysSection" style="display:none; padding-bottom:10px; margin-top:20px; border-color: rgba(255,255,255,0.05) !important;">
+                    <div class="dm-sec-title"><i class="fa-solid fa-layer-group"></i> Organizer's Other Tournaments</div>
+                    <div id="orgOtherTourneysSlider" style="display:flex; overflow-x:auto; gap:15px; padding-bottom:10px; scrollbar-width:none; padding-top: 10px;">
+                    </div>
+                </div>
+
             </div>
         </div> 
 
@@ -666,17 +695,17 @@
             <div class="dm-stat-grid" style="grid-template-columns: 1fr 1fr 1fr; margin-bottom: 0;">
                 <div class="stat-box" style="padding: 10px;">
                     <i class="fa-solid fa-trophy" style="font-size: 1.2rem; color: var(--accent-cyan);"></i>
-                    <div class="val" id="hpHosted" style="font-size: 1.2rem;">0</div>
+                    <div class="val" id="hpHosted" style="font-size: 1.2rem;">...</div>
                     <div class="lbl" style="font-size: 0.65rem;">Hosted</div>
                 </div>
                 <div class="stat-box" style="padding: 10px;">
                     <i class="fa-solid fa-check-double" style="font-size: 1.2rem; color: var(--accent-green);"></i>
-                    <div class="val" id="hpSuccess" style="font-size: 1.2rem; color: var(--accent-green);">100%</div>
+                    <div class="val" id="hpSuccess" style="font-size: 1.2rem; color: var(--accent-green);">...</div>
                     <div class="lbl" style="font-size: 0.65rem;">Success Rate</div>
                 </div>
                 <div class="stat-box" style="padding: 10px;">
                     <i class="fa-solid fa-star" style="font-size: 1.2rem; color: #ffd700;"></i>
-                    <div class="val" id="hpRating" style="font-size: 1.2rem; color: #ffd700;">4.9</div>
+                    <div class="val" id="hpRating" style="font-size: 1.2rem; color: #ffd700;">...</div>
                     <div class="lbl" style="font-size: 0.65rem;">Avg Rating</div>
                 </div>
             </div>
@@ -690,6 +719,9 @@
             <h3 style="font-family: var(--font-head); font-size: 1.5rem; margin-bottom: 10px; color: white;">Join the Elite!</h3>
             <p style="color: #aaa; font-size: 0.95rem; margin-bottom: 25px; line-height: 1.5;">Login or Sign Up to secure your slot, track your stats, and manage tournaments.</p>
             <button class="save-btn" style="background: linear-gradient(90deg, #ff4d4d, #ff9900); box-shadow: 0 5px 20px rgba(255, 77, 77, 0.4); border:none; color:white; width:100%; padding:15px; font-family:var(--font-head); font-weight:bold; border-radius:12px; cursor:pointer;" onclick="window.location.href='login.html'">Login / Sign Up</button>
+            <div style="margin-top: 25px; font-size: 0.75rem; color: #888; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                Powered by <strong style="color: white; font-family: var(--font-head); font-size: 0.95rem; letter-spacing: 1px;">QUVA</strong>
+            </div>
         </div>
     </div>
 
@@ -837,6 +869,14 @@
         let backgroundSyncInterval = null;
         let localTournamentsData = []; 
         let activeCountdown = null;
+
+        // --- HARDWARE BACK BUTTON LOGIC ---
+        window.addEventListener('popstate', function(event) {
+            if (document.getElementById('tourneyDetailModal').classList.contains('active') && window.location.hash !== '#tournamentDetails') {
+                document.getElementById('tourneyDetailModal').classList.remove('active');
+                if(activeCountdown) clearInterval(activeCountdown);
+            }
+        });
 
         function triggerHaptic() {
             if(navigator.vibrate) { navigator.vibrate(40); }
@@ -1018,7 +1058,7 @@
             }, 1000);
         }
 
-        function getPrizeText(val) { let num = parseInt(val); return (isNaN(num) || num <= 0) ? "Glory" : num + " Rs."; }
+        function getPrizeText(val) { let num = parseInt(val); return (isNaN(num) || num <= 0) ? val || "Glory" : num + " Rs."; }
         
         function getSmartEntryText(feeRs, feePts) {
             let r = parseInt(feeRs);
@@ -1049,11 +1089,10 @@
                 document.getElementById('shareLoader').style.display = 'flex';
             }
 
-            // GUEST MODE REMOVAL OF REDIRECT
+            // GUEST MODE REMOVAL OF REDIRECT & HEADER
             if(!user || !user.email) { 
                 isGuestMode = true;
                 document.getElementById('headerProfilePic').style.display = 'none';
-                document.getElementById('guestBanner').classList.add('active');
             } else {
                 if(user.avatar) document.getElementById('headerProfilePic').src = user.avatar;
                 fetch(API_URL + "?action=get_matches&email=" + encodeURIComponent(user.email))
@@ -1224,7 +1263,7 @@
 
                         card.innerHTML = `
                             <div class="t-banner-wrapper">
-                                <img src="${bg}" class="t-banner-img">
+                                <img src="${bg}" class="t-banner-img img-loading" onload="this.classList.remove('img-loading'); this.classList.add('img-loaded');">
                                 ${getStatusBadgeHtml(t.status, isFull, isRegClosed, isCancelled)} 
                                 <div class="t-timer-badge ${timeData.isEndingSoon ? 'ending-soon' : ''}"><i class="fa-regular fa-clock"></i> ${timeData.text}</div>
                                 <div class="t-like ${isLiked ? 'liked' : ''}" onclick="toggleLike(event, '${tIdSafe}', ${baseLikeCount})"><i class="fa-solid fa-heart"></i> <span>${displayLikes}</span></div>
@@ -1287,10 +1326,59 @@
             });
         }
 
+        function loadOtherTournaments(orgId, currentTourneyId) {
+            const container = document.getElementById('orgOtherTourneysSlider');
+            const section = document.getElementById('orgOtherTourneysSection');
+            container.innerHTML = "";
+            let found = 0;
+            
+            localTournamentsData.forEach(t => {
+                let tIdSafe = String(t.id || t.title).trim();
+                let currentOrg = t.org_username || t.email;
+                if (currentOrg === orgId && tIdSafe !== currentTourneyId) {
+                    found++;
+                    let card = document.createElement('div');
+                    card.style.cssText = "min-width: 250px; background: rgba(20,10,35,0.7); border-radius: 12px; border: 1px solid var(--card-border); overflow: hidden; cursor: pointer; flex-shrink: 0;";
+                    
+                    card.onclick = () => { 
+                        triggerHaptic();
+                        const scrollArea = document.querySelector('.dm-scroll-area');
+                        scrollArea.style.opacity = '0';
+                        setTimeout(() => {
+                            openTournamentDetails(encodeURIComponent(JSON.stringify(t)));
+                            scrollArea.scrollTo(0,0);
+                            scrollArea.style.opacity = '1';
+                        }, 300); 
+                    };
+                    
+                    let bg = formatImageUrl(t.banner);
+                    let slotsFilled = parseInt(t.filled_slots) || 0;
+                    let slotsTotal = parseInt(t.slots) || 48;
+                    card.innerHTML = `
+                        <div style="height:100px; width:100%; position:relative;">
+                            <img src="${bg}" style="width:100%; height:100%; object-fit:cover; opacity:0.8;">
+                            <div style="position:absolute; bottom:5px; left:5px; background:rgba(0,0,0,0.8); padding:2px 8px; border-radius:10px; font-size:0.7rem; font-weight:bold; color:var(--accent-cyan);">${getSmartEntryText(t.fee, t.fee_pts)}</div>
+                        </div>
+                        <div style="padding:10px;">
+                            <div style="font-family:var(--font-head); font-size:0.9rem; font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${t.title}</div>
+                            <div style="font-size:0.75rem; color:#888; margin-top:5px;"><i class="fa-solid fa-users"></i> ${slotsFilled}/${slotsTotal} Joined</div>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                }
+            });
+            
+            if (found > 0) section.style.display = 'block';
+            else section.style.display = 'none';
+        }
+
         function openTournamentDetails(tDataEncoded) {
             triggerHaptic();
             const t = JSON.parse(decodeURIComponent(tDataEncoded));
             activeTournament = t; 
+
+            // Handle Hardware Back Button
+            history.pushState({ modal: 'tourneyDetailModal' }, '', '#tournamentDetails');
 
             document.getElementById('dtBanner').src = formatImageUrl(t.banner);
             document.getElementById('dtTitle').innerHTML = `${t.title} <i class="fa-solid fa-circle-check verified-badge"></i>`;
@@ -1302,7 +1390,6 @@
             if ((parseInt(t.filled_slots) / parseInt(t.slots)) > 0.8) badgesHTML += `<span class="esports-badge b-fast"><i class="fa-solid fa-fire"></i> Fast Filling</span>`;
             document.getElementById('dynamicBadgesArea').innerHTML = badgesHTML;
             
-            // FETCHING HOST PROFILE DETAILS PERFECTLY
             let orgId = t.org_username || t.email || 'Verified Organizer';
             document.getElementById('dtOrgName').innerHTML = `${t.org_username || 'Verified Organizer'}`;
             let hostAvatar = t.org_avatar ? formatImageUrl(t.org_avatar) : `https://ui-avatars.com/api/?name=${encodeURIComponent(orgId)}&background=070311&color=00f2ff&bold=true&border=1`;
@@ -1310,6 +1397,20 @@
             
             let hostedCount = t.org_hosted_count ? parseInt(t.org_hosted_count) : Math.max(localTournamentsData.filter(x => x.org_username === orgId || x.email === orgId).length, 1);
             document.getElementById('dtOrgStats').innerHTML = `<i class="fa-solid fa-star"></i> Hosted: ${hostedCount} Match${hostedCount > 1 ? 'es' : ''}`;
+
+            // Fetch user profile silently to override avatar and stats securely
+            fetch(API_URL + "?action=get_user_profile&username=" + encodeURIComponent(orgId))
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === 'success' && data.data) {
+                    let hostData = data.data;
+                    if(hostData.avatar) {
+                        document.getElementById('orgAvatarImg').src = formatImageUrl(hostData.avatar);
+                    }
+                    let dynamicHostedCount = hostData.hosted_count || Math.max(localTournamentsData.filter(x => x.org_username === orgId || x.email === orgId).length, 1);
+                    document.getElementById('dtOrgStats').innerHTML = `<i class="fa-solid fa-star"></i> Hosted: ${dynamicHostedCount} Match${dynamicHostedCount > 1 ? 'es' : ''}`;
+                }
+            }).catch(e => console.log(e));
 
             document.getElementById('dtPrize').innerText = getPrizeText(t.prize);
             document.getElementById('dtFee').innerText = getSmartEntryText(t.fee, t.fee_pts);
@@ -1320,12 +1421,39 @@
             document.getElementById('dtDescription').innerHTML = t.rules || "Standard competitive rules apply.";
             document.getElementById('dtRulesText').innerHTML = t.rules || "No specific rules provided.";
             
-            const rawPrize = (!t.prize || t.prize == 0) ? 0 : parseInt(t.prize);
-            document.getElementById('dtPrizeTotalHead').innerText = getPrizeText(t.prize);
-            if (rawPrize > 0) {
-                document.getElementById('prize1').innerText = "50% - " + (rawPrize * 0.50).toFixed(0) + " Rs.";
-                document.getElementById('prize2').innerText = "30% - " + (rawPrize * 0.30).toFixed(0) + " Rs.";
-                document.getElementById('prize3').innerText = "20% - " + (rawPrize * 0.20).toFixed(0) + " Rs.";
+            // PRIZE TAB DYNAMIC LOGIC (Single Prize vs Distribution)
+            const prizeArea = document.getElementById('prizeDistributionArea');
+            let rawPrizeStr = t.prize || "0";
+            document.getElementById('dtPrizeTotalHead').innerText = getPrizeText(rawPrizeStr);
+
+            let prizeHTML = '';
+            if(t.prize1 || t.prize2 || t.prize3) {
+                if(t.prize1) prizeHTML += `<div class="prize-card gold"><div class="pc-rank"><i class="fa-solid fa-medal" style="color:#FFD700; font-size:1.5rem;"></i> 1st Place</div><div class="pc-val">${t.prize1}</div></div>`;
+                if(t.prize2) prizeHTML += `<div class="prize-card silver"><div class="pc-rank"><i class="fa-solid fa-medal" style="color:#C0C0C0; font-size:1.5rem;"></i> 2nd Place</div><div class="pc-val">${t.prize2}</div></div>`;
+                if(t.prize3) prizeHTML += `<div class="prize-card bronze"><div class="pc-rank"><i class="fa-solid fa-medal" style="color:#CD7F32; font-size:1.5rem;"></i> 3rd Place</div><div class="pc-val">${t.prize3}</div></div>`;
+            } else if (rawPrizeStr !== "0") {
+                prizeHTML = `
+                    <div class="prize-card gold" style="justify-content: center; flex-direction: column; gap: 10px; text-align: center; padding: 25px;">
+                        <i class="fa-solid fa-trophy" style="color:#FFD700; font-size:3.5rem; filter: drop-shadow(0 0 15px rgba(255,215,0,0.5)); margin-bottom: 10px;"></i>
+                        <div style="font-family: var(--font-head); font-size: 1.5rem; font-weight: bold; color: white;">${rawPrizeStr}</div>
+                        <div style="font-size: 0.85rem; color: #ccc; text-transform: uppercase; letter-spacing: 1px;">Ultimate Reward</div>
+                    </div>`;
+            } else {
+                prizeHTML = `
+                    <div class="prize-card gold" style="justify-content: center; flex-direction: column; gap: 10px; text-align: center; padding: 25px;">
+                        <i class="fa-solid fa-trophy" style="color:#FFD700; font-size:3.5rem; filter: drop-shadow(0 0 15px rgba(255,215,0,0.5)); margin-bottom: 10px;"></i>
+                        <div style="font-family: var(--font-head); font-size: 1.5rem; font-weight: bold; color: white;">Glory & Respect</div>
+                        <div style="font-size: 0.85rem; color: #ccc; text-transform: uppercase; letter-spacing: 1px;">Ultimate Reward</div>
+                    </div>`;
+            }
+            prizeArea.innerHTML = prizeHTML;
+
+            // BRACKET/SCHEDULE IMAGE LOGIC (Column S mapped to bracket_image)
+            const bracketArea = document.getElementById('bracketDisplayArea');
+            if (t.bracket_image && t.bracket_image.trim() !== "") {
+                bracketArea.innerHTML = `<img src="${formatImageUrl(t.bracket_image)}" style="width: 100%; border-radius: 12px; border: 1px solid var(--card-border); margin-top: 10px;">`;
+            } else {
+                bracketArea.innerHTML = `<div style="text-align:center; color:#888; padding:20px;">Brackets have not been generated yet.</div>`;
             }
 
             const strmSec = document.getElementById('dtStreamSection');
@@ -1378,7 +1506,7 @@
             if (isJoined) {
                 if (t.room_id != null && String(t.room_id).trim() !== "") {
                     roomArea.innerHTML = `
-                        <div style="background: rgba(0,255,127,0.1); border: 1px solid var(--accent-green); padding: 20px; border-radius: 12px; margin-bottom: 25px;">
+                        <div class="dm-section" style="border-color: var(--accent-green) !important;">
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding-bottom:15px; border-bottom:1px solid rgba(0,255,127,0.2);">
                                 <div>
                                     <div style="font-size:0.75rem; color:#888; text-transform:uppercase; letter-spacing:1px;">Room ID</div>
@@ -1397,7 +1525,7 @@
                     `;
                 } else {
                     roomArea.innerHTML = `
-                        <div style="background: rgba(0,242,255,0.05); border: 1px dashed var(--accent-cyan); padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 25px;">
+                        <div class="dm-section" style="border-style: dashed !important; text-align: center;">
                             <i class="fa-solid fa-clock-rotate-left" style="font-size: 2rem; color: var(--accent-cyan); margin-bottom: 10px;"></i>
                             <div style="font-family: var(--font-head); font-weight: bold; color: white; margin-bottom: 5px;">Waiting for Organizer</div>
                             <div style="font-size: 0.85rem; color: #ccc;">You are successfully registered! Room ID and Password will be fetched securely from the server once the organizer provides them.</div>
@@ -1406,7 +1534,7 @@
                 }
             } else {
                 roomArea.innerHTML = `
-                    <div style="background: rgba(255,153,0,0.1); border: 1px dashed var(--accent-orange); padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 25px;">
+                    <div class="dm-section" style="border-color: var(--accent-orange) !important; border-style: dashed !important; text-align: center;">
                         <i class="fa-solid fa-lock" style="font-size: 2rem; color: var(--accent-orange); margin-bottom: 10px;"></i>
                         <div style="font-family: var(--font-head); font-weight: bold; color: white; margin-bottom: 5px;">ID & Password Locked</div>
                         <div style="font-size: 0.85rem; color: #ccc;">Details are only visible to securely registered players. Confirm your slot to get access to the Room.</div>
@@ -1445,29 +1573,41 @@
             document.getElementById('realViewerCount').innerText = viewCount;
             fetch(API_URL + "?action=increment_view&match_id=" + encodeURIComponent(t.id || t.title), { mode: 'no-cors' }).catch(e=>console.log(e));
 
+            // Load Organizer's Other Tournaments
+            loadOtherTournaments(orgId, t.id || t.title);
+
             document.querySelector('.dm-nav-item[data-tab="dtTabOverview"]').click();
             document.getElementById('tourneyDetailModal').classList.add('active');
         }
 
-        // --- NEW: FUNCTION TO OPEN HOST PROFILE FROM SHEET ---
+        // --- NEW: REAL HOST PROFILE FETCHING ---
         function openHostProfile() {
             triggerHaptic();
             let t = activeTournament;
             if(!t) return;
             
             let orgId = t.org_username || t.email || 'Verified Organizer';
-            let hostAvatar = t.org_avatar ? formatImageUrl(t.org_avatar) : `https://ui-avatars.com/api/?name=${encodeURIComponent(orgId)}&background=070311&color=00f2ff&bold=true&border=1`;
-            let hostedCount = t.org_hosted_count ? parseInt(t.org_hosted_count) : Math.max(localTournamentsData.filter(x => x.org_username === orgId || x.email === orgId).length, 1);
-            let successRate = t.org_success_rate ? t.org_success_rate : "100%"; 
-            let rating = t.org_rating ? t.org_rating : "4.9";
-            
-            document.getElementById('hpAvatar').src = hostAvatar;
-            document.getElementById('hpName').innerText = orgId;
-            document.getElementById('hpHosted').innerText = hostedCount;
-            document.getElementById('hpSuccess').innerText = successRate;
-            document.getElementById('hpRating').innerText = rating;
-            
             document.getElementById('hostProfileOverlay').classList.add('active');
+            
+            document.getElementById('hpName').innerText = orgId;
+            document.getElementById('hpHosted').innerText = "...";
+            document.getElementById('hpSuccess').innerText = "...";
+            document.getElementById('hpRating').innerText = "...";
+
+            fetch(API_URL + "?action=get_user_profile&username=" + encodeURIComponent(orgId))
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === 'success' && data.data) {
+                    let hostData = data.data;
+                    let hostAvatar = hostData.avatar ? formatImageUrl(hostData.avatar) : `https://ui-avatars.com/api/?name=${encodeURIComponent(orgId)}&background=070311&color=00f2ff&bold=true&border=1`;
+                    document.getElementById('hpAvatar').src = hostAvatar;
+                    
+                    let hostedCount = hostData.hosted_count || Math.max(localTournamentsData.filter(x => x.org_username === orgId || x.email === orgId).length, 1);
+                    document.getElementById('hpHosted').innerText = hostedCount;
+                    document.getElementById('hpSuccess').innerText = hostData.success_rate || "100%"; 
+                    document.getElementById('hpRating').innerText = hostData.rating || "4.9";
+                }
+            }).catch(e => console.log(e));
         }
         
         function closeHostProfile() { triggerHaptic(); document.getElementById('hostProfileOverlay').classList.remove('active'); }
@@ -1475,9 +1615,84 @@
         function closeDetailModal() { 
             triggerHaptic(); 
             if(activeCountdown) clearInterval(activeCountdown);
-            document.getElementById('tourneyDetailModal').classList.remove('active'); 
+            if(window.location.hash === '#tournamentDetails') {
+                history.back(); // triggers popstate properly
+            } else {
+                document.getElementById('tourneyDetailModal').classList.remove('active'); 
+            }
         }
 
+        // --- NEW: FETCH TEAM PLAYERS REAL-TIME ---
+        function fetchClanPlayers(clanName, element) {
+            triggerHaptic();
+            let existing = element.querySelector('.players-list');
+            let chevron = element.querySelector('.fa-chevron-down');
+            
+            if(existing) {
+                existing.remove();
+                if(chevron) chevron.style.transform = "rotate(0deg)";
+                return;
+            }
+            
+            if(chevron) {
+                chevron.style.transform = "rotate(180deg)";
+                chevron.style.transition = "0.3s";
+            }
+
+            let loader = document.createElement('div');
+            loader.className = 'players-list';
+            loader.style.width = '100%';
+            loader.innerHTML = '<div style="font-size:0.8rem; color:var(--accent-cyan); padding-top:10px;"><i class="fa-solid fa-spinner fa-spin"></i> Fetching real roster...</div>';
+            element.appendChild(loader);
+
+            fetch(API_URL + "?action=get_clan_members&clan_name=" + encodeURIComponent(clanName))
+            .then(res => res.json())
+            .then(data => {
+                let roster = [];
+                if(data.status === 'success' && data.data) {
+                    if(Array.isArray(data.data)) {
+                        if(data.data[0] && data.data[0].team_json) {
+                            try { roster = JSON.parse(data.data[0].team_json).roster || []; } catch(e){}
+                        } else if (data.data[0] && data.data[0].roster) {
+                            roster = data.data[0].roster;
+                        } else {
+                            roster = data.data; 
+                        }
+                    } else if(data.data.team_json) {
+                        try { roster = JSON.parse(data.data.team_json).roster || []; } catch(e){}
+                    } else if (data.data.roster) {
+                        roster = data.data.roster;
+                    }
+                }
+
+                if(roster.length > 0) {
+                    let pHTML = '<div style="margin-top:10px; display:flex; flex-direction:column; gap:10px; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px; width: 100%;">';
+                    roster.forEach(p => {
+                        let pName = p.name || p.username || "Unknown";
+                        let pIgn = p.gameName || p.ign || p.inGameName || "N/A";
+                        let pId = p.id || p.uid || p.role || "Player";
+                        let pAvatar = p.avatar ? formatImageUrl(p.avatar) : `https://ui-avatars.com/api/?name=${encodeURIComponent(pName)}&background=random`;
+                        
+                        pHTML += `
+                            <div style="display:flex; align-items:center; gap:12px; background: rgba(0,0,0,0.3); padding: 8px 12px; border-radius: 8px; border-left: 2px solid var(--accent-cyan);">
+                                <img src="${pAvatar}" style="width:35px; height:35px; border-radius:50%; border: 1px solid var(--accent-cyan); object-fit: cover;"> 
+                                <div style="display:flex; flex-direction:column; flex:1;">
+                                    <span style="font-size:0.95rem; color:white; font-weight:bold; font-family:var(--font-head);">${pName}</span>
+                                    <span style="font-size:0.75rem; color:#888;">IGN: <span style="color:#ccc;">${pIgn}</span> &nbsp;|&nbsp; ID/Role: <span style="color:#ccc;">${pId}</span></span>
+                                </div>
+                            </div>`;
+                    });
+                    pHTML += '</div>';
+                    loader.innerHTML = pHTML;
+                } else {
+                    loader.innerHTML = '<div style="font-size:0.8rem; color:#888; padding-top:10px; text-align:center;">Roster is hidden or empty.</div>';
+                }
+            }).catch(err => {
+                loader.innerHTML = '<div style="font-size:0.8rem; color:#ff4d4d; padding-top:10px; text-align:center;">Failed to load players.</div>';
+            });
+        }
+
+        // --- NEW: SOLO PLAYER & CLAN LOGO RENDERING ---
         function fetchLiveTeams() {
             if(!activeTournament.title) return;
             const container = document.getElementById('liveTeamsList');
@@ -1490,30 +1705,46 @@
                 let userClans = JSON.parse(localStorage.getItem('tournyx_my_clans_cache')) || [];
                 let userClanNames = userClans.map(c => String(c.name).toLowerCase().trim());
                 
+                let isSolo = activeTournament.format && activeTournament.format.toLowerCase().includes('solo');
+
                 if(data.status === 'success' && data.data.length > 0) {
                     document.getElementById('dtRegistrations').innerText = `${data.data.length}/${activeTournament.slots || 48}`;
+                    
                     data.data.forEach(team => {
                         let currentTeamStr = String(team.clan).toLowerCase().trim();
-                        let isMyClan = userClanNames.includes(currentTeamStr);
+                        let isMyClan = userClanNames.includes(currentTeamStr) || (team.username === JSON.parse(localStorage.getItem('tournyx_user'))?.username);
+                        let highlightClass = isMyClan ? "my-clan" : "";
                         
                         let displayClanName = team.clan;
                         if(displayClanName.startsWith("{")) {
                             try { let sd = JSON.parse(displayClanName); displayClanName = sd.username; } catch(e){}
                         }
-                        
-                        let highlightClass = isMyClan ? "my-clan" : "";
-                        let clanIcon = isMyClan ? `<i class="fa-solid fa-star" style="color:var(--accent-orange)"></i>` : `<i class="fa-solid fa-shield-halved"></i>`;
-                        
-                        container.innerHTML += `
-                            <div class="clan-item ${highlightClass}">
-                                <div class="clan-item-icon">${clanIcon}</div>
-                                <div class="clan-item-name">${displayClanName || "Solo Player"} ${isMyClan ? '(You)' : ''}</div>
-                                <div style="font-size:0.75rem; color:#888;">${team.status || 'Verified'}</div>
-                            </div>
-                        `;
+
+                        if (isSolo) {
+                            let playerName = team.username || displayClanName;
+                            let playerAvatar = team.avatar ? formatImageUrl(team.avatar) : `https://ui-avatars.com/api/?name=${encodeURIComponent(playerName)}&background=random`;
+                            container.innerHTML += `
+                                <div class="clan-item ${highlightClass}" style="flex-direction: row; align-items: center;">
+                                    <div class="clan-item-icon" style="overflow: hidden;"><img src="${playerAvatar}"></div>
+                                    <div class="clan-item-name">${playerName} ${isMyClan ? '(You)' : ''}</div>
+                                    <div style="font-size:0.75rem; color:var(--accent-cyan); font-weight: bold; background: rgba(0,242,255,0.1); padding: 4px 8px; border-radius: 6px;">Solo</div>
+                                </div>
+                            `;
+                        } else {
+                            let clanLogo = team.logo ? formatImageUrl(team.logo) : `https://ui-avatars.com/api/?name=${encodeURIComponent(displayClanName)}&background=random&color=fff&bold=true`;
+                            container.innerHTML += `
+                                <div class="clan-item ${highlightClass}" onclick="fetchClanPlayers('${displayClanName.replace(/'/g, "\\'")}', this)">
+                                    <div class="clan-item-header">
+                                        <div class="clan-item-icon"><img src="${clanLogo}"></div>
+                                        <div class="clan-item-name">${displayClanName} ${isMyClan ? '(You)' : ''}</div>
+                                        <div style="font-size:0.75rem; color:#888;"><i class="fa-solid fa-chevron-down"></i></div>
+                                    </div>
+                                </div>
+                            `;
+                        }
                     });
                 } else {
-                    container.innerHTML = `<div style="text-align:center; color:#888; padding:40px;">No teams registered yet. Be the first!</div>`;
+                    container.innerHTML = `<div style="text-align:center; color:#888; padding:40px;">No entries registered yet. Be the first!</div>`;
                 }
             }).catch(() => container.innerHTML = `<div style="text-align:center; color:#ff4d4d; padding:20px;">Failed to load teams.</div>`);
         }
@@ -1784,7 +2015,7 @@
                     let roomArea = document.getElementById('roomDetailsArea');
                     if (t.room_id != null && String(t.room_id).trim() !== "") {
                         roomArea.innerHTML = `
-                            <div style="background: rgba(0,255,127,0.1); border: 1px solid var(--accent-green); padding: 20px; border-radius: 12px; margin-bottom: 25px;">
+                            <div class="dm-section" style="border-color: var(--accent-green) !important;">
                                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding-bottom:15px; border-bottom:1px solid rgba(0,255,127,0.2);">
                                     <div>
                                         <div style="font-size:0.75rem; color:#888; text-transform:uppercase; letter-spacing:1px;">Room ID</div>
@@ -1803,7 +2034,7 @@
                         `;
                     } else {
                         roomArea.innerHTML = `
-                            <div style="background: rgba(0,242,255,0.05); border: 1px dashed var(--accent-cyan); padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 25px;">
+                            <div class="dm-section" style="border-style: dashed !important; text-align: center;">
                                 <i class="fa-solid fa-clock-rotate-left" style="font-size: 2rem; color: var(--accent-cyan); margin-bottom: 10px;"></i>
                                 <div style="font-family: var(--font-head); font-weight: bold; color: white; margin-bottom: 5px;">Waiting for Organizer</div>
                                 <div style="font-size: 0.85rem; color: #ccc;">You are successfully registered! Room ID and Password will be fetched securely from the server once the organizer provides them.</div>
