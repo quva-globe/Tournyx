@@ -269,8 +269,6 @@
         .rcpt-title { text-align: center; color: #888; font-size: 1rem; margin-bottom: 30px; }
         .rcpt-row { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px dashed rgba(255,255,255,0.1); font-size: 0.95rem; }
 
-        #pdfContainerWrapper { position: absolute; left: -9999px; top: -9999px; width: 600px; }
-
         /* CYBER SCANNER LOADER */
         .cyber-scanner-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:0.4s; backdrop-filter:blur(10px);}
         .cyber-scanner-overlay.active { opacity:1; pointer-events:all; }
@@ -283,13 +281,13 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes pulse { 0%{transform:scale(0.8); opacity:0.5;} 100%{transform:scale(1.2); opacity:1;} }
 
-        #customToast { visibility: hidden; min-width: 250px; background-color: var(--accent-cyan); color: #000; text-align: center; border-radius: 12px; padding: 16px; position: fixed; z-index: 9999; left: 50%; bottom: -50px; transform: translateX(-50%); font-family: var(--font-head); font-weight: bold; box-shadow: 0 8px 25px rgba(0,242,255,0.6); opacity: 0; transition: opacity 0.4s, bottom 0.4s; }
+        #customToast { visibility: hidden; min-width: 250px; background-color: var(--accent-cyan); color: #000; text-align: center; border-radius: 12px; padding: 14px; position: fixed; z-index: 9999; left: 50%; bottom: -50px; transform: translateX(-50%); font-family: var(--font-head); font-weight: bold; box-shadow: 0 8px 25px rgba(0,242,255,0.6); opacity: 0; transition: opacity 0.4s, bottom 0.4s; }
         #customToast.show { visibility: visible; opacity: 1; bottom: 100px; }
 
         .app-footer { text-align: center; padding: 20px 20px 110px 20px; color: #555; font-size: 0.75rem; font-family: var(--font-body); letter-spacing: 1px; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 10px;}
 
-        /* --- PERFECT BOTTOM NAVIGATION (MOBILE OPTIMIZED) --- */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(5, 2, 12, 0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 2px env(safe-area-inset-bottom); border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); transform: translateZ(0);}
+        /* PERFECTLY ALIGNED BOTTOM NAVIGATION (MOBILE OPTIMIZED) */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(7, 3, 17, 0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 2px env(safe-area-inset-bottom); border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); transform: translateZ(0);}
         .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; color: #666; text-decoration: none; font-size: 0.6rem; font-family: var(--font-head); font-weight: bold; flex: 1; transition: 0.3s; position: relative; padding: 0 2px; text-align: center;}
         .nav-item span { margin-top: 4px; transition: 0.3s; letter-spacing: -0.3px;}
         .nav-item i { font-size: 1.2rem; transition: 0.3s; }
@@ -301,9 +299,9 @@
         
         @media (min-width: 850px) { 
             .bottom-nav { display: none !important; } 
-            .desktop-nav { display: flex; }
         }
         .median-active .top-header { display: flex !important; visibility: visible !important; }
+
     </style>
 </head>
 <body>
@@ -545,41 +543,13 @@
                 <div class="rcpt-title" id="rcptTitle">Payment</div>
                 <div class="rcpt-row"><span class="rcpt-lbl">Transaction Status</span><span class="rcpt-val" id="rcptStatusVal"></span></div>
                 <div class="rcpt-row"><span class="rcpt-lbl">Category</span><span class="rcpt-val" id="rcptCat"><i class="fa-solid fa-gamepad"></i> Entry Fee</span></div>
-                <div class="rcpt-row"><span class="rcpt-lbl">Date & Time</span><span class="rcpt-val" id="rcptDate">Jan 1, 12:00 PM</span></div>
-                <div class="rcpt-row" style="border-bottom:none;"><span class="rcpt-lbl">Transaction ID</span><span class="rcpt-val"><span id="rcptId" style="font-size:0.85rem; color:#ccc;">TXN...</span> <i class="fa-regular fa-copy" style="color:var(--accent-cyan); cursor:pointer; padding:5px;" onclick="copyTxnId(); triggerHaptic();"></i></span></div>
+                <div class="rcpt-row"><span class="rcpt-lbl">Date & Time</span><span class="rcpt-val" id="receiptDate">Jan 1, 12:00 PM</span></div>
+                <div class="rcpt-row" style="border-bottom:none;"><span class="rcpt-lbl">Transaction ID</span><span class="rcpt-val"><span id="receiptId" style="font-size:0.85rem; color:#ccc;">TXN...</span> <i class="fa-regular fa-copy" style="color:var(--accent-cyan); cursor:pointer; padding:5px;" onclick="copyTxnId(); triggerHaptic();"></i></span></div>
             </div>
 
             <div style="display:flex; gap:10px; margin-top:10px;">
                 <button class="pay-btn" style="flex:1; background:transparent; border:1px solid var(--accent-cyan); color:var(--accent-cyan); box-shadow:none; font-size:0.9rem;" onclick="downloadReceiptPDF()"><i class="fa-solid fa-download"></i> PDF</button>
                 <button class="pay-btn" style="flex:1; background:var(--accent-green); color:black; border:none; box-shadow:0 5px 20px rgba(0,255,127,0.3); font-size:0.9rem;" id="supportBtn" onclick="contactSupportTxn()"><i class="fa-brands fa-whatsapp"></i> Support</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="pdfContainerWrapper">
-        <div id="pdfTemplate" style="background:#070311; color:#ffffff; padding:40px; font-family:'Helvetica Neue', Arial, sans-serif; width:800px; box-sizing:border-box;">
-            <div style="text-align:center; border-bottom:2px solid #1a0a3a; padding-bottom:30px; margin-bottom:30px;">
-                <h1 style="margin:0; font-size: 32px; font-weight: 900; background: linear-gradient(90deg, #bd00ff, #00f2ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform:uppercase; letter-spacing: 2px;">Tournyx Esports</h1>
-                <p style="color:#a0a0b0; margin:8px 0 0 0; font-size:14px; letter-spacing: 1px; text-transform: uppercase;">Official Transaction Ledger</p>
-            </div>
-            
-            <div style="display:flex; justify-content:space-between; margin-bottom:40px; background:#110822; padding:25px; border-radius:12px; border: 1px solid #1a0a3a;">
-                <div>
-                    <p style="margin:0 0 5px 0; color:#888; font-size:12px; text-transform:uppercase; letter-spacing:1px;">Player Tag</p>
-                    <h3 style="margin:0; color:#ffffff; font-size:20px;" id="pdfUserName">Name</h3>
-                </div>
-                <div style="text-align:right;">
-                    <p style="margin:0 0 5px 0; color:#888; font-size:12px; text-transform:uppercase; letter-spacing:1px;">Registered Email</p>
-                    <h3 style="margin:0; color:#ffffff; font-size:20px;" id="pdfUserEmail">email@domain.com</h3>
-                </div>
-            </div>
-            
-            <div id="pdfDynamicContentArea">
-                </div>
-            
-            <div style="text-align:center; margin-top:50px; padding-top: 20px; border-top: 1px solid #1a0a3a;">
-                <p style="color:#666; font-size:12px; margin:0 0 10px 0;">This is a computer generated cryptographic ledger and does not require a physical signature.</p>
-                <p style="color:#444; font-size:10px; margin:0; text-transform: uppercase; letter-spacing: 1px;">Secured by 256-bit Encryption • Tournyx Server</p>
             </div>
         </div>
     </div>
@@ -595,7 +565,7 @@
 
     <div class="app-footer">
         © 2026 TOURNYX. All rights reserved.<br>
-        <div style="margin-top: 5px; font-style: italic; color: #777; font-size: 0.8rem;">made with ⚡ for gamers</div>
+        <div class="footer-made-with">made with ⚡ for gamers worldwide</div>
         <div style="margin-top: 15px; font-size: 0.85rem; color: #888; font-family: var(--font-head); letter-spacing: 1px;">
             Powered by <span style="font-weight: 900; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 2px;">QUVA</span>
         </div>
@@ -627,6 +597,35 @@
         </a>
     </nav>
 
+    <div style="display:none;">
+        <div id="pdfTemplate" style="background:#070311; color:#ffffff; padding:40px; font-family:'Helvetica Neue', Arial, sans-serif; width:800px; box-sizing:border-box;">
+            <div style="text-align:center; border-bottom:2px solid #1a0a3a; padding-bottom:30px; margin-bottom:30px;">
+                <div style="background: linear-gradient(90deg, #bd00ff, #00f2ff); padding: 15px; border-radius: 8px; margin-bottom: 10px; display: inline-block; width: 100%;">
+                    <h1 style="margin:0; font-size: 28px; font-weight: 900; color: #ffffff; text-transform:uppercase; letter-spacing: 2px;">Tournyx Esports</h1>
+                </div>
+                <p style="color:#a0a0b0; margin:8px 0 0 0; font-size:14px; letter-spacing: 1px; text-transform: uppercase;">Official Transaction Ledger</p>
+            </div>
+            
+            <div style="display:flex; justify-content:space-between; margin-bottom:40px; background:#110822; padding:25px; border-radius:12px; border: 1px solid #1a0a3a;">
+                <div>
+                    <p style="margin:0 0 5px 0; color:#888; font-size:12px; text-transform:uppercase; letter-spacing:1px;">Player Tag</p>
+                    <h3 style="margin:0; color:#ffffff; font-size:20px;" id="pdfUserName">Name</h3>
+                </div>
+                <div style="text-align:right;">
+                    <p style="margin:0 0 5px 0; color:#888; font-size:12px; text-transform:uppercase; letter-spacing:1px;">Registered Email</p>
+                    <h3 style="margin:0; color:#ffffff; font-size:20px;" id="pdfUserEmail">email@domain.com</h3>
+                </div>
+            </div>
+            
+            <div id="pdfDynamicContentArea"></div>
+            
+            <div style="text-align:center; margin-top:50px; padding-top: 20px; border-top: 1px solid #1a0a3a;">
+                <p style="color:#666; font-size:12px; margin:0 0 10px 0;">This is a computer generated cryptographic ledger and does not require a physical signature.</p>
+                <p style="color:#444; font-size:10px; margin:0; text-transform: uppercase; letter-spacing: 1px;">Secured by 256-bit Encryption • Tournyx Server</p>
+            </div>
+        </div>
+    </div>
+
     <script>
         // --- MOBILE KEYBOARD NAV FIX ---
         const inputs = document.querySelectorAll('input, select, textarea');
@@ -636,29 +635,11 @@
             inp.addEventListener('blur', () => { if(bNav) setTimeout(() => bNav.style.bottom = '0', 100); });
         });
 
-        // --- BACKGROUND ANIMATION ---
-        const canvas = document.getElementById('particles-canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        let pArray = Array.from({length: 40}, () => ({ x:Math.random()*canvas.width, y:Math.random()*canvas.height, s:Math.random()*2, d:Math.random()*0.5+0.1 }));
-        function anim() { ctx.clearRect(0,0,canvas.width,canvas.height); pArray.forEach(p => { p.y -= p.d; if(p.y<0) p.y=canvas.height; ctx.fillStyle='rgba(189,0,255,0.2)'; ctx.beginPath(); ctx.arc(p.x,p.y,p.s,0,Math.PI*2); ctx.fill(); }); requestAnimationFrame(anim); }
-        anim();
-
         // --- CONSTANTS & SERVERS ---
         const API_URL = 'https://script.google.com/macros/s/AKfycbyqqTpgaflxKJ9xH0jq7mJ_jLzcoNhas3gNo0h5gvoa_6r5Ae9NFxJAJp7ZoYNnMRKl/exec';
         
-        // This is the REAL UPI ID used for the deep-link
-        const REAL_SERVER_UPIS = {
-            1: "tournyx@upi", 
-            2: "tournyx2@upi", 
-            3: "tournyx3@upi"  
-        };
-        // This is the MASKED UPI ID shown to the user on the UI
-        const MASKED_UPIS = {
-            1: "86xx9292@ula", 
-            2: "86xx9292@ula", 
-            3: "86xx9292@ula"
-        }
+        const REAL_SERVER_UPIS = { 1: "tournyx@upi", 2: "tournyx2@upi", 3: "tournyx3@upi" };
+        const MASKED_UPIS = { 1: "86xx9292@ula", 2: "86xx9292@ula", 3: "86xx9292@ula" };
         let currentServer = 1;
         
         let isGuest = false;
@@ -672,32 +653,18 @@
         let activeReceiptData = null;
         let qrTimerInterval;
         let isFirstDepositEligible = true;
+        let currentBalance = 0;
         
-        const FIRST_DEPOSIT_OFFERS = [
-            { amt: 50, bonus: 20 }, { amt: 100, bonus: 50 },
-            { amt: 250, bonus: 100 }, { amt: 500, bonus: 250 }
-        ];
+        const FIRST_DEPOSIT_OFFERS = [ { amt: 50, bonus: 20 }, { amt: 100, bonus: 50 }, { amt: 250, bonus: 100 }, { amt: 500, bonus: 250 } ];
         const STANDARD_OFFERS = [50, 100, 250, 500];
 
-        function showLoginModal() {
-            document.getElementById('loginPromptModal').classList.add('active');
-            triggerHaptic();
-            return false;
-        }
-        
-        function handleProtectedAction(event, url) {
-            if(isGuest) {
-                if(event) event.preventDefault();
-                return showLoginModal();
-            }
-            if(url) window.location.href = url;
-            return true;
-        }
-        
-        function handleProfileClick() {
-            if(isGuest) return showLoginModal();
-            window.location.href='profile.html';
-        }
+        function showLoginModal() { document.getElementById('loginPromptModal').classList.add('active'); triggerHaptic(); return false; }
+        function handleProtectedAction(event, url) { if(isGuest) { if(event) event.preventDefault(); return showLoginModal(); } if(url) window.location.href = url; return true; }
+        function handleProfileClick() { if(isGuest) return showLoginModal(); window.location.href='profile.html'; }
+        function triggerHaptic() { if(navigator.vibrate) navigator.vibrate(40); }
+        function triggerError(id) { let el = document.getElementById(id); el.classList.add('input-error'); triggerHaptic(); setTimeout(()=>el.classList.remove('input-error'),500); }
+        function showToast(msg, isError=false) { let t = document.getElementById("customToast"); t.innerText = msg; t.style.backgroundColor = isError ? "var(--accent-red)" : "var(--accent-cyan)"; t.style.color = "black"; t.className = "show"; triggerHaptic(); setTimeout(()=>t.className="", 3500); }
+        function formatNum(num) { return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
 
         document.addEventListener("DOMContentLoaded", function() {
             if(currentUser.avatar && !isGuest) document.getElementById('headerProfilePic').src = currentUser.avatar;
@@ -723,15 +690,6 @@
             
             selectServer(1);
         });
-
-        function triggerHaptic() { if(navigator.vibrate) navigator.vibrate(40); }
-        function triggerError(id) { let el = document.getElementById(id); el.classList.add('input-error'); triggerHaptic(); setTimeout(()=>el.classList.remove('input-error'),500); }
-        function showToast(msg, isError=false) {
-            let t = document.getElementById("customToast"); t.innerText = msg;
-            t.style.backgroundColor = isError ? "var(--accent-red)" : "var(--accent-cyan)"; t.style.color = "black";
-            t.className = "show"; triggerHaptic(); setTimeout(()=>t.className="", 3500);
-        }
-        function formatNum(num) { return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
 
         function animateValue(obj, start, end, duration) {
             if(start === end) { obj.innerHTML = formatNum(end); return; }
@@ -766,6 +724,7 @@
             let rs = parseFloat(currentUser.rupees);
             if(isNaN(rs)) rs = 0;
             let pts = parseInt(currentUser.points) || 0;
+            currentBalance = rs;
             
             animateValue(document.getElementById('displayRupees'), 0, rs, 1000);
             animateValue(document.getElementById('displayPoints'), 0, pts, 1000);
@@ -793,22 +752,15 @@
             const grid = document.getElementById('quickAmtGrid');
             grid.innerHTML = "";
             if (isFirstDepositEligible) {
-                FIRST_DEPOSIT_OFFERS.forEach(offer => {
-                    grid.innerHTML += `<div class="quick-amt-btn" onclick="setAmt(${offer.amt}); triggerHaptic();">+${offer.amt} <div class="bonus-tag display-bonus">+${offer.bonus} Bonus</div></div>`;
-                });
+                FIRST_DEPOSIT_OFFERS.forEach(offer => { grid.innerHTML += `<div class="quick-amt-btn" onclick="setAmt(${offer.amt}); triggerHaptic();">+${offer.amt} <div class="bonus-tag display-bonus">+${offer.bonus} Bonus</div></div>`; });
             } else {
-                STANDARD_OFFERS.forEach(amt => {
-                    grid.innerHTML += `<div class="quick-amt-btn" onclick="setAmt(${amt}); triggerHaptic();">+${amt}</div>`;
-                });
+                STANDARD_OFFERS.forEach(amt => { grid.innerHTML += `<div class="quick-amt-btn" onclick="setAmt(${amt}); triggerHaptic();">+${amt}</div>`; });
             }
         }
 
         function openAddMoney() { 
             let hr = new Date().getHours();
-            if (hr >= 3 && hr < 9) {
-                showToast("Deposit Gateway is closed. Server opens at 9:00 AM.", true);
-                return;
-            }
+            if (hr >= 3 && hr < 9) { showToast("Deposit Gateway is closed. Server opens at 9:00 AM.", true); return; }
             document.getElementById('addMoneyOverlay').classList.add('active'); 
             startQRTimer(); 
         }
@@ -818,12 +770,8 @@
         
         function selectServer(num) {
             currentServer = num;
-            document.getElementById('sCard1').classList.remove('active');
-            document.getElementById('sCard2').classList.remove('active');
-            document.getElementById('sCard3').classList.remove('active');
+            document.getElementById('sCard1').classList.remove('active'); document.getElementById('sCard2').classList.remove('active'); document.getElementById('sCard3').classList.remove('active');
             document.getElementById(`sCard${num}`).classList.add('active');
-            
-            // DISPLAY THE MASKED UPI ID VISUALLY
             document.getElementById('officialUPI').innerText = MASKED_UPIS[currentServer];
             updateQR();
         }
@@ -834,7 +782,6 @@
             if(isNaN(amt) || amt < 10) { if(/Android|iPhone/i.test(navigator.userAgent)) qrBox.classList.remove('active'); return; }
             qrBox.classList.add('active');
             document.getElementById('qrAmtText').innerText = `Rs. ${amt}`;
-            // USE THE REAL UPI ID FOR THE ACTUAL FUNCTIONAL LINK
             let realUpiId = REAL_SERVER_UPIS[currentServer];
             let upiLink = `upi://pay?pa=${realUpiId}&pn=Tournyx%20Esports&am=${amt}&cu=INR`;
             document.getElementById('dynamicQR').src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiLink)}`;
@@ -848,16 +795,10 @@
         function openUPIApp() {
             let amt = parseInt(document.getElementById('addAmtInput').value);
             if(isNaN(amt) || amt < 10) { triggerError('addAmtInput'); showToast("Enter minimum Rs 10", true); return; }
-            // USE THE REAL UPI ID FOR THE ACTUAL APP OPENER
             let realUpiId = REAL_SERVER_UPIS[currentServer];
             window.location.href = `upi://pay?pa=${realUpiId}&pn=Tournyx%20Esports&am=${amt}&cu=INR`;
         }
-        
-        function copyUPI() { 
-            // ALWAYS COPY THE REAL UPI SO IT WORKS IN PAYMENT APPS, EVEN IF MASKED VISUALLY
-            navigator.clipboard.writeText(REAL_SERVER_UPIS[currentServer]).then(()=>showToast("Official UPI ID Copied!")); 
-            triggerHaptic(); 
-        }
+        function copyUPI() { navigator.clipboard.writeText(REAL_SERVER_UPIS[currentServer]).then(()=>showToast("Official UPI ID Copied!")); triggerHaptic(); }
 
         function submitStrictUTR() {
             let amt = parseInt(document.getElementById('addAmtInput').value);
@@ -866,33 +807,18 @@
             if(!/^\d{12}$/.test(utr)) { triggerError('utrInput'); showToast("UTR must be exactly 12 digits.", true); return; }
             
             closeAddMoney();
-
-            let scanner = document.getElementById('cyberScanner');
-            let sText = document.getElementById('scannerText');
-            let sDesc = document.getElementById('scannerDesc');
-            let sCircle = document.getElementById('scannerCircle');
-            let sInner = document.getElementById('scannerInner');
-            let sTimer = document.getElementById('scannerTimer');
+            let scanner = document.getElementById('cyberScanner'); let sText = document.getElementById('scannerText'); let sDesc = document.getElementById('scannerDesc'); let sCircle = document.getElementById('scannerCircle'); let sInner = document.getElementById('scannerInner'); let sTimer = document.getElementById('scannerTimer');
             
-            scanner.classList.add('active');
-            sText.innerText = "AUTHORIZING...";
-            sDesc.innerText = "Connecting to Secure Gateway...";
-            sCircle.style.borderColor = "var(--accent-cyan)";
-            sInner.style.background = "rgba(0,242,255,0.2)";
-            sTimer.style.display = "none"; 
+            scanner.classList.add('active'); sText.innerText = "AUTHORIZING..."; sDesc.innerText = "Connecting to Secure Gateway..."; sCircle.style.borderColor = "var(--accent-cyan)"; sInner.style.background = "rgba(0,242,255,0.2)"; sTimer.style.display = "none"; 
 
             setTimeout(() => { sText.innerText = "VERIFYING UTR..."; sDesc.innerText = "Connecting to banking APIs..."; }, 3000);
             setTimeout(() => { sText.innerText = "SYNCING WEBHOOK..."; sDesc.innerText = "Awaiting bank confirmation..."; sCircle.style.borderColor = "var(--accent-purple)"; sInner.style.background = "rgba(189,0,255,0.2)"; }, 6000);
 
             setTimeout(() => {
-                scanner.classList.remove('active');
-                showToast("Pending bank confirmation. Will be added shortly.");
+                scanner.classList.remove('active'); showToast("Pending bank confirmation. Will be added shortly.");
                 
                 let bonusAmt = 0;
-                if(isFirstDepositEligible) {
-                    let offer = FIRST_DEPOSIT_OFFERS.find(o => o.amt === amt);
-                    if(offer) bonusAmt = offer.bonus;
-                }
+                if(isFirstDepositEligible) { let offer = FIRST_DEPOSIT_OFFERS.find(o => o.amt === amt); if(offer) bonusAmt = offer.bonus; }
 
                 let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
                 let dateStr = new Date().toLocaleString('en-US', { month:'short', day:'2-digit', year:'numeric', hour:'numeric', minute:'2-digit', hour12:true });
@@ -902,47 +828,22 @@
 
                 if(bonusAmt > 0) {
                     let bonusTxn = { id: "BONUS" + Math.floor(Math.random()*10000), title: "First Deposit Bonus", amount: bonusAmt, type: "Credit", status: "Pending", category: "Bonus", date: dateStr };
-                    txns.unshift(bonusTxn);
-                    showToast("UTR & Bonus Pending Verification!");
+                    txns.unshift(bonusTxn); showToast("UTR & Bonus Pending Verification!");
                 }
                 
-                localStorage.setItem('tournyx_txns', JSON.stringify(txns));
-                renderTransactions(); checkFirstDeposit(txns);
+                localStorage.setItem('tournyx_txns', JSON.stringify(txns)); renderTransactions(); checkFirstDeposit(txns);
                 
                 fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "submit_utr", email: currentUser.email, amount: amt, utr: utr }) });
-                if(bonusAmt > 0) {
-                    fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "claim_offer", email: currentUser.email, offerName: "First Deposit Bonus Setup", reward: bonusAmt }) });
-                }
+                if(bonusAmt > 0) { fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "claim_offer", email: currentUser.email, offerName: "First Deposit Bonus Setup", reward: bonusAmt }) }); }
             }, 8500);
         }
 
-        // --- INTERACTIVE SUPPORT BOT SCRIPT ---
+        // --- INTERACTIVE SUPPORT BOT ---
         let currentSupportCategory = "";
-        
-        function openGlobalSupport() {
-            if(isGuest) return showLoginModal();
-            closeAddMoney();
-            document.getElementById('supportBotOverlay').classList.add('active');
-            supportBack(); 
-        }
-        
-        function supportProceed(category) {
-            currentSupportCategory = category;
-            document.getElementById('supportStep1').style.display = 'none';
-            document.getElementById('supportStep2').style.display = 'block';
-        }
-        
-        function supportBack() {
-            document.getElementById('supportStep1').style.display = 'block';
-            document.getElementById('supportStep2').style.display = 'none';
-            document.getElementById('screenshotInput').value = "";
-            document.getElementById('supportMsg').value = "";
-            document.getElementById('screenshotPreviewBox').style.display = "none";
-        }
-        
-        function closeSupportBot() {
-            document.getElementById('supportBotOverlay').classList.remove('active');
-        }
+        function openGlobalSupport() { if(isGuest) return showLoginModal(); closeAddMoney(); document.getElementById('supportBotOverlay').classList.add('active'); supportBack(); }
+        function supportProceed(category) { currentSupportCategory = category; document.getElementById('supportStep1').style.display = 'none'; document.getElementById('supportStep2').style.display = 'block'; }
+        function supportBack() { document.getElementById('supportStep1').style.display = 'block'; document.getElementById('supportStep2').style.display = 'none'; document.getElementById('screenshotInput').value = ""; document.getElementById('supportMsg').value = ""; document.getElementById('screenshotPreviewBox').style.display = "none"; }
+        function closeSupportBot() { document.getElementById('supportBotOverlay').classList.remove('active'); }
         
         function previewScreenshot(event) {
             const file = event.target.files[0];
@@ -953,15 +854,8 @@
 
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    if(isVid) {
-                        document.getElementById('ssPreview').style.display = 'none';
-                        document.getElementById('vidPreview').style.display = 'inline-block';
-                        document.getElementById('vidPreview').src = e.target.result;
-                    } else {
-                        document.getElementById('vidPreview').style.display = 'none';
-                        document.getElementById('ssPreview').style.display = 'inline-block';
-                        document.getElementById('ssPreview').src = e.target.result;
-                    }
+                    if(isVid) { document.getElementById('ssPreview').style.display = 'none'; document.getElementById('vidPreview').style.display = 'inline-block'; document.getElementById('vidPreview').src = e.target.result; } 
+                    else { document.getElementById('vidPreview').style.display = 'none'; document.getElementById('ssPreview').style.display = 'inline-block'; document.getElementById('ssPreview').src = e.target.result; }
                     document.getElementById('screenshotPreviewBox').style.display = "block";
                 }
                 reader.readAsDataURL(file);
@@ -970,47 +864,30 @@
         
         function analyzeAndSubmitScreenshot() {
             let msgText = document.getElementById('supportMsg').value.trim();
-            let ssPreview = document.getElementById('ssPreview');
-            let vidPreview = document.getElementById('vidPreview');
-            let fileData = "";
+            let ssPreview = document.getElementById('ssPreview'); let vidPreview = document.getElementById('vidPreview'); let fileData = "";
 
             if (ssPreview.style.display !== 'none' && ssPreview.src) fileData = ssPreview.src;
             else if (vidPreview.style.display !== 'none' && vidPreview.src) fileData = vidPreview.src;
 
             closeSupportBot();
-            let scanner = document.getElementById('cyberScanner');
-            let sText = document.getElementById('scannerText');
-            let sDesc = document.getElementById('scannerDesc');
-            let sTimer = document.getElementById('scannerTimer');
+            let scanner = document.getElementById('cyberScanner'); let sText = document.getElementById('scannerText'); let sDesc = document.getElementById('scannerDesc'); let sTimer = document.getElementById('scannerTimer');
             
-            scanner.classList.add('active');
-            sText.innerText = "INITIALIZING SECURE UPLOAD...";
-            sDesc.innerText = "Establishing end-to-end encryption...";
-            sTimer.innerText = "20s";
-            sTimer.style.display = "block";
+            scanner.classList.add('active'); sText.innerText = "INITIALIZING SECURE UPLOAD..."; sDesc.innerText = "Establishing end-to-end encryption..."; sTimer.innerText = "20s"; sTimer.style.display = "block";
 
             let timeLeft = 20;
             let countdown = setInterval(() => {
-                timeLeft--;
-                sTimer.innerText = timeLeft + "s";
-                
+                timeLeft--; sTimer.innerText = timeLeft + "s";
                 if(timeLeft === 15) { sText.innerText = "ENCRYPTING MEDIA PAYLOAD..."; sDesc.innerText = "Processing high-res data packets..."; } 
                 else if(timeLeft === 10) { sText.innerText = "TRANSMITTING TO ADMIN LEDGER..."; sDesc.innerText = "Uploading securely to cloud servers..."; } 
                 else if(timeLeft === 5) { sText.innerText = "FINALIZING PRIORITY TICKET..."; sDesc.innerText = "Queueing for immediate admin review..."; }
             }, 1000);
             
             setTimeout(() => {
-                clearInterval(countdown);
-                scanner.classList.remove('active');
-                sTimer.style.display = "none";
-                
+                clearInterval(countdown); scanner.classList.remove('active'); sTimer.style.display = "none";
                 let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
                 let dateStr = new Date().toLocaleString('en-US', { month:'short', day:'2-digit', year:'numeric', hour:'numeric', minute:'2-digit', hour12:true });
                 let newTxn = { id: "REV" + Math.floor(1000 + Math.random()*9000), title: currentSupportCategory, amount: 0, type: "Credit", status: "Pending", category: "Support", date: dateStr };
-                txns.unshift(newTxn);
-                localStorage.setItem('tournyx_txns', JSON.stringify(txns));
-                renderTransactions();
-                
+                txns.unshift(newTxn); localStorage.setItem('tournyx_txns', JSON.stringify(txns)); renderTransactions();
                 let payload = { action: "support_ticket", email: currentUser.email, category: currentSupportCategory, message: msgText, fileBase64: fileData };
                 fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
                 showToast("Success! Admin has been alerted for priority review.");
@@ -1023,29 +900,20 @@
                 let userDataObj = await userRes.json();
                 if(userDataObj.status === 'success' && userDataObj.data && userDataObj.data.rupees !== undefined && userDataObj.data.rupees !== "") {
                     let freshBal = parseFloat(userDataObj.data.rupees);
-                    if(!isNaN(freshBal)) {
-                        currentUser.rupees = freshBal.toString();
-                        localStorage.setItem('tournyx_user', JSON.stringify(currentUser));
-                        updateWalletDisplay();
-                    }
+                    if(!isNaN(freshBal)) { currentUser.rupees = freshBal.toString(); localStorage.setItem('tournyx_user', JSON.stringify(currentUser)); updateWalletDisplay(); }
                 }
-
                 let txnRes = await fetch(API_URL + "?action=get_transactions&email=" + encodeURIComponent(currentUser.email));
                 let txnDataObj = await txnRes.json();
                 if(txnDataObj.status === 'success' && txnDataObj.data && Array.isArray(txnDataObj.data)) {
                     localStorage.setItem('tournyx_txns', JSON.stringify(txnDataObj.data));
-                    renderTransactions();
-                    checkFirstDeposit(txnDataObj.data);
+                    renderTransactions(); checkFirstDeposit(txnDataObj.data);
                 }
             } catch(e) {}
         }
 
         function renderTransactions() {
             const container = document.getElementById('txnListContainer');
-            if(isGuest) {
-                container.innerHTML = `<div style="text-align:center; padding:30px; color:#666; font-size:0.9rem;"><i class="fa-solid fa-lock" style="display:block; font-size:2rem; margin-bottom:10px; color:#444;"></i> Log in to view your secure transaction ledger.</div>`;
-                return;
-            }
+            if(isGuest) { container.innerHTML = `<div style="text-align:center; padding:30px; color:#666; font-size:0.9rem;"><i class="fa-solid fa-lock" style="display:block; font-size:2rem; margin-bottom:10px; color:#444;"></i> Log in to view your secure transaction ledger.</div>`; return; }
             let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
             container.innerHTML = "";
             if (txns.length === 0) { container.innerHTML = `<div style="text-align:center; padding:30px; color:#666;">No recent transactions.</div>`; return; }
@@ -1055,23 +923,16 @@
         function openAllTxns() {
             document.getElementById('ledgerModal').classList.add('active');
             let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
-            const container = document.getElementById('fullTxnListContainer');
-            container.innerHTML = "";
+            const container = document.getElementById('fullTxnListContainer'); container.innerHTML = "";
             txns.forEach((t, i) => { container.innerHTML += buildTxnHtml(t, i); });
         }
         function closeAllTxns() { document.getElementById('ledgerModal').classList.remove('active'); }
 
         function buildTxnHtml(t, delay) {
-            let typeStr = String(t.type || "").toLowerCase();
-            let isCredit = typeStr === "credit"; 
-            let stat = String(t.status || "").toLowerCase();
-            let isPending = stat === "pending";
-            let isFailed = stat === "failed" || stat === "cancelled" || stat === "refunded";
-            let isSuccess = stat === "success" || stat === "completed";
+            let typeStr = String(t.type || "").toLowerCase(); let isCredit = typeStr === "credit"; 
+            let stat = String(t.status || "").toLowerCase(); let isPending = stat === "pending"; let isFailed = stat === "failed" || stat === "cancelled" || stat === "refunded"; let isSuccess = stat === "success" || stat === "completed";
             
-            let cat = t.category || "General"; let catIcon = "fa-money-bill";
-            let iconClass = isCredit ? "icon-credit" : "icon-debit"; 
-            let mainIcon = isCredit ? "fa-arrow-down" : "fa-arrow-up";
+            let cat = t.category || "General"; let catIcon = "fa-money-bill"; let iconClass = isCredit ? "icon-credit" : "icon-debit"; let mainIcon = isCredit ? "fa-arrow-down" : "fa-arrow-up";
             
             let titleLower = String(t.title || "").toLowerCase();
             if(titleLower.includes('tournament') || titleLower.includes('entry') || titleLower.includes('joined')) { cat = "Entry Fee"; catIcon = "fa-gamepad"; iconClass = "icon-debit"; mainIcon = "fa-gamepad"; }
@@ -1086,10 +947,8 @@
 
             let amtClass = isCredit ? "amt-credit" : "amt-debit";
             let statusColor = isSuccess ? "var(--accent-green)" : (isFailed ? "var(--accent-red)" : "#ff9900");
-            
             let inOutLabel = isCredit ? `<div class="in-out-label in-label">MONEY IN</div>` : `<div class="in-out-label out-label">MONEY OUT</div>`;
             let displayDate = t.date ? (t.date.includes(',') ? t.date.split(',')[0] : t.date.split(' ')[0]) : "Today";
-            
             let amtHTML = t.amount > 0 ? `${isCredit?'+':'-'} ₹${formatNum(t.amount)}` : `---`;
 
             return `
@@ -1112,15 +971,10 @@
         function openReceipt(id) {
             let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
             let t = txns.find(x => x.id === id); if(!t) return;
-            activeReceiptId = id;
-            activeReceiptData = t;
+            activeReceiptId = id; activeReceiptData = t;
             
-            let typeStr = String(t.type || "").toLowerCase();
-            let isCredit = typeStr === "credit"; 
-            let stat = String(t.status || "").toLowerCase();
-            let isPending = stat === "pending";
-            let isFailed = stat === "failed" || stat === "cancelled" || stat === "refunded";
-            let isSuccess = stat === "success" || stat === "completed";
+            let typeStr = String(t.type || "").toLowerCase(); let isCredit = typeStr === "credit"; 
+            let stat = String(t.status || "").toLowerCase(); let isPending = stat === "pending"; let isFailed = stat === "failed" || stat === "cancelled" || stat === "refunded"; let isSuccess = stat === "success" || stat === "completed";
             
             let catStr = `<i class="fa-solid fa-gamepad"></i> General`;
             let titleLower = String(t.title || "").toLowerCase();
@@ -1140,8 +994,10 @@
             document.getElementById('rcptAmt').className = `rcpt-amt ${isCredit ? 'amt-credit' : 'amt-debit'}`;
             document.getElementById('rcptTitle').innerText = t.title;
             document.getElementById('rcptCat').innerHTML = catStr;
-            document.getElementById('rcptDate').innerText = t.date;
-            document.getElementById('rcptId').innerText = t.id;
+            
+            // ---> THE FIX YOU REQUESTED: WRITING ID & DATE <---
+            document.getElementById('receiptDate').innerText = t.date || "N/A";
+            document.getElementById('receiptId').innerText = t.id || "N/A";
             
             let statusColor = isSuccess ? "var(--accent-green)" : (isFailed ? "var(--accent-red)" : "#ff9900");
             let sEl = document.getElementById('rcptStatusVal');
@@ -1248,13 +1104,6 @@
                 jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
             };
             html2pdf().set(opt).from(element).save();
-        }
-
-        function contactSupportTxn() {
-            triggerHaptic();
-            if(!activeReceiptData) return;
-            let msg = `Hello Tournyx Support, I need help with my recent transaction.%0A%0A*Transaction ID:* ${activeReceiptData.id}%0A*Amount:* Rs. ${activeReceiptData.amount}%0A*Date:* ${activeReceiptData.date}%0A*Status:* ${activeReceiptData.status}%0A*User:* ${currentUser.email}%0A%0APlease assist me with this.`;
-            window.open(`https://wa.me/918608183838?text=${msg}`, '_blank');
         }
     </script>
 </body>
