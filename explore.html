@@ -890,7 +890,7 @@
         let localTournamentsData = []; 
         let activeCountdown = null;
 
-        // --- HARDWARE BACK BUTTON LOGIC ---
+        // --- HARDWARE BACK BUTTON LOGIC SMOOTH FIX ---
         window.addEventListener('popstate', function(event) {
             const modal = document.getElementById('tourneyDetailModal');
             if (modal && modal.classList.contains('active')) {
@@ -1540,15 +1540,15 @@
             document.getElementById('dtDescription').innerHTML = t.rules || "Standard competitive rules apply.";
             document.getElementById('dtRulesText').innerHTML = t.rules || "No specific rules provided.";
             
-            // PRIZE TAB DYNAMIC LOGIC
+            // PRIZE TAB DYNAMIC LOGIC - PERFECTLY MAPPED TO BACKEND KEY
             const prizeArea = document.getElementById('prizeDistributionArea');
             document.getElementById('dtPrizeTotalHead').innerText = getPrizeText(t.prize, t.prize_pts);
 
             let prizeHTML = '';
             
-            // Map directly to t.prize_distribution as requested
-            let prizeImageToDisplay = t.prize_distribution || t.prize_image || "";
-            if (prizeImageToDisplay && prizeImageToDisplay.trim() !== "") {
+            // EXACT MAPPING: Using t.prize_distribution_image
+            let prizeImageToDisplay = t.prize_distribution_image || t.prize_distribution || t.prize_image || "";
+            if (prizeImageToDisplay && prizeImageToDisplay.trim() !== "" && prizeImageToDisplay !== "undefined") {
                 prizeHTML += `
                     <div class="prize-flip-container" onclick="this.classList.toggle('flipped'); triggerHaptic();">
                         <div class="prize-flip-inner">
@@ -1572,7 +1572,7 @@
                 if(t.prize1) prizeHTML += `<div class="prize-card gold"><div class="pc-rank"><i class="fa-solid fa-medal" style="color:#FFD700; font-size:1.5rem;"></i> 1st Place</div><div class="pc-val">${t.prize1}</div></div>`;
                 if(t.prize2) prizeHTML += `<div class="prize-card silver"><div class="pc-rank"><i class="fa-solid fa-medal" style="color:#C0C0C0; font-size:1.5rem;"></i> 2nd Place</div><div class="pc-val">${t.prize2}</div></div>`;
                 if(t.prize3) prizeHTML += `<div class="prize-card bronze"><div class="pc-rank"><i class="fa-solid fa-medal" style="color:#CD7F32; font-size:1.5rem;"></i> 3rd Place</div><div class="pc-val">${t.prize3}</div></div>`;
-            } else if (!prizeImageToDisplay) {
+            } else if (!prizeImageToDisplay || prizeImageToDisplay === "undefined") {
                 let textToDisplay = getPrizeText(t.prize, t.prize_pts);
                 prizeHTML += `
                     <div class="prize-card gold" style="justify-content: center; flex-direction: column; gap: 10px; text-align: center; padding: 25px;">
@@ -1583,10 +1583,11 @@
             }
             prizeArea.innerHTML = prizeHTML;
 
-            // Map directly to t.bracket_image
+            // EXACT MAPPING FOR BRACKET
             const bracketArea = document.getElementById('bracketDisplayArea');
-            if (t.bracket_image && t.bracket_image.trim() !== "") {
-                bracketArea.innerHTML = `<img src="${formatImageUrl(t.bracket_image)}" style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 12px; border: 1px solid var(--card-border); margin-top: 10px;">`;
+            let bracketImgToDisplay = t.bracket_image || "";
+            if (bracketImgToDisplay && bracketImgToDisplay.trim() !== "" && bracketImgToDisplay !== "undefined") {
+                bracketArea.innerHTML = `<img src="${formatImageUrl(bracketImgToDisplay)}" style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 12px; border: 1px solid var(--card-border); margin-top: 10px;">`;
             } else {
                 bracketArea.innerHTML = `<div style="text-align:center; color:#888; padding:20px;">Brackets have not been generated yet.</div>`;
             }
@@ -1729,7 +1730,7 @@
             document.getElementById('hpName').innerText = orgId;
             document.getElementById('hpAvatar').src = fallbackAvatar;
             document.getElementById('hpHosted').innerText = fallbackHosted;
-            document.getElementById('hpSuccess').innerText = "100%";
+            document.getElementById('hpSuccess').innerText = "100%"; 
             document.getElementById('hpRating').innerText = "4.9"; 
 
             fetch(API_URL + "?action=get_user_profile&username=" + encodeURIComponent(orgId))
