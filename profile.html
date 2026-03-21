@@ -215,7 +215,7 @@
         .delete-btn:active { background: var(--accent-danger); color: white; transform: scale(0.96); }
 
         .qr-box { background: white; padding: 20px; border-radius: 15px; text-align: center; width: max-content; margin: 0 auto 20px; border: 5px solid var(--accent-cyan); box-shadow: 0 0 30px rgba(0,242,255,0.4);}
-        #avatarUploadInp, #tourneyBannerInp, #prizeInput, #bracketInput { display: none; }
+        #avatarUploadInp, #tourneyBannerInp { display: none; }
         .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.02) 25%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.02) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite linear; border-radius: 8px; transform: translateZ(0);}
         @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -280,6 +280,12 @@
         .image-preview.has-image { opacity: 1; }
         .change-banner-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 8px; background: rgba(0,0,0,0.8); font-size: 0.75rem; color: white; z-index: 3; opacity: 0; transition: 0.3s; backdrop-filter: blur(5px);}
         .image-upload-box:hover .change-banner-overlay { opacity: 1; }
+
+        /* --- NEW SCHEDULE BUILDER CSS --- */
+        .sch-block { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 15px; margin-bottom: 15px; position: relative; transition: 0.3s; }
+        .sch-block:focus-within { border-color: var(--accent-cyan); box-shadow: inset 0 0 10px rgba(0,242,255,0.05); }
+        .sch-remove { position: absolute; top: -10px; right: -10px; background: var(--accent-red); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.7rem; box-shadow: 0 2px 5px rgba(0,0,0,0.5); z-index: 5; transition: 0.3s; }
+        .sch-remove:active { transform: scale(0.8); }
 
         /* --- PERFECT CROPPER MODAL (16:9 SUPPORT) --- */
         .cropper-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(15px); }
@@ -743,8 +749,6 @@
             <div class="fs-content" style="padding-right: 5px;">
                 <input type="hidden" id="editTourneyId">
                 <input type="hidden" id="editTourneyBannerStr">
-                <input type="hidden" id="editTourneyPrizeStr">
-                <input type="hidden" id="editTourneyBracketStr">
                 
                 <label class="form-label"><i class="fa-solid fa-image"></i> Visual Identity</label>
                 <div class="image-upload-box" onclick="document.getElementById('tourneyBannerInp').click(); triggerHaptic();">
@@ -791,27 +795,22 @@
                 </div>
 
                 <label class="form-label"><i class="fa-solid fa-money-bill-wave"></i> Economics & Prize</label>
-                <input type="text" id="editTourneyPrize" class="form-control" placeholder="Prize Pool (₹) *" style="margin-bottom: 20px;">
+                <input type="text" id="editTourneyPrize" class="form-control" placeholder="Total Prize Pool (₹) *" style="margin-bottom: 20px;">
                 
-                <label class="form-label" style="font-size: 0.75rem; text-transform:none; margin-bottom: 5px; color:#888;">Prize Distribution Image (Optional)</label>
-                <div class="image-upload-box" style="padding: 15px;" onclick="document.getElementById('prizeInput').click(); triggerHaptic();">
-                    <i class="fa-solid fa-trophy" style="font-size: 1.5rem;"></i>
-                    <p style="color: white; font-family: var(--font-head); font-weight: bold; margin-bottom: 0;">Upload Prize Graphic</p>
-                    <img src="" id="editTourneyPrizePreview" class="image-preview" style="object-fit: contain; background: #000;">
-                    <div class="change-banner-overlay">Tap to Change Image</div>
+                <label class="form-label" style="font-size: 0.75rem; text-transform:none; margin-bottom: 5px; color:#888;">Prize Distribution (Optional)</label>
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <input type="text" id="editPrize1" class="form-control" placeholder="1st Place">
+                    <input type="text" id="editPrize2" class="form-control" placeholder="2nd Place">
+                    <input type="text" id="editPrize3" class="form-control" placeholder="3rd Place">
                 </div>
-                <input type="file" id="prizeInput" accept="image/*" onchange="initCropper(event, 'editTourneyPrizePreview', 'editTourneyPrizeStr', 16/9)">
 
-                <label class="form-label" style="font-size: 0.75rem; text-transform:none; margin-bottom: 5px; color:#888;">Match Bracket / Schedule Image (Optional)</label>
-                <div class="image-upload-box" style="padding: 15px;" onclick="document.getElementById('bracketInput').click(); triggerHaptic();">
-                    <i class="fa-solid fa-sitemap" style="font-size: 1.5rem;"></i>
-                    <p style="color: white; font-family: var(--font-head); font-weight: bold; margin-bottom: 0;">Upload Bracket Image</p>
-                    <img src="" id="editTourneyBracketPreview" class="image-preview" style="object-fit: contain; background: #000;">
-                    <div class="change-banner-overlay">Tap to Change Image</div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05);">
+                    <label class="form-label" style="margin:0;">Match Schedule (Max 7)</label>
+                    <span style="background:var(--accent-cyan); color:black; border-radius:12px; padding: 5px 12px; font-size:0.8rem; font-family:var(--font-head); font-weight:bold; cursor:pointer;" onclick="addEditScheduleBlock()"><i class="fa-solid fa-plus"></i> Add Match</span>
                 </div>
-                <input type="file" id="bracketInput" accept="image/*" onchange="initCropper(event, 'editTourneyBracketPreview', 'editTourneyBracketStr', 16/9)">
+                <div id="editScheduleContainer" style="margin-top: 15px;"></div>
 
-                <label class="form-label"><i class="fa-brands fa-youtube"></i> Live Stream URL (Optional)</label>
+                <label class="form-label" style="margin-top: 25px;"><i class="fa-brands fa-youtube"></i> Live Stream URL (Optional)</label>
                 <input type="url" id="editTourneyStream" class="form-control" placeholder="https://youtube.com/..." style="margin-bottom: 20px;">
 
                 <label class="form-label"><i class="fa-solid fa-book"></i> Tournament Rules & Info</label>
@@ -1089,6 +1088,7 @@
 
         function formatImageUrl(url) {
             if (!url) return '';
+            if (url.startsWith('data:image')) return url; // BASE64 EXACT FIX
             if (url.includes('drive.google.com/file/d/')) { let id = url.split('/d/')[1].split('/')[0]; return `https://drive.google.com/uc?export=view&id=${id}`; }
             return url;
         }
@@ -1546,13 +1546,40 @@
             });
         }
 
-        // --- EXPANDED MANAGER POPULATOR WITH ADVANCED CROPPER LOGIC ---
-        let cropper = null;
-        let currentUploadState = {
-            previewId: '',
-            base64Id: '',
-            aspectRatio: 16 / 9 // Forcing 16:9 for all uploads as requested
-        };
+        // --- EXPANDED MANAGER POPULATOR WITH ADVANCED DYNAMIC SCHEDULE & PRIZES ---
+        let editScheduleCount = 0;
+
+        function addEditScheduleBlock(title='', start='', end='') {
+            if(editScheduleCount >= 7) { showToast("Maximum 7 matches allowed per tournament.", true); return; }
+            triggerHaptic();
+            editScheduleCount++;
+            let id = Date.now() + Math.random().toString().slice(2,5);
+            let html = `
+                <div class="sch-block" id="sch-${id}">
+                    <div class="sch-remove" onclick="removeEditScheduleBlock('sch-${id}')"><i class="fa-solid fa-xmark"></i></div>
+                    <div class="input-group" style="margin-bottom:10px;">
+                        <input type="text" class="form-control sch-title" placeholder="Match Title (e.g. Group A / Finals)" value="${title}" required>
+                    </div>
+                    <div style="display:flex; gap:10px; margin-bottom:0;">
+                        <div style="flex:1;">
+                            <label class="form-label" style="font-size:0.7rem; text-transform:none; margin-top:0; color:#888;">Start Time</label>
+                            <input type="datetime-local" class="form-control sch-start" value="${start}" required>
+                        </div>
+                        <div style="flex:1;">
+                            <label class="form-label" style="font-size:0.7rem; text-transform:none; margin-top:0; color:#888;">End Time</label>
+                            <input type="datetime-local" class="form-control sch-end" value="${end}" required>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('editScheduleContainer').insertAdjacentHTML('beforeend', html);
+        }
+
+        function removeEditScheduleBlock(id) {
+            document.getElementById(id).remove();
+            editScheduleCount--;
+            triggerHaptic();
+        }
 
         function openManageModal(match_id) {
             let t = myHostedEvents.find(x => String(x.id) === String(match_id) || String(x.match_id) === String(match_id));
@@ -1564,7 +1591,7 @@
             document.getElementById('editTourneyRoomId').value = (t.room_id && t.room_id !== "WAITING") ? t.room_id : "";
             document.getElementById('editTourneyRoomPass').value = (t.room_pass && t.room_pass !== "WAITING") ? t.room_pass : "";
 
-            // Pre-fill Banner
+            // Pre-fill Banner (Still using Cropper)
             let bannerUrl = t.banner || t.image_url || "";
             document.getElementById('editTourneyBannerStr').value = bannerUrl;
             let previewBannerImg = document.getElementById('editTourneyBannerPreview');
@@ -1576,29 +1603,37 @@
                 previewBannerImg.classList.remove('has-image');
             }
 
-            // Pre-fill Prize Image
-            let prizeUrl = t.prize_distribution_image || t.prize_distribution || t.prize_image || "";
-            document.getElementById('editTourneyPrizeStr').value = prizeUrl;
-            let previewPrizeImg = document.getElementById('editTourneyPrizePreview');
-            if (prizeUrl.length > 10) {
-                previewPrizeImg.src = formatImageUrl(prizeUrl);
-                previewPrizeImg.classList.add('has-image');
-            } else {
-                previewPrizeImg.src = "";
-                previewPrizeImg.classList.remove('has-image');
-            }
+            // --- POPULATE 3-TIER PRIZE JSON ---
+            document.getElementById('editPrize1').value = "";
+            document.getElementById('editPrize2').value = "";
+            document.getElementById('editPrize3').value = "";
+            try {
+                let pData = t.prize_distribution_image || t.prize_distribution || t.prize_image || "";
+                if(pData && pData.startsWith("{")) {
+                    let parsed = JSON.parse(pData);
+                    if(parsed["1"]) document.getElementById('editPrize1').value = parsed["1"];
+                    if(parsed["2"]) document.getElementById('editPrize2').value = parsed["2"];
+                    if(parsed["3"]) document.getElementById('editPrize3').value = parsed["3"];
+                } else {
+                    // Fallback for older singular column system
+                    if(t.prize1) document.getElementById('editPrize1').value = t.prize1;
+                    if(t.prize2) document.getElementById('editPrize2').value = t.prize2;
+                    if(t.prize3) document.getElementById('editPrize3').value = t.prize3;
+                }
+            } catch(e) { console.log("Prize parse error"); }
 
-            // Pre-fill Bracket Image
-            let bracketUrl = t.bracket_image || "";
-            document.getElementById('editTourneyBracketStr').value = bracketUrl;
-            let previewBracketImg = document.getElementById('editTourneyBracketPreview');
-            if (bracketUrl.length > 10) {
-                previewBracketImg.src = formatImageUrl(bracketUrl);
-                previewBracketImg.classList.add('has-image');
-            } else {
-                previewBracketImg.src = "";
-                previewBracketImg.classList.remove('has-image');
-            }
+            // --- POPULATE SCHEDULE BUILDER JSON ---
+            document.getElementById('editScheduleContainer').innerHTML = "";
+            editScheduleCount = 0;
+            try {
+                let sData = t.bracket_image || t.bracket || "[]";
+                if(sData && sData.startsWith("[")) {
+                    let parsed = JSON.parse(sData);
+                    parsed.forEach(match => {
+                        addEditScheduleBlock(match.title, match.start, match.end);
+                    });
+                }
+            } catch(e) { console.log("Schedule parse error"); }
 
             // Dual Date Handling for Tournament Dates
             let dateVal = t.match_period || ""; 
@@ -1633,7 +1668,14 @@
 
         function closeManageModal() { document.getElementById('manageTourneyModal').classList.remove('active'); }
 
-        // --- CROPPER FOR ALL 3 UPLOADS (Forced 16:9) ---
+        // --- CROPPER (ONLY FOR BANNER NOW) ---
+        let cropper = null;
+        let currentUploadState = {
+            previewId: '',
+            base64Id: '',
+            aspectRatio: 16 / 9 
+        };
+
         function initCropper(event, previewId, base64Id, aspectRatio) {
             const file = event.target.files[0];
             if (!file) return;
@@ -1663,7 +1705,7 @@
                 });
             };
             reader.readAsDataURL(file);
-            event.target.value = ""; // Reset
+            event.target.value = ""; 
         }
 
         function cancelCrop() {
@@ -1723,14 +1765,38 @@
             let finalMatchPeriod = startD;
             if(endD && endD !== "") finalMatchPeriod += " to " + endD;
             
+            // Generate NEW JSON Payloads for Prizes and Brackets
+            let p1 = document.getElementById('editPrize1').value.trim();
+            let p2 = document.getElementById('editPrize2').value.trim();
+            let p3 = document.getElementById('editPrize3').value.trim();
+            let prizeJson = {};
+            if(p1) prizeJson["1"] = p1;
+            if(p2) prizeJson["2"] = p2;
+            if(p3) prizeJson["3"] = p3;
+            let finalPrizeStr = Object.keys(prizeJson).length > 0 ? JSON.stringify(prizeJson) : "";
+
+            let scheduleArr = [];
+            document.querySelectorAll('#editScheduleContainer .sch-block').forEach(block => {
+                let title = block.querySelector('.sch-title').value.trim();
+                let start = block.querySelector('.sch-start').value;
+                let end = block.querySelector('.sch-end').value;
+                if(title && start && end) {
+                    scheduleArr.push({title: title, start: start, end: end});
+                }
+            });
+            let finalBracketStr = scheduleArr.length > 0 ? JSON.stringify(scheduleArr) : "";
+
             const payload = {
                 action: 'edit_tournament',
                 id: document.getElementById('editTourneyId').value,
                 email: userData.email, 
                 title: document.getElementById('editTourneyTitle').value,
                 banner: document.getElementById('editTourneyBannerStr').value,
-                prize_distribution_image: document.getElementById('editTourneyPrizeStr').value,
-                bracket_image: document.getElementById('editTourneyBracketStr').value,
+                
+                // SENDING JSON STRINGS TO BACKEND INSTEAD OF IMAGES
+                prize_distribution_image: finalPrizeStr,
+                bracket_image: finalBracketStr,
+                
                 room_id: document.getElementById('editTourneyRoomId').value,
                 room_pass: document.getElementById('editTourneyRoomPass').value,
                 match_period: finalMatchPeriod, 
