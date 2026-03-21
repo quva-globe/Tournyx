@@ -156,6 +156,9 @@
 
         .ac-green { background: linear-gradient(135deg, rgba(0,255,127,0.05), rgba(0,0,0,0)); border-color: rgba(0,255,127,0.2); }
         .ac-green .action-icon { color: var(--accent-green); background: rgba(0,255,127,0.1); box-shadow: 0 0 20px rgba(0,255,127,0.3); border-color: rgba(0,255,127,0.2);}
+        
+        .ac-orange { background: linear-gradient(135deg, rgba(255,153,0,0.05), rgba(0,0,0,0)); border-color: rgba(255,153,0,0.2); }
+        .ac-orange .action-icon { color: var(--accent-orange); background: rgba(255,153,0,0.1); box-shadow: 0 0 20px rgba(255,153,0,0.3); border-color: rgba(255,153,0,0.2);}
 
         .org-list-header { font-family: var(--font-head); font-size: 1.2rem; color: white; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--card-border); padding-top: 25px; text-transform: uppercase; letter-spacing: 1px;}
         .managed-item { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 15px; padding: 18px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.2); gap: 10px; backdrop-filter: blur(10px);}
@@ -170,14 +173,16 @@
         .mi-share { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 10px; color: white; cursor: pointer; transition: 0.3s; font-size: 0.9rem;}
         .mi-share:active { background: var(--accent-cyan); color: black; transform: scale(0.95); }
 
-        .settings-list { margin-top: 15px; border-top: 1px solid var(--card-border); padding-top: 15px; padding: 0 20px; }
-        .setting-item { display: flex; align-items: center; padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.3s; will-change: transform;}
-        .setting-item:active { transform: translateX(10px); }
-        .setting-icon { width: 45px; height: 45px; background: rgba(255,255,255,0.03); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--accent-purple); font-size: 1.2rem; margin-right: 15px; transition: 0.3s; border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(5px);}
+        /* --- UPDATED PROFESSIONAL SETTINGS CARDS --- */
+        .settings-list { margin-top: 25px; padding: 0 20px; display: flex; flex-direction: column; gap: 12px;}
+        .setting-item { display: flex; align-items: center; padding: 16px 20px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; cursor: pointer; transition: 0.3s; will-change: transform; backdrop-filter: blur(10px); box-shadow: 0 5px 15px rgba(0,0,0,0.2);}
+        .setting-item:active { transform: scale(0.98); border-color: var(--accent-cyan); }
+        .setting-icon { width: 45px; height: 45px; background: rgba(255,255,255,0.03); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--accent-purple); font-size: 1.2rem; margin-right: 15px; transition: 0.3s; border: 1px solid rgba(255,255,255,0.05); box-shadow: inset 0 0 10px rgba(0,0,0,0.2);}
         .setting-item:hover .setting-icon { background: rgba(0,242,255,0.1); color: var(--accent-cyan); border-color: var(--accent-cyan); box-shadow: 0 0 15px rgba(0,242,255,0.3);}
+        .setting-item:hover { background: rgba(0,242,255,0.02); }
         .setting-name { flex: 1; font-size: 1rem; font-weight: bold; color: #ddd; font-family: var(--font-head); letter-spacing: 0.5px;}
         .setting-arrow { color: #555; font-size: 1rem; transition: 0.3s; }
-        .setting-item:hover .setting-arrow { color: white; transform: translateX(5px); }
+        .setting-item:hover .setting-arrow { color: var(--accent-cyan); transform: translateX(5px); }
 
         /* --- GLASSMORPHISM MODALS --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 5000; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); opacity: 0; transition: 0.4s; }
@@ -276,12 +281,13 @@
         .change-banner-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 8px; background: rgba(0,0,0,0.8); font-size: 0.75rem; color: white; z-index: 3; opacity: 0; transition: 0.3s; backdrop-filter: blur(5px);}
         .image-upload-box:hover .change-banner-overlay { opacity: 1; }
 
-        /* --- CROPPER MODAL --- */
-        .cropper-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
+        /* --- PERFECT CROPPER MODAL (16:9 SUPPORT) --- */
+        .cropper-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(15px); }
         .cropper-modal.active { display: flex; }
-        .cropper-container-wrapper { width: 90%; max-width: 600px; height: 60vh; background: #000; border: 2px solid var(--accent-cyan); border-radius: 12px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 0 30px rgba(0,242,255,0.2); }
-        .cropper-actions { display: flex; gap: 15px; width: 90%; max-width: 600px; }
-        .cropper-btn { flex: 1; padding: 12px; border-radius: 10px; font-family: var(--font-head); font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; border: none; }
+        .cropper-container-wrapper { width: 90%; max-width: 800px; height: 60vh; background: #000; border: 2px solid var(--accent-cyan); border-radius: 12px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 0 30px rgba(0,242,255,0.2); display: flex; align-items: center; justify-content: center;}
+        .cropper-container-wrapper img { display: block; max-width: 100%; max-height: 100%; }
+        .cropper-actions { display: flex; gap: 15px; width: 90%; max-width: 800px; }
+        .cropper-btn { flex: 1; padding: 15px; border-radius: 10px; font-family: var(--font-head); font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; border: none; font-size: 1.1rem; }
         .btn-crop-cancel { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3); }
         .btn-crop-cancel:active { background: rgba(255,255,255,0.2); }
         .btn-crop-confirm { background: var(--accent-gradient); color: white; box-shadow: 0 5px 15px rgba(189,0,255,0.4); }
@@ -508,6 +514,14 @@
             <div class="action-icon"><i class="fa-solid fa-list-check"></i></div>
         </div>
         
+        <a href="roster.html" class="action-card ac-orange" onclick="triggerHaptic();">
+            <div class="action-text">
+                <h4 style="color: var(--accent-orange);">Team Rosters</h4>
+                <p>Manage registered teams and tournament participants.</p>
+            </div>
+            <div class="action-icon"><i class="fa-solid fa-users-viewfinder"></i></div>
+        </a>
+
         <a href="clans.html" class="action-card ac-purple" onclick="triggerHaptic();">
             <div class="action-text">
                 <h4>My Clan Hub</h4>
@@ -786,7 +800,7 @@
                     <img src="" id="editTourneyPrizePreview" class="image-preview" style="object-fit: contain; background: #000;">
                     <div class="change-banner-overlay">Tap to Change Image</div>
                 </div>
-                <input type="file" id="prizeInput" accept="image/*" onchange="initCropper(event, 'editTourneyPrizePreview', 'editTourneyPrizeStr', NaN)">
+                <input type="file" id="prizeInput" accept="image/*" onchange="initCropper(event, 'editTourneyPrizePreview', 'editTourneyPrizeStr', 16/9)">
 
                 <label class="form-label" style="font-size: 0.75rem; text-transform:none; margin-bottom: 5px; color:#888;">Match Bracket / Schedule Image (Optional)</label>
                 <div class="image-upload-box" style="padding: 15px;" onclick="document.getElementById('bracketInput').click(); triggerHaptic();">
@@ -795,7 +809,7 @@
                     <img src="" id="editTourneyBracketPreview" class="image-preview" style="object-fit: contain; background: #000;">
                     <div class="change-banner-overlay">Tap to Change Image</div>
                 </div>
-                <input type="file" id="bracketInput" accept="image/*" onchange="initCropper(event, 'editTourneyBracketPreview', 'editTourneyBracketStr', NaN)">
+                <input type="file" id="bracketInput" accept="image/*" onchange="initCropper(event, 'editTourneyBracketPreview', 'editTourneyBracketStr', 16/9)">
 
                 <label class="form-label"><i class="fa-brands fa-youtube"></i> Live Stream URL (Optional)</label>
                 <input type="url" id="editTourneyStream" class="form-control" placeholder="https://youtube.com/..." style="margin-bottom: 20px;">
@@ -821,7 +835,7 @@
 
     <div class="cropper-modal" id="cropperModal">
         <div class="cropper-container-wrapper">
-            <img id="cropperImage" src="" style="max-width: 100%;">
+            <img id="cropperImage" src="">
         </div>
         <div class="cropper-actions">
             <button class="cropper-btn btn-crop-cancel" onclick="cancelCrop()">Cancel</button>
@@ -1463,7 +1477,7 @@
                 container.innerHTML = `
                     <div style='text-align:center; padding:30px 20px; color:#666; background:rgba(0,0,0,0.3); border-radius:15px; border:1px dashed var(--card-border);'>
                         <i class="fa-solid fa-ghost" style="font-size:2rem; margin-bottom:10px; opacity:0.5;"></i><br>
-                        You haven't hosted any tournaments yet.
+                        You haven't hosted any active tournaments yet.
                     </div>`;
             } else {
                 myHostedEvents.forEach(t => {
@@ -1517,6 +1531,10 @@
                     
                     myHostedEvents = rawEvents.filter(t => {
                         if(!t) return false;
+                        // Skip deleted tournaments
+                        let dbStatus = String(t.db_status || t.col_u || t.status || "").toLowerCase();
+                        if (dbStatus === 'deleted') return false;
+
                         let backendEmail = String(t.org_email || t.organizer_email || t.email || "").toLowerCase().trim();
                         return backendEmail === myEmailStr;
                     });
@@ -1533,7 +1551,7 @@
         let currentUploadState = {
             previewId: '',
             base64Id: '',
-            aspectRatio: NaN // NaN means free crop
+            aspectRatio: 16 / 9 // Forcing 16:9 for all uploads as requested
         };
 
         function openManageModal(match_id) {
@@ -1559,7 +1577,7 @@
             }
 
             // Pre-fill Prize Image
-            let prizeUrl = t.prize_distribution_image || "";
+            let prizeUrl = t.prize_distribution_image || t.prize_distribution || t.prize_image || "";
             document.getElementById('editTourneyPrizeStr').value = prizeUrl;
             let previewPrizeImg = document.getElementById('editTourneyPrizePreview');
             if (prizeUrl.length > 10) {
@@ -1615,7 +1633,7 @@
 
         function closeManageModal() { document.getElementById('manageTourneyModal').classList.remove('active'); }
 
-        // --- CROPPER FOR ALL 3 UPLOADS ---
+        // --- CROPPER FOR ALL 3 UPLOADS (Forced 16:9) ---
         function initCropper(event, previewId, base64Id, aspectRatio) {
             const file = event.target.files[0];
             if (!file) return;
@@ -1757,15 +1775,20 @@
             btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Deleting...";
             btn.disabled = true;
 
+            let editId = document.getElementById('editTourneyId').value;
+
             fetch(API_URL, {
                 method: 'POST', headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify({ action: 'delete_tournament', id: document.getElementById('editTourneyId').value, email: userData.email })
+                body: JSON.stringify({ action: 'delete_tournament', id: editId, email: userData.email })
             }).then(() => {
                 showToast("Tournament Deleted!");
                 closeManageModal();
-                btn.innerHTML = "<i class='fa-solid fa-trash-can'></i> Delete"; 
+                btn.innerHTML = "<i class='fa-solid fa-trash-can'></i> Delete Permanently"; 
                 btn.disabled = false;
-                setTimeout(() => { fetchMyTournaments(); }, 1000);
+                
+                // Immediately remove from local array so it vanishes instantly
+                myHostedEvents = myHostedEvents.filter(t => String(t.id || t.match_id) !== String(editId));
+                setTimeout(() => { renderTournamentsList(document.getElementById('orgTourneysList')); }, 300);
             });
         }
 
