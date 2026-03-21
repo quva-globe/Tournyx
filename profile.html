@@ -1608,7 +1608,7 @@
             document.getElementById('editPrize2').value = "";
             document.getElementById('editPrize3').value = "";
             try {
-                let pData = t.prize_distribution_image || t.prize_distribution || t.prize_image || "";
+                let pData = t.prize_json || t.prize_distribution_image || t.prize_distribution || t.prize_image || "";
                 if(pData && pData.startsWith("{")) {
                     let parsed = JSON.parse(pData);
                     if(parsed["1"]) document.getElementById('editPrize1').value = parsed["1"];
@@ -1626,7 +1626,7 @@
             document.getElementById('editScheduleContainer').innerHTML = "";
             editScheduleCount = 0;
             try {
-                let sData = t.bracket_image || t.bracket || "[]";
+                let sData = t.bracket_json || t.bracket_image || t.bracket || "[]";
                 if(sData && sData.startsWith("[")) {
                     let parsed = JSON.parse(sData);
                     parsed.forEach(match => {
@@ -1793,7 +1793,7 @@
                 title: document.getElementById('editTourneyTitle').value,
                 banner: document.getElementById('editTourneyBannerStr').value,
                 
-                // SENDING JSON STRINGS TO BACKEND INSTEAD OF IMAGES
+                // SENDING JSON STRINGS TO BACKEND WITH ORIGINAL EXPECTED NAMES
                 prize_distribution_image: finalPrizeStr,
                 bracket_image: finalBracketStr,
                 
