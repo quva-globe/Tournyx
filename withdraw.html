@@ -25,6 +25,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
     <script>
         (function(){ try { const THEMES = [{cyan:'#00f2ff',purple:'#bd00ff'}, {cyan:'#00ff7f',purple:'#00b09b'}, {cyan:'#ff9900',purple:'#ff4d4d'}]; let tIndex = parseInt(localStorage.getItem('tournyx_theme_index'))||0; if(THEMES[tIndex]){ document.documentElement.style.setProperty('--accent-cyan', THEMES[tIndex].cyan); document.documentElement.style.setProperty('--accent-purple', THEMES[tIndex].purple); document.documentElement.style.setProperty('--accent-gradient', `linear-gradient(135deg, ${THEMES[tIndex].purple}, ${THEMES[tIndex].cyan})`); } }catch(e){} })();
     </script>
@@ -300,7 +302,10 @@
         <div class="history-section animate-section delay-4">
             <div class="history-header">
                 <h3 class="history-title">Recent Withdrawals</h3>
-                <div class="contact-support" onclick="openSupportModal(); triggerHaptic();"><i class="fa-brands fa-whatsapp"></i> Support</div>
+                <div style="display:flex; gap:10px;">
+                    <div class="contact-support" style="background: rgba(0, 242, 255, 0.1); border-color: var(--accent-cyan); color: var(--accent-cyan);" onclick="downloadLedgerPDF(); triggerHaptic();" title="Download PDF"><i class="fa-solid fa-download"></i> PDF</div>
+                    <div class="contact-support" onclick="openSupportModal(); triggerHaptic();"><i class="fa-brands fa-whatsapp"></i> Support</div>
+                </div>
             </div>
             <div class="txn-list" id="historyList" style="background: rgba(0,0,0,0.4); border-color: rgba(255,255,255,0.05); box-shadow: none;">
                 <div style="text-align: center; color: var(--text-muted); padding: 20px;"><i class="fa-solid fa-spinner fa-spin" style="font-size:1.5rem; color:var(--accent-purple);"></i><br><br>Fetching ledger...</div>
@@ -347,7 +352,9 @@
     <div id="pdfContainerWrapper">
         <div id="pdfTemplate" style="background:#070311; color:#ffffff; padding:40px; font-family:'Helvetica Neue', Arial, sans-serif; width:800px; box-sizing:border-box;">
             <div style="text-align:center; border-bottom:2px solid #1a0a3a; padding-bottom:30px; margin-bottom:30px;">
-                <h1 style="margin:0; font-size: 32px; font-weight: 900; background: linear-gradient(90deg, #bd00ff, #00f2ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform:uppercase; letter-spacing: 2px;">Tournyx Esports</h1>
+                <div style="background: linear-gradient(90deg, #bd00ff, #00f2ff); padding: 15px; border-radius: 8px; margin-bottom: 10px; display: inline-block; width: 100%;">
+                    <h1 style="margin:0; font-size: 28px; font-weight: 900; color: #ffffff; text-transform:uppercase; letter-spacing: 2px;">Tournyx Esports</h1>
+                </div>
                 <p style="color:#a0a0b0; margin:8px 0 0 0; font-size:14px; letter-spacing: 1px; text-transform: uppercase;">Official Transaction Ledger</p>
             </div>
             
@@ -496,19 +503,19 @@
         async function initPageData() {
             if(userData.avatar) document.getElementById('headerProfilePic').src = userData.avatar;
             
-            let hosted = parseInt(userData.hostedMatches) || 0;
-            let played = parseInt(userData.matchesPlayed) || 0;
+            let hosted = parseInt(userData.hostedMatches) || parseInt(userData.hosted) || 0;
+            let played = parseInt(userData.matchesPlayed) || parseInt(userData.matches) || 0;
             isPremiumUser = userData.isPremium || userData.premium || false;
             let userLevelName = "NEW USER";
             platformFeePercentage = 0.05;
 
-            if (hosted > 0) {
-                if (hosted >= 100) { userLevelName = "LEGEND"; platformFeePercentage = 0.05; }
-                else if (hosted >= 75) { userLevelName = "ELITE"; platformFeePercentage = 0.065; }
-                else if (hosted >= 50) { userLevelName = "MASTER"; platformFeePercentage = 0.08; }
-                else if (hosted >= 40) { userLevelName = "EXPERT"; platformFeePercentage = 0.09; }
-                else if (hosted >= 25) { userLevelName = "PRO"; platformFeePercentage = 0.10; }
-                else { userLevelName = "AMATEUR"; platformFeePercentage = 0.12; }
+            // Updated strictly to Organizer Milestones
+            if (userData.role === 'organizer' || hosted > 0) {
+                if (hosted >= 20) { userLevelName = "LEGEND"; platformFeePercentage = 0.05; }
+                else if (hosted >= 15) { userLevelName = "ELITE"; platformFeePercentage = 0.08; }
+                else if (hosted >= 10) { userLevelName = "PRO"; platformFeePercentage = 0.10; }
+                else if (hosted >= 5) { userLevelName = "AMATEUR"; platformFeePercentage = 0.12; }
+                else { userLevelName = "ROOKIE"; platformFeePercentage = 0.15; }
             } else {
                 if (played >= 100) { userLevelName = "MYTHIC"; platformFeePercentage = 0.05; }
                 else if (played >= 90) { userLevelName = "ELITE"; platformFeePercentage = 0.05; }
@@ -518,7 +525,8 @@
                 else if (played >= 10) { userLevelName = "SCOUT"; platformFeePercentage = 0.09; }
                 else { userLevelName = "NEW USER"; platformFeePercentage = 0.10; }
             }
-            if (isPremiumUser) { userLevelName = "PRO"; platformFeePercentage = 0.05; }
+            
+            if (isPremiumUser) { userLevelName = "PREMIUM"; platformFeePercentage = 0.00; }
             
             let tagHTML = isPremiumUser ? `<span style="background:var(--accent-purple); color:white; padding:2px 6px; border-radius:4px; font-size:0.6rem; margin-left:8px; font-family:var(--font-head); font-weight:bold; box-shadow:0 0 10px rgba(189,0,255,0.4);">${userLevelName}</span>` : `<span style="background:rgba(255,255,255,0.1); color:#ccc; padding:2px 6px; border-radius:4px; font-size:0.6rem; margin-left:8px; font-family:var(--font-head); font-weight:bold;">${userLevelName}</span>`;
             document.getElementById('dynamicGreeting').innerHTML = `Withdraw Funds ${tagHTML}`;
@@ -581,7 +589,7 @@
             if (!isPremiumUser) {
                 if (grossAmount >= 10000) currentFeePct += 0.03; 
                 else if (grossAmount >= 5000) currentFeePct += 0.02;
-            } else { currentFeePct = 0.05; }
+            } else { currentFeePct = 0.00; } // Lock 0%
 
             let fee = Math.ceil(grossAmount * currentFeePct);
             let netPayout = grossAmount - fee;
@@ -756,7 +764,7 @@
             if (!isPremiumUser) {
                 if (grossAmount >= 10000) currentFeePct += 0.03;
                 else if (grossAmount >= 5000) currentFeePct += 0.02;
-            } else { currentFeePct = 0.05; }
+            } else { currentFeePct = 0.00; } // Lock 0%
 
             let fee = Math.ceil(grossAmount * currentFeePct);
             let netPayout = grossAmount - fee;
@@ -796,7 +804,73 @@
             }, 3000); 
         }
 
-        // --- NEW SUPPORT LOGIC WITH GLOWING COLORS ---
+        // --- FLAWLESS PDF DOWNLOAD LOGIC ---
+        function downloadLedgerPDF() {
+            if(isGuest) { showToast("Login to download ledger", true); return; }
+            showToast("Generating Encrypted PDF...");
+            
+            document.getElementById('pdfUserName').innerText = userData.username || "Player";
+            document.getElementById('pdfUserEmail').innerText = userData.email || "N/A";
+            
+            let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
+            let withdrawals = txns.filter(t => t.title.toLowerCase().includes("withdraw"));
+            
+            let tableHtml = `
+                <table style="width:100%; border-collapse:collapse; text-align:left; font-size:12px;">
+                    <thead>
+                        <tr style="border-bottom:1px solid #1a0a3a; color:#00f2ff;">
+                            <th style="padding:10px 5px;">Date</th>
+                            <th style="padding:10px 5px;">Txn ID</th>
+                            <th style="padding:10px 5px;">Description</th>
+                            <th style="padding:10px 5px;">Status</th>
+                            <th style="padding:10px 5px; text-align:right;">Amount (₹)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            if(withdrawals.length === 0) {
+                tableHtml += `<tr><td colspan="5" style="text-align:center; padding:20px; color:#888;">No withdrawal records found.</td></tr>`;
+            } else {
+                withdrawals.slice(0, 20).forEach(t => {
+                    let statusColor = "#ff9900";
+                    let sLower = String(t.status).toLowerCase();
+                    if(sLower.includes("success") || sLower.includes("completed")) statusColor = "#00ff7f";
+                    else if(sLower.includes("fail") || sLower.includes("cancel")) statusColor = "#ff4d4d";
+                    else if(sLower.includes("refund")) statusColor = "#00f2ff";
+                    
+                    let cleanDate = t.date.includes(',') ? t.date.split(',')[0] : t.date;
+                    
+                    tableHtml += `
+                        <tr style="border-bottom:1px solid #1a0a3a;">
+                            <td style="padding:12px 5px; color:#ccc;">${cleanDate}</td>
+                            <td style="padding:12px 5px; color:#888; font-family:monospace;">${t.id}</td>
+                            <td style="padding:12px 5px; color:#fff;">${t.title}</td>
+                            <td style="padding:12px 5px; color:${statusColor}; font-weight:bold; text-transform:uppercase;">${t.status || 'Pending'}</td>
+                            <td style="padding:12px 5px; text-align:right; color:#fff; font-weight:bold;">${t.amount}</td>
+                        </tr>
+                    `;
+                });
+            }
+            
+            tableHtml += `</tbody></table>`;
+            document.getElementById('pdfDynamicContentArea').innerHTML = tableHtml;
+            
+            var element = document.getElementById('pdfTemplate');
+            var opt = {
+                margin:       0,
+                filename:     'Tournyx_Ledger_' + (userData.username || 'Player') + '.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#070311' },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            
+            html2pdf().set(opt).from(element).save().then(() => {
+                showToast("Ledger Downloaded Successfully!");
+            });
+        }
+
+        // --- SUPPORT LOGIC WITH GLOWING COLORS ---
         let currentSupportTxn = {};
         function openSupportModal() {
             const container = document.getElementById('supportTxnList');
