@@ -939,8 +939,9 @@
 
         // --- HARDWARE BACK BUTTON LOGIC ---
         window.addEventListener('popstate', function(event) {
-            if (document.getElementById('tourneyDetailModal').classList.contains('active') && window.location.hash !== '#tournamentDetails') {
-                document.getElementById('tourneyDetailModal').classList.remove('active');
+            const modal = document.getElementById('tourneyDetailModal');
+            if (modal && modal.classList.contains('active')) {
+                modal.classList.remove('active');
                 if(activeCountdown) clearInterval(activeCountdown);
             }
         });
@@ -1201,6 +1202,10 @@
                     if (data.status === "success") {
                         localTournamentsData = data.data; 
                         data.data.forEach(t => {
+                            // Check if marked deleted by backend
+                            let dbStatus = String(t.db_status || t.col_u || t.status || "").toLowerCase();
+                            if(dbStatus === "deleted") return;
+
                             let targetDate = new Date(t.date).getTime();
                             let now = new Date().getTime();
                             if(!isNaN(targetDate) && (now > targetDate + (24 * 60 * 60 * 1000))) return;
@@ -1292,6 +1297,10 @@
                     let likesArr = JSON.parse(localStorage.getItem('tournyx_liked_matches')) || [];
                     
                     data.data.forEach(t => {
+                        // DB check for permanently deleted tournaments
+                        let dbStatus = String(t.db_status || t.col_u || t.status || "").toLowerCase();
+                        if(dbStatus === "deleted") return;
+
                         let targetDate = new Date(t.date).getTime();
                         let now = new Date().getTime();
                         if(!isNaN(targetDate) && (now > targetDate + (24 * 60 * 60 * 1000))) {
@@ -1427,6 +1436,9 @@
             let found = 0;
             
             localTournamentsData.forEach(t => {
+                let dbStatus = String(t.db_status || t.col_u || t.status || "").toLowerCase();
+                if(dbStatus === "deleted") return;
+                
                 let targetDate = new Date(t.date).getTime();
                 let now = new Date().getTime();
                 if(!isNaN(targetDate) && (now > targetDate + (24 * 60 * 60 * 1000))) return;
@@ -1531,7 +1543,7 @@
             const t = JSON.parse(decodeURIComponent(tDataEncoded));
             activeTournament = t; 
 
-            // Handle Hardware Back Button
+            // Handle Hardware Back Button Smoothly
             history.pushState({ modal: 'tourneyDetailModal' }, '', '#tournamentDetails');
 
             document.getElementById('dtBanner').src = formatImageUrl(t.banner);
@@ -1576,19 +1588,20 @@
             document.getElementById('dtDescription').innerHTML = t.rules || "Standard competitive rules apply.";
             document.getElementById('dtRulesText').innerHTML = t.rules || "No specific rules provided.";
             
-            // PRIZE TAB DYNAMIC LOGIC
+            // PRIZE TAB DYNAMIC LOGIC - Maps to t.prize_distribution (from your screenshot Column S)
             const prizeArea = document.getElementById('prizeDistributionArea');
             document.getElementById('dtPrizeTotalHead').innerText = getPrizeText(t.prize, t.prize_pts);
 
             let prizeHTML = '';
             
             // Render 16:9 Prize Image with flip card effect if present
-            if (t.prize_image && t.prize_image.trim() !== "") {
+            let prizeImageToDisplay = t.prize_distribution || t.prize_image;
+            if (prizeImageToDisplay && prizeImageToDisplay.trim() !== "") {
                 prizeHTML += `
                     <div class="prize-flip-container" onclick="this.classList.toggle('flipped'); triggerHaptic();">
                         <div class="prize-flip-inner">
                             <div class="prize-front">
-                                <img src="${formatImageUrl(t.prize_image)}" alt="Prize Details">
+                                <img src="${formatImageUrl(prizeImageToDisplay)}" alt="Prize Details">
                                 <div style="position:absolute; bottom:10px; right:10px; background:rgba(0,0,0,0.7); padding:6px 12px; border-radius:20px; font-size:0.75rem; color:var(--accent-cyan); font-family:var(--font-head); font-weight:bold;"><i class="fa-solid fa-hand-pointer fa-bounce"></i> Tap to flip</div>
                             </div>
                             <div class="prize-back">
@@ -1607,7 +1620,7 @@
                 if(t.prize1) prizeHTML += `<div class="prize-card gold"><div class="pc-rank"><i class="fa-solid fa-medal" style="color:#FFD700; font-size:1.5rem;"></i> 1st Place</div><div class="pc-val">${t.prize1}</div></div>`;
                 if(t.prize2) prizeHTML += `<div class="prize-card silver"><div class="pc-rank"><i class="fa-solid fa-medal" style="color:#C0C0C0; font-size:1.5rem;"></i> 2nd Place</div><div class="pc-val">${t.prize2}</div></div>`;
                 if(t.prize3) prizeHTML += `<div class="prize-card bronze"><div class="pc-rank"><i class="fa-solid fa-medal" style="color:#CD7F32; font-size:1.5rem;"></i> 3rd Place</div><div class="pc-val">${t.prize3}</div></div>`;
-            } else if (!t.prize_image) {
+            } else if (!prizeImageToDisplay) {
                 let textToDisplay = getPrizeText(t.prize, t.prize_pts);
                 prizeHTML = `
                     <div class="prize-card gold" style="justify-content: center; flex-direction: column; gap: 10px; text-align: center; padding: 25px;">
@@ -1618,6 +1631,7 @@
             }
             prizeArea.innerHTML = prizeHTML;
 
+            // Maps to t.bracket_image (from your screenshot Column T)
             const bracketArea = document.getElementById('bracketDisplayArea');
             if (t.bracket_image && t.bracket_image.trim() !== "") {
                 bracketArea.innerHTML = `<img src="${formatImageUrl(t.bracket_image)}" style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 12px; border: 1px solid var(--card-border); margin-top: 10px;">`;
@@ -1788,11 +1802,12 @@
 
         function closeDetailModal() { 
             triggerHaptic(); 
-            if(activeCountdown) clearInterval(activeCountdown);
             if(window.location.hash === '#tournamentDetails') {
-                history.back(); // triggers popstate properly
+                history.back(); // This triggers popstate smoothly sliding the card away
             } else {
-                document.getElementById('tourneyDetailModal').classList.remove('active'); 
+                const modal = document.getElementById('tourneyDetailModal');
+                if (modal) modal.classList.remove('active'); 
+                if(activeCountdown) clearInterval(activeCountdown);
             }
         }
 
