@@ -846,6 +846,10 @@
     </div>
 
     <nav class="bottom-nav">
+        <a class="nav-item" href="index.html">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
         <a class="nav-item active" href="explore.html">
             <i class="fa-solid fa-compass"></i>
             <span>Explore</span>
@@ -854,14 +858,20 @@
             <i class="fa-solid fa-trophy"></i>
             <span>Matches</span>
         </a>
+        
         <div class="fab-slot">
             <div class="floating-plus" onclick="window.location.href='tournament.html'">
                 <i class="fa-solid fa-plus"></i>
             </div>
         </div>
+        
         <a class="nav-item" href="clans.html">
             <i class="fa-solid fa-shield-halved"></i>
             <span>Clan</span>
+        </a>
+        <a class="nav-item" href="wallet.html">
+            <i class="fa-solid fa-wallet"></i>
+            <span>Wallet</span>
         </a>
         <a class="nav-item" href="profile.html">
             <i class="fa-solid fa-user"></i>
@@ -880,6 +890,7 @@
         let localTournamentsData = []; 
         let activeCountdown = null;
 
+        // --- HARDWARE BACK BUTTON LOGIC SMOOTH FIX ---
         window.addEventListener('popstate', function(event) {
             const modal = document.getElementById('tourneyDetailModal');
             if (modal && modal.classList.contains('active')) {
@@ -1111,50 +1122,40 @@
                 document.getElementById('shareLoader').style.display = 'flex';
             }
 
+            // GUEST MODE REMOVAL OF REDIRECT & HEADER
             if(!user || !user.email) { 
                 isGuestMode = true;
                 document.getElementById('headerProfilePic').style.display = 'none';
             } else {
                 if(user.avatar) document.getElementById('headerProfilePic').src = user.avatar;
+                fetch(API_URL + "?action=get_matches&email=" + encodeURIComponent(user.email))
+                    .then(res => res.json())
+                    .then(data => { if(data.status === 'success') userLiveMatches = data.data; });
                 
-                // POST requests avoid caching!
-                fetch(API_URL, {
-                    method: 'POST', headers: { 'Content-Type': 'text/plain' },
-                    body: JSON.stringify({ action: 'get_matches', email: user.email })
-                })
-                .then(res => res.json())
-                .then(data => { if(data.status === 'success') userLiveMatches = data.data; });
-                
-                fetch(API_URL, {
-                    method: 'POST', headers: { 'Content-Type': 'text/plain' },
-                    body: JSON.stringify({ action: 'get_my_clans', username: user.username })
-                })
-                .then(res => res.json())
-                .then(data => { if(data.status === 'success') localStorage.setItem('tournyx_my_clans_cache', JSON.stringify(data.data)); });
+                fetch(API_URL + "?action=get_my_clans&username=" + encodeURIComponent(user.username))
+                    .then(res => res.json())
+                    .then(data => { if(data.status === 'success') localStorage.setItem('tournyx_my_clans_cache', JSON.stringify(data.data)); });
             }
             
             localStorage.removeItem('myMatches');
 
             loadLiveTournaments(targetTourneyId);
+            
             initTabSwitching(); 
             startSilentDataSync(); 
             startLandingPageTimers(); 
         });
 
-        // SWAPPED TO POST REQUEST TO BYPASS BROWSER CACHING
         function startSilentDataSync() {
             if(backgroundSyncInterval) clearInterval(backgroundSyncInterval);
             backgroundSyncInterval = setInterval(() => {
-                fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain' },
-                    body: JSON.stringify({ action: 'get_tournaments' })
-                })
+                fetch(API_URL + "?action=get_tournaments")
                 .then(res => res.json())
                 .then(data => {
                     if (data.status === "success") {
                         localTournamentsData = data.data; 
                         data.data.forEach(t => {
+                            // Check if marked deleted by backend
                             let dbStatus = String(t.db_status || t.col_u || t.status || "").toLowerCase();
                             if(dbStatus === "deleted") return;
 
@@ -1221,13 +1222,8 @@
             loadLiveTournaments(null); 
         }
 
-        // SWAPPED TO POST REQUEST TO BYPASS BROWSER CACHING
         function loadLiveTournaments(autoOpenId) {
-            fetch(API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify({ action: 'get_tournaments' })
-            })
+            fetch(API_URL + "?action=get_tournaments")
             .then(res => res.json())
             .then(data => {
                 if (data.status === "success") {
@@ -1254,12 +1250,14 @@
                     let likesArr = JSON.parse(localStorage.getItem('tournyx_liked_matches')) || [];
                     
                     data.data.forEach(t => {
+                        // DB check for permanently deleted tournaments
                         let dbStatus = String(t.db_status || t.col_u || t.status || "").toLowerCase();
                         if(dbStatus === "deleted") return;
 
                         let targetDate = new Date(t.date).getTime();
                         let now = new Date().getTime();
                         if(!isNaN(targetDate) && (now > targetDate + (24 * 60 * 60 * 1000))) {
+                            // Automatically delete/hide from view after 24 hrs and trigger backend deletion
                             fetch(API_URL, {
                                 method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({ action: "auto_delete_tournament", match_id: String(t.id || t.title).trim() })
@@ -1498,6 +1496,7 @@
             const t = JSON.parse(decodeURIComponent(tDataEncoded));
             activeTournament = t; 
 
+            // Handle Hardware Back Button Smoothly
             history.pushState({ modal: 'tourneyDetailModal' }, '', '#tournamentDetails');
 
             document.getElementById('dtBanner').src = formatImageUrl(t.banner);
@@ -1547,7 +1546,7 @@
 
             let prizeHTML = '';
             
-            // EXACT MAPPING: Checking multiple keys just in case
+            // EXACT MAPPING: Using t.prize_distribution_image
             let prizeImageToDisplay = t.prize_distribution_image || t.prize_distribution || t.prize_image || "";
             if (prizeImageToDisplay && prizeImageToDisplay.trim() !== "" && prizeImageToDisplay !== "undefined") {
                 prizeHTML += `
@@ -1586,7 +1585,7 @@
 
             // EXACT MAPPING FOR BRACKET
             const bracketArea = document.getElementById('bracketDisplayArea');
-            let bracketImgToDisplay = t.bracket_image || t.bracket || t.schedule_image || "";
+            let bracketImgToDisplay = t.bracket_image || "";
             if (bracketImgToDisplay && bracketImgToDisplay.trim() !== "" && bracketImgToDisplay !== "undefined") {
                 bracketArea.innerHTML = `<img src="${formatImageUrl(bracketImgToDisplay)}" style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 12px; border: 1px solid var(--card-border); margin-top: 10px;">`;
             } else {
@@ -1708,12 +1707,9 @@
             
             let viewCount = t.views ? parseInt(t.views) : (Math.floor((t.title.length * 7) + ((parseInt(t.id) || 12) * 3)) % 300) + 12;
             document.getElementById('realViewerCount').innerText = viewCount;
-            
-            fetch(API_URL, {
-                method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify({ action: 'increment_view', match_id: t.id || t.title })
-            }).catch(e=>console.log(e));
+            fetch(API_URL + "?action=increment_view&match_id=" + encodeURIComponent(t.id || t.title), { mode: 'no-cors' }).catch(e=>console.log(e));
 
+            // Load Organizer's Other Tournaments
             loadOtherTournaments(orgId, t.id || t.title);
 
             document.querySelector('.dm-nav-item[data-tab="dtTabOverview"]').click();
@@ -1737,10 +1733,7 @@
             document.getElementById('hpSuccess').innerText = "100%"; 
             document.getElementById('hpRating').innerText = "4.9"; 
 
-            fetch(API_URL, {
-                method: 'POST', headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify({ action: 'get_user_profile', username: orgId })
-            })
+            fetch(API_URL + "?action=get_user_profile&username=" + encodeURIComponent(orgId))
             .then(res => res.json())
             .then(data => {
                 if(data.status === 'success' && data.data) {
@@ -1760,7 +1753,7 @@
         function closeDetailModal() { 
             triggerHaptic(); 
             if(window.location.hash === '#tournamentDetails') {
-                history.back(); 
+                history.back(); // This triggers popstate smoothly sliding the card away
             } else {
                 const modal = document.getElementById('tourneyDetailModal');
                 if (modal) modal.classList.remove('active'); 
@@ -1774,10 +1767,7 @@
             const container = document.getElementById('liveTeamsList');
             container.innerHTML = `<div style="text-align:center; color:var(--accent-cyan); padding:40px;"><i class="fa-solid fa-spinner fa-spin"></i> Fetching roster...</div>`;
             
-            fetch(API_URL, {
-                method: 'POST', headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify({ action: 'get_tournament_details', match_id: (activeTournament.id || activeTournament.title) })
-            })
+            fetch(API_URL + "?action=get_tournament_details&match_id=" + encodeURIComponent(activeTournament.id || activeTournament.title))
             .then(res => res.json())
             .then(data => {
                 container.innerHTML = "";
@@ -1866,14 +1856,8 @@
             btnArea.style.display = 'none';
             
             Promise.all([
-                fetch(API_URL, {
-                    method: 'POST', headers: { 'Content-Type': 'text/plain' },
-                    body: JSON.stringify({ action: 'get_my_clans', username: user.username })
-                }).then(res => res.json()),
-                fetch(API_URL, {
-                    method: 'POST', headers: { 'Content-Type': 'text/plain' },
-                    body: JSON.stringify({ action: 'get_tournament_details', match_id: (activeTournament.id || activeTournament.title) })
-                }).then(res => res.json())
+                fetch(API_URL + "?action=get_my_clans&username=" + encodeURIComponent(user.username)).then(res => res.json()),
+                fetch(API_URL + "?action=get_tournament_details&match_id=" + encodeURIComponent(activeTournament.id || activeTournament.title)).then(res => res.json())
             ])
             .then(([clansData, detailsData]) => {
                 let userClans = [];
