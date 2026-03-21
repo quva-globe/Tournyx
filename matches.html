@@ -62,24 +62,6 @@
         /* --- BACKGROUND --- */
         #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at 50% 20%, #15062e 0%, #070311 100%); transform: translateZ(0);}
 
-        /* --- INITIAL LOADER --- */
-        #tournyx-loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--primary-bg); z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.4s ease-out; overflow: hidden; transform: translateZ(0); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);}
-        .loader-logo { font-family: var(--font-head); font-size: 4rem; font-weight: 900; color: transparent; -webkit-text-stroke: 2px rgba(255,255,255,0.3); position: relative; z-index: 10; }
-        .loader-logo::after { content: 'T'; position: absolute; top: 0; left: 0; color: #fff; text-shadow: 0 0 30px var(--accent-purple), 0 0 50px var(--accent-cyan); opacity: 0; animation: flashHit 1s infinite; }
-        .bullet { position: absolute; height: 4px; width: 100px; background: linear-gradient(90deg, transparent, var(--accent-cyan)); border-radius: 4px; box-shadow: 0 0 10px var(--accent-cyan); opacity: 0; }
-        .b1 { top: 40%; left: -150px; animation: shootRight 1s infinite; }
-        .b2 { top: 60%; right: -150px; background: linear-gradient(-90deg, transparent, var(--accent-purple)); box-shadow: 0 0 10px var(--accent-purple); animation: shootLeft 1s 0.5s infinite; }
-        .b3 { animation-delay: 1.3s; left: 80px; } 
-        .b4 { top: 40%; bottom: -100px; animation:shootup 1s infinite; animation-delay: 1.4s; left: 90px; }
-        .b5 { top: 40%; margin-top: -90px; animation:shootdown 1s infinite; animation-delay: 1.5s; left: 120px; }
-        @keyframes shootRight { 0% { left: -150px; opacity: 1; } 50% { left: 50%; opacity: 0; } 100% { left: 50%; opacity: 0; } }
-        @keyframes shootLeft { 0% { right: -150px; opacity: 1; } 50% { right: 50%; opacity: 0; } 100% { right: 50%; opacity: 0; } }
-        @keyframes shootup { 0% { bottom: -100px; opacity: 1; } 50% { bottom: 50%; opacity: 0; } 100% { bottom: 50%; opacity: 0; } }
-        @keyframes shootdown { 0% { margin-top: -90px; opacity: 1; } 50% { margin-top: 50%; opacity: 0; } 100% { margin-top: 50%; opacity: 0; } }
-        @keyframes flashHit { 0%, 48% { opacity: 0; } 50% { opacity: 1; text-shadow: 0 0 40px white; } 52%, 100% { opacity: 0; } }
-        .loader-text { margin-top: 30px; font-family: var(--font-body); font-size: 1rem; letter-spacing: 3px; color: var(--accent-purple); text-transform: uppercase; animation: blink 1s infinite alternate; text-shadow: 0 0 10px rgba(189,0,255,0.5); }
-        @keyframes blink { from { opacity: 0.5; } to { opacity: 1; } }
-
         /* --- OFFLINE BANNER --- */
         .offline-banner { position: fixed; top: 0; left: 0; width: 100%; background: var(--accent-orange); color: #000; text-align: center; padding: 5px; font-family: var(--font-head); font-weight: bold; font-size: 0.8rem; z-index: 9999; transform: translateY(-100%); transition: 0.4s; }
         .offline-banner.active { transform: translateY(0); }
@@ -244,12 +226,6 @@
 </head>
 <body>
     <canvas id="particles-canvas"></canvas>
-    
-    <div id="tournyx-loader">
-        <div class="loader-logo">T</div>
-        <div class="bullet b1"></div><div class="bullet b2"></div><div class="bullet b3"></div><div class="bullet b4"></div><div class="bullet b5"></div>
-        <div class="loader-text">SYNCING MATCHES...</div>
-    </div>
 
     <div class="offline-banner" id="offlineBanner"><i class="fa-solid fa-wifi"></i> You are offline. Showing Cached Matches.</div>
 
@@ -485,9 +461,6 @@
             document.getElementById('realContent').style.display = 'none';
 
             if (!user || !user.email) {
-                document.getElementById('tournyx-loader').style.opacity = '0';
-                setTimeout(() => { document.getElementById('tournyx-loader').style.display = 'none'; }, 400);
-
                 document.getElementById('skeletonLoader').style.display = 'none';
                 document.getElementById('realContent').style.display = 'flex';
                 document.getElementById('realContent').innerHTML = `
@@ -503,14 +476,14 @@
             fetchLiveMatches();
             startSilentPolling();
 
-            // Safety timeout to ensure loader disappears even if fetch gets totally stuck
             setTimeout(() => {
-                const loader = document.getElementById('tournyx-loader');
-                if (loader && loader.style.display !== 'none') {
-                    loader.style.opacity = '0';
-                    setTimeout(() => { loader.style.display = 'none'; }, 400);
+                const loader = document.getElementById('skeletonLoader');
+                if (loader && loader.style.display !== 'none' && globalLiveMatches.length === 0) {
+                     loader.style.display = 'none';
+                     document.getElementById('realContent').style.display = 'flex';
+                     renderMatches();
                 }
-            }, 2500);
+            }, 6000);
         });
 
         function manualRefresh() {
@@ -550,6 +523,9 @@
                 let freshMatches = [];
 
                 myEntries.forEach(entry => {
+                    // IGNORE LEAVED MATCHES
+                    if(String(entry.status || "").toLowerCase() === "leaved") return;
+
                     let matchIdToCheck = entry.match_id || entry.id;
                     let tDetails = allTournaments.find(t => String(t.id) === String(matchIdToCheck) || String(t.match_id) === String(matchIdToCheck) || String(t.title) === String(entry.tournament_title));
                     
@@ -602,24 +578,11 @@
 
                 if(isManual) showToast("Matches Synced!");
 
-                // Hide initial launch loader smoothly
-                const loader = document.getElementById('tournyx-loader');
-                if (loader && loader.style.display !== 'none') {
-                    loader.style.opacity = '0';
-                    setTimeout(() => { loader.style.display = 'none'; }, 400);
-                }
-
             } catch (error) {
                 console.error("Live Fetch Error", error);
                 
                 document.getElementById('skeletonLoader').style.display = 'none';
                 document.getElementById('realContent').style.display = 'flex';
-                
-                const loader = document.getElementById('tournyx-loader');
-                if (loader && loader.style.display !== 'none') {
-                    loader.style.opacity = '0';
-                    setTimeout(() => { loader.style.display = 'none'; }, 400);
-                }
 
                 if(globalLiveMatches.length === 0) {
                     document.getElementById('realContent').innerHTML = `
