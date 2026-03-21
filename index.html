@@ -515,6 +515,75 @@
         /* MEDIAN APP OVERRIDE - Forces Header Visibility */
         .median-active { padding-top: calc(85px + env(safe-area-inset-top)) !important; }
         .median-active .top-header { display: flex !important; visibility: visible !important; }
+        #custom-top-banner {
+    display: none;
+    position: fixed; /* This makes it stick to the top */
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #121212; /* Dark theme */
+    color: #ffffff;
+    z-index: 9999; /* Ensures it stays on top of your search bar and other elements */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    padding: 12px 15px;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+#custom-top-banner.visible {
+    display: flex;
+}
+
+.banner-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.banner-text {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    margin-right: 15px;
+}
+
+.banner-text strong {
+    font-size: 14px;
+    margin-bottom: 2px;
+}
+
+.banner-text span {
+    font-size: 12px;
+    color: #aaaaaa;
+}
+
+.banner-btn {
+    background-color: #ff4500; /* Primary brand color */
+    color: white;
+    text-decoration: none;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-right: 15px;
+}
+
+#close-top-banner {
+    background: none;
+    border: none;
+    color: #888888;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 0;
+}
+
+/* Ensure it only shows on mobile devices */
+@media (min-width: 769px) {
+    #custom-top-banner {
+        display: none !important;
+    }
+}
     </style>
     
     <script>
@@ -527,6 +596,16 @@
     </script>
 </head>
 <body>
+    <div id="custom-top-banner" class="hidden">
+        <div class="banner-content">
+            <div class="banner-text">
+                <strong>Tournyx App</strong>
+                <span>Get the best tournament experience!</span>
+            </div>
+            <a href="YOUR_APP_LINK" class="banner-btn">INSTALL</a>
+            <button id="close-top-banner" aria-label="Close">✕</button>
+        </div>
+    </div>
 
     <div id="launch-celebration"></div>
 
@@ -1481,5 +1560,37 @@
         window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
 
     </script>
+    <script>
+document.addEventListener("DOMContentLoaded", function() {
+    const topBanner = document.getElementById('custom-top-banner');
+    const closeBtn = document.getElementById('close-top-banner');
+
+    // Check if on a mobile device
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    // Check if inside Median app (Median usually adds 'median' or 'gonative' to the user agent)
+    const userAgentString = navigator.userAgent.toLowerCase();
+    const isInsideMedianApp = userAgentString.includes('median') || userAgentString.includes('gonative');
+
+    // Check if user previously closed it
+    const bannerDismissed = localStorage.getItem('tournyxTopBannerDismissed');
+
+    // Show banner if: on mobile, NOT in app, and NOT dismissed
+    if (isMobile && !isInsideMedianApp && !bannerDismissed) {
+        topBanner.classList.add('visible');
+        
+        // Push the body down so the banner doesn't cover your top search bar
+        document.body.style.marginTop = topBanner.offsetHeight + 'px';
+    }
+
+    // Handle close button
+    closeBtn.addEventListener('click', () => {
+        topBanner.classList.remove('visible');
+        document.body.style.marginTop = '0px'; // Reset body margin
+        localStorage.setItem('tournyxTopBannerDismissed', 'true');
+    });
+});
+</script>
+
 </body>
 </html>
