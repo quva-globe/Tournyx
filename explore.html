@@ -65,7 +65,7 @@
         body { background-color: var(--primary-bg); color: white; font-family: var(--font-body); padding-bottom: calc(90px + env(safe-area-bottom)); padding-top: calc(55px + env(safe-area-inset-top)); overflow-x: hidden; }
 
         /* --- RESPONSIVE WRAPPER --- */
-        .search-row, .game-scroll, .tourney-list, .app-footer, .top-header .header-wrapper, .advanced-features-scroll { max-width: 1000px; margin-left: auto !important; margin-right: auto !important; width: 100%; }
+        .search-row, .game-scroll, .tourney-list, .app-footer, .top-header .header-wrapper { max-width: 1000px; margin-left: auto !important; margin-right: auto !important; width: 100%; }
 
         /* --- BACKGROUND --- */
         #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at 50% 0%, #15062e 0%, #070311 100%); }
@@ -118,17 +118,11 @@
         .action-btn:active { transform: scale(0.9); }
 
         /* --- QUICK GAME FILTERS --- */
-        .game-scroll { display: flex; gap: 12px; overflow-x: auto; padding: 0 15px 10px; }
+        .game-scroll { display: flex; gap: 12px; overflow-x: auto; padding: 0 15px 15px; margin-bottom: 5px; }
         .game-item { display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(255,255,255,0.05); padding: 8px 18px; border-radius: 12px; border: 1px solid transparent; cursor: pointer; transition: 0.3s; opacity: 0.7; flex-shrink: 0; white-space: nowrap; }
         .game-item.active { opacity: 1; border: 1px solid var(--accent-cyan); background: rgba(0,242,255,0.15); box-shadow: 0 4px 15px rgba(0,242,255,0.2); }
         .game-icon { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
         .game-name { font-size: 0.85rem; font-family: var(--font-head); font-weight: bold; white-space: nowrap; }
-
-        /* --- 10 ADVANCED FEATURES SCROLL --- */
-        .advanced-features-scroll { display: flex; gap: 10px; overflow-x: auto; padding: 0 15px 15px; margin-top: 5px; scrollbar-width: none; }
-        .advanced-features-scroll::-webkit-scrollbar { display: none; }
-        .af-item { display: flex; align-items: center; gap: 6px; background: rgba(0, 242, 255, 0.05); border: 1px solid rgba(0, 242, 255, 0.2); padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; color: var(--accent-cyan); font-family: var(--font-head); font-weight: bold; white-space: nowrap; flex-shrink: 0; }
-        .af-item i { font-size: 0.9rem; }
 
         /* --- TOURNAMENT CARDS & GLOW EFFECTS --- */
         .tourney-list { padding: 0 15px; display: flex; flex-direction: column; gap: 20px; min-height: 400px; }
@@ -350,7 +344,7 @@
         .pc-rank { font-family: var(--font-head); font-weight: bold; font-size: 1rem; display: flex; align-items: center; gap: 10px; }
         .pc-val { font-size: 1rem; font-weight: bold; color: var(--accent-cyan); text-shadow: 0 0 5px rgba(0,242,255,0.3); }
 
-        .clan-item { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); padding: 12px; border-radius: 12px; margin-bottom: 10px; transition: 0.3s; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); }
+        .clan-item { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); padding: 12px; border-radius: 12px; margin-bottom: 10px; transition: 0.3s; cursor: pointer; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); }
         .clan-item.my-clan { border: 1px solid var(--accent-cyan); background: rgba(0,242,255,0.1); box-shadow: 0 0 10px rgba(0,242,255,0.2); }
         .clan-item-header { display: flex; align-items: center; width: 100%; gap: 12px; }
         .clan-item-icon { width: 35px; height: 35px; border-radius: 8px; background: rgba(0,242,255,0.1); color: var(--accent-cyan); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; overflow: hidden; }
@@ -415,18 +409,12 @@
         .median-active { padding-top: 15px !important; }
         
         /* --- PERFECT SINGLE PAGE SHARE MODE --- */
-        .single-page-mode .top-header, .single-page-mode .search-row, .single-page-mode .game-scroll, .single-page-mode .tourney-list, .single-page-mode .bottom-nav, .single-page-mode .app-footer, .single-page-mode .floating-plus, .single-page-mode .advanced-features-scroll { display: none !important; }
+        .single-page-mode .top-header, .single-page-mode .search-row, .single-page-mode .game-scroll, .single-page-mode .tourney-list, .single-page-mode .bottom-nav, .single-page-mode .app-footer, .single-page-mode .floating-plus { display: none !important; }
         .single-page-mode body { padding: 0 !important; background: var(--primary-bg); }
         .single-page-mode .detail-modal { position: fixed !important; transform: none !important; transition: none !important; height: 100vh !important; width: 100vw !important; top: 0 !important; left: 0 !important; }
         .single-page-mode .locked-footer { position: fixed; bottom: 0; width: 100%; z-index: 9999; }
         .single-page-mode .guest-banner { position: fixed; top: 0; width: 100%; z-index: 9999; }
         .single-page-mode .dm-header { margin-top: 40px; } /* Space for banner */
-
-        /* Unique Share Features Grid */
-        #proFeaturesBlock { display: none; padding: 20px 15px; border-top: 1px solid var(--card-border); background: #0a0418; }
-        .pro-feat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-top: 15px; }
-        .pro-feat-badge { background: rgba(0,242,255,0.05); border: 1px solid rgba(0,242,255,0.2); border-radius: 8px; padding: 10px; text-align: center; color: #ccc; font-size: 0.75rem; font-family: var(--font-head); }
-        .pro-feat-badge i { color: var(--accent-cyan); font-size: 1.2rem; margin-bottom: 5px; display: block; }
 
         /* Share Page Initial Loader */
         #shareLoader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary-bg); z-index: 99999; align-items: center; justify-content: center; flex-direction: column; }
@@ -495,17 +483,6 @@
         <div class="game-item" onclick="filterGame('BGMI', this)"><img class="game-icon" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj3MKUI87mMK4_3DltS3LQgqfrK1sESUIMMqlENdi0dPRtOFkeDbvPsTbSaCRaJOb17QZ5s9OO5dR6kFCYiCkgUCF2zBWwvGFSb3T-9Nz51XuIzMvIiOuqwcLzyzeFmn1orKbiETP4LrlaG-RidnWAAzBwUA3aL5_z62HP4_F7R02lAK_WSYdH0U_Gn7Es/s250/1000094211.jpg" /><span class="game-name">BGMI</span></div>
         <div class="game-item" onclick="filterGame('Free Fire', this)"><img class="game-icon" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiJvPTY_y_XU-0Lwbnjwm7961lCDkSlQh2MtCWHunFVX6WS7WCprCtkPyB334BU_-4vGsP0NseDQf4NPBEOIxqjk7VZQqZUHpnLb4Bw-c1UeXQy2M9DzNrNdYt_aL0GEb1AlTPupC5zEjJiP3Ci0Oxk-wdg5TF5cs8_UNSe3uTT1BE884je3iXr8QlMjx8/s240/1000094210.jpg" /><span class="game-name">Free Fire</span></div>
         <div class="game-item" onclick="filterGame('COD', this)"><img class="game-icon" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg8vsDFFkLAXTA234WJzc3OqsLbmB3HBlKaXhiJo-JFVcTtYmMUI2DVdk5ljTPvGPKj-vtcejjFAxZO0sapDafr6xqN7VpHLGCcxqYWWY2LIZszXhrnnO1gcXFeJzY2EclP6G1bLoea5bshOtT7Dl3p4F_l0pGDuz1j5KJ78dEnI7cQixwAeDC1vKG89N4/s460/1000094209.jpg" /><span class="game-name">CODM</span></div>
-    </div>
-
-    <div class="advanced-features-scroll">
-        <div class="af-item"><i class="fa-solid fa-sitemap"></i> Live Brackets</div>
-        <div class="af-item"><i class="fa-brands fa-discord"></i> Dedicated Comms</div>
-        <div class="af-item"><i class="fa-solid fa-chart-line"></i> Esports Analytics</div>
-        <div class="af-item"><i class="fa-solid fa-server"></i> Low Ping Servers</div>
-        <div class="af-item"><i class="fa-solid fa-video"></i> Streamer Friendly</div>
-        <div class="af-item"><i class="fa-solid fa-crown"></i> Premium Lobbies</div>
-        <div class="af-item"><i class="fa-solid fa-lock"></i> Roster Lock</div>
-        <div class="af-item"><i class="fa-solid fa-gavel"></i> Pro Rulesets</div>
     </div>
 
     <div class="tourney-list" id="tournamentContainer">
@@ -664,30 +641,6 @@
                             <div class="t-detail-item"><i class="fa-solid fa-gamepad"></i> Game: <span id="dtGame" style="color:white; font-weight:bold; margin-left: 5px;">Loading...</span></div>
                             <div class="t-detail-item"><i class="fa-solid fa-mobile-screen"></i> Platform: <span id="dtPlatformText" style="color:white; font-weight:bold; margin-left: 5px;">Mobile</span></div>
                             <div class="t-detail-item"><i class="fa-solid fa-sitemap"></i> Format: <span id="dtFormat" style="color:white; font-weight:bold; margin-left: 5px;">Loading...</span></div>
-                        </div>
-                    </div>
-
-                    <div id="proFeaturesBlock">
-                        <div class="dm-sec-title" style="color:var(--accent-purple)"><i class="fa-solid fa-star"></i> Premium Match Features</div>
-                        <div class="pro-feat-grid">
-                            <div class="pro-feat-badge"><i class="fa-brands fa-discord"></i> Dedicated Support</div>
-                            <div class="pro-feat-badge"><i class="fa-solid fa-sitemap"></i> Live Brackets</div>
-                            <div class="pro-feat-badge"><i class="fa-solid fa-chart-line"></i> Esports Analytics</div>
-                            <div class="pro-feat-badge"><i class="fa-solid fa-server"></i> High Tickrate</div>
-                            <div class="pro-feat-badge"><i class="fa-solid fa-stopwatch"></i> Zero Delay</div>
-                            <div class="pro-feat-badge"><i class="fa-solid fa-video"></i> Streamer Friendly</div>
-                            <div class="pro-feat-badge"><i class="fa-solid fa-crown"></i> Premium Lobby</div>
-                            <div class="pro-feat-badge"><i class="fa-solid fa-lock"></i> Roster Lock</div>
-                            <div class="pro-feat-badge"><i class="fa-solid fa-scale-balanced"></i> Fair Play</div>
-                            <div class="pro-feat-badge"><i class="fa-solid fa-coins"></i> Crypto/Rupee</div>
-                            <div class="pro-feat-badge"><i class="fa-solid fa-calculator"></i> Auto-Scoring</div>
-                            <div class="pro-feat-badge"><i class="fa-solid fa-cloud"></i> Cloud Server</div>
-                            <div class="pro-feat-badge"><i class="fa-solid fa-mobile-screen"></i> Mobile/Tablet</div>
-                            <div class="pro-feat-badge"><i class="fa-solid fa-gavel"></i> Pro Ruleset</div>
-                            <div class="pro-feat-badge"><i class="fa-solid fa-users"></i> Community Vote</div>
-                            <div class="pro-feat-badge"><i class="fa-solid fa-gift"></i> VIP Giveaways</div>
-                            <div class="pro-feat-badge"><i class="fa-solid fa-ranking-star"></i> Ranked System</div>
-                            <div class="pro-feat-badge"><i class="fa-solid fa-medal"></i> Verified Host</div>
                         </div>
                     </div>
                 </div>
@@ -1558,14 +1511,13 @@
             
             let orgId = t.org_username || t.email || 'Verified Organizer';
             document.getElementById('dtOrgName').innerHTML = `${t.org_username || 'Verified Organizer'}`;
-            // Corrected avatar checking sequence as per users sheet
+            
             let hostAvatar = t.avatar ? formatImageUrl(t.avatar) : (t.org_avatar ? formatImageUrl(t.org_avatar) : `https://ui-avatars.com/api/?name=${encodeURIComponent(orgId)}&background=070311&color=00f2ff&bold=true&border=1`);
             document.getElementById('orgAvatarImg').src = hostAvatar;
             
             let hostedCount = t.org_hosted_count ? parseInt(t.org_hosted_count) : Math.max(localTournamentsData.filter(x => x.org_username === orgId || x.email === orgId).length, 1);
             document.getElementById('dtOrgStats').innerHTML = `<i class="fa-solid fa-star"></i> Hosted: ${hostedCount} Match${hostedCount > 1 ? 'es' : ''}`;
 
-            // Fetch user profile silently to override avatar and stats securely
             fetch(API_URL + "?action=get_user_profile&username=" + encodeURIComponent(orgId))
             .then(res => res.json())
             .then(data => {
@@ -1588,14 +1540,14 @@
             document.getElementById('dtDescription').innerHTML = t.rules || "Standard competitive rules apply.";
             document.getElementById('dtRulesText').innerHTML = t.rules || "No specific rules provided.";
             
-            // PRIZE TAB DYNAMIC LOGIC - Maps to t.prize_distribution (from your screenshot Column S)
+            // PRIZE TAB DYNAMIC LOGIC
             const prizeArea = document.getElementById('prizeDistributionArea');
             document.getElementById('dtPrizeTotalHead').innerText = getPrizeText(t.prize, t.prize_pts);
 
             let prizeHTML = '';
             
-            // Render 16:9 Prize Image with flip card effect if present
-            let prizeImageToDisplay = t.prize_distribution || t.prize_image;
+            // Map directly to t.prize_distribution as requested
+            let prizeImageToDisplay = t.prize_distribution || t.prize_image || "";
             if (prizeImageToDisplay && prizeImageToDisplay.trim() !== "") {
                 prizeHTML += `
                     <div class="prize-flip-container" onclick="this.classList.toggle('flipped'); triggerHaptic();">
@@ -1622,7 +1574,7 @@
                 if(t.prize3) prizeHTML += `<div class="prize-card bronze"><div class="pc-rank"><i class="fa-solid fa-medal" style="color:#CD7F32; font-size:1.5rem;"></i> 3rd Place</div><div class="pc-val">${t.prize3}</div></div>`;
             } else if (!prizeImageToDisplay) {
                 let textToDisplay = getPrizeText(t.prize, t.prize_pts);
-                prizeHTML = `
+                prizeHTML += `
                     <div class="prize-card gold" style="justify-content: center; flex-direction: column; gap: 10px; text-align: center; padding: 25px;">
                         <i class="fa-solid fa-trophy" style="color:#FFD700; font-size:3.5rem; filter: drop-shadow(0 0 15px rgba(255,215,0,0.5)); margin-bottom: 10px;"></i>
                         <div style="font-family: var(--font-head); font-size: 1.5rem; font-weight: bold; color: white;">${textToDisplay}</div>
@@ -1631,7 +1583,7 @@
             }
             prizeArea.innerHTML = prizeHTML;
 
-            // Maps to t.bracket_image (from your screenshot Column T)
+            // Map directly to t.bracket_image
             const bracketArea = document.getElementById('bracketDisplayArea');
             if (t.bracket_image && t.bracket_image.trim() !== "") {
                 bracketArea.innerHTML = `<img src="${formatImageUrl(t.bracket_image)}" style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 12px; border: 1px solid var(--card-border); margin-top: 10px;">`;
@@ -1763,7 +1715,6 @@
             document.getElementById('tourneyDetailModal').classList.add('active');
         }
 
-        // --- REAL HOST PROFILE FETCHING (INSTANT LOAD FIX) ---
         function openHostProfile() {
             triggerHaptic();
             let t = activeTournament;
@@ -1772,17 +1723,15 @@
             let orgId = t.org_username || t.email || 'Verified Organizer';
             document.getElementById('hostProfileOverlay').classList.add('active');
             
-            // 1. INSTANT FALLBACK (Populate immediately from current tournament data)
             let fallbackAvatar = t.avatar ? formatImageUrl(t.avatar) : (t.org_avatar ? formatImageUrl(t.org_avatar) : `https://ui-avatars.com/api/?name=${encodeURIComponent(orgId)}&background=070311&color=00f2ff&bold=true&border=1`);
             let fallbackHosted = t.org_hosted_count ? parseInt(t.org_hosted_count) : Math.max(localTournamentsData.filter(x => x.org_username === orgId || x.email === orgId).length, 1);
             
             document.getElementById('hpName').innerText = orgId;
             document.getElementById('hpAvatar').src = fallbackAvatar;
             document.getElementById('hpHosted').innerText = fallbackHosted;
-            document.getElementById('hpSuccess').innerText = "100%"; // Default until fetch
-            document.getElementById('hpRating').innerText = "4.9"; // Default until fetch
+            document.getElementById('hpSuccess').innerText = "100%";
+            document.getElementById('hpRating').innerText = "4.9"; 
 
-            // 2. BACKGROUND FETCH (Updates silently if user has a dedicated profile sheet)
             fetch(API_URL + "?action=get_user_profile&username=" + encodeURIComponent(orgId))
             .then(res => res.json())
             .then(data => {
@@ -1871,7 +1820,6 @@
             triggerHaptic();
             if(document.getElementById('masterJoinBtn').disabled) return;
             
-            // IF GUEST - TRIGGER GUEST POPUP INSTEAD OF REDIRECT
             if(isGuestMode) {
                 document.getElementById('guestLoginModal').classList.add('active');
                 return;
