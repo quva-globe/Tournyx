@@ -121,6 +121,12 @@
         .preview-img { width: 100%; height: 180px; object-fit: contain; border-radius: 12px; display: none; margin-top: 10px; border: 1px solid var(--accent-cyan); box-shadow: 0 5px 15px rgba(0,242,255,0.2); background: #000; }
         .remove-img { background: rgba(255,77,77,0.1); color: var(--accent-red); border: 1px solid rgba(255,77,77,0.3); padding: 8px 15px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; display: none; margin: 15px auto 0; text-align: center; font-weight: bold; width: max-content; transition: 0.3s; }
 
+        /* --- NEW SCHEDULE BUILDER CSS --- */
+        .sch-block { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 15px; margin-bottom: 15px; position: relative; transition: 0.3s; }
+        .sch-block:focus-within { border-color: var(--accent-cyan); box-shadow: inset 0 0 10px rgba(0,242,255,0.05); }
+        .sch-remove { position: absolute; top: -10px; right: -10px; background: var(--accent-red); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.7rem; box-shadow: 0 2px 5px rgba(0,0,0,0.5); z-index: 5; transition: 0.3s; }
+        .sch-remove:active { transform: scale(0.8); }
+
         /* --- NATIVE RICH TEXT EDITOR --- */
         .rich-text-wrapper { border: 1px solid var(--card-border); border-radius: 10px; background: var(--input-bg); overflow: hidden; transition: 0.3s; width: 100%; }
         .rich-text-wrapper:focus-within { border-color: var(--accent-cyan); box-shadow: 0 0 10px rgba(0,242,255,0.2); }
@@ -390,7 +396,7 @@
                 
                 <div class="row">
                     <div class="col">
-                        <label class="input-label">Prize Pool (Rs.) *</label>
+                        <label class="input-label">Total Prize Pool *</label>
                         <input type="number" name="prize_pool" id="inpPrize" class="form-control" placeholder="e.g. 5000" required onkeyup="updateCalc()">
                         <div class="preset-row">
                             <span class="preset-badge" onclick="applyPreset('inpPrize', 1000)">1k</span>
@@ -412,16 +418,20 @@
                 </div>
 
                 <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05);">
-                    <label class="input-label">Prize Distribution Image (Optional)</label>
-                    <div class="input-sublabel" style="margin-bottom: 10px;">Upload a graphic showing how the prize pool is split.</div>
-                    <div class="upload-box-wrapper" id="prizeImgArea" style="padding: 20px 15px;" onclick="document.getElementById('prizeInput').click(); triggerHaptic();">
-                        <div class="upload-icon-circle" style="width:40px; height:40px; font-size:1rem; margin-bottom:10px;"><i class="fa-solid fa-trophy"></i></div>
-                        <div class="upload-title" style="font-size:0.9rem;">Upload Distribution Graphic</div>
+                    <label class="input-label">Prize Distribution (Optional)</label>
+                    <div class="input-sublabel" style="margin-bottom: 10px;">Specify individual rewards (e.g., '5000 Rs' or '1000 PTS'). Leave blank if not applicable.</div>
+                    <div class="row">
+                        <div class="col">
+                            <input type="text" id="inpPrize1" class="form-control" placeholder="1st Place Prize" oninput="calculateProgress()">
+                        </div>
+                        <div class="col">
+                            <input type="text" id="inpPrize2" class="form-control" placeholder="2nd Place Prize" oninput="calculateProgress()">
+                        </div>
+                        <div class="col" style="flex-grow: 1;">
+                            <input type="text" id="inpPrize3" class="form-control" placeholder="3rd Place Prize" oninput="calculateProgress()">
+                        </div>
                     </div>
-                    <img src="" id="prizeImgPreview" class="preview-img" style="height: auto; max-height: 250px;">
-                    <div id="removePrizeImg" class="remove-img" onclick="removeImage('prizeInput', 'prizeBase64', 'prizeImgArea', 'prizeImgPreview', 'removePrizeImg'); triggerHaptic();"><i class="fa-solid fa-trash"></i> Remove Image</div>
-                    <input type="file" id="prizeInput" class="file-input" accept="image/*" onchange="initCropper(event, 'prizeImgPreview', 'prizeBase64', 'prizeImgArea', 'removePrizeImg', NaN)">
-                    <input type="hidden" name="prize_distribution_image" id="prizeBase64">
+                    <input type="hidden" name="prize_distribution_image" id="prizeBase64"> 
                 </div>
 
             </div>
@@ -446,16 +456,15 @@
                 </div>
 
                 <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05);">
-                    <label class="input-label">Match Bracket / Schedule Image (Optional)</label>
-                    <div class="input-sublabel" style="margin-bottom: 10px;">Upload a visual bracket or schedule layout for players.</div>
-                    <div class="upload-box-wrapper" id="bracketImgArea" style="padding: 20px 15px;" onclick="document.getElementById('bracketInput').click(); triggerHaptic();">
-                        <div class="upload-icon-circle" style="width:40px; height:40px; font-size:1rem; margin-bottom:10px;"><i class="fa-solid fa-sitemap"></i></div>
-                        <div class="upload-title" style="font-size:0.9rem;">Upload Bracket Image</div>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <label class="input-label" style="margin:0;">Match Schedule (Max 7)</label>
+                        <span class="preset-badge" onclick="addScheduleBlock()" style="background:var(--accent-cyan); color:black; border:none; padding: 5px 12px; font-size:0.8rem;"><i class="fa-solid fa-plus"></i> Add Match</span>
                     </div>
-                    <img src="" id="bracketImgPreview" class="preview-img" style="height: auto; max-height: 250px;">
-                    <div id="removeBracketImg" class="remove-img" onclick="removeImage('bracketInput', 'bracketBase64', 'bracketImgArea', 'bracketImgPreview', 'removeBracketImg'); triggerHaptic();"><i class="fa-solid fa-trash"></i> Remove Image</div>
-                    <input type="file" id="bracketInput" class="file-input" accept="image/*" onchange="initCropper(event, 'bracketImgPreview', 'bracketBase64', 'bracketImgArea', 'removeBracketImg', NaN)">
-                    <input type="hidden" name="bracket_image" id="bracketBase64">
+                    <div class="input-sublabel" style="margin-bottom: 15px;">Build a live interactive timeline for players.</div>
+                    
+                    <div id="scheduleContainer">
+                        </div>
+                    <input type="hidden" name="bracket_image" id="bracketBase64"> 
                 </div>
 
                 <div class="input-group" style="margin-top:25px; position:relative;">
@@ -547,7 +556,7 @@
         }
 
         function calculateProgress() {
-            let reqs = document.querySelectorAll('[required]');
+            let reqs = document.querySelectorAll('#createForm [required]');
             let filled = 0;
             reqs.forEach(r => {
                 if(r.id === 'hiddenRules') {
@@ -556,7 +565,7 @@
                     filled++;
                 }
             });
-            let pct = (filled / reqs.length) * 100;
+            let pct = reqs.length > 0 ? (filled / reqs.length) * 100 : 0;
             document.getElementById('formProgress').style.width = pct + '%';
             
             // Trigger autosave mock
@@ -698,7 +707,43 @@
             calculateProgress();
         }
 
-        // --- 5. NATIVE RICH TEXT EDITOR ---
+        // --- 5. NEW SCHEDULE BUILDER LOGIC ---
+        let scheduleCount = 0;
+        function addScheduleBlock() {
+            if(scheduleCount >= 7) { showToast("Maximum 7 matches allowed per tournament.", true); return; }
+            triggerHaptic();
+            scheduleCount++;
+            let id = Date.now();
+            let html = `
+                <div class="sch-block" id="sch-${id}">
+                    <div class="sch-remove" onclick="removeScheduleBlock('sch-${id}')"><i class="fa-solid fa-xmark"></i></div>
+                    <div class="input-group" style="margin-bottom:10px;">
+                        <input type="text" class="form-control sch-title" placeholder="Match Title (e.g. Group A / Finals)" required oninput="calculateProgress()">
+                    </div>
+                    <div class="row" style="margin-bottom:0;">
+                        <div class="col">
+                            <label class="input-sublabel" style="margin-top:0;">Start Time</label>
+                            <input type="datetime-local" class="form-control sch-start" required onchange="calculateProgress()">
+                        </div>
+                        <div class="col">
+                            <label class="input-sublabel" style="margin-top:0;">End Time</label>
+                            <input type="datetime-local" class="form-control sch-end" required onchange="calculateProgress()">
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('scheduleContainer').insertAdjacentHTML('beforeend', html);
+            calculateProgress(); // Update progress bar with new required fields
+        }
+
+        function removeScheduleBlock(id) {
+            document.getElementById(id).remove();
+            scheduleCount--;
+            calculateProgress();
+            triggerHaptic();
+        }
+
+        // --- 6. NATIVE RICH TEXT EDITOR ---
         function formatText(command) {
             document.execCommand(command, false, null);
             document.getElementById('editor').focus();
@@ -725,7 +770,7 @@
             }, 4000);
         }
 
-        // --- 6. ADVANCED CROPPER & COMPRESSOR LOGIC ---
+        // --- 7. ADVANCED CROPPER & COMPRESSOR LOGIC (Banner Only) ---
         let cropper = null;
         let currentUploadState = {
             previewId: '',
@@ -834,22 +879,43 @@
             if(confirm("Are you sure you want to clear the entire form?")) {
                 document.getElementById('createForm').reset();
                 document.getElementById('editor').innerHTML = "";
+                document.getElementById('scheduleContainer').innerHTML = ""; // Clear schedule
+                scheduleCount = 0;
                 removeImage('bannerInput', 'bannerBase64', 'bannerArea', 'bannerPreview', 'removeBanner');
-                removeImage('prizeInput', 'prizeBase64', 'prizeImgArea', 'prizeImgPreview', 'removePrizeImg');
-                removeImage('bracketInput', 'bracketBase64', 'bracketImgArea', 'bracketImgPreview', 'removeBracketImg');
                 updateCalc();
                 calculateProgress();
                 showToast("Form cleared.");
             }
         }
 
-        // --- 7. FORM SUBMISSION ---
+        // --- 8. FORM SUBMISSION ---
         async function submitTournamentForm(e) {
             e.preventDefault();
             const form = document.getElementById('createForm');
             
             // Sync Rich Text
             document.getElementById('hiddenRules').value = document.getElementById('editor').innerHTML;
+            
+            // Generate NEW JSON Payloads for Prizes and Brackets
+            let p1 = document.getElementById('inpPrize1').value.trim();
+            let p2 = document.getElementById('inpPrize2').value.trim();
+            let p3 = document.getElementById('inpPrize3').value.trim();
+            let prizeJson = {};
+            if(p1) prizeJson["1"] = p1;
+            if(p2) prizeJson["2"] = p2;
+            if(p3) prizeJson["3"] = p3;
+            document.getElementById('prizeBase64').value = Object.keys(prizeJson).length > 0 ? JSON.stringify(prizeJson) : "";
+
+            let scheduleArr = [];
+            document.querySelectorAll('.sch-block').forEach(block => {
+                let title = block.querySelector('.sch-title').value.trim();
+                let start = block.querySelector('.sch-start').value;
+                let end = block.querySelector('.sch-end').value;
+                if(title && start && end) {
+                    scheduleArr.push({title: title, start: start, end: end});
+                }
+            });
+            document.getElementById('bracketBase64').value = scheduleArr.length > 0 ? JSON.stringify(scheduleArr) : "";
             
             // Strict Validation & Scroll to Error
             let reqs = form.querySelectorAll('[required]');
@@ -906,14 +972,13 @@
                 rules: rawData.rules, 
                 banner: rawData.banner_base64 || 'https://via.placeholder.com/1200x380/15062e/00f2ff?text=Tournament+Banner',
                 
-                // NEW OPTIONAL IMAGE FIELDS
+                // BUNDLED JSON STRINGS INSTEAD OF IMAGES
                 prize_distribution_image: rawData.prize_distribution_image || "",
                 bracket_image: rawData.bracket_image || "",
 
                 status: "Upcoming",
                 stream_url: rawData.stream_url || ""
             };
-
 
             try {
                 const response = await fetch(API_URL, {
