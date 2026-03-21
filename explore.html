@@ -221,7 +221,7 @@
         .fee-tag { padding: 8px 15px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; font-size: 0.85rem; font-family: var(--font-head); color: #ccc; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; white-space: nowrap; text-align: center;}
         .fee-tag.active { background: rgba(0,242,255,0.15); border-color: var(--accent-cyan); color: var(--accent-cyan); box-shadow: 0 0 10px rgba(0,242,255,0.3); transform: scale(1.05); }
 
-        /* --- FULL SCREEN DETAIL MODAL (Smoother App-Like Opening) --- */
+        /* --- FULL SCREEN DETAIL MODAL --- */
         .detail-modal { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: var(--primary-bg); z-index: 3000; 
@@ -259,7 +259,7 @@
         .b-fast { color: var(--accent-orange); border-color: var(--accent-orange); }
         .b-free { color: var(--accent-green); border-color: var(--accent-green); }
 
-        /* --- GLASSMORPHISM APPLYED TO SECTIONS --- */
+        /* --- GLASSMORPHISM SECTIONS --- */
         .dm-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
         .stat-box { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); padding: 15px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); }
         .stat-box i { font-size: 1.5rem; margin-bottom: 8px; color: var(--accent-purple); text-shadow: 0 0 10px rgba(189,0,255,0.4); }
@@ -276,72 +276,27 @@
         .tl-val { font-family: var(--font-body); font-size: 0.95rem; color: white; white-space: normal; }
         .tl-status { background: rgba(0,255,127,0.1); color: var(--accent-green); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; border: 1px solid var(--accent-green); text-transform: uppercase; white-space: nowrap; }
 
-        /* --- NEW 16:9 FLIP PRIZE CARD CSS --- */
-        .prize-flip-container {
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            perspective: 1000px;
-            margin-bottom: 20px;
-        }
-        .prize-flip-inner {
-            width: 100%;
-            height: 100%;
-            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
-            transform-style: preserve-3d;
-            position: relative;
-        }
-        .prize-flip-container.flipped .prize-flip-inner {
-            transform: rotateY(180deg);
-        }
-        .prize-front, .prize-back {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            backface-visibility: hidden;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid var(--accent-cyan);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .prize-front {
-            background: var(--card-bg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-        .prize-front img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .prize-back {
-            background: linear-gradient(135deg, #0d061e, #003366); /* Blue backside */
-            transform: rotateY(180deg);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            text-align: center;
-            border-color: #00f2ff;
-        }
-        .prize-close-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            font-size: 1.5rem;
-            color: white;
-            cursor: pointer;
-            z-index: 10;
-            background: rgba(0,0,0,0.5);
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+        /* --- NEW TIMELINE SCHEDULE CSS --- */
+        .schedule-timeline { position: relative; padding-left: 20px; margin-top: 15px; }
+        .schedule-timeline::before { content: ''; position: absolute; left: 0; top: 10px; bottom: 10px; width: 2px; background: rgba(255,255,255,0.1); }
+        .st-block { position: relative; margin-bottom: 20px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 15px; transition: 0.3s; cursor: pointer; overflow: hidden; }
+        .st-block::before { content: ''; position: absolute; left: -25px; top: 20px; width: 12px; height: 12px; border-radius: 50%; background: var(--primary-bg); border: 2px solid #888; z-index: 2; transition: 0.3s; }
+        .st-block:active { transform: scale(0.98); }
+        .st-block.upcoming::before { border-color: var(--accent-cyan); }
+        .st-block.live { border-color: var(--accent-green); background: rgba(0,255,127,0.05); }
+        .st-block.live::before { border-color: var(--accent-green); background: var(--accent-green); box-shadow: 0 0 10px var(--accent-green); }
+        .st-block.completed { opacity: 0.6; }
+        .st-block.completed::before { border-color: #555; background: #555; }
+        .st-header { display: flex; justify-content: space-between; align-items: center; }
+        .st-title { font-family: var(--font-head); font-weight: bold; font-size: 1rem; color: white; }
+        .st-time { font-size: 0.8rem; color: #aaa; margin-top: 4px; }
+        .st-status { font-size: 0.7rem; font-weight: bold; text-transform: uppercase; padding: 3px 8px; border-radius: 6px; border: 1px solid transparent; white-space: nowrap; }
+        .st-block.upcoming .st-status { color: var(--accent-cyan); border-color: rgba(0,242,255,0.3); background: rgba(0,242,255,0.1); }
+        .st-block.live .st-status { color: var(--accent-green); border-color: rgba(0,255,127,0.3); background: rgba(0,255,127,0.1); animation: pulse 1.5s infinite alternate; }
+        .st-block.completed .st-status { color: #888; border-color: rgba(136,136,136,0.3); background: rgba(136,136,136,0.1); }
+        .st-countdown { display: none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed rgba(255,255,255,0.1); text-align: center; }
+        .st-block.expanded .st-countdown { display: block; animation: fadeIn 0.3s; }
+        .st-timer-text { font-family: var(--font-head); font-size: 1.4rem; font-weight: bold; color: white; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
 
         .prize-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); }
         .prize-card.gold { border-color: rgba(255, 215, 0, 0.4); background: rgba(255, 215, 0, 0.08); }
@@ -657,9 +612,9 @@
                         <div id="roomDetailsArea"></div>
                     </div>
                     <div class="dm-section">
-                        <div class="dm-sec-title"><i class="fa-solid fa-sitemap"></i> Match Schedule & Brackets</div>
+                        <div class="dm-sec-title"><i class="fa-solid fa-sitemap"></i> Match Schedule & Timeline</div>
                         <div id="bracketDisplayArea">
-                            <div style="text-align:center; color:#888; padding:20px;">Brackets have not been generated yet.</div>
+                            <div style="text-align:center; color:#888; padding:20px;">No schedule has been published yet.</div>
                         </div>
                     </div>
                 </div>
@@ -895,6 +850,7 @@
         let backgroundSyncInterval = null;
         let localTournamentsData = []; 
         let activeCountdown = null;
+        let activeTimelineInterval = null; // Added to handle schedule ticking smoothly
 
         // --- HARDWARE BACK BUTTON LOGIC SMOOTH FIX ---
         window.addEventListener('popstate', function(event) {
@@ -902,6 +858,7 @@
             if (modal && modal.classList.contains('active')) {
                 modal.classList.remove('active');
                 if(activeCountdown) clearInterval(activeCountdown);
+                if(activeTimelineInterval) clearInterval(activeTimelineInterval);
             }
         });
 
@@ -994,6 +951,20 @@
             } catch(e) { return dateStr; }
         }
         
+        function formatDateTimeTimeOnly(dateStr) {
+            try {
+                let d = new Date(dateStr);
+                return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+            } catch(e) { return dateStr; }
+        }
+
+        function formatTimerDiff(diff) {
+            let h = Math.floor(diff / (1000 * 60 * 60));
+            let m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            let s = Math.floor((diff % (1000 * 60)) / 1000);
+            return `${h < 10 ? '0'+h : h}h : ${m < 10 ? '0'+m : m}m : ${s < 10 ? '0'+s : s}s`;
+        }
+
         function startLandingPageTimers() {
             setInterval(() => {
                 let now = new Date().getTime();
@@ -1085,6 +1056,68 @@
             }, 1000);
         }
 
+        // --- NEW TIMELINE RENDERER ---
+        function renderTimeline(scheduleArr, container) {
+            if(activeTimelineInterval) clearInterval(activeTimelineInterval);
+            container.innerHTML = '<div class="schedule-timeline" id="stContainer"></div>';
+            const stContainer = document.getElementById('stContainer');
+
+            let html = '';
+            scheduleArr.forEach((block, index) => {
+                html += `
+                    <div class="st-block" id="st-block-${index}" onclick="this.classList.toggle('expanded'); triggerHaptic();">
+                        <div class="st-header">
+                            <div>
+                                <div class="st-title">${block.title}</div>
+                                <div class="st-time"><i class="fa-regular fa-clock"></i> ${formatDateTimeTimeOnly(block.start)} - ${formatDateTimeTimeOnly(block.end)}</div>
+                            </div>
+                            <div class="st-status" id="st-badge-${index}">Loading...</div>
+                        </div>
+                        <div class="st-countdown">
+                            <div style="font-size: 0.8rem; color: #888; text-transform: uppercase; margin-bottom: 5px;"><i class="fa-solid fa-stopwatch"></i> Live Timer</div>
+                            <div class="st-timer-text" id="st-timer-${index}">--:--:--</div>
+                        </div>
+                    </div>
+                `;
+            });
+            stContainer.innerHTML = html;
+
+            function tick() {
+                let now = new Date().getTime();
+                scheduleArr.forEach((block, index) => {
+                    let startTime = new Date(block.start).getTime();
+                    let endTime = new Date(block.end).getTime();
+                    let elBlock = document.getElementById(`st-block-${index}`);
+                    let elBadge = document.getElementById(`st-badge-${index}`);
+                    let elTimer = document.getElementById(`st-timer-${index}`);
+
+                    if(!elBlock || isNaN(startTime) || isNaN(endTime)) return;
+
+                    if (now >= endTime) {
+                        elBlock.className = "st-block completed" + (elBlock.classList.contains('expanded') ? ' expanded' : '');
+                        elBadge.innerText = "Completed";
+                        elTimer.innerText = "Match Finished";
+                        elTimer.style.color = "#888";
+                    } else if (now >= startTime && now < endTime) {
+                        elBlock.className = "st-block live" + (elBlock.classList.contains('expanded') ? ' expanded' : '');
+                        elBadge.innerText = "Live Now";
+                        let diff = endTime - now;
+                        elTimer.innerText = formatTimerDiff(diff) + " remaining";
+                        elTimer.style.color = "var(--accent-green)";
+                    } else {
+                        elBlock.className = "st-block upcoming" + (elBlock.classList.contains('expanded') ? ' expanded' : '');
+                        elBadge.innerText = "Upcoming";
+                        let diff = startTime - now;
+                        elTimer.innerText = "Starts in: " + formatTimerDiff(diff);
+                        elTimer.style.color = "white";
+                    }
+                });
+            }
+
+            tick(); 
+            activeTimelineInterval = setInterval(tick, 1000);
+        }
+
         function getPrizeText(rs, pts) {
             let strRs = String(rs || "").trim();
             let strPts = String(pts || "").trim();
@@ -1113,6 +1146,7 @@
         
         function formatImageUrl(url) {
             if (!url) return 'https://via.placeholder.com/600x300';
+            if (url.startsWith('data:image')) return url; // BASE64 EXACT FIX
             if (url.includes('drive.google.com/file/d/')) { let id = url.split('/d/')[1].split('/')[0]; return `https://drive.google.com/uc?export=view&id=${id}`; }
             return url;
         }
@@ -1256,14 +1290,12 @@
                     let likesArr = JSON.parse(localStorage.getItem('tournyx_liked_matches')) || [];
                     
                     data.data.forEach(t => {
-                        // DB check for permanently deleted tournaments
                         let dbStatus = String(t.db_status || t.col_u || t.status || "").toLowerCase();
                         if(dbStatus === "deleted") return;
 
                         let targetDate = new Date(t.date).getTime();
                         let now = new Date().getTime();
                         if(!isNaN(targetDate) && (now > targetDate + (24 * 60 * 60 * 1000))) {
-                            // Automatically delete/hide from view after 24 hrs and trigger backend deletion
                             fetch(API_URL, {
                                 method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({ action: "auto_delete_tournament", match_id: String(t.id || t.title).trim() })
@@ -1524,16 +1556,17 @@
             let hostedCount = t.org_hosted_count ? parseInt(t.org_hosted_count) : Math.max(localTournamentsData.filter(x => x.org_username === orgId || x.email === orgId).length, 1);
             document.getElementById('dtOrgStats').innerHTML = `<i class="fa-solid fa-star"></i> Hosted: ${hostedCount} Match${hostedCount > 1 ? 'es' : ''}`;
 
-            fetch(API_URL + "?action=get_user_profile&username=" + encodeURIComponent(orgId))
+            fetch(API_URL + "?action=get_avatar&username=" + encodeURIComponent(orgId))
             .then(res => res.json())
             .then(data => {
-                if(data.status === 'success' && data.data) {
-                    let hostData = data.data;
-                    if(hostData.avatar) {
-                        document.getElementById('orgAvatarImg').src = formatImageUrl(hostData.avatar);
+                if(data.status === 'success') {
+                    let avatarUrl = data.data || data.avatar;
+                    if(avatarUrl) {
+                        let formatted = formatImageUrl(avatarUrl);
+                        document.getElementById('orgAvatarImg').src = formatted;
+                        let hpAv = document.getElementById('hpAvatar');
+                        if(hpAv) hpAv.src = formatted;
                     }
-                    let dynamicHostedCount = hostData.hosted_count || Math.max(localTournamentsData.filter(x => x.org_username === orgId || x.email === orgId).length, 1);
-                    document.getElementById('dtOrgStats').innerHTML = `<i class="fa-solid fa-star"></i> Hosted: ${dynamicHostedCount} Match${dynamicHostedCount > 1 ? 'es' : ''}`;
                 }
             }).catch(e => console.log(e));
 
@@ -1546,41 +1579,41 @@
             document.getElementById('dtDescription').innerHTML = t.rules || "Standard competitive rules apply.";
             document.getElementById('dtRulesText').innerHTML = t.rules || "No specific rules provided.";
             
-            // PRIZE TAB DYNAMIC LOGIC - PERFECTLY MAPPED TO BACKEND KEY
+            // --- NEW PRIZE DISTRIBUTION ENGINE (NO IMAGES NEEDED) ---
             const prizeArea = document.getElementById('prizeDistributionArea');
             document.getElementById('dtPrizeTotalHead').innerText = getPrizeText(t.prize, t.prize_pts);
 
-            let prizeHTML = '';
-            
-            // EXACT MAPPING: Using t.prize_distribution_image
-            let prizeImageToDisplay = t.prize_distribution_image || t.prize_distribution || t.prize_image || "";
-            if (prizeImageToDisplay && prizeImageToDisplay.trim() !== "" && prizeImageToDisplay !== "undefined") {
-                prizeHTML += `
-                    <div class="prize-flip-container" onclick="this.classList.toggle('flipped'); triggerHaptic();">
-                        <div class="prize-flip-inner">
-                            <div class="prize-front">
-                                <img src="${formatImageUrl(prizeImageToDisplay)}" alt="Prize Details">
-                                <div style="position:absolute; bottom:10px; right:10px; background:rgba(0,0,0,0.7); padding:6px 12px; border-radius:20px; font-size:0.75rem; color:var(--accent-cyan); font-family:var(--font-head); font-weight:bold;"><i class="fa-solid fa-hand-pointer fa-bounce"></i> Tap to flip</div>
-                            </div>
-                            <div class="prize-back">
-                                <div class="prize-close-btn" onclick="event.stopPropagation(); this.closest('.prize-flip-container').classList.remove('flipped'); triggerHaptic();"><i class="fa-solid fa-xmark"></i></div>
-                                <i class="fa-solid fa-trophy" style="font-size:3rem; color:var(--accent-cyan); filter: drop-shadow(0 0 10px rgba(0,242,255,0.4)); margin-bottom: 10px;"></i>
-                                <h3 style="color:white; font-family:var(--font-head); margin-bottom:10px;">Tournament Reward</h3>
-                                <div style="font-size:1.5rem; color:var(--accent-cyan); font-weight:bold; font-family:var(--font-head); text-shadow:0 0 5px rgba(0,242,255,0.3);">${getPrizeText(t.prize, t.prize_pts)}</div>
-                                <p style="color:#ccc; font-size:0.85rem; margin-top:10px;">Claim your victory!</p>
-                            </div>
-                        </div>
-                    </div>
-                `;
+            let prizeData = [];
+            try {
+                // If backend provides a unified prize_json object
+                if (t.prize_json) {
+                    let parsed = typeof t.prize_json === 'string' ? JSON.parse(t.prize_json) : t.prize_json;
+                    if (parsed["1"]) prizeData.push({ rank: "1st Place", val: parsed["1"], class: "gold", iconColor: "#FFD700" });
+                    if (parsed["2"]) prizeData.push({ rank: "2nd Place", val: parsed["2"], class: "silver", iconColor: "#C0C0C0" });
+                    if (parsed["3"]) prizeData.push({ rank: "3rd Place", val: parsed["3"], class: "bronze", iconColor: "#CD7F32" });
+                }
+            } catch(e) { console.log("Prize parse error"); }
+
+            // Fallback for your existing individual columns (prize1, prize2, prize3)
+            if (prizeData.length === 0) {
+                if(t.prize1) prizeData.push({ rank: "1st Place", val: t.prize1, class: "gold", iconColor: "#FFD700" });
+                if(t.prize2) prizeData.push({ rank: "2nd Place", val: t.prize2, class: "silver", iconColor: "#C0C0C0" });
+                if(t.prize3) prizeData.push({ rank: "3rd Place", val: t.prize3, class: "bronze", iconColor: "#CD7F32" });
             }
 
-            if(t.prize1 || t.prize2 || t.prize3) {
-                if(t.prize1) prizeHTML += `<div class="prize-card gold"><div class="pc-rank"><i class="fa-solid fa-medal" style="color:#FFD700; font-size:1.5rem;"></i> 1st Place</div><div class="pc-val">${t.prize1}</div></div>`;
-                if(t.prize2) prizeHTML += `<div class="prize-card silver"><div class="pc-rank"><i class="fa-solid fa-medal" style="color:#C0C0C0; font-size:1.5rem;"></i> 2nd Place</div><div class="pc-val">${t.prize2}</div></div>`;
-                if(t.prize3) prizeHTML += `<div class="prize-card bronze"><div class="pc-rank"><i class="fa-solid fa-medal" style="color:#CD7F32; font-size:1.5rem;"></i> 3rd Place</div><div class="pc-val">${t.prize3}</div></div>`;
-            } else if (!prizeImageToDisplay || prizeImageToDisplay === "undefined") {
+            let prizeHTML = '';
+            if (prizeData.length > 0) {
+                // Renders the 3 cards perfectly without needing an image flip
+                prizeData.forEach(p => {
+                    prizeHTML += `<div class="prize-card ${p.class}">
+                                    <div class="pc-rank"><i class="fa-solid fa-medal" style="color:${p.iconColor}; font-size:1.5rem;"></i> ${p.rank}</div>
+                                    <div class="pc-val">${p.val}</div>
+                                  </div>`;
+                });
+            } else {
+                // Fallback to Ultimate Reward Card if only total prize is listed
                 let textToDisplay = getPrizeText(t.prize, t.prize_pts);
-                prizeHTML += `
+                prizeHTML = `
                     <div class="prize-card gold" style="justify-content: center; flex-direction: column; gap: 10px; text-align: center; padding: 25px;">
                         <i class="fa-solid fa-trophy" style="color:#FFD700; font-size:3.5rem; filter: drop-shadow(0 0 15px rgba(255,215,0,0.5)); margin-bottom: 10px;"></i>
                         <div style="font-family: var(--font-head); font-size: 1.5rem; font-weight: bold; color: white;">${textToDisplay}</div>
@@ -1589,13 +1622,21 @@
             }
             prizeArea.innerHTML = prizeHTML;
 
-            // EXACT MAPPING FOR BRACKET
+            // --- NEW MATCH SCHEDULE TIMELINE ENGINE (NO IMAGES NEEDED) ---
             const bracketArea = document.getElementById('bracketDisplayArea');
-            let bracketImgToDisplay = t.bracket_image || "";
-            if (bracketImgToDisplay && bracketImgToDisplay.trim() !== "" && bracketImgToDisplay !== "undefined") {
-                bracketArea.innerHTML = `<img src="${formatImageUrl(bracketImgToDisplay)}" style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 12px; border: 1px solid var(--card-border); margin-top: 10px;">`;
+            let scheduleData = [];
+            try {
+                // Reads the new backend JSON payload for brackets
+                let rawBracket = t.bracket_json || t.bracket || t.bracket_image || "[]";
+                if(rawBracket.startsWith("[")) {
+                    scheduleData = JSON.parse(rawBracket);
+                }
+            } catch(e) { console.log("Schedule parse error", e); }
+
+            if(scheduleData && scheduleData.length > 0) {
+                renderTimeline(scheduleData, bracketArea);
             } else {
-                bracketArea.innerHTML = `<div style="text-align:center; color:#888; padding:20px;">Brackets have not been generated yet.</div>`;
+                bracketArea.innerHTML = `<div style="text-align:center; color:#888; padding:20px;"><i class="fa-solid fa-calendar-xmark" style="font-size:2rem; margin-bottom:10px; opacity:0.5;"></i><br>No schedule has been published yet.</div>`;
             }
 
             const strmSec = document.getElementById('dtStreamSection');
@@ -1739,17 +1780,12 @@
             document.getElementById('hpSuccess').innerText = "100%"; 
             document.getElementById('hpRating').innerText = "4.9"; 
 
-            fetch(API_URL + "?action=get_user_profile&username=" + encodeURIComponent(orgId))
+            fetch(API_URL + "?action=get_avatar&username=" + encodeURIComponent(orgId))
             .then(res => res.json())
             .then(data => {
-                if(data.status === 'success' && data.data) {
-                    let hostData = data.data;
-                    if(hostData.avatar) document.getElementById('hpAvatar').src = formatImageUrl(hostData.avatar);
-                    
-                    let hostedCount = hostData.hosted_count || Math.max(localTournamentsData.filter(x => x.org_username === orgId || x.email === orgId).length, 1);
-                    document.getElementById('hpHosted').innerText = hostedCount;
-                    if(hostData.success_rate) document.getElementById('hpSuccess').innerText = hostData.success_rate; 
-                    if(hostData.rating) document.getElementById('hpRating').innerText = hostData.rating;
+                if(data.status === 'success') {
+                    let avatarUrl = data.data || data.avatar;
+                    if(avatarUrl) document.getElementById('hpAvatar').src = formatImageUrl(avatarUrl);
                 }
             }).catch(e => console.log("Profile fetch skipped, using instant fallback data."));
         }
@@ -1764,6 +1800,7 @@
                 const modal = document.getElementById('tourneyDetailModal');
                 if (modal) modal.classList.remove('active'); 
                 if(activeCountdown) clearInterval(activeCountdown);
+                if(activeTimelineInterval) clearInterval(activeTimelineInterval); // Cleanly stop the timeline ticks
             }
         }
 
@@ -1773,13 +1810,23 @@
             const container = document.getElementById('liveTeamsList');
             container.innerHTML = `<div style="text-align:center; color:var(--accent-cyan); padding:40px;"><i class="fa-solid fa-spinner fa-spin"></i> Fetching roster...</div>`;
             
-            fetch(API_URL + "?action=get_tournament_details&match_id=" + encodeURIComponent(activeTournament.id || activeTournament.title))
-            .then(res => res.json())
-            .then(data => {
+            Promise.all([
+                fetch(API_URL + "?action=get_tournament_details&match_id=" + encodeURIComponent(activeTournament.id || activeTournament.title)).then(res => res.json()),
+                fetch(API_URL + "?action=get_clans").then(res => res.json()).catch(() => ({status: 'error', data: []}))
+            ])
+            .then(([data, clansData]) => {
                 container.innerHTML = "";
                 let userClans = JSON.parse(localStorage.getItem('tournyx_my_clans_cache')) || [];
                 let userClanNames = userClans.map(c => String(c.name).toLowerCase().trim());
                 
+                let clanMap = {};
+                if (clansData.status === 'success' && clansData.data) {
+                    clansData.data.forEach(c => {
+                        let cName = c.name || c.Tag || c.tag;
+                        if (cName) clanMap[String(cName).toLowerCase().trim()] = c.logo;
+                    });
+                }
+
                 let isSolo = activeTournament.format && activeTournament.format.toLowerCase().includes('solo');
 
                 if(data.status === 'success' && data.data.length > 0) {
@@ -1806,7 +1853,9 @@
                                 </div>
                             `;
                         } else {
-                            let clanLogo = team.logo ? formatImageUrl(team.logo) : (team.clan_logo ? formatImageUrl(team.clan_logo) : `https://ui-avatars.com/api/?name=${encodeURIComponent(displayClanName)}&background=random&color=fff&bold=true`);
+                            let mappedLogo = clanMap[String(displayClanName).toLowerCase().trim()];
+                            let clanLogo = mappedLogo ? formatImageUrl(mappedLogo) : (team.logo ? formatImageUrl(team.logo) : (team.clan_logo ? formatImageUrl(team.clan_logo) : `https://ui-avatars.com/api/?name=${encodeURIComponent(displayClanName)}&background=random&color=fff&bold=true`));
+                            
                             container.innerHTML += `
                                 <div class="clan-item ${highlightClass}">
                                     <div class="clan-item-header">
