@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="icon" href="https://tournyx.in/favicon.ico" sizes="any">
+<link rel="icon" href="https://tournyx.in/favicon.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://tournyx.in/apple-touch-icon.png">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Privacy Policy - Tournyx</title>
@@ -177,7 +181,7 @@
                 <i class="fa-solid fa-database policy-icon"></i>
                 <div class="policy-title">1. Information We Collect</div>
             </div>
-            <p class="policy-text">To provide a seamless matchmaking and wallet experience, Tournyx Esports collects strictly necessary data:</p>
+            <p class="policy-text">To provide a seamless matchmaking and wallet experience on the Tournyx app and website, we collect strictly necessary data:</p>
             <ul class="policy-list">
                 <li><span class="highlight">Account Info:</span> Your Email Address, unique Display Name, and encrypted password.</li>
                 <li><span class="highlight">Gaming Identity:</span> Specific In-Game Names (IGN) and Player UIDs (e.g., Free Fire, BGMI) required for match verification.</li>
@@ -190,11 +194,11 @@
                 <i class="fa-solid fa-microchip policy-icon"></i>
                 <div class="policy-title">2. How We Use Your Data</div>
             </div>
-            <p class="policy-text">Your data powers the Tournyx App Engine. We use it exclusively to:</p>
+            <p class="policy-text">Your data powers the Tournyx app and website. We use it exclusively to:</p>
             <ul class="policy-list">
                 <li>Verify your identity in custom tournament lobbies to prevent ringers and account sharing.</li>
                 <li>Process automated wallet transactions, track tournament entry fees, and facilitate prize distributions securely.</li>
-                <li>Comply with legal obligations, resolve financial disputes, and prevent fraudulent transactions as per Indian regulatory guidelines.</li>
+                <li>Comply with legal obligations, resolve financial disputes, and prevent fraudulent transactions in compliance with local laws and regulations.</li>
             </ul>
         </div>
 
@@ -207,7 +211,7 @@
             <ul class="policy-list">
                 <li><span class="highlight">Payment Partners:</span> We share only strictly necessary transaction identifiers (like Order IDs and Amounts) with our secure payment gateway partners (e.g., Cashfree, Razorpay) to process your wallet top-ups.</li>
                 <li>We <span class="highlight" style="color:var(--accent-red); background:rgba(255,77,77,0.1)">never</span> sell, rent, or trade your personal data to third-party advertising agencies.</li>
-                <li><span class="highlight">Legal Compliance:</span> We reserve the right to disclose necessary information to law enforcement agencies or regulatory authorities if mandated by Indian law.</li>
+                <li><span class="highlight">Legal Compliance:</span> We reserve the right to disclose necessary information to law enforcement agencies or regulatory authorities if mandated by applicable law.</li>
             </ul>
         </div>
 
@@ -216,9 +220,9 @@
                 <i class="fa-solid fa-user-check policy-icon"></i>
                 <div class="policy-title">4. Your Privacy Rights</div>
             </div>
-            <p class="policy-text">You have absolute control over your digital footprint on the Tournyx platform:</p>
+            <p class="policy-text">You have absolute control over your digital footprint on the Tournyx app and website:</p>
             <ul class="policy-list">
-                <li><span class="highlight">Data Deletion:</span> You can permanently erase all your data, match history, and wallet balances using the "Delete Account" button located in the App Engine (Settings). This action is instantaneous and irreversible.</li>
+                <li><span class="highlight">Data Deletion:</span> You can permanently erase all your data, match history, and wallet balances using the "Delete Account" button located in the Settings. This action is instantaneous and irreversible.</li>
                 <li><span class="highlight">Opt-Out:</span> You may toggle off App Animations, Haptics, and WhatsApp Alerts at any time without losing access to the app.</li>
             </ul>
         </div>
@@ -228,7 +232,7 @@
                 <i class="fa-solid fa-scale-balanced policy-icon"></i>
                 <div class="policy-title">5. Grievance & Compliance</div>
             </div>
-            <p class="policy-text">In accordance with the Information Technology Act, 2000, and consumer protection regulations, Tournyx Esports (MSME Registered) is committed to resolving any data or payment discrepancies. If you have any financial or data-related grievances, please contact our designated Grievance Officer via the support email below.</p>
+            <p class="policy-text">In accordance with applicable data protection and consumer privacy laws, Tournyx Esports (MSME Registered) is committed to resolving any data or payment discrepancies. If you have any financial or data-related grievances, please contact our designated Grievance Officer via the support email below.</p>
         </div>
 
         <div class="contact-box" onclick="triggerHaptic(); window.open('mailto:privacy@tournyx.in', '_blank');">
@@ -244,14 +248,30 @@
         <div style="margin-top: 5px; font-size: 0.7rem; color: #666;">&copy; 2026 Tournyx Esports. All Rights Reserved.</div>
     </div>
 
-    <nav class="bottom-nav">
-        <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i><span>Home</span></a>
-        <a class="nav-item" href="explore.html"><i class="fa-solid fa-compass"></i><span>Explore</span></a>
-        <a class="nav-item" href="matches.html"><i class="fa-solid fa-trophy"></i><span>Matches</span></a>
-        <div class="fab-slot"><div class="floating-plus" onclick="window.location.href='tournament.html'; triggerHaptic();"><i class="fa-solid fa-plus"></i></div></div>
-        <a class="nav-item" href="clans.html"><i class="fa-solid fa-shield-halved"></i><span>Clan</span></a>
-        <a class="nav-item" href="wallet.html"><i class="fa-solid fa-wallet"></i><span>Wallet</span></a>
-        <a class="nav-item active" href="profile.html"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+    <nav class="bottom-nav" id="bottomNavBar">
+        <a class="nav-item" href="index.html" onclick="triggerHaptic()">
+            <i class="fa-solid fa-house"></i><span>Home</span>
+        </a>
+        <a class="nav-item" href="explore.html" onclick="triggerHaptic()">
+            <i class="fa-solid fa-compass"></i><span>Explore</span>
+        </a>
+        <a class="nav-item" href="matches.html" onclick="triggerHaptic()">
+            <i class="fa-solid fa-trophy"></i><span>Matches</span>
+        </a>
+        <div class="fab-slot">
+            <div class="floating-plus" onclick="window.location.href='tournament.html'; triggerHaptic();">
+                <i class="fa-solid fa-plus"></i>
+            </div>
+        </div>
+        <a class="nav-item" href="clans.html" onclick="triggerHaptic()">
+            <i class="fa-solid fa-shield-halved"></i><span>Clan</span>
+        </a>
+        <a class="nav-item" href="wallet.html" onclick="triggerHaptic()">
+            <i class="fa-solid fa-wallet"></i><span>Wallet</span>
+        </a>
+        <a class="nav-item active" href="profile.html" onclick="triggerHaptic()">
+            <i class="fa-solid fa-user"></i><span>Profile</span>
+        </a>
     </nav>
 
     <script>
