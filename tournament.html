@@ -972,9 +972,9 @@
                 rules: rawData.rules, 
                 banner: rawData.banner_base64 || 'https://via.placeholder.com/1200x380/15062e/00f2ff?text=Tournament+Banner',
                 
-                // BUNDLED JSON STRINGS INSTEAD OF IMAGES
-                prize_distribution_image: rawData.prize_distribution_image || "",
-                bracket_image: rawData.bracket_image || "",
+                // BUNDLED JSON STRINGS EXACTLY MATCHING BACKEND
+                prize_json: rawData.prize_distribution_image || "",
+                bracket_json: rawData.bracket_image || "",
 
                 status: "Upcoming",
                 stream_url: rawData.stream_url || ""
