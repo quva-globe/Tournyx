@@ -145,14 +145,6 @@
         @media (min-width: 850px) { .bottom-nav { display: none !important; } body { padding-bottom: 0; } }
         .median-active .top-header { display: none !important; } .median-active { padding-top: 15px !important; }
     </style>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            if (navigator.userAgent.indexOf('gonative') > -1 || navigator.userAgent.indexOf('median') > -1) {
-                document.body.classList.add('median-active');
-            }
-        });
-    </script>
 </head>
 <body>
 
@@ -179,9 +171,9 @@
                 <i class="fa-solid fa-user-shield policy-icon"></i>
                 <div class="policy-title">1. Fair Play & Conduct</div>
             </div>
-            <p class="policy-text">Tournyx Esports is dedicated to providing a highly competitive, yet totally fair skill-based gaming environment. By using this platform, you agree to abide by the following:</p>
+            <p class="policy-text">Tournyx Esports is dedicated to providing a highly competitive, yet totally fair skill-based gaming environment. By using the Tournyx app and website, you agree to abide by the following:</p>
             <ul class="policy-list">
-                <li><span class="highlight">Games of Skill:</span> All tournaments hosted on Tournyx are strictly 'Games of Skill'. The platform does not facilitate or support gambling, betting, or games of chance.</li>
+                <li><span class="highlight">Games of Skill:</span> All tournaments hosted on Tournyx are strictly 'Games of Skill'. The Tournyx app and website do not facilitate or support gambling, betting, or games of chance.</li>
                 <li><span class="highlight">Zero Tolerance for Cheating:</span> The use of aimbots, wallhacks, third-party scripts, or exploit bugs will result in an immediate, permanent ban.</li>
                 <li><span class="highlight">No Toxic Behavior:</span> Harassment, hate speech, or threatening other players in tournament lobbies will not be tolerated.</li>
                 <li><span class="highlight">Account Sharing:</span> Players must use their own registered In-Game Name (IGN) and UID. Playing on someone else's account is strictly prohibited.</li>
@@ -193,7 +185,7 @@
                 <i class="fa-solid fa-trophy policy-icon"></i>
                 <div class="policy-title">2. Prizes & Wallet Funds</div>
             </div>
-            <p class="policy-text">Winning tournaments rewards you with Tournyx Rupees (Credits) or Points (PTS).</p>
+            <p class="policy-text">Winning tournaments rewards you with Money (Rs) or Points (PTS).</p>
             <ul class="policy-list">
                 <li>Wallet balances are non-transferable between different user accounts.</li>
                 <li>Withdrawal requests are typically verified and processed within <span class="highlight">24-48 hours</span>.</li>
@@ -209,7 +201,7 @@
             <p class="policy-text">We value your privacy as much as your gameplay. Here is how we handle your secure data:</p>
             <ul class="policy-list">
                 <li><span class="highlight">What we collect:</span> Email addresses, In-Game Names (IGNs), encrypted passwords, and matchmaking history.</li>
-                <li><span class="highlight">How we use it:</span> To verify your identity in tournaments, process payouts, and secure your account.</li>
+                <li><span class="highlight">How we use it:</span> To verify your identity in tournaments, process payouts, and secure your account on the Tournyx app and website.</li>
                 <li><span class="highlight">Data Sharing:</span> We will <span class="highlight" style="color:var(--accent-red); background:rgba(255,77,77,0.1)">never</span> sell your personal data to third-party marketing companies.</li>
             </ul>
         </div>
@@ -217,11 +209,11 @@
         <div class="policy-card pc-rules">
             <div class="policy-header">
                 <i class="fa-solid fa-map-location-dot policy-icon"></i>
-                <div class="policy-title">4. Restricted States (India)</div>
+                <div class="policy-title">4. Restricted Jurisdictions (India)</div>
             </div>
-            <p class="policy-text">In strict compliance with Indian regulatory and payment gateway guidelines regarding paid skill-based gaming, access to paid tournaments is geographically restricted.</p>
+            <p class="policy-text">In strict compliance with Indian regulatory guidelines regarding paid skill-based gaming, access to paid tournaments is geographically restricted based on your local jurisdiction.</p>
             <ul class="policy-list">
-                <li>Users residing in <span class="highlight">Assam, Odisha, Nagaland, Sikkim, Andhra Pradesh, Meghalaya, and Telangana</span> are strictly prohibited from participating in any paid-entry contests.</li>
+                <li>Users residing in states where real-money skill-based gaming is restricted by local laws are strictly prohibited from participating in paid-entry contests.</li>
                 <li>Tournyx Esports reserves the right to suspend accounts, forfeit winnings, and block IP addresses if a user falsifies their location to bypass regional state laws.</li>
             </ul>
         </div>
@@ -243,7 +235,7 @@
                 <i class="fa-solid fa-file-contract policy-icon"></i>
                 <div class="policy-title">6. General Agreements</div>
             </div>
-            <p class="policy-text">By creating an account on Tournyx, managed by Tournyx Esports (a registered MSME), you acknowledge that you are at least <span class="highlight">18 years of age</span> to participate in paid contests. Tournyx is an independent platform and is not directly affiliated with Garena (Free Fire), Krafton (BGMI), or Riot Games (Valorant).</p>
+            <p class="policy-text">By creating an account on the Tournyx app and website, managed by Tournyx Esports (a registered MSME), you acknowledge that you are at least <span class="highlight">18 years of age</span> to participate in paid contests. Tournyx is an independent app and website and is not directly affiliated with Garena (Free Fire), Krafton (BGMI), or Riot Games (Valorant).</p>
         </div>
 
         <div class="contact-box" onclick="triggerHaptic(); window.open('mailto:support@tournyx.com', '_blank');">
@@ -259,14 +251,30 @@
         <div style="margin-top: 5px; font-size: 0.7rem; color: #666;">&copy; 2026 Tournyx Esports. All Rights Reserved.</div>
     </div>
 
-    <nav class="bottom-nav">
-        <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i><span>Home</span></a>
-        <a class="nav-item" href="explore.html"><i class="fa-solid fa-compass"></i><span>Explore</span></a>
-        <a class="nav-item" href="matches.html"><i class="fa-solid fa-trophy"></i><span>Matches</span></a>
-        <div class="fab-slot"><div class="floating-plus" onclick="window.location.href='tournament.html'; triggerHaptic();"><i class="fa-solid fa-plus"></i></div></div>
-        <a class="nav-item" href="clans.html"><i class="fa-solid fa-shield-halved"></i><span>Clan</span></a>
-        <a class="nav-item" href="wallet.html"><i class="fa-solid fa-wallet"></i><span>Wallet</span></a>
-        <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+    <nav class="bottom-nav" id="bottomNavBar">
+        <a class="nav-item" href="index.html" onclick="triggerHaptic()">
+            <i class="fa-solid fa-house"></i><span>Home</span>
+        </a>
+        <a class="nav-item" href="explore.html" onclick="triggerHaptic()">
+            <i class="fa-solid fa-compass"></i><span>Explore</span>
+        </a>
+        <a class="nav-item" href="matches.html" onclick="triggerHaptic()">
+            <i class="fa-solid fa-trophy"></i><span>Matches</span>
+        </a>
+        <div class="fab-slot">
+            <div class="floating-plus" onclick="window.location.href='tournament.html'; triggerHaptic();">
+                <i class="fa-solid fa-plus"></i>
+            </div>
+        </div>
+        <a class="nav-item" href="clans.html" onclick="triggerHaptic()">
+            <i class="fa-solid fa-shield-halved"></i><span>Clan</span>
+        </a>
+        <a class="nav-item" href="wallet.html" onclick="triggerHaptic()">
+            <i class="fa-solid fa-wallet"></i><span>Wallet</span>
+        </a>
+        <a class="nav-item" href="profile.html" onclick="triggerHaptic()">
+            <i class="fa-solid fa-user"></i><span>Profile</span>
+        </a>
     </nav>
 
     <script>
