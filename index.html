@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <link rel="manifest" href="/manifest.json">
-    <link rel="manifest" href="/manifest.json">
 <script>
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js');
@@ -204,31 +203,35 @@
             max-width: 1000px; margin-left: auto !important; margin-right: auto !important; width: 100%;
         }
 
-        /* --- BACKGROUND ORBS (OPTIMIZED FOR ZERO LAG) --- */
+        /* --- BRIGHTER BACKGROUND ORBS & PARTICLES --- */
         .bg-orbs { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; overflow: hidden; background: var(--primary-bg); pointer-events: none; }
-        .orb { position: absolute; border-radius: 50%; opacity: 0.25; animation: floatOrb 12s infinite ease-in-out alternate; will-change: transform; transform: translate3d(0,0,0); }
-        .orb1 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(189,0,255,0.4) 0%, transparent 60%); top: -100px; left: -100px; }
-        .orb2 { width: 600px; height: 600px; background: radial-gradient(circle, rgba(0,242,255,0.3) 0%, transparent 60%); bottom: -150px; right: -150px; animation-delay: -5s; opacity: 0.2; }
-        .orb3 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(255,153,0,0.2) 0%, transparent 60%); top: 40%; left: 20%; animation: floatOrb2 15s infinite linear; opacity: 0.15; }
+        .orb { position: absolute; border-radius: 50%; opacity: 0.45; animation: floatOrb 12s infinite ease-in-out alternate; will-change: transform; transform: translate3d(0,0,0); filter: blur(40px); }
+        .orb1 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(189,0,255,0.7) 0%, transparent 60%); top: -100px; left: -100px; }
+        .orb2 { width: 600px; height: 600px; background: radial-gradient(circle, rgba(0,242,255,0.6) 0%, transparent 60%); bottom: -150px; right: -150px; animation-delay: -5s; opacity: 0.4; }
+        .orb3 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(255,153,0,0.5) 0%, transparent 60%); top: 40%; left: 20%; animation: floatOrb2 15s infinite linear; opacity: 0.3; }
         
         @keyframes floatOrb { 0% { transform: translate3d(0, 0, 0) scale(1); } 100% { transform: translate3d(50px, 50px, 0) scale(1.1); } }
         @keyframes floatOrb2 { 0% { transform: translate3d(0, 0, 0) rotate(0deg); } 50% { transform: translate3d(-30px, 60px, 0) rotate(180deg); } 100% { transform: translate3d(0, 0, 0) rotate(360deg); } }
 
-        #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; transform: translateZ(0); }
+        #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; transform: translateZ(0); filter: drop-shadow(0 0 5px rgba(0,242,255,0.8)); }
 
-        /* --- LAUNCH CELEBRATION EFFECTS --- */
-        #launch-celebration {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1500; pointer-events: none; overflow: hidden;
-        }
-        .spark {
-            position: absolute; width: 4px; height: 15px; background: var(--accent-cyan); border-radius: 50%;
-            box-shadow: 0 0 10px var(--accent-cyan), 0 0 20px white;
-            opacity: 0; animation: fallSpark 3s ease-in forwards;
-        }
-        @keyframes fallSpark {
-            0% { transform: translateY(-10vh) scaleY(1); opacity: 1; }
-            100% { transform: translateY(110vh) scaleY(2); opacity: 0; }
-        }
+        /* --- WELCOME BETA LAUNCH POPUP --- */
+        .beta-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
+        .beta-overlay.active { display: flex; animation: fadeIn 0.5s; }
+        
+        .beta-card { width: 90%; max-width: 500px; background: linear-gradient(180deg, rgba(20,10,35,0.95), rgba(7,3,17,0.95)); border: 2px solid var(--accent-cyan); border-radius: 20px; overflow: hidden; position: relative; text-align: center; box-shadow: 0 0 50px rgba(0,242,255,0.4); transform: scale(0.9); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .beta-overlay.active .beta-card { transform: scale(1); }
+        
+        .beta-img-bg { height: 160px; background: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj3MKUI87mMK4_3DltS3LQgqfrK1sESUIMMqlENdi0dPRtOFkeDbvPsTbSaCRaJOb17QZ5s9OO5dR6kFCYiCkgUCF2zBWwvGFSb3T-9Nz51XuIzMvIiOuqwcLzyzeFmn1orKbiETP4LrlaG-RidnWAAzBwUA3aL5_z62HP4_F7R02lAK_WSYdH0U_Gn7Es/s600/1000094211.jpg') center/cover; position: relative; }
+        .beta-img-bg::after { content: ''; position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(0deg, rgba(7,3,17,1), transparent); }
+        
+        .beta-content { padding: 0 25px 30px; position: relative; z-index: 2; margin-top: -30px;}
+        .beta-content h2 { font-family: var(--font-head); font-size: 1.8rem; color: white; text-transform: uppercase; margin-bottom: 10px; text-shadow: 0 0 15px rgba(0,242,255,0.8); }
+        .beta-content p { color: #d4d4ff; font-size: 1.05rem; line-height: 1.5; margin-bottom: 25px; }
+        .beta-date { display: inline-block; background: rgba(0,242,255,0.15); border: 1px solid var(--accent-cyan); color: var(--accent-cyan); padding: 8px 15px; border-radius: 12px; font-family: var(--font-head); font-weight: bold; margin-bottom: 25px; box-shadow: 0 0 15px rgba(0,242,255,0.3); letter-spacing: 1px;}
+        
+        .beta-btn { display: block; width: 100%; padding: 15px; background: var(--accent-gradient); border: none; border-radius: 12px; color: white; font-family: var(--font-head); font-weight: bold; font-size: 1.1rem; cursor: pointer; text-transform: uppercase; box-shadow: 0 8px 25px rgba(189,0,255,0.5); transition: 0.3s; letter-spacing: 1px;}
+        .beta-btn:active { transform: scale(0.95); box-shadow: 0 5px 15px rgba(189,0,255,0.4); }
 
         /* --- LOADER --- */
         #tournyx-loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--primary-bg); z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.4s ease-out; overflow: hidden; transform: translateZ(0); }
@@ -564,17 +567,18 @@
         #customToast.show { visibility: visible; opacity: 1; bottom: 100px; }
 
         /* --- PERFECT BOTTOM NAVIGATION (MOBILE OPTIMIZED) --- */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(5, 2, 12, 0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 2px env(safe-area-inset-bottom); border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); transform: translateZ(0);}
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; color: #666; text-decoration: none; font-size: 0.6rem; font-family: var(--font-head); font-weight: bold; flex: 1; transition: 0.3s; position: relative; padding: 0 2px; text-align: center;}
-        .nav-item span { margin-top: 4px; transition: 0.3s; letter-spacing: -0.3px;}
-        .nav-item i { font-size: 1.2rem; transition: 0.3s; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 2px env(safe-area-inset-bottom); border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); transform: translateZ(0);}
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; color: #666; text-decoration: none; font-size: 0.6rem; font-family: var(--font-head); font-weight: bold; flex: 1; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; }
+        .nav-item span { margin-top: 4px; transition: 0.3s; }
+        .nav-item i { font-size: 1.3rem; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .nav-item.active { color: var(--accent-cyan); }
-        .nav-item.active i { transform: translateY(-4px); color: var(--accent-cyan); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
-        .nav-item.active span { transform: translateY(2px); color: white; text-shadow: 0 0 5px rgba(255,255,255,0.5);}
+        .nav-item.active i { transform: translateY(-4px); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
+        .nav-item.active span { transform: translateY(2px); color: white; }
         .fab-slot { flex: 1.2; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
-        .floating-plus { position: absolute; top: -25px; left: 50%; transform: translateX(-50%); width: 54px; height: 54px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 4px solid var(--primary-bg); box-shadow: 0 10px 25px rgba(189,0,255,0.4); color: #fff; font-size: 1.6rem; cursor: pointer; transition: 0.3s; z-index: 10; }
+        .floating-plus { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); width: 58px; height: 58px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 4px solid var(--primary-bg); box-shadow: 0 10px 25px rgba(189,0,255,0.5); color: #fff; font-size: 1.8rem; cursor: pointer; transition: 0.4s; z-index: 10; }
+        .floating-plus:active { transform: translateX(-50%) scale(0.95); box-shadow: 0 5px 15px rgba(189,0,255,0.4); }
 
-        @media (min-width: 850px) { .bottom-nav { display: none !important; } }
+        @media (min-width: 850px) { .bottom-nav { display: none !important; } body { padding-bottom: 0; } }
 
         /* --- HARDWARE-ACCELERATED SCROLL ANIMATIONS --- */
         .fade-up { opacity: 0; transform: translateY(40px); transition: opacity 0.6s ease-out, transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -597,14 +601,15 @@
     </script>
 </head>
 <body>
-    <div id="custom-top-banner" class="hidden">
-        <div class="banner-content">
-            <div class="banner-text">
-                <strong>Tournyx App</strong>
-                <span>Get the best tournament experience!</span>
+    <div class="beta-overlay" id="betaOverlay">
+        <div class="beta-card">
+            <div class="beta-img-bg"></div>
+            <div class="beta-content">
+                <h2>Welcome to Tournyx</h2>
+                <div class="beta-date"><i class="fa-solid fa-rocket"></i> Official Launch: May 2026</div>
+                <p>You are currently accessing the exclusive Early Beta. Feel free to test the tournaments, explore the app engine, and secure your registered spot before the masses arrive.</p>
+                <button class="beta-btn" onclick="closeBetaBanner()"><i class="fa-solid fa-gamepad"></i> Enter the Battlefield</button>
             </div>
-            <a href="YOUR_APP_LINK" class="banner-btn">INSTALL</a>
-            <button id="close-top-banner" aria-label="Close">✕</button>
         </div>
     </div>
 
@@ -762,28 +767,29 @@
                     <div class="quest-info-title">Play 3 Tournaments</div>
                     <div class="quest-info-sub"><i class="fa-solid fa-coins"></i> Reward: 50 PTS</div>
                 </div>
-                <button class="quest-btn" onclick="claimQuest('quest_play', 50, 'matches', 3, 'explore.html')">CLAIM</button>
+                <button class="quest-btn" onclick="claimQuest('quest_play', 50, 'matches', 3, 'explore.html', true)">CLAIM</button>
             </div>
             <div class="quest-card glass-panel" id="quest_host">
                 <div>
                     <div class="quest-info-title">Host a Free Fire Event</div>
                     <div class="quest-info-sub"><i class="fa-solid fa-coins"></i> Reward: 100 PTS</div>
                 </div>
-                <button class="quest-btn" onclick="claimQuest('quest_host', 100, 'hosted', 1, 'tournament.html')">CLAIM</button>
+                <button class="quest-btn" onclick="claimQuest('quest_host', 100, 'hosted', 1, 'tournament.html', true)">CLAIM</button>
             </div>
-            <div class="quest-card glass-panel" id="quest_clan">
+            
+            <div class="quest-card glass-panel" id="quest_sub">
                 <div>
-                    <div class="quest-info-title">Join or Create a Clan</div>
+                    <div class="quest-info-title">Subscribe on YouTube</div>
                     <div class="quest-info-sub"><i class="fa-solid fa-coins"></i> Reward: 150 PTS</div>
                 </div>
-                <button class="quest-btn" onclick="claimQuest('quest_clan', 150, 'clan', 1, 'clans.html')">CLAIM</button>
+                <button class="quest-btn" onclick="claimQuest('quest_sub', 150, 'open', 0, 'https://youtube.com', false)">GO</button>
             </div>
             <div class="quest-card glass-panel" id="quest_share">
                 <div>
                     <div class="quest-info-title">Share Tournyx with a Friend</div>
                     <div class="quest-info-sub"><i class="fa-solid fa-coins"></i> Reward: 200 PTS</div>
                 </div>
-                <button class="quest-btn" onclick="claimQuest('quest_share', 200, 'share', 1, 'refer.html')">CLAIM</button>
+                <button class="quest-btn" onclick="claimQuest('quest_share', 200, 'share', 1, 'refer.html', false)">CLAIM</button>
             </div>
         </div>
     </section>
@@ -972,11 +978,11 @@
     <div id="customToast">Notification</div>
 
     <nav class="bottom-nav">
-        <a class="nav-item active" href="index.html">
+        <a class="nav-item active" href="index.html" onclick="triggerHaptic()">
             <i class="fa-solid fa-house"></i>
             <span>Home</span>
         </a>
-        <a class="nav-item" href="explore.html">
+        <a class="nav-item" href="explore.html" onclick="triggerHaptic()">
             <i class="fa-solid fa-compass"></i>
             <span>Explore</span>
         </a>
@@ -986,7 +992,7 @@
         </a>
         
         <div class="fab-slot">
-            <div class="floating-plus" onclick="if(checkAuth(event)){window.location.href='tournament.html'}">
+            <div class="floating-plus" onclick="if(checkAuth(event)){window.location.href='tournament.html'; triggerHaptic();}">
                 <i class="fa-solid fa-plus"></i>
             </div>
         </div>
@@ -1023,8 +1029,20 @@
             document.getElementById('authPopup').classList.remove('active');
         }
 
-        // --- LAUNCH CELEBRATION (Auto run) ---
+        // --- LAUNCH CELEBRATION (BETA BANNER) ---
+        function closeBetaBanner() {
+            document.getElementById('betaOverlay').classList.remove('active');
+            localStorage.setItem('tournyx_beta_seen', 'true');
+        }
+
         function createLaunchCelebration() {
+            // Check if seen
+            if(localStorage.getItem('tournyx_beta_seen') === 'true') return;
+            
+            // Show Banner
+            document.getElementById('betaOverlay').classList.add('active');
+
+            // Fire Confetti Behind the Banner for effect
             const container = document.getElementById('launch-celebration');
             for(let i=0; i<40; i++) {
                 let spark = document.createElement('div');
@@ -1035,7 +1053,7 @@
                 if(Math.random() > 0.5) spark.style.background = 'var(--accent-purple)';
                 container.appendChild(spark);
             }
-            // Auto hide so it never interrupts clicks
+            // Auto hide sparks
             setTimeout(() => { container.style.display = 'none'; }, 6000);
         }
 
@@ -1064,6 +1082,7 @@
             loadFeaturedTournaments();
             
             // Dynamic Sheets Loading
+            renderQuests(); // Instant render from cache first
             loadQuestsFromSheets(); 
             loadLeaderboard(); 
 
@@ -1355,67 +1374,76 @@
         }
 
         // --- 7. PERFECT 24HR RESET DAILY QUESTS LOGIC ---
+        let currentDynamicQuests = []; // Store fetched quests
+
         async function loadQuestsFromSheets() {
             try {
                 const res = await fetch(API_URL + "?action=get_quests");
                 const result = await res.json();
                 
                 if (result.status === "success" && result.data && result.data.length > 0) {
-                    const wrapper = document.getElementById('dynamicQuestsWrapper');
-                    wrapper.innerHTML = "";
-                    
-                    result.data.forEach(q => {
-                        wrapper.innerHTML += `
-                            <div class="quest-card glass-panel" id="${q.id}">
-                                <div>
-                                    <div class="quest-info-title">${q.title}</div>
-                                    <div class="quest-info-sub"><i class="fa-solid fa-coins"></i> Reward: ${q.reward} PTS</div>
-                                </div>
-                                <button class="quest-btn" onclick="claimQuest('${q.id}', ${q.reward}, '${q.reqType}', '${q.reqVal}', '${q.redirect}')">CLAIM</button>
-                            </div>
-                        `;
-                    });
+                    currentDynamicQuests = result.data;
+                    renderQuests(); // Render with the live data
                 }
-            } catch(e) { console.log("Loading fallback default quests."); }
-            
-            setTimeout(renderQuests, 500); 
+            } catch(e) { console.log("Loading fallback default quests."); renderQuests(); }
         }
 
         function renderQuests() {
             let claimedData = JSON.parse(localStorage.getItem('tournyx_quests_24h')) || {};
+            let oneTimeData = JSON.parse(localStorage.getItem('tournyx_quests_onetime')) || [];
             let now = Date.now();
             let needsSave = false;
 
-            for (let id in claimedData) {
-                // If 24 hours (86,400,000 ms) have passed, reset it!
-                if (now - claimedData[id] > 24 * 60 * 60 * 1000) {
-                    delete claimedData[id];
-                    needsSave = true;
-                } else {
-                    let btn = document.querySelector(`#${id} .quest-btn`);
-                    if (btn) {
-                        btn.innerText = "CLAIMED";
-                        btn.classList.add("claimed");
-                        btn.onclick = null;
+            const wrapper = document.getElementById('dynamicQuestsWrapper');
+            let questsToRender = currentDynamicQuests.length > 0 ? currentDynamicQuests : [
+                { id: "quest_play", title: "Play 3 Tournaments", reward: 50, reqType: "matches", reqVal: 3, redirect: "explore.html", isDaily: true },
+                { id: "quest_host", title: "Host a Free Fire Event", reward: 100, reqType: "hosted", reqVal: 1, redirect: "tournament.html", isDaily: true },
+                { id: "quest_sub", title: "Subscribe on YouTube", reward: 150, reqType: "open", reqVal: 0, redirect: "https://youtube.com", isDaily: false },
+                { id: "quest_share", title: "Share Tournyx with a Friend", reward: 200, reqType: "share", reqVal: 1, redirect: "refer.html", isDaily: false }
+            ];
+
+            wrapper.innerHTML = ""; // Clear wrapper to re-render clean
+
+            questsToRender.forEach(q => {
+                // If it's a one-time quest and already claimed, SKIP rendering it entirely!
+                if (!q.isDaily && oneTimeData.includes(q.id)) {
+                    return; 
+                }
+
+                // Default state for button
+                let btnState = `<button class="quest-btn" onclick="claimQuest('${q.id}', ${q.reward}, '${q.reqType}', '${q.reqVal}', '${q.redirect}', ${q.isDaily})">CLAIM</button>`;
+
+                // Check Daily Reset Logic
+                if (q.isDaily && claimedData[q.id]) {
+                    if (now - claimedData[q.id] > 24 * 60 * 60 * 1000) {
+                        delete claimedData[q.id];
+                        needsSave = true;
+                    } else {
+                        btnState = `<button class="quest-btn claimed" disabled>CLAIMED</button>`;
                     }
                 }
-            }
+
+                wrapper.innerHTML += `
+                    <div class="quest-card glass-panel" id="${q.id}">
+                        <div>
+                            <div class="quest-info-title">${q.title}</div>
+                            <div class="quest-info-sub"><i class="fa-solid fa-coins"></i> Reward: ${q.reward} PTS</div>
+                        </div>
+                        ${btnState}
+                    </div>
+                `;
+            });
+
             if (needsSave) {
                 localStorage.setItem('tournyx_quests_24h', JSON.stringify(claimedData));
             }
         }
 
-        function claimQuest(questId, rewardPts, reqType, reqVal, redirectUrl) {
+        function claimQuest(questId, rewardPts, reqType, reqVal, redirectUrl, isDaily) {
             let user = JSON.parse(localStorage.getItem('tournyx_user'));
             if(!user) { 
                 document.getElementById('authPopup').classList.add('active');
                 return; 
-            }
-
-            let claimedData = JSON.parse(localStorage.getItem('tournyx_quests_24h')) || {};
-            if(claimedData[questId]) {
-                showToast("You have already claimed this quest today!", true);
-                return;
             }
 
             if(reqType === 'open') {
@@ -1458,23 +1486,39 @@
                 }
             }
 
+            // Award Points
             user.points = (parseInt(user.points) || 0) + parseInt(rewardPts);
             localStorage.setItem('tournyx_user', JSON.stringify(user));
-            
-            claimedData[questId] = Date.now(); 
-            localStorage.setItem('tournyx_quests_24h', JSON.stringify(claimedData));
-
             document.getElementById('homeWalletBalance').innerText = user.points;
-            let btn = document.querySelector(`#${questId} .quest-btn`);
-            if(btn) {
-                btn.innerText = "CLAIMED";
-                btn.style.borderColor = "rgba(255,255,255,0.1)"; btn.style.color = "var(--accent-green)";
-                btn.classList.add("claimed");
-                btn.onclick = null;
-                triggerConfetti(btn);
-            }
             
             showToast(`+${rewardPts} PTS verified & added to Wallet!`);
+
+            // Save state based on Quest Type
+            if (isDaily) {
+                let claimedData = JSON.parse(localStorage.getItem('tournyx_quests_24h')) || {};
+                claimedData[questId] = Date.now(); 
+                localStorage.setItem('tournyx_quests_24h', JSON.stringify(claimedData));
+                
+                let btn = document.querySelector(`#${questId} .quest-btn`);
+                if(btn) {
+                    btn.innerText = "CLAIMED";
+                    btn.style.borderColor = "rgba(255,255,255,0.1)"; btn.style.color = "var(--accent-green)";
+                    btn.classList.add("claimed");
+                    btn.onclick = null;
+                    triggerConfetti(btn);
+                }
+            } else {
+                let oneTimeData = JSON.parse(localStorage.getItem('tournyx_quests_onetime')) || [];
+                oneTimeData.push(questId);
+                localStorage.setItem('tournyx_quests_onetime', JSON.stringify(oneTimeData));
+                
+                let card = document.getElementById(questId);
+                if (card) {
+                    card.style.transform = "scale(0)";
+                    card.style.opacity = "0";
+                    setTimeout(() => { card.remove(); }, 300); // Remove smoothly
+                }
+            }
 
             fetch(API_URL, {
                 method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
@@ -1546,52 +1590,16 @@
         }
 
         // --- HARDWARE ACCELERATED CANVAS PARTICLES ---
-        const canvas = document.getElementById('particles-canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        let particles = [];
-        class P {
-            constructor(){ this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.s=Math.random()*2; this.vx=Math.random()*0.5-0.25; this.vy=Math.random()*0.5-0.25; }
-            u(){ this.x+=this.vx; this.y+=this.vy; if(this.x<0||this.x>canvas.width)this.vx*=-1; if(this.y<0||this.y>canvas.height)this.vy*=-1; }
-            d(){ ctx.fillStyle='rgba(189,0,255,0.4)'; ctx.beginPath(); ctx.arc(Math.floor(this.x),Math.floor(this.y),this.s,0,Math.PI*2); ctx.fill(); }
+        let animPaused = localStorage.getItem('tournyx_psm') === 'true';
+
+        // Tie Canvas resizing to PSM directly
+        if(animPaused) {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+        } else {
+            anim();
         }
-        for(let i=0;i<25;i++) particles.push(new P());
-        function anim(){ ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.u();p.d()}); requestAnimationFrame(anim); }
-        anim();
-        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
 
     </script>
-    <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const topBanner = document.getElementById('custom-top-banner');
-    const closeBtn = document.getElementById('close-top-banner');
-
-    // Check if on a mobile device
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-    // Check if inside Median app (Median usually adds 'median' or 'gonative' to the user agent)
-    const userAgentString = navigator.userAgent.toLowerCase();
-    const isInsideMedianApp = userAgentString.includes('median') || userAgentString.includes('gonative');
-
-    // Check if user previously closed it
-    const bannerDismissed = localStorage.getItem('tournyxTopBannerDismissed');
-
-    // Show banner if: on mobile, NOT in app, and NOT dismissed
-    if (isMobile && !isInsideMedianApp && !bannerDismissed) {
-        topBanner.classList.add('visible');
-        
-        // Push the body down so the banner doesn't cover your top search bar
-        document.body.style.marginTop = topBanner.offsetHeight + 'px';
-    }
-
-    // Handle close button
-    closeBtn.addEventListener('click', () => {
-        topBanner.classList.remove('visible');
-        document.body.style.marginTop = '0px'; // Reset body margin
-        localStorage.setItem('tournyxTopBannerDismissed', 'true');
-    });
-});
-</script>
 
 </body>
 </html>
