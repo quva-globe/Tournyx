@@ -9,25 +9,26 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-<script>
-            (function() {
-                try {
-                    const THEMES = [
-                        {cyan: '#00f2ff', purple: '#bd00ff'},
-                        {cyan: '#00ff7f', purple: '#00b09b'},
-                        {cyan: '#ff9900', purple: '#ff4d4d'}
-                    ];
-                    let tIndex = parseInt(localStorage.getItem('tournyx_theme_index')) || 0;
-                    if(THEMES[tIndex]) {
-                        document.documentElement.style.setProperty('--accent-cyan', THEMES[tIndex].cyan);
-                        document.documentElement.style.setProperty('--accent-purple', THEMES[tIndex].purple);
-                        document.documentElement.style.setProperty('--accent-gradient', `linear-gradient(90deg, ${THEMES[tIndex].purple}, ${THEMES[tIndex].cyan})`);
-                    }
-                } catch(e) {
-                    console.log("Theme setting bypassed - strict browser settings.");
+    
+    <script>
+        (function() {
+            try {
+                const THEMES = [
+                    {cyan: '#00f2ff', purple: '#bd00ff'},
+                    {cyan: '#00ff7f', purple: '#00b09b'},
+                    {cyan: '#ff9900', purple: '#ff4d4d'}
+                ];
+                let tIndex = parseInt(localStorage.getItem('tournyx_theme_index')) || 0;
+                if(THEMES[tIndex]) {
+                    document.documentElement.style.setProperty('--accent-cyan', THEMES[tIndex].cyan);
+                    document.documentElement.style.setProperty('--accent-purple', THEMES[tIndex].purple);
+                    document.documentElement.style.setProperty('--accent-gradient', `linear-gradient(90deg, ${THEMES[tIndex].purple}, ${THEMES[tIndex].cyan})`);
                 }
-            })();
-        </script>
+            } catch(e) {
+                console.log("Theme setting bypassed - strict browser settings.");
+            }
+        })();
+    </script>
     <style>
         /* --- GLOBAL VARIABLES --- */
         :root {
@@ -73,7 +74,7 @@
             box-shadow: 0 4px 30px rgba(0,0,0,0.5);
         }
         .header-left { display: flex; align-items: center; gap: 15px; }
-        .back-btn { color: white; font-size: 1.3rem; text-decoration: none; transition: 0.3s; padding: 5px; }
+        .back-btn { color: white; font-size: 1.3rem; text-decoration: none; transition: 0.3s; padding: 5px; cursor: pointer; }
         .back-btn:active { color: var(--accent-cyan); transform: scale(0.9); }
         
         .app-title {
@@ -83,7 +84,13 @@
             text-transform: uppercase; letter-spacing: 1px;
         }
         
-        /* Balance Display */
+        /* Balance Display & Refresh */
+        .header-right-actions { display: flex; align-items: center; gap: 10px; }
+        
+        .refresh-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); border-radius: 50%; cursor: pointer; border: 1px solid rgba(0,242,255,0.5); color: var(--accent-cyan); transition: 0.3s; flex-shrink: 0; font-size: 0.9rem;}
+        .refresh-btn:active { transform: rotate(180deg); background: var(--accent-cyan); color: black; box-shadow: 0 0 15px rgba(0,242,255,0.5); }
+        .refresh-btn.cooldown { opacity: 0.5; pointer-events: none; border-color: #555; color: #555; }
+
         .header-balance {
             background: rgba(0, 255, 127, 0.1); border: 1px solid rgba(0, 255, 127, 0.3);
             padding: 6px 12px; border-radius: 12px; display: flex; align-items: center; gap: 6px;
@@ -91,6 +98,11 @@
             box-shadow: 0 0 10px rgba(0,255,127,0.2); transition: 0.3s; cursor: pointer;
         }
         .header-balance:active { transform: scale(0.95); }
+
+        /* --- SKELETON LOADER --- */
+        .skeleton-wrapper { display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 600px; margin: 0 auto; padding: 0 15px;}
+        .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.02) 25%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.02) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite linear; border-radius: 16px; transform: translateZ(0); }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 
         /* --- HERO SECTION --- */
         .hero { text-align: center; padding: 20px 20px 10px; animation: fadeIn 0.4s ease; }
@@ -152,6 +164,20 @@
         .offer-reward-btn span { font-size: 0.65rem; color: #fff; opacity: 0.8; margin-top: 2px; text-transform: uppercase; }
         .offer-reward-btn:hover { background: var(--accent-green); color: #000; box-shadow: 0 0 15px rgba(0,255,127,0.4); }
 
+        /* --- LIVE EARNERS / WINNERS --- */
+        .winners-section { padding: 10px 15px 30px; max-width: 600px; margin: 0 auto; }
+        .section-header { font-family: var(--font-head); font-size: 1.1rem; margin-bottom: 15px; border-bottom: 1px solid var(--card-border); padding-bottom: 10px; color: white; display: flex; justify-content: space-between; align-items: center;}
+        
+        .winner-card {
+            display: flex; align-items: center; gap: 15px; background: var(--card-bg);
+            padding: 15px; border-radius: 15px; margin-bottom: 12px; border: 1px solid var(--card-border);
+            animation: fadeIn 0.4s ease backwards; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .w-avatar { width: 45px; height: 45px; border-radius: 10px; background: var(--accent-purple); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);}
+        .w-info { flex: 1; min-width: 0;}
+        .w-name { font-family: var(--font-head); font-size: 1rem; color: white; margin-bottom: 2px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+        .w-prize { font-size: 0.8rem; color: var(--accent-green); font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+
         /* --- INSTRUCTIONS & UPLOAD MODAL --- */
         .modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -205,7 +231,7 @@
         .verify-btn:disabled { background: #333; color: #888; box-shadow: none; cursor: not-allowed; }
 
         /* --- ANIMATED OVERLAYS (Processing) --- */
-        .full-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(7,3,17,0.98); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.4s; }
+        .full-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(7,3,17,0.98); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.4s; backdrop-filter: blur(10px); }
         .full-overlay.active { opacity: 1; pointer-events: all; }
         
         .anim-circle { width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin-bottom: 20px; }
@@ -224,18 +250,22 @@
         #customToast.show { visibility: visible; opacity: 1; bottom: 100px; }
 
         /* --- FOOTER & NAV --- */
-        .app-footer { text-align: center; padding: 20px 20px 100px 20px; color: #555; font-size: 0.75rem; font-family: var(--font-body); letter-spacing: 1px; border-top: 1px solid var(--card-border); margin-top: 20px; }
+        .app-footer { text-align: center; padding: 30px 20px 100px 20px; color: #555; font-size: 0.75rem; font-family: var(--font-body); letter-spacing: 1px; border-top: 1px solid var(--card-border); margin-top: 20px; }
 
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(15px); border-top: 1px solid var(--card-border); z-index: 1000; display: flex; align-items: stretch; justify-content: space-between; padding: 0 5px; padding-bottom: env(safe-area-inset-bottom); box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
-        .nav-item { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; color: #666; text-decoration: none; font-size: 0.6rem; font-family: var(--font-head); font-weight: bold; transition: 0.3s; }
-        .nav-item.active { color: var(--accent-cyan); text-shadow: 0 0 10px rgba(0,242,255,0.5); }
+        /* --- PERFECT BOTTOM NAVIGATION (MOBILE OPTIMIZED) --- */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(5, 2, 12, 0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 2px env(safe-area-inset-bottom); border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); transform: translateZ(0);}
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; color: #666; text-decoration: none; font-size: 0.6rem; font-family: var(--font-head); font-weight: bold; flex: 1; transition: 0.3s; position: relative; padding: 0 2px; text-align: center;}
+        .nav-item span { margin-top: 4px; transition: 0.3s; letter-spacing: -0.3px;}
         .nav-item i { font-size: 1.2rem; transition: 0.3s; }
-        .nav-item:hover { color: white; }
-        .nav-item span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; text-transform: capitalize; }
-        
-        .fab-slot { flex: 1; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
-        .floating-plus { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 48px; height: 48px; background: var(--accent-cyan); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid var(--primary-bg); box-shadow: 0 0 0 2px var(--accent-purple), 0 -3px 10px rgba(0,0,0,0.5); color: #000; font-size: 1.5rem; cursor: pointer; transition: 0.3s; z-index: 10; }
-        .floating-plus:active { transform: translateX(-50%) scale(0.95); box-shadow: 0 0 0 2px var(--accent-purple), 0 -1px 5px rgba(0,0,0,0.5); }
+        .nav-item.active { color: var(--accent-cyan); }
+        .nav-item.active i { transform: translateY(-4px); color: var(--accent-cyan); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
+        .nav-item.active span { transform: translateY(2px); color: white; text-shadow: 0 0 5px rgba(255,255,255,0.5);}
+        .fab-slot { flex: 1.2; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
+        .floating-plus { position: absolute; top: -25px; left: 50%; transform: translateX(-50%); width: 54px; height: 54px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 4px solid var(--primary-bg); box-shadow: 0 10px 25px rgba(189,0,255,0.4); color: #fff; font-size: 1.6rem; cursor: pointer; transition: 0.3s; z-index: 10; }
+        .floating-plus:hover { transform: translateX(-50%) scale(1.1) rotate(90deg); box-shadow: 0 15px 35px rgba(0,242,255,0.6); }
+
+        @media (min-width: 850px) { .bottom-nav { display: none !important; } body { padding-bottom: 0; } }
+
     </style>
 </head>
 <body>
@@ -244,11 +274,16 @@
 
     <header class="top-header">
         <div class="header-left">
-            <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+            <a href="index.html" class="back-btn" onclick="triggerHaptic()"><i class="fa-solid fa-arrow-left"></i></a>
             <div class="app-title">OFFER WALL</div>
         </div>
-        <div class="header-balance" onclick="window.location.href='wallet.html'">
-            <i class="fa-solid fa-wallet"></i> <span id="userPointsDisplay"><i class="fa-solid fa-spinner fa-spin" style="font-size: 0.8rem;"></i></span> PTS
+        <div class="header-right-actions">
+            <div class="refresh-btn" onclick="manualSyncOffers()" id="refreshOffersBtn" title="Refresh Live Data">
+                <i class="fa-solid fa-rotate-right" id="refreshIcon"></i>
+            </div>
+            <div class="header-balance" onclick="window.location.href='wallet.html'; triggerHaptic();">
+                <i class="fa-solid fa-wallet"></i> <span id="userPointsDisplay"><i class="fa-solid fa-spinner fa-spin" style="font-size: 0.8rem;"></i></span> PTS
+            </div>
         </div>
     </header>
 
@@ -259,22 +294,35 @@
     </section>
 
     <div class="filter-container">
-        <div class="filter-btn active" onclick="filterOffers('all', this)">All Offers</div>
-        <div class="filter-btn" onclick="filterOffers('games', this)">Esports Tasks</div>
-        <div class="filter-btn" onclick="filterOffers('surveys', this)">Surveys</div>
-        <div class="filter-btn" onclick="filterOffers('apps', this)">Apps</div>
+        <div class="filter-btn active" onclick="filterOffers('all', this); triggerHaptic();">All Offers</div>
+        <div class="filter-btn" onclick="filterOffers('games', this); triggerHaptic();">Esports Tasks</div>
+        <div class="filter-btn" onclick="filterOffers('surveys', this); triggerHaptic();">Surveys</div>
+        <div class="filter-btn" onclick="filterOffers('apps', this); triggerHaptic();">Apps</div>
     </div>
 
     <div class="offers-wrapper" id="offersContainer">
-        <div style="text-align:center; color:#888; padding:30px 0;">
-            <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 10px; color:var(--accent-cyan);"></i><br>
-            Fetching Live Offers...
+        <div id="offerSkeleton" class="skeleton-wrapper">
+            <div class="offer-card skeleton" style="height: 85px; border-color:transparent;"></div>
+            <div class="offer-card skeleton" style="height: 85px; border-color:transparent;"></div>
+            <div class="offer-card skeleton" style="height: 85px; border-color:transparent;"></div>
+        </div>
+    </div>
+
+    <div class="winners-section" id="earnersSection">
+        <div class="section-header">
+            <span><i class="fa-solid fa-bolt" style="color:var(--accent-orange);"></i> Live Recent Payouts</span>
+            <i class="fa-solid fa-circle-check" style="color:var(--accent-green); font-size: 0.9rem;"></i>
+        </div>
+        
+        <div id="winnersList">
+            <div class="winner-card skeleton" style="height: 75px; border-color:transparent;"></div>
+            <div class="winner-card skeleton" style="height: 75px; border-color:transparent;"></div>
         </div>
     </div>
 
     <div id="taskModal" class="modal-overlay">
         <div class="modal-content">
-            <i class="fa-solid fa-xmark close-modal" onclick="closeTaskModal()"></i>
+            <i class="fa-solid fa-xmark close-modal" onclick="closeTaskModal(); triggerHaptic();"></i>
             <h2 id="modalTitle" class="modal-title">Task Name</h2>
             
             <div class="modal-instructions">
@@ -288,7 +336,7 @@
             </div>
             
             <div class="upload-section">
-                <label for="screenshotUpload" class="upload-btn">
+                <label for="screenshotUpload" class="upload-btn" onclick="triggerHaptic()">
                     <i class="fa-solid fa-cloud-arrow-up"></i> Select Images (Max 5)
                 </label>
                 <input type="file" id="screenshotUpload" accept="image/*" multiple style="display: none;" onchange="handleFiles(event)">
@@ -296,7 +344,7 @@
                 <div id="imagePreviewContainer" class="preview-container"></div>
             </div>
 
-            <button class="verify-btn" onclick="processClaim()" id="submitClaimBtn">Submit Proof <span id="modalPoints">0</span> PTS</button>
+            <button class="verify-btn" onclick="processClaim(); triggerHaptic();" id="submitClaimBtn">Submit Proof <span id="modalPoints">0</span> PTS</button>
         </div>
     </div>
 
@@ -309,32 +357,32 @@
     <div id="customToast">Notification</div>
 
     <footer class="app-footer">
-        <div class="footer-logo"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_20wCR-WBMpQmw3vxcYUf-vxIO1PYDJoQN_Sid3UDjA9tf0cuX0eH40jbzHoJad4cxbnjhPjqfCw1Z5V1LhgN9zFuIQC0fJjecTy3D9PFu5WjR2H1wHwTD1bUGnXY_NiApWn5gMs6velcQngSzKoP1yHzX0cVsFSUFM8zIefcbiPayY7680Kz0V0ZAAE/s1264/1000093706.png" style="width:20px;"> TOURNYX</div>
+        <div class="footer-logo"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_20wCR-WBMpQmw3vxcYUf-vxIO1PYDJoQN_Sid3UDjA9tf0cuX0eH40jbzHoJad4cxbnjhPjqfCw1Z5V1LhgN9zFuIQC0fJjecTy3D9PFu5WjR2H1wHwTD1bUGnXY_NiApWn5gMs6velcQngSzKoP1yHzX0cVsFSUFM8zIefcbiPayY7680Kz0V0ZAAE/s1264/1000093706.png" style="width:20px; vertical-align: middle;"> TOURNYX</div>
         <div class="footer-text">Built for Gamers, By Gamers.</div>
     </footer>
 
-    <nav class="bottom-nav">
-        <a class="nav-item" href="index.html">
+    <nav class="bottom-nav" id="bottomNavBar">
+        <a class="nav-item" href="index.html" onclick="triggerHaptic()">
             <i class="fa-solid fa-house"></i><span>Home</span>
         </a>
-        <a class="nav-item" href="explore.html">
+        <a class="nav-item" href="explore.html" onclick="triggerHaptic()">
             <i class="fa-solid fa-compass"></i><span>Explore</span>
         </a>
-        <a class="nav-item" href="matches.html">
+        <a class="nav-item" href="matches.html" onclick="triggerHaptic()">
             <i class="fa-solid fa-trophy"></i><span>Matches</span>
         </a>
         <div class="fab-slot">
-            <div class="floating-plus" onclick="window.location.href='tournament.html'">
+            <div class="floating-plus" onclick="window.location.href='tournament.html'; triggerHaptic();">
                 <i class="fa-solid fa-plus"></i>
             </div>
         </div>
-        <a class="nav-item" href="clans.html">
+        <a class="nav-item" href="clans.html" onclick="triggerHaptic()">
             <i class="fa-solid fa-shield-halved"></i><span>Clan</span>
         </a>
-        <a class="nav-item" href="wallet.html">
+        <a class="nav-item" href="wallet.html" onclick="triggerHaptic()">
             <i class="fa-solid fa-wallet"></i><span>Wallet</span>
         </a>
-        <a class="nav-item" href="profile.html">
+        <a class="nav-item" href="profile.html" onclick="triggerHaptic()">
             <i class="fa-solid fa-user"></i><span>Profile</span>
         </a>
     </nav>
@@ -347,6 +395,8 @@
         const IMGBB_API_KEY = "727c66ecfe2882d63fee08fee7495850"; 
         
         let currentUser = JSON.parse(localStorage.getItem('tournyx_user'));
+        let isRefreshing = false;
+        let silentPollInterval;
 
         document.addEventListener("DOMContentLoaded", () => {
             // Strict Auth Check
@@ -358,28 +408,75 @@
             
             // Show cached balance, fetch live balance
             document.getElementById('userPointsDisplay').innerText = formatNum(parseInt(currentUser.points) || 0);
-            syncLivePoints();
             
-            // Fetch live offers from Google Sheets
-            fetchLiveOffers();
+            // Initial Parallel Load
+            executeFullSync();
+            startSilentPolling();
         });
 
+        function triggerHaptic() { if(navigator.vibrate) navigator.vibrate(30); }
+
         function formatNum(num) { return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+        
+        function formatImageUrl(url) {
+            if (!url) return '';
+            if (url.startsWith('data:image')) return url; // BASE64 EXACT FIX
+            if (url.includes('drive.google.com/file/d/')) { let id = url.split('/d/')[1].split('/')[0]; return `https://drive.google.com/uc?export=view&id=${id}`; }
+            return url;
+        }
 
         function showToast(msg, isError = false) {
             const t = document.getElementById('customToast');
             t.innerText = msg; t.className = "show";
             t.style.backgroundColor = isError ? "var(--accent-red)" : "var(--accent-cyan)";
             t.style.color = isError ? "white" : "#000";
+            triggerHaptic();
             setTimeout(() => t.className = "", 3000);
         }
 
-        // Live Balance Sync (Optimistic/No-Cors architecture mapping)
-        function syncLivePoints() {
-            fetch(API_URL, {
-                method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action: 'sync_user', email: currentUser.email })
-            }).catch(e => console.log("Offline mode"));
+        function manualSyncOffers() {
+            if(isRefreshing) return;
+            isRefreshing = true;
+            triggerHaptic();
+            const btn = document.getElementById('refreshOffersBtn');
+            const icon = document.getElementById('refreshIcon');
+            
+            btn.classList.add('cooldown');
+            icon.classList.add('fa-spin');
+            
+            executeFullSync().then(() => {
+                setTimeout(() => {
+                    icon.classList.remove('fa-spin');
+                    btn.classList.remove('cooldown');
+                    isRefreshing = false;
+                    showToast("Offers Updated!");
+                }, 1000);
+            });
+        }
+
+        async function executeFullSync() {
+            try {
+                // Sync User Points silently
+                fetch(API_URL, {
+                    method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'sync_user', email: currentUser.email })
+                });
+                
+                // Fetch Offers & Winners
+                await Promise.all([
+                    fetchLiveOffers(),
+                    fetchRecentEarners()
+                ]);
+            } catch (e) { console.log("Network sync error"); }
+        }
+
+        function startSilentPolling() {
+            silentPollInterval = setInterval(() => {
+                if(navigator.onLine && !isRefreshing) {
+                    fetchLiveOffers();
+                    fetchRecentEarners();
+                }
+            }, 30000); // Check for new offers/winners every 30 seconds
         }
 
         // --- OVERLAY CONTROLLER ---
@@ -399,10 +496,10 @@
         function hideOverlay() { document.getElementById('statusOverlay').classList.remove('active'); }
 
         // ==========================================
-        // 2. LIVE FETCHING ENGINE
+        // 2. LIVE FETCHING ENGINE FOR OFFERS
         // ==========================================
         
-        // Fallback Default Offers (in case sheet is empty or fetch fails)
+        // Fallback Default Offers
         const defaultOffers = [
             { id: "offer-ff-booyah", category: "games", premium: true, title: "Free Fire Booyah", desc: "Play 3 Ranked Matches today and verify your screenshot.", points: 250, icon: "fa-fire", color: "#ff9900" },
             { id: "offer-bgmi-chicken", category: "games", premium: false, title: "BGMI Chicken Dinner", desc: "Get 5 kills in a classic match. Upload end-screen proof.", points: 150, icon: "fa-crosshairs", color: "#00f2ff" },
@@ -410,45 +507,44 @@
             { id: "offer-app-download", category: "apps", premium: false, title: "Download & Play", desc: "Install the sponsor app and reach Level 5 to unlock points.", points: 300, icon: "fa-google-play", color: "#00ff7f", isBrand: true }
         ];
 
-        function fetchLiveOffers() {
-            // Use GET request for fetching public data from Google Sheets API
-            fetch(API_URL + "?action=get_offers")
-            .then(res => res.json())
-            .then(data => {
-                if (data.status === "success" && data.data.length > 0) {
+        async function fetchLiveOffers() {
+            try {
+                const res = await fetch(API_URL + "?action=get_offers");
+                const data = await res.json();
+                
+                if (data.status === "success" && data.data && data.data.length > 0) {
                     renderOffersList(data.data);
                 } else {
-                    // Fallback to local default
                     renderOffersList(defaultOffers);
                 }
-            })
-            .catch(err => {
-                console.log("Using cached/default offers due to network error.");
+            } catch (err) {
                 renderOffersList(defaultOffers);
-            });
+            }
         }
 
         function renderOffersList(offersList) {
             const container = document.getElementById('offersContainer');
             container.innerHTML = "";
             
+            // Sort to push premium offers to the top
+            offersList.sort((a, b) => (b.premium === true) - (a.premium === true));
+
             offersList.forEach((offer, index) => {
                 let animDelay = (index * 0.1) + "s";
                 let premiumClass = offer.premium ? "premium" : "";
-                let brandClass = offer.isBrand || offer.icon.includes('google') || offer.icon.includes('discord') ? "fa-brands" : "fa-solid";
+                let brandClass = offer.isBrand || String(offer.icon).includes('google') || String(offer.icon).includes('discord') ? "fa-brands" : "fa-solid";
                 
-                // Safe string escaping for function params
-                let safeTitle = offer.title.replace(/'/g, "\\'");
-                let safeDesc = offer.desc.replace(/'/g, "\\'");
+                let safeTitle = String(offer.title).replace(/'/g, "\\'");
+                let safeDesc = String(offer.desc).replace(/'/g, "\\'");
 
                 container.innerHTML += `
                     <div class="offer-card ${premiumClass} category-${offer.category}" id="${offer.id}" style="animation-delay: ${animDelay};">
-                        <div class="offer-icon-box"><i class="${brandClass} ${offer.icon}" style="color: ${offer.color};"></i></div>
+                        <div class="offer-icon-box"><i class="${brandClass} ${offer.icon || 'fa-bolt'}" style="color: ${offer.color || 'var(--accent-cyan)'};"></i></div>
                         <div class="offer-details">
                             <div class="offer-title">${offer.title}</div>
                             <div class="offer-desc">${offer.desc}</div>
                         </div>
-                        <button class="offer-reward-btn" onclick="openTaskModal('${offer.id}', '${safeTitle}', '${safeDesc}', ${offer.points})">
+                        <button class="offer-reward-btn" onclick="openTaskModal('${offer.id}', '${safeTitle}', '${safeDesc}', ${offer.points}); triggerHaptic();">
                             +${formatNum(offer.points)} <span>PTS</span>
                         </button>
                     </div>
@@ -460,7 +556,45 @@
         }
 
         // ==========================================
-        // 3. UI LOGIC (Filtering & Pending States)
+        // 3. LIVE RECENT EARNERS FETCH ENGINE
+        // ==========================================
+        async function fetchRecentEarners() {
+            try {
+                const res = await fetch(API_URL + "?action=get_offer_winners");
+                const data = await res.json();
+                
+                const winnersList = document.getElementById('winnersList');
+                if(data.status === 'success' && data.data && data.data.length > 0) {
+                    let html = "";
+                    data.data.forEach(w => {
+                        let safeName = w.name || w.ign || w.username || "Player";
+                        let avatarSrc = w.avatar ? formatImageUrl(w.avatar) : `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(safeName)}`;
+                        html += `
+                        <div class="winner-card">
+                            <div class="w-avatar"><img src="${avatarSrc}" style="width:100%; height:100%; object-fit:cover; border-radius:10px;"></div>
+                            <div class="w-info">
+                                <div class="w-name">${safeName}</div>
+                                <div class="w-prize">Earned ${formatNum(w.prize || w.points || 0)} PTS</div>
+                            </div>
+                            <i class="fa-solid fa-bolt" style="color:var(--accent-cyan); font-size: 1.5rem; filter: drop-shadow(0 0 10px rgba(0,242,255,0.4));"></i>
+                        </div>`;
+                    });
+                    winnersList.innerHTML = html;
+                } else {
+                    winnersList.innerHTML = `
+                        <div style="text-align:center; padding: 25px; background: rgba(255,255,255,0.02); border: 1px dashed var(--card-border); border-radius: 15px;">
+                            <i class="fa-solid fa-gift" style="font-size:2.5rem; color:#555; margin-bottom:10px;"></i>
+                            <div style="color:#aaa; font-family:var(--font-head); font-weight:bold;">No recent payouts.</div>
+                            <div style="font-size:0.8rem; color:#888; margin-top:5px;">Complete an offer to be the first!</div>
+                        </div>`;
+                }
+            } catch (err) {
+                document.getElementById('winnersList').innerHTML = `<div style="text-align:center; color:#ff4d4d; padding: 20px;">Failed to load live payouts.</div>`;
+            }
+        }
+
+        // ==========================================
+        // 4. UI LOGIC (Filtering & Pending States)
         // ==========================================
         function filterOffers(category, element) {
             document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
@@ -486,19 +620,21 @@
                 if (card) {
                     card.classList.add('pending');
                     let btn = card.querySelector('.offer-reward-btn');
-                    btn.innerHTML = `<i class="fa-solid fa-clock-rotate-left"></i> <span>Pending Review</span>`;
-                    btn.onclick = null; // Disable click
+                    if(btn) {
+                        btn.innerHTML = `<i class="fa-solid fa-clock-rotate-left"></i> <span>Reviewing</span>`;
+                        btn.onclick = null; // Disable click
+                    }
                 }
             });
         }
 
         // ==========================================
-        // 4. TASK MODAL & IMAGE UPLOAD LOGIC
+        // 5. TASK MODAL & IMAGE UPLOAD LOGIC
         // ==========================================
         let currentOfferId = "";
         let currentTaskName = "";
         let currentTaskPoints = 0;
-        let base64ImagesData = []; // Array of objects { id, base64, src }
+        let base64ImagesData = []; 
 
         function openTaskModal(offerId, title, desc, points) {
             currentOfferId = offerId;
@@ -559,7 +695,7 @@
                 container.innerHTML += `
                     <div class="preview-box" id="box_${imgData.id}">
                         <img src="${imgData.src}" class="preview-img">
-                        <div class="remove-img-btn" onclick="removeSelectedImage('${imgData.id}')"><i class="fa-solid fa-xmark"></i></div>
+                        <div class="remove-img-btn" onclick="removeSelectedImage('${imgData.id}'); triggerHaptic();"><i class="fa-solid fa-xmark"></i></div>
                     </div>
                 `;
             });
@@ -571,9 +707,10 @@
         }
 
         // ==========================================
-        // 5. PROCESS CLAIM TO IMGBB & GOOGLE SHEETS
+        // 6. PROCESS CLAIM TO IMGBB & GOOGLE SHEETS
         // ==========================================
         async function processClaim() {
+            triggerHaptic();
             if (base64ImagesData.length === 0) {
                 showToast("Please upload at least 1 screenshot as proof.", true);
                 return;
@@ -638,6 +775,21 @@
                 setTimeout(hideOverlay, 3000);
             }
         }
+
+        // --- PARTICLE BACKGROUND SCRIPT ---
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particles = [];
+        class P {
+            constructor(){ this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.s=Math.random()*2; this.vx=Math.random()*0.5-0.25; this.vy=Math.random()*0.5-0.25; }
+            u(){ this.x+=this.vx; this.y+=this.vy; if(this.x<0||this.x>canvas.width)this.vx*=-1; if(this.y<0||this.y>canvas.height)this.vy*=-1; }
+            d(){ ctx.fillStyle='rgba(0,242,255,0.3)'; ctx.beginPath(); ctx.arc(this.x,this.y,this.s,0,Math.PI*2); ctx.fill(); }
+        }
+        for(let i=0;i<40;i++) particles.push(new P());
+        function anim(){ ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.u();p.d()}); requestAnimationFrame(anim); }
+        anim();
+
     </script>
 </body>
 </html>
