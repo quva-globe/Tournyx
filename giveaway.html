@@ -93,6 +93,10 @@
 
         @keyframes fadeIn { from{opacity:0; transform:translateY(15px);} to{opacity:1; transform:translateY(0);} }
 
+        /* --- SKELETON LOADER --- */
+        .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.02) 25%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.02) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite linear; border-radius: 12px;}
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+
         /* --- GIVEAWAY CARD --- */
         .giveaway-container { padding: 15px 20px; max-width: 500px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
         
@@ -215,10 +219,10 @@
             padding: 15px; border-radius: 15px; margin-bottom: 12px; border: 1px solid var(--card-border);
             animation: fadeIn 0.4s ease backwards; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
-        .w-avatar { width: 45px; height: 45px; border-radius: 10px; background: var(--accent-purple); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; }
-        .w-info { flex: 1; }
-        .w-name { font-family: var(--font-head); font-size: 1rem; color: white; margin-bottom: 2px; font-weight: bold; }
-        .w-prize { font-size: 0.8rem; color: var(--accent-green); font-weight: bold; }
+        .w-avatar { width: 45px; height: 45px; border-radius: 10px; background: var(--accent-purple); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; overflow: hidden;}
+        .w-info { flex: 1; min-width: 0;}
+        .w-name { font-family: var(--font-head); font-size: 1rem; color: white; margin-bottom: 2px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+        .w-prize { font-size: 0.8rem; color: var(--accent-green); font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
 
         /* --- ANIMATED OVERLAYS (Status) --- */
         .full-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(7,3,17,0.98); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.4s; }
@@ -241,16 +245,19 @@
         /* --- FOOTER & NAV --- */
         .app-footer { text-align: center; padding: 30px 20px 100px 20px; color: #555; font-size: 0.75rem; font-family: var(--font-body); letter-spacing: 1px; border-top: 1px solid var(--card-border); margin-top: 20px; }
 
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(15px); border-top: 1px solid var(--card-border); z-index: 1000; display: flex; align-items: stretch; justify-content: space-between; padding: 0 5px; padding-bottom: env(safe-area-inset-bottom); box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
-        .nav-item { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; color: #666; text-decoration: none; font-size: 0.6rem; font-family: var(--font-head); font-weight: bold; transition: 0.3s; }
-        .nav-item.active { color: var(--accent-cyan); text-shadow: 0 0 10px rgba(0,242,255,0.5); }
+        /* PERFECTLY ALIGNED BOTTOM NAVIGATION (MOBILE OPTIMIZED) */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(5, 2, 12, 0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 2px env(safe-area-inset-bottom); border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); transform: translateZ(0);}
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; color: #666; text-decoration: none; font-size: 0.6rem; font-family: var(--font-head); font-weight: bold; flex: 1; transition: 0.3s; position: relative; padding: 0 2px; text-align: center;}
+        .nav-item span { margin-top: 4px; transition: 0.3s; letter-spacing: -0.3px;}
         .nav-item i { font-size: 1.2rem; transition: 0.3s; }
-        .nav-item:hover { color: white; }
-        .nav-item span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; text-transform: capitalize; }
-        
-        .fab-slot { flex: 1; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
-        .floating-plus { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 48px; height: 48px; background: var(--accent-cyan); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid var(--primary-bg); box-shadow: 0 0 0 2px var(--accent-purple), 0 -3px 10px rgba(0,0,0,0.5); color: #000; font-size: 1.5rem; cursor: pointer; transition: 0.3s; z-index: 10; }
-        .floating-plus:active { transform: translateX(-50%) scale(0.95); box-shadow: 0 0 0 2px var(--accent-purple), 0 -1px 5px rgba(0,0,0,0.5); }
+        .nav-item.active { color: var(--accent-cyan); }
+        .nav-item.active i { transform: translateY(-4px); color: var(--accent-cyan); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
+        .nav-item.active span { transform: translateY(2px); color: white; text-shadow: 0 0 5px rgba(255,255,255,0.5);}
+        .fab-slot { flex: 1.2; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
+        .floating-plus { position: absolute; top: -25px; left: 50%; transform: translateX(-50%); width: 54px; height: 54px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 4px solid var(--primary-bg); box-shadow: 0 10px 25px rgba(189,0,255,0.4); color: #fff; font-size: 1.6rem; cursor: pointer; transition: 0.3s; z-index: 10; }
+        .floating-plus:hover { transform: translateX(-50%) scale(1.1) rotate(90deg); box-shadow: 0 15px 35px rgba(0,242,255,0.6); }
+
+        @media (min-width: 850px) { .bottom-nav { display: none !important; } body { padding-bottom: 0; } }
     </style>
 </head>
 <body>
@@ -271,31 +278,15 @@
     </section>
 
     <div class="giveaway-container" id="giveawaysList">
-        <div style="text-align:center; padding: 40px; color:#888;">
-            <i class="fa-solid fa-spinner fa-spin" style="font-size:2.5rem; color:var(--accent-cyan); margin-bottom:15px;"></i><br>
-            <span style="font-family:var(--font-head); font-weight:bold; letter-spacing:1px;">Fetching Live Drops...</span>
-        </div>
+        <div class="prize-card skeleton" style="height: 350px; border-color:transparent;"></div>
     </div>
 
-    <div class="winners-section">
-        <h3 class="section-header">Last Week's Winners</h3>
+    <div class="winners-section" id="winnersSection">
+        <h3 class="section-header">Live Recent Winners</h3>
         
-        <div class="winner-card">
-            <div class="w-avatar"><i class="fa-solid fa-user-ninja"></i></div>
-            <div class="w-info">
-                <div class="w-name">WH_Xeron99</div>
-                <div class="w-prize">Won Elite Pass Season 58</div>
-            </div>
-            <i class="fa-solid fa-trophy" style="color:gold; font-size: 1.5rem; filter: drop-shadow(0 0 10px rgba(255,215,0,0.6));"></i>
-        </div>
-
-        <div class="winner-card">
-            <div class="w-avatar"><i class="fa-solid fa-user-astronaut"></i></div>
-            <div class="w-info">
-                <div class="w-name">ToxicPlayer07</div>
-                <div class="w-prize">Won 1,000 Diamonds</div>
-            </div>
-            <i class="fa-solid fa-trophy" style="color:gold; font-size: 1.5rem; filter: drop-shadow(0 0 10px rgba(255,215,0,0.6));"></i>
+        <div id="winnersList">
+            <div class="winner-card skeleton" style="height: 75px; border-color:transparent;"></div>
+            <div class="winner-card skeleton" style="height: 75px; border-color:transparent;"></div>
         </div>
     </div>
 
@@ -320,11 +311,11 @@
     <div id="customToast">Notification</div>
 
     <footer class="app-footer">
-        <div class="footer-logo"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_20wCR-WBMpQmw3vxcYUf-vxIO1PYDJoQN_Sid3UDjA9tf0cuX0eH40jbzHoJad4cxbnjhPjqfCw1Z5V1LhgN9zFuIQC0fJjecTy3D9PFu5WjR2H1wHwTD1bUGnXY_NiApWn5gMs6velcQngSzKoP1yHzX0cVsFSUFM8zIefcbiPayY7680Kz0V0ZAAE/s1264/1000093706.png" style="width:20px;"> TOURNYX</div>
+        <div class="footer-logo"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_20wCR-WBMpQmw3vxcYUf-vxIO1PYDJoQN_Sid3UDjA9tf0cuX0eH40jbzHoJad4cxbnjhPjqfCw1Z5V1LhgN9zFuIQC0fJjecTy3D9PFu5WjR2H1wHwTD1bUGnXY_NiApWn5gMs6velcQngSzKoP1yHzX0cVsFSUFM8zIefcbiPayY7680Kz0V0ZAAE/s1264/1000093706.png" style="width:20px; vertical-align: middle;"> TOURNYX</div>
         <div class="footer-text">Built for Gamers, By Gamers.</div>
     </footer>
 
-    <nav class="bottom-nav">
+    <nav class="bottom-nav" id="bottomNavBar">
         <a class="nav-item" href="index.html">
             <i class="fa-solid fa-house"></i><span>Home</span>
         </a>
@@ -364,12 +355,23 @@
                 return;
             }
             
-            // Sync user data to ensure latest matches/stats are cached locally
+            // Initiate parallel fetches for max speed
+            fetchLiveGiveaways();
+            fetchWinners();
+
+            // Background sync user to ensure latest matches/stats are used in the NLP Task engine
             fetch(API_URL, {
                 method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action: 'sync_user', email: currentUser.email })
-            }).then(() => { fetchLiveGiveaways(); }).catch(() => { fetchLiveGiveaways(); });
+            }).catch(e => console.log("Silent sync skipped."));
         });
+
+        function formatImageUrl(url) {
+            if (!url) return '';
+            if (url.startsWith('data:image')) return url; // Supports exact Base64 formatting for winners
+            if (url.includes('drive.google.com/file/d/')) { let id = url.split('/d/')[1].split('/')[0]; return `https://drive.google.com/uc?export=view&id=${id}`; }
+            return url;
+        }
 
         function showToast(msg, isError = false) {
             const t = document.getElementById('customToast');
@@ -395,7 +397,7 @@
         function hideOverlay() { document.getElementById('statusOverlay').classList.remove('active'); }
 
         // ==========================================
-        // 2. SMART TASK ENGINE (NLP Logic)
+        // 2. SMART TASK ENGINE (Upgraded NLP Logic)
         // ==========================================
         function analyzeTask(taskText) {
             let isComplete = false;
@@ -423,7 +425,7 @@
                 let reqCount = match ? parseInt(match[0]) : 1;
                 let userRefs = parseInt(currentUser.referrals) || 0;
                 isComplete = userRefs >= reqCount;
-                actionUrl = "profile.html"; // Assume referral code is in profile
+                actionUrl = "profile.html"; 
                 btnText = "Refer";
             }
             // Check Clan
@@ -433,7 +435,7 @@
                 btnText = "Join";
             }
             // Check Wallet / Funds
-            else if (t.includes("wallet") || t.includes("fund") || t.includes("rs")) {
+            else if (t.includes("wallet") || t.includes("fund") || t.includes("rs") || t.includes("₹")) {
                 let match = taskText.match(/\d+/);
                 let reqCount = match ? parseInt(match[0]) : 10;
                 let userRupees = parseInt(currentUser.rupees) || 0;
@@ -466,7 +468,7 @@
             fetch(API_URL + "?action=get_giveaways")
             .then(res => res.json())
             .then(data => {
-                if(data.status === "success" && data.data.length > 0) renderGiveawaysList(data.data);
+                if(data.status === "success" && data.data && data.data.length > 0) renderGiveawaysList(data.data);
                 else renderGiveawaysList(defaultGiveaways);
             }).catch(() => renderGiveawaysList(defaultGiveaways));
         }
@@ -486,7 +488,7 @@
                 let tasksArray = ga.tasksStr ? ga.tasksStr.split('|') : ["Create a Tournyx Account", "Play 1 Match"];
                 let tasksHtml = "";
                 let allComplete = true;
-                let redirectUrl = ""; // Where to send them if incomplete
+                let redirectUrl = ""; 
 
                 tasksArray.forEach(task => {
                     let analysis = analyzeTask(task);
@@ -556,9 +558,6 @@
             });
         }
 
-        // ==========================================
-        // 4. DYNAMIC SYNCHRONIZED TIMERS
-        // ==========================================
         function startTimer(id, endDateString, isClaimed) {
             let endTime = new Date(endDateString).getTime();
 
@@ -607,14 +606,12 @@
         }
 
         // ==========================================
-        // 5. SECURE ENTRY LOGIC & UID PROMPT
+        // 4. SECURE ENTRY LOGIC & UID PROMPT
         // ==========================================
         let activeGiveawayId = "";
 
         function initiateEntry(gaId) {
-            // Re-verify tasks quickly before opening modal
             showOverlay('loading', 'Verifying Tasks...', 'Checking match history securely.');
-
             setTimeout(() => {
                 hideOverlay();
                 openUidModal(gaId);
@@ -641,7 +638,6 @@
             closeUidModal();
             showOverlay('loading', 'Securing Ticket...', 'Entering you into the draw.');
 
-            // Final submission to Google Sheets
             fetch(API_URL, {
                 method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
@@ -668,6 +664,46 @@
                 showOverlay('error', 'Network Error', 'Could not record entry. Try again.');
                 setTimeout(hideOverlay, 3000);
             });
+        }
+
+        // ==========================================
+        // 5. LIVE WINNERS FETCH ENGINE
+        // ==========================================
+        function fetchWinners() {
+            fetch(API_URL + "?action=get_giveaway_winners")
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === 'success' && data.data && data.data.length > 0) {
+                    renderWinners(data.data);
+                } else {
+                    document.getElementById('winnersList').innerHTML = `
+                        <div style="text-align:center; padding: 30px; background: rgba(255,255,255,0.02); border: 1px dashed var(--card-border); border-radius: 15px;">
+                            <i class="fa-solid fa-gift" style="font-size:2.5rem; color:#666; margin-bottom:10px;"></i>
+                            <div style="color:#aaa; font-family:var(--font-head); font-weight:bold;">No winners announced yet.</div>
+                            <div style="font-size:0.8rem; color:#888; margin-top:5px;">Participate in live drops to be the first!</div>
+                        </div>`;
+                }
+            }).catch(e => {
+                document.getElementById('winnersList').innerHTML = `<div style="text-align:center; color:#ff4d4d; padding: 20px;">Failed to load recent winners.</div>`;
+            });
+        }
+
+        function renderWinners(winners) {
+            let html = "";
+            winners.forEach(w => {
+                let safeName = w.name || w.ign || w.username || "Player";
+                let avatarSrc = w.avatar ? formatImageUrl(w.avatar) : `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(safeName)}`;
+                html += `
+                <div class="winner-card">
+                    <div class="w-avatar"><img src="${avatarSrc}" style="width:100%; height:100%; object-fit:cover; border-radius:10px;"></div>
+                    <div class="w-info">
+                        <div class="w-name">${safeName}</div>
+                        <div class="w-prize">Won ${w.prize || 'Awesome Reward'}</div>
+                    </div>
+                    <i class="fa-solid fa-trophy" style="color:gold; font-size: 1.5rem; filter: drop-shadow(0 0 10px rgba(255,215,0,0.6));"></i>
+                </div>`;
+            });
+            document.getElementById('winnersList').innerHTML = html;
         }
 
         // --- PARTICLE BACKGROUND SCRIPT ---
