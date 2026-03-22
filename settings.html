@@ -402,16 +402,30 @@
 
     <div id="customToast">Notification</div>
 
-    <nav class="bottom-nav">
-        <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i><span>Home</span></a>
-        <a class="nav-item" href="explore.html"><i class="fa-solid fa-compass"></i><span>Explore</span></a>
-        <a class="nav-item" href="matches.html"><i class="fa-solid fa-trophy"></i><span>Matches</span></a>
+    <nav class="bottom-nav" id="bottomNavBar">
+        <a class="nav-item" href="index.html" onclick="triggerHaptic()">
+            <i class="fa-solid fa-house"></i><span>Home</span>
+        </a>
+        <a class="nav-item" href="explore.html" onclick="triggerHaptic()">
+            <i class="fa-solid fa-compass"></i><span>Explore</span>
+        </a>
+        <a class="nav-item" href="matches.html" onclick="triggerHaptic()">
+            <i class="fa-solid fa-trophy"></i><span>Matches</span>
+        </a>
         <div class="fab-slot">
-            <div class="floating-plus" onclick="window.location.href='tournament.html'; triggerHaptic();"><i class="fa-solid fa-plus"></i></div>
+            <div class="floating-plus" onclick="window.location.href='tournament.html'; triggerHaptic();">
+                <i class="fa-solid fa-plus"></i>
+            </div>
         </div>
-        <a class="nav-item" href="clans.html"><i class="fa-solid fa-shield-halved"></i><span>Clan</span></a>
-        <a class="nav-item" href="wallet.html"><i class="fa-solid fa-wallet"></i><span>Wallet</span></a>
-        <a class="nav-item active" href="profile.html"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+        <a class="nav-item" href="clans.html" onclick="triggerHaptic()">
+            <i class="fa-solid fa-shield-halved"></i><span>Clan</span>
+        </a>
+        <a class="nav-item" href="wallet.html" onclick="triggerHaptic()">
+            <i class="fa-solid fa-wallet"></i><span>Wallet</span>
+        </a>
+        <a class="nav-item active" href="profile.html" onclick="triggerHaptic()">
+            <i class="fa-solid fa-user"></i><span>Profile</span>
+        </a>
     </nav>
 
     <script>
