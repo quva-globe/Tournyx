@@ -2,386 +2,506 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Leaderboard - Tournyx</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <title>Global Tournyx Elite - Live eSports Rankings</title>
+    <meta name="description" content="Check the live Global Tournyx Elite Leaderboard. See the top Free Fire players, win rates, and total earnings on the Tournyx Esports platform.">
+    <meta name="keywords" content="Tournyx leaderboard, esports rankings, free fire elite, gaming tournaments, Tournyx elite">
+    <meta name="robots" content="index, follow">
+    <meta name="google-site-verification" content="YOUR_VERIFICATION_CODE" />
+    <link rel="canonical" href="https://tournyx.in/leaderboard.html" />
+    
+    <meta property="og:title" content="Global Tournyx Elite - Rankings">
+    <meta property="og:description" content="View the top-ranked eSports players on Tournyx.">
+    <meta property="og:image" content="https://tournyx.in/favicon.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         :root {
-            --primary-bg: #050511;
-            --card-bg: rgba(20, 20, 35, 0.6);
-            --glass-border: rgba(255, 255, 255, 0.1);
+            --primary-bg: #05020c;
+            --card-bg: rgba(20, 10, 35, 0.4);
+            --card-border: rgba(255, 255, 255, 0.08);
             --accent-cyan: #00f2ff;
             --accent-purple: #bd00ff;
-            --gold: #ffd700;
-            --silver: #e0e0e0;
-            --bronze: #cd7f32;
+            --accent-gold: #FFD700;
+            --accent-green: #00ff7f;
+            --accent-gradient: linear-gradient(135deg, #7b2cbf, #bd00ff, #00f2ff);
             --font-head: 'Orbitron', sans-serif;
             --font-body: 'Rajdhani', sans-serif;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--primary-bg); color: white; font-family: var(--font-body); padding-bottom: 90px; overflow-x: hidden; }
+        *::-webkit-scrollbar { display: none !important; }
 
-        /* ANIMATED BACKGROUND */
-        #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at 50% 0%, #1a0b2e 0%, #050511 100%); }
-
-        /* HEADER */
-        .lb-header {
-            padding: 20px 20px 10px; display: flex; justify-content: space-between; align-items: center;
-            background: linear-gradient(180deg, rgba(5,5,17,0.95) 0%, rgba(5,5,17,0) 100%);
-            position: sticky; top: 0; z-index: 100; backdrop-filter: blur(5px);
-        }
-        .lb-title { 
-            font-family: var(--font-head); font-size: 1.5rem; letter-spacing: 1px;
-            background: linear-gradient(90deg, #fff, var(--accent-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        .refresh-btn {
-            width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.1);
-            display: flex; align-items: center; justify-content: center; cursor: pointer;
-            border: 1px solid var(--glass-border); transition: 0.3s;
-        }
-        .refresh-btn:active { transform: rotate(180deg); background: var(--accent-cyan); color: black; }
-        
-        /* GAME TABS */
-        .game-tabs {
-            display: flex; justify-content: center; gap: 10px; padding: 15px 20px;
-            overflow-x: auto; scrollbar-width: none;
-        }
-        .tab-btn {
-            background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
-            padding: 8px 20px; border-radius: 20px; color: #aaa; font-family: var(--font-head); font-size: 0.8rem;
-            cursor: pointer; transition: 0.3s; white-space: nowrap;
-        }
-        .tab-btn.active {
-            background: var(--accent-purple); color: white; border-color: var(--accent-purple);
-            box-shadow: 0 0 15px rgba(189, 0, 255, 0.4); transform: scale(1.05);
-        }
-
-        /* PODIUM SECTION */
-        .podium-container {
-            display: flex; justify-content: center; align-items: flex-end; gap: 15px;
-            padding: 40px 20px 20px; min-height: 260px; position: relative;
+        body {
+            background-color: var(--primary-bg); color: white;
+            font-family: var(--font-body); overflow-x: hidden;
+            padding-bottom: calc(90px + env(safe-area-inset-bottom));
         }
         
-        .podium-card {
-            display: flex; flex-direction: column; align-items: center; text-align: center;
-            position: relative; transition: 0.4s; opacity: 0; transform: translateY(30px);
-            animation: popUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        }
-        @keyframes popUp { to { opacity: 1; transform: translateY(0); } }
+        .container { max-width: 900px; margin: 0 auto; width: 100%; }
 
-        .p-avatar-box { position: relative; margin-bottom: 10px; }
-        .p-avatar {
-            width: 70px; height: 70px; border-radius: 50%; object-fit: cover;
-            border: 3px solid #333; background: #000;
+        /* --- BACKGROUND ANIMATIONS --- */
+        #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -3; pointer-events: none; }
+        .bg-gradient {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
+            background: radial-gradient(circle at 50% 10%, #1a083a 0%, #05020c 80%);
         }
-        .p-rank-badge {
-            position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);
-            width: 24px; height: 24px; border-radius: 50%; background: #222;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 0.7rem; font-weight: bold; border: 2px solid #555;
-            font-family: var(--font-head); color: white;
+        .scanlines {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,242,255,0.03) 50%, rgba(0,242,255,0.03));
+            background-size: 100% 4px; pointer-events: none;
         }
 
-        .p-name { font-size: 0.85rem; font-weight: bold; max-width: 80px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .p-points { font-size: 0.75rem; color: var(--accent-cyan); font-weight: bold; margin-top: 2px; }
-
-        /* Rank 1 Highlight */
-        .rank-1 { z-index: 5; margin-bottom: 25px; transform: scale(1.15); }
-        .rank-1 .p-avatar { 
-            width: 90px; height: 90px; border-color: var(--gold); 
-            box-shadow: 0 0 25px rgba(255, 215, 0, 0.4); /* Premium Glow */
+        /* --- RESPONSIVE HEADER --- */
+        .top-header {
+            padding: calc(15px + env(safe-area-inset-top)) 15px 15px;
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(5, 2, 12, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--card-border);
+            position: sticky; top: 0; z-index: 1000; box-shadow: 0 5px 30px rgba(0,0,0,0.5);
+            animation: fadeInDown 0.6s ease backwards;
         }
-        .rank-1 .p-rank-badge { background: var(--gold); color: black; border-color: white; width: 28px; height: 28px; }
-        .crown-icon {
-            position: absolute; top: -25px; left: 50%; transform: translateX(-50%);
-            font-size: 1.8rem; color: var(--gold); 
-            filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.5));
-            animation: float 2.5s ease-in-out infinite;
-        }
-        @keyframes float { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, -8px); } }
-
-        /* Rank 2 & 3 */
-        .rank-2 .p-avatar { border-color: var(--silver); }
-        .rank-2 .p-rank-badge { background: var(--silver); color: black; }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
         
-        .rank-3 .p-avatar { border-color: var(--bronze); }
-        .rank-3 .p-rank-badge { background: var(--bronze); color: black; }
-
-        /* LIST SECTION */
-        .leaderboard-list { padding: 0 20px; }
-        .lb-item {
-            display: flex; align-items: center; gap: 15px;
-            background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0));
-            border-bottom: 1px solid var(--glass-border);
-            padding: 12px 10px; margin-bottom: 5px;
-            animation: slideIn 0.5s ease-out forwards; opacity: 0;
+        .back-btn { font-size: 1.2rem; color: white; cursor: pointer; transition: 0.3s; padding: 5px; text-decoration: none;}
+        .back-btn:active { color: var(--accent-cyan); transform: scale(0.9); }
+        
+        .header-center { text-align: center; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;}
+        .lb-title {
+            font-family: var(--font-head); font-size: clamp(1rem, 4vw, 1.3rem); font-weight: 900;
+            background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            letter-spacing: 1px; text-transform: uppercase; line-height: 1.1;
+            filter: drop-shadow(0 0 8px rgba(189,0,255,0.4));
         }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+        .lb-subtitle { font-size: 0.65rem; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 2px; font-weight: bold; margin-top: 2px; display: flex; align-items: center; gap: 5px;}
+        .live-dot { width: 6px; height: 6px; background: var(--accent-green); border-radius: 50%; box-shadow: 0 0 10px var(--accent-green); animation: pulseLive 1.5s infinite; }
+        @keyframes pulseLive { 0% { opacity: 1; transform:scale(1);} 50% { opacity: 0.3; transform:scale(1.5);} 100% { opacity: 1; transform:scale(1);} }
 
-        .lb-rank { font-family: var(--font-head); font-size: 0.9rem; color: #888; width: 25px; text-align: center; }
-        .lb-img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: #222; }
-        .lb-info { flex: 1; }
-        .lb-name { font-weight: bold; font-size: 0.9rem; letter-spacing: 0.5px; }
-        .lb-score { font-family: var(--font-head); color: var(--accent-cyan); font-size: 0.85rem; }
+        .header-right { display: flex; align-items: center; gap: 15px; }
+        .header-profile-img { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--accent-cyan); object-fit: cover; cursor: pointer; transition: 0.3s; box-shadow: 0 0 10px rgba(0,242,255,0.3);}
+        .header-profile-img:active { transform: scale(0.9); }
 
-        /* AWARD NOTE */
-        .award-note {
-            text-align: center; margin: 30px 20px; padding: 15px;
-            background: rgba(0, 242, 255, 0.05); border-radius: 10px; border: 1px solid rgba(0, 242, 255, 0.2);
-            color: #aaa; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 10px;
-        }
+        /* Desktop Nav embedded in Header */
+        .desktop-nav { display: none; gap: 25px; align-items: center; margin: 0 20px; }
+        .desktop-nav a { color: #aaa; text-decoration: none; font-family: var(--font-head); font-size: 0.85rem; font-weight: bold; text-transform: uppercase; transition: 0.3s; letter-spacing: 1px; }
+        .desktop-nav a:hover, .desktop-nav a.active { color: var(--accent-cyan); text-shadow: 0 0 10px rgba(0,242,255,0.5); }
 
-        /* CTA BANNER */
-        .cta-banner {
-            margin: 20px 20px; padding: 25px; text-align: center; position: relative; overflow: hidden;
-            background: linear-gradient(135deg, rgba(0,0,0,0.5), rgba(20,20,35,0.8));
-            border: 1px solid var(--accent-purple); border-radius: 20px;
-        }
-        .cta-btn {
-            background: var(--accent-gradient); color: white; padding: 10px 25px; border-radius: 30px;
-            text-decoration: none; font-weight: bold; font-family: var(--font-head); font-size: 0.9rem;
-            display: inline-block; box-shadow: 0 5px 15px rgba(0,0,0,0.3); transition: 0.3s;
+        @media (min-width: 850px) {
+            .bottom-nav { display: none !important; }
+            .desktop-nav { display: flex; }
+            .header-center { flex: unset; }
         }
 
-        /* SHARE FAB */
-        .share-fab {
-            position: fixed; bottom: 90px; right: 20px;
-            width: 50px; height: 50px; background: #25D366; border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5); z-index: 900;
-            color: white; font-size: 1.5rem; cursor: pointer;
+        /* --- THE PODIUM (Top 3) --- */
+        .podium-arena {
+            display: flex; justify-content: center; align-items: flex-end;
+            gap: clamp(8px, 2vw, 15px); margin: 30px 15px 40px; height: 210px;
         }
 
-        /* FOOTER */
-        .app-footer {
-            text-align: center; padding: 20px 0 100px 0;
-            color: #555; font-size: 0.7rem; letter-spacing: 1px;
-            border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px;
+        .podium-step {
+            display: flex; flex-direction: column; align-items: center; cursor: pointer;
+            position: relative; transition: 0.3s; animation: slideUpGlow 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards;
         }
+        .podium-step:hover { transform: translateY(-5px); }
+        .podium-step:active { transform: scale(0.95); }
+        @keyframes slideUpGlow { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* LOADER OVERLAY */
-        #data-loader {
-            position: fixed; top: 120px; left: 0; width: 100%; height: 50%;
-            display: flex; align-items: center; justify-content: center; z-index: 200;
-            background: transparent;
-        }
+        .rank-1 { z-index: 3; animation-delay: 0.2s; }
+        .rank-2 { z-index: 2; animation-delay: 0.4s; }
+        .rank-3 { z-index: 1; animation-delay: 0.6s; }
 
-        /* Bottom Nav */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; width: 100%; background: #0a0a14;
-            display: flex; justify-content: space-around; padding: 15px 0 20px;
-            border-top: 1px solid #1f1f35; z-index: 1000;
+        .avatar-ring {
+            border-radius: 50%; padding: 3px; background: var(--card-border);
+            position: relative; z-index: 2; margin-bottom: -20px;
         }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; color: #666; text-decoration: none; font-size: 0.7rem; }
-        .nav-item.active { color: var(--accent-cyan); }
+        .rank-1 .avatar-ring { width: 95px; height: 95px; background: linear-gradient(135deg, #FFD700, #FFA500); box-shadow: 0 0 30px rgba(255, 215, 0, 0.5); }
+        .rank-2 .avatar-ring { width: 75px; height: 75px; background: linear-gradient(135deg, #C0C0C0, #E0E0E0); box-shadow: 0 0 20px rgba(192, 192, 192, 0.4); }
+        .rank-3 .avatar-ring { width: 65px; height: 65px; background: linear-gradient(135deg, #CD7F32, #8B4513); box-shadow: 0 0 20px rgba(205, 127, 50, 0.4); }
+        
+        .podium-img { width: 100%; height: 100%; border-radius: 50%; border: 3px solid var(--primary-bg); object-fit: cover; background: #000; }
+        
+        .crown {
+            position: absolute; top: -28px; font-size: 2rem; color: var(--accent-gold);
+            filter: drop-shadow(0 0 15px var(--accent-gold)); animation: floatCrown 2s ease-in-out infinite;
+        }
+        @keyframes floatCrown { 0%,100% { transform: translateY(0) rotate(-5deg); } 50% { transform: translateY(-10px) rotate(5deg); } }
+
+        .pillar {
+            background: var(--card-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--card-border); border-bottom: none; width: clamp(80px, 20vw, 100px); border-radius: 15px 15px 0 0;
+            display: flex; flex-direction: column; align-items: center; padding: 25px 5px 10px; transition: 0.3s;
+        }
+        .rank-1 .pillar { height: 130px; width: clamp(100px, 25vw, 120px); border-color: rgba(255, 215, 0, 0.4); background: linear-gradient(to top, rgba(255,215,0,0.1), rgba(0,0,0,0.6));}
+        .rank-2 .pillar { height: 95px; border-color: rgba(192, 192, 192, 0.2); }
+        .rank-3 .pillar { height: 80px; border-color: rgba(205, 127, 50, 0.2); }
+
+        .p-name { font-family: var(--font-head); font-size: 0.75rem; font-weight: bold; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+        .p-rate { color: var(--accent-cyan); font-size: 0.95rem; font-weight: bold; margin-top: 4px; text-shadow: 0 0 10px rgba(0,242,255,0.4);}
+
+        /* --- LIST AREA (Rank 4-50) --- */
+        .list-container { padding: 0 15px; display: flex; flex-direction: column; gap: 12px; }
+        
+        .player-row {
+            background: var(--card-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border); border-radius: 16px; cursor: pointer;
+            padding: 12px 15px; display: flex; align-items: center;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); animation: slideInRight 0.5s ease backwards;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .player-row:hover { transform: translateX(5px); border-color: rgba(255,255,255,0.2); background: rgba(30, 15, 50, 0.6); }
+        .player-row:active { transform: scale(0.97); border-color: var(--accent-cyan); box-shadow: 0 0 20px rgba(0,242,255,0.2);}
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+
+        .r-num { font-family: var(--font-head); font-size: 1.2rem; font-weight: 900; color: rgba(255,255,255,0.15); width: 40px; text-align: center;}
+        .r-img { width: 48px; height: 48px; border-radius: 50%; border: 2px solid var(--accent-purple); object-fit: cover; margin: 0 15px 0 5px; box-shadow: 0 0 10px rgba(189,0,255,0.3);}
+        
+        .r-info { flex: 1; min-width: 0; }
+        .r-info h4 { font-family: var(--font-head); font-size: 1.05rem; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; }
+        .verified-badge { color: var(--accent-cyan); font-size: 0.8rem; filter: drop-shadow(0 0 5px var(--accent-cyan));}
+        .r-info p { font-size: 0.75rem; color: #bbb; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;}
+        
+        .r-stats { text-align: right; display: flex; flex-direction: column; align-items: flex-end;}
+        .r-winrate { font-family: var(--font-head); font-size: 1.15rem; color: var(--accent-green); font-weight: bold; text-shadow: 0 0 10px rgba(0,255,127,0.4); display: flex; align-items: center; gap: 4px; }
+        .r-rewards { font-size: 0.7rem; color: var(--accent-gold); background: rgba(255,215,0,0.1); border: 1px solid rgba(255,215,0,0.2); padding: 3px 8px; border-radius: 6px; margin-top: 5px; font-weight: bold; letter-spacing: 0.5px;}
+
+        /* --- PLAYER PROFILE POPUP (MODAL) --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: 5000;
+            display: none; align-items: center; justify-content: center;
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            opacity: 0; transition: 0.4s; padding: 20px;
+        }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        
+        .modal-card {
+            background: rgba(10, 5, 20, 0.95); width: 100%; max-width: 400px;
+            border-radius: 24px; border: 1px solid var(--accent-cyan);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.8), inset 0 0 30px rgba(0, 242, 255, 0.15);
+            transform: scale(0.85) translateY(20px); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden; position: relative;
+        }
+        .modal-overlay.active .modal-card { transform: scale(1) translateY(0); }
+        
+        .modal-close {
+            position: absolute; top: 20px; right: 20px; font-size: 1.6rem;
+            color: #888; cursor: pointer; transition: 0.3s; z-index: 10;
+        }
+        .modal-close:hover, .modal-close:active { color: var(--accent-cyan); transform: rotate(90deg) scale(1.1); }
+        
+        .modal-header {
+            background: linear-gradient(180deg, rgba(0,242,255,0.15) 0%, transparent 100%);
+            padding: 35px 20px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+        }
+        .modal-avatar {
+            width: 110px; height: 110px; border-radius: 50%; object-fit: cover;
+            border: 3px solid var(--accent-cyan); box-shadow: 0 0 25px rgba(0,242,255,0.5);
+            margin: 0 auto 15px; background: #000; position: relative; z-index: 2;
+        }
+        .modal-ign { font-family: var(--font-head); font-size: 1.6rem; font-weight: bold; margin-bottom: 5px; color: white; display: flex; justify-content: center; align-items: center; gap: 8px;}
+        .modal-name { font-size: 0.85rem; color: #aaa; text-transform: uppercase; letter-spacing: 2px;}
+        
+        .modal-body { padding: 25px; }
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+        .stat-box {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px; padding: 18px 10px; text-align: center; transition: 0.3s;
+        }
+        .stat-box:hover { background: rgba(0,242,255,0.05); border-color: rgba(0,242,255,0.3); transform: translateY(-3px);}
+        .stat-box i { font-size: 1.4rem; margin-bottom: 10px; color: var(--accent-cyan); filter: drop-shadow(0 0 8px var(--accent-cyan));}
+        .stat-val { font-family: var(--font-head); font-size: 1.4rem; font-weight: bold; color: white; margin-bottom: 4px;}
+        .stat-lbl { font-size: 0.75rem; color: #888; text-transform: uppercase; font-weight: bold; letter-spacing: 1px;}
+        
+        .info-row { display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px dashed rgba(255,255,255,0.1); font-size: 0.95rem; }
+        .info-row:last-child { border-bottom: none; padding-bottom: 0; }
+        .info-lbl { color: #888; font-weight: 500; }
+        .info-val { font-weight: bold; font-family: var(--font-head); color: white; letter-spacing: 1px;}
+
+        /* --- ERROR / LOADING STATES --- */
+        .status-msg { text-align:center; padding: 60px 20px; animation: fadeInDown 0.5s; }
+        .status-icon { font-size: 2.5rem; margin-bottom: 15px; color: var(--accent-cyan); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
+        .error-icon { color: #ff4d4d; filter: drop-shadow(0 0 10px #ff4d4d); }
+
+        /* --- EXACT MOBILE BOTTOM NAV --- */
+        .bottom-nav { 
+            position: fixed; bottom: 0; left: 0; width: 100%; 
+            height: calc(65px + env(safe-area-inset-bottom)); 
+            background: rgba(7, 3, 17, 0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); 
+            display: flex; justify-content: space-between; align-items: flex-start; 
+            padding: 10px 2px env(safe-area-inset-bottom); 
+            border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); 
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; color: #666; text-decoration: none; font-size: 0.6rem; font-family: var(--font-head); font-weight: bold; flex: 1; transition: 0.3s; text-align: center;}
+        .nav-item span { margin-top: 4px; letter-spacing: -0.3px;}
         .nav-item i { font-size: 1.2rem; }
+        .nav-item.active { color: var(--accent-cyan); }
+        .nav-item.active i { transform: translateY(-4px); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
+        .nav-item.active span { transform: translateY(2px); color: white; text-shadow: 0 0 5px rgba(255,255,255,0.5);}
+        
+        .fab-slot { flex: 1.2; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
+        .floating-plus { 
+            position: absolute; top: -25px; left: 50%; transform: translateX(-50%); 
+            width: 54px; height: 54px; background: var(--accent-gradient); 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            border: 4px solid var(--primary-bg); box-shadow: 0 10px 25px rgba(189,0,255,0.4); 
+            color: #fff; font-size: 1.6rem; cursor: pointer; z-index: 10; transition: 0.3s;
+        }
+        .floating-plus:active { transform: translateX(-50%) scale(0.9); }
+
     </style>
 </head>
 <body>
-    <canvas id="bg-canvas"></canvas>
+    <div class="bg-gradient"></div>
+    <div class="scanlines"></div>
+    <canvas id="particles-canvas"></canvas>
 
-    <div class="lb-header">
-        <div class="lb-title"><i class="fa-solid fa-trophy" style="color:var(--gold)"></i> LEADERBOARD</div>
-        <div class="refresh-btn" onclick="refreshData()">
-            <i class="fa-solid fa-rotate-right"></i>
+    <header class="top-header">
+        <a href="explore.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+        
+        <div class="desktop-nav">
+            <a href="index.html">Home</a>
+            <a href="explore.html">Explore</a>
+            <a href="matches.html">Matches</a>
+            <a href="leaderboard.html" class="active">Elite</a>
+            <a href="wallet.html">Wallet</a>
+        </div>
+
+        <div class="header-center">
+            <div class="lb-title">GLOBAL TOURNYX ELITE</div>
+            <div class="lb-subtitle"><span class="live-dot"></span>LIVE RANKINGS</div>
+        </div>
+
+        <div class="header-right">
+            <img src="https://tournyx.in/favicon.png" class="header-profile-img" onclick="window.location.href='profile.html'">
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="podium-arena" id="podiumArena" style="display:none;">
+            <div class="podium-step rank-2" onclick="openProfile(1)">
+                <div class="avatar-ring"><img src="" id="p2-img" class="podium-img"></div>
+                <div class="pillar">
+                    <div class="p-name" id="p2-name">--</div>
+                    <div class="p-rate" id="p2-rate">--</div>
+                </div>
+            </div>
+            <div class="podium-step rank-1" onclick="openProfile(0)">
+                <i class="fa-solid fa-crown crown"></i>
+                <div class="avatar-ring"><img src="" id="p1-img" class="podium-img"></div>
+                <div class="pillar">
+                    <div class="p-name" id="p1-name" style="font-size: 0.85rem; color: var(--accent-gold);">--</div>
+                    <div class="p-rate" id="p1-rate" style="font-size: 1.1rem; color: white;">--</div>
+                </div>
+            </div>
+            <div class="podium-step rank-3" onclick="openProfile(2)">
+                <div class="avatar-ring"><img src="" id="p3-img" class="podium-img"></div>
+                <div class="pillar">
+                    <div class="p-name" id="p3-name">--</div>
+                    <div class="p-rate" id="p3-rate">--</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="list-container" id="leaderboardList">
+            <div class="status-msg">
+                <i class="fa-solid fa-circle-notch fa-spin status-icon"></i>
+                <h3 style="font-family:var(--font-head); letter-spacing:1px;">Syncing Live Server...</h3>
+                <p style="color:#888; font-size:0.85rem; margin-top:5px;">Establishing 256-bit secure connection.</p>
+            </div>
         </div>
     </div>
 
-    <div class="game-tabs">
-        <div class="tab-btn active" onclick="loadLeaderboard('FreeFire', this)">Free Fire</div>
-        <div class="tab-btn" onclick="loadLeaderboard('BGMI', this)">BGMI</div>
-        <div class="tab-btn" onclick="loadLeaderboard('COD', this)">COD Mobile</div>
-    </div>
-
-    <div id="data-loader" style="display:none;">
-        <i class="fa-solid fa-circle-notch fa-spin" style="font-size:2rem; color:var(--accent-cyan)"></i>
-    </div>
-
-    <div id="leaderboard-content"></div>
-
-    <div class="cta-banner">
-        <h3 style="font-family:var(--font-head); margin-bottom:10px">WIN GLORY & PRIZES 🏆</h3>
-        <p style="color:#aaa; font-size:0.8rem; margin-bottom:15px">Compete in daily tournaments to climb the ranks.</p>
-        <a href="https://tournyx.blogspot.com/p/browse-tournyx-root-primary-bg-050511_16.html?m=1" class="cta-btn">
-            JOIN TOURNAMENT
-        </a>
-    </div>
-
-    <div class="app-footer">
-        &copy; 2026 TOURNYX. ALL RIGHTS RESERVED.<br>
-        <span style="color:var(--accent-cyan); font-size:0.6rem; opacity:0.8; font-weight:bold;">DESIGNED BY JacksolutioTj</span>
-    </div>
-
-    <div class="share-fab" onclick="shareRankings()">
-        <i class="fa-solid fa-share-nodes"></i>
+    <div class="modal-overlay" id="playerModal">
+        <div class="modal-card">
+            <i class="fa-solid fa-xmark modal-close" onclick="closeProfile()"></i>
+            
+            <div class="modal-header">
+                <img src="" id="modalAvatar" class="modal-avatar">
+                <div class="modal-ign" id="modalIGN">IGN NAME <i class="fa-solid fa-circle-check" style="color:var(--accent-cyan); font-size:1.1rem;"></i></div>
+                <div class="modal-name" id="modalFullName">Real Name</div>
+            </div>
+            
+            <div class="modal-body">
+                <div class="stat-grid">
+                    <div class="stat-box">
+                        <i class="fa-solid fa-crosshairs"></i>
+                        <div class="stat-val" id="modalWinRate">0%</div>
+                        <div class="stat-lbl">Success Rate</div>
+                    </div>
+                    <div class="stat-box">
+                        <i class="fa-solid fa-sack-dollar" style="color:var(--accent-gold); filter:drop-shadow(0 0 8px var(--accent-gold));"></i>
+                        <div class="stat-val" id="modalEarnings">₹0</div>
+                        <div class="stat-lbl">Total Winnings</div>
+                    </div>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-lbl">Game Title</span>
+                    <span class="info-val" id="modalGame">Free Fire MAX</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-lbl">Player UID</span>
+                    <span class="info-val" id="modalUID">123456789</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-lbl">Tournyx Level</span>
+                    <span class="info-val" id="modalLevel" style="color:var(--accent-purple);">LVL 1</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-lbl">Global Rank</span>
+                    <span class="info-val" id="modalRank" style="color:var(--accent-gold);">#--</span>
+                </div>
+            </div>
+        </div>
     </div>
 
     <nav class="bottom-nav">
-        <a href="https://tournyx.blogspot.com/p/tournyx-ultimate-esports-platform_95.html?m=1" class="nav-item"><i class="fa-solid fa-house"></i><span>Home</span></a>
-        <a href="https://tournyx.blogspot.com/p/explore-tournyx-root-primary-bg-050511_25.html?m=1" class="nav-item"><i class="fa-solid fa-compass"></i><span>Explore</span></a>
-        <a href="https://tournyx.blogspot.com/p/create-tournament-tournyx-root-primary_16.html?m=1" class="nav-item"><i class="fa-solid fa-plus-circle" style="font-size: 1.8rem; color: var(--accent-cyan);"></i><span style="color:white">Create</span></a>
-        <a href="https://tournyx.blogspot.com/p/my-matches-tournyx-root-primary-bg.html?m=1" class="nav-item"><i class="fa-solid fa-trophy"></i><span>Matches</span></a>
-        <a href="https://tournyx.blogspot.com/p/my-profile-tournyx-root-primary-bg_83.html?m=1" class="nav-item"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+        <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i><span>Home</span></a>
+        <a class="nav-item" href="explore.html"><i class="fa-solid fa-compass"></i><span>Explore</span></a>
+        <a class="nav-item" href="matches.html"><i class="fa-solid fa-trophy"></i><span>Matches</span></a>
+        
+        <div class="fab-slot">
+            <div class="floating-plus" onclick="window.location.href='tournament.html'"><i class="fa-solid fa-plus"></i></div>
+        </div>
+        
+        <a class="nav-item" href="wallet.html"><i class="fa-solid fa-wallet"></i><span>Wallet</span></a>
+        <a class="nav-item active" href="leaderboard.html"><i class="fa-solid fa-ranking-star"></i><span>Elite</span></a>
+        <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i><span>Profile</span></a>
     </nav>
 
     <script>
-        // --- ANIMATION ---
-        const canvas = document.getElementById('bg-canvas');
+        // --- NEON PARTICLE ENGINE (Tournyx Theme) ---
+        const canvas = document.getElementById('particles-canvas');
         const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        let pArray = [];
-        class P { constructor(){ this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.s=Math.random()*2; } u(){ this.y-=0.5; if(this.y<0)this.y=canvas.height; } d(){ ctx.fillStyle='rgba(189,0,255,0.15)'; ctx.beginPath(); ctx.arc(this.x,this.y,this.s,0,Math.PI*2); ctx.fill(); } }
-        for(let i=0; i<40; i++) pArray.push(new P());
-        function anim(){ ctx.clearRect(0,0,canvas.width,canvas.height); pArray.forEach(p=>{p.u();p.d()}); requestAnimationFrame(anim); }
-        anim();
-
-        // --- DATA: 10 PLAYERS PER GAME ---
-        const rankings = {
-            'FreeFire': [
-                { name: "Hydra", points: "2450", img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Hydra" },
-                { name: "Venom", points: "2100", img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Venom" },
-                { name: "SniperX", points: "1980", img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sniper" },
-                { name: "Alpha", points: "1850", img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alpha" },
-                { name: "Rogue", points: "1720", img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Rogue" },
-                { name: "Ninja", points: "1600", img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ninja" },
-                { name: "Shadow", points: "1550", img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Shadow" },
-                { name: "Wolf", points: "1400", img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Wolf" },
-                { name: "Blaze", points: "1350", img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Blaze" },
-                { name: "Storm", points: "1200", img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Storm" }
-            ],
-            'BGMI': [
-                { name: "Mortal", points: "3100", img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Mortal" },
-                { name: "Jonathan", points: "2950", img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jon" },
-                { name: "Scout", points: "2800", img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Scout" },
-                { name: "Viper", points: "2500", img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Viper" },
-                { name: "Mavi", points: "2400", img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Mavi" },
-                { name: "Snax", points: "2200", img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Snax" },
-                { name: "Clutch", points: "2100", img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Clutch" },
-                { name: "Regal", points: "2050", img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Regal" },
-                { name: "Kron", points: "1900", img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Kron" },
-                { name: "Dynamo", points: "1850", img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Dyna" }
-            ],
-            'COD': [
-                { name: "Ghost", points: "1500", img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ghost" },
-                { name: "Price", points: "1450", img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Price" },
-                { name: "Soap", points: "1400", img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Soap" },
-                { name: "Gaz", points: "1350", img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Gaz" },
-                { name: "Roach", points: "1200", img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Roach" },
-                { name: "Alex", points: "1150", img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" },
-                { name: "Mason", points: "1100", img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Mason" },
-                { name: "Woods", points: "1050", img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Woods" },
-                { name: "Adler", points: "1000", img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Adler" },
-                { name: "Hudson", points: "950", img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Hudson" }
-            ]
-        };
-
-        let activeGame = 'FreeFire';
-
-        // --- RENDER LOGIC ---
-        function loadLeaderboard(game, btn) {
-            activeGame = game;
-            
-            // UI Updates
-            if(btn) {
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
+        let particles = [];
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize); resize();
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = Math.random() * 1 - 0.5; this.speedY = Math.random() * 1 - 0.5;
+                this.color = Math.random() > 0.5 ? '#00f2ff' : '#bd00ff';
+                this.opacity = Math.random() * 0.5 + 0.1;
             }
-            
-            // Show Loader first
-            const container = document.getElementById('leaderboard-content');
-            const loader = document.getElementById('data-loader');
-            
-            container.innerHTML = ''; // Clear old content
-            loader.style.display = 'flex'; // Show spinner
+            update() {
+                this.x += this.speedX; this.y += this.speedY;
+                if (this.x > canvas.width) this.x = 0; else if (this.x < 0) this.x = canvas.width;
+                if (this.y > canvas.height) this.y = 0; else if (this.y < 0) this.y = canvas.height;
+            }
+            draw() {
+                ctx.fillStyle = this.color; ctx.globalAlpha = this.opacity;
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+            }
+        }
+        function initParticles() { for (let i = 0; i < 60; i++) particles.push(new Particle()); }
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animateParticles);
+        }
+        initParticles(); animateParticles();
 
-            // Simulate Network Delay (0.5s)
-            setTimeout(() => {
-                loader.style.display = 'none';
-                renderContent(game);
-            }, 500);
+        // --- GLOBAL VARIABLES ---
+        let globalLeaderboardData = [];
+        
+        // YOUR EXACT BACKEND API URL
+        const API_URL = "https://script.google.com/macros/s/AKfycbyqqTpgaflxKJ9xH0jq7mJ_jLzcoNhas3gNo0h5gvoa_6r5Ae9NFxJAJp7ZoYNnMRKl/exec";
+
+        async function fetchLiveLeaderboard() {
+            try {
+                let res = await fetch(API_URL + "?action=get_leaderboard");
+                let json = await res.json();
+                
+                if(json.status === 'success' && json.data.length > 0) {
+                    globalLeaderboardData = json.data;
+                    renderLeaderboard(globalLeaderboardData);
+                } else {
+                    throw new Error("No data found or fetch error");
+                }
+            } catch (err) {
+                // Beautiful Error State (In case Apps Script fails)
+                document.getElementById('leaderboardList').innerHTML = `
+                    <div class="status-msg">
+                        <i class="fa-solid fa-triangle-exclamation status-icon error-icon"></i>
+                        <h3 style="font-family:var(--font-head); color:#ff4d4d; letter-spacing:1px;">Server Sync Failed</h3>
+                        <p style="color:#aaa; font-size:0.9rem; margin-top:5px;">Please check your connection or try again later.</p>
+                        <button onclick="fetchLiveLeaderboard()" style="margin-top:20px; background:var(--accent-gradient); border:none; padding:10px 25px; border-radius:8px; color:white; font-family:var(--font-head); font-weight:bold; cursor:pointer; box-shadow: 0 5px 15px rgba(189,0,255,0.4);">RETRY CONNECTION</button>
+                    </div>`;
+            }
         }
 
-        function renderContent(game) {
-            const data = rankings[game];
-            const container = document.getElementById('leaderboard-content');
-            
-            // 1. PODIUM (Top 3)
-            let html = `
-            <div class="podium-container">
-                <div class="podium-card rank-2" style="animation-delay: 0.2s">
-                    <div class="p-avatar-box">
-                        <img src="${data[1].img}" class="p-avatar">
-                        <div class="p-rank-badge">2</div>
-                    </div>
-                    <div class="p-name">${data[1].name}</div>
-                    <div class="p-points">${data[1].points}</div>
-                </div>
-                <div class="podium-card rank-1" style="animation-delay: 0s">
-                    <i class="fa-solid fa-crown crown-icon"></i>
-                    <div class="p-avatar-box">
-                        <img src="${data[0].img}" class="p-avatar">
-                        <div class="p-rank-badge">1</div>
-                    </div>
-                    <div class="p-name">${data[0].name}</div>
-                    <div class="p-points">${data[0].points}</div>
-                </div>
-                <div class="podium-card rank-3" style="animation-delay: 0.4s">
-                    <div class="p-avatar-box">
-                        <img src="${data[2].img}" class="p-avatar">
-                        <div class="p-rank-badge">3</div>
-                    </div>
-                    <div class="p-name">${data[2].name}</div>
-                    <div class="p-points">${data[2].points}</div>
-                </div>
-            </div>
-            `;
+        function renderLeaderboard(data) {
+            document.getElementById('podiumArena').style.display = "flex";
 
-            // 2. LIST (4-10)
-            html += `<div class="leaderboard-list">`;
-            for(let i=3; i<data.length; i++) {
-                html += `
-                <div class="lb-item" style="animation-delay: ${0.5 + ((i-3)*0.1)}s">
-                    <div class="lb-rank">#${i+1}</div>
-                    <img src="${data[i].img}" class="lb-img">
-                    <div class="lb-info">
-                        <div class="lb-name">${data[i].name}</div>
+            // Populate Podium (Indexes 0, 1, 2) safely
+            if(data[0]) { document.getElementById('p1-name').innerText = data[0].Username || "Player"; document.getElementById('p1-rate').innerText = data[0].SuccessRate || "0%"; document.getElementById('p1-img').src = data[0].Avatar || "https://tournyx.in/favicon.png"; }
+            if(data[1]) { document.getElementById('p2-name').innerText = data[1].Username || "Player"; document.getElementById('p2-rate').innerText = data[1].SuccessRate || "0%"; document.getElementById('p2-img').src = data[1].Avatar || "https://tournyx.in/favicon.png"; }
+            if(data[2]) { document.getElementById('p3-name').innerText = data[2].Username || "Player"; document.getElementById('p3-rate').innerText = data[2].SuccessRate || "0%"; document.getElementById('p3-img').src = data[2].Avatar || "https://tournyx.in/favicon.png"; }
+
+            // Populate List (Rank 4 onwards)
+            const listContainer = document.getElementById('leaderboardList');
+            listContainer.innerHTML = ""; 
+            
+            data.slice(3).forEach((player, index) => {
+                let actualIndex = index + 3; // To match global array index for onclick
+                let delay = (index + 6) * 0.08; // Smooth staggered load
+                let avatarSrc = player.Avatar || "https://tournyx.in/favicon.png";
+                
+                listContainer.innerHTML += `
+                    <div class="player-row" style="animation-delay: ${delay}s" onclick="openProfile(${actualIndex})">
+                        <div class="r-num">#${player.Rank}</div>
+                        <img src="${avatarSrc}" class="r-img">
+                        <div class="r-info">
+                            <h4>${player.Username} <i class="fa-solid fa-circle-check verified-badge"></i></h4>
+                            <p>LVL ${player.Level || 1}</p>
+                        </div>
+                        <div class="r-stats">
+                            <span class="r-winrate">${player.SuccessRate || "0%"} <i class="fa-solid fa-caret-up" style="font-size:0.8rem;"></i></span>
+                            <span class="r-rewards"><i class="fa-solid fa-coins"></i> ₹${player.Earnings || 0}</span>
+                        </div>
                     </div>
-                    <div class="lb-score">${data[i].points}</div>
-                </div>
                 `;
-            }
-            // AWARD NOTE inside the list container
-            html += `
-                <div class="award-note">
-                    <i class="fa-solid fa-medal" style="color:var(--gold)"></i>
-                    <span>Top players are awarded by Tournyx</span>
-                </div>
-            `;
-            html += `</div>`;
-
-            container.innerHTML = html;
+            });
         }
 
-        // --- UTILS ---
-        function refreshData() {
-            loadLeaderboard(activeGame, null);
+        // --- MODAL LOGIC (Glassmorphism Popup) ---
+        function openProfile(index) {
+            if(navigator.vibrate) navigator.vibrate(40); // Haptic feedback on tap
+            const player = globalLeaderboardData[index];
+            if(!player) return;
+
+            document.getElementById('modalAvatar').src = player.Avatar || "https://tournyx.in/favicon.png";
+            document.getElementById('modalIGN').innerHTML = `${player.IGN || player.Username} <i class="fa-solid fa-circle-check" style="color:var(--accent-cyan); font-size:1.1rem;"></i>`;
+            document.getElementById('modalFullName').innerText = player.FullName || "Classified Elite";
+            document.getElementById('modalWinRate').innerText = player.SuccessRate || "0%";
+            document.getElementById('modalEarnings').innerText = `₹${player.Earnings || 0}`;
+            document.getElementById('modalGame').innerText = player.Game || "Free Fire MAX";
+            document.getElementById('modalUID').innerText = player.UID || "HIDDEN";
+            document.getElementById('modalLevel').innerText = `LVL ${player.Level || 1}`;
+            document.getElementById('modalRank').innerText = `#${player.Rank}`;
+
+            document.getElementById('playerModal').classList.add('active');
         }
 
-        function shareRankings() {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Tournyx Leaderboard',
-                    url: window.location.href
-                });
-            } else {
-                alert("Link copied!");
-            }
+        function closeProfile() {
+            if(navigator.vibrate) navigator.vibrate(20);
+            document.getElementById('playerModal').classList.remove('active');
         }
 
-        // Init
-        loadLeaderboard('FreeFire', null);
+        // Close modal if clicked outside
+        document.getElementById('playerModal').addEventListener('click', function(e) {
+            if(e.target === this) closeProfile();
+        });
+
+        // Initialize App
+        window.onload = fetchLiveLeaderboard;
     </script>
 </body>
 </html>
