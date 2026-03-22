@@ -841,7 +841,7 @@
     </nav>
 
     <script>
-        const API_URL = 'https://script.google.com/macros/s/AKfycbynNLDDXS1wMrU6RGnk4nKb1jfQkQGuqrNIKWAt8wf46MaKP6y1rwGmSJg5fmm4KYU/exec';
+        const API_URL = 'https://script.google.com/macros/s/AKfycbyqqTpgaflxKJ9xH0jq7mJ_jLzcoNhas3gNo0h5gvoa_6r5Ae9NFxJAJp7ZoYNnMRKl/exec';
         let activeTournament = {}; 
         let pendingRegistrationData = null; 
         let userLiveMatches = []; 
@@ -1585,9 +1585,10 @@
 
             let prizeData = [];
             try {
-                // If backend provides a unified prize_json object
-                if (t.prize_json) {
-                    let parsed = typeof t.prize_json === 'string' ? JSON.parse(t.prize_json) : t.prize_json;
+                // MATCHES BACKEND JSON PERFECTLY
+                let pData = t.prize_json || t.prize_distribution_image || t.prize_distribution || t.prize_image || "";
+                if(pData && pData.startsWith("{")) {
+                    let parsed = typeof pData === 'string' ? JSON.parse(pData) : pData;
                     if (parsed["1"]) prizeData.push({ rank: "1st Place", val: parsed["1"], class: "gold", iconColor: "#FFD700" });
                     if (parsed["2"]) prizeData.push({ rank: "2nd Place", val: parsed["2"], class: "silver", iconColor: "#C0C0C0" });
                     if (parsed["3"]) prizeData.push({ rank: "3rd Place", val: parsed["3"], class: "bronze", iconColor: "#CD7F32" });
@@ -1626,8 +1627,8 @@
             const bracketArea = document.getElementById('bracketDisplayArea');
             let scheduleData = [];
             try {
-                // Reads the new backend JSON payload for brackets
-                let rawBracket = t.bracket_json || t.bracket || t.bracket_image || "[]";
+                // MATCHES BACKEND JSON PERFECTLY
+                let rawBracket = t.bracket_json || t.bracket_image || t.bracket || "[]";
                 if(rawBracket.startsWith("[")) {
                     scheduleData = JSON.parse(rawBracket);
                 }
@@ -1785,7 +1786,237 @@
             .then(data => {
                 if(data.status === 'success') {
                     let avatarUrl = data.data || data.avatar;
-                    if(avatarUrl) document.getElementById('hpAvatar').src = formatImageUrl(avatarUrl);
+                    if(avatarUrl) {
+                        let formatted = formatImageUrl(avatarUrl);
+                        document.getElementById('orgAvatarImg').src = formatted;
+                        let hpAv = document.getElementById('hpAvatar');
+                        if(hpAv) hpAv.src = formatted;
+                    }
+                }
+            }).catch(e => console.log(e));
+
+            document.getElementById('dtPrize').innerText = getPrizeText(t.prize, t.prize_pts);
+            document.getElementById('dtFee').innerText = getSmartEntryText(t.fee, t.fee_pts);
+            document.getElementById('dtGame').innerText = t.game || "N/A";
+            document.getElementById('dtFormat').innerText = t.format || "N/A";
+            document.getElementById('dtPlatformText').innerText = t.platform || "Mobile";
+            
+            document.getElementById('dtDescription').innerHTML = t.rules || "Standard competitive rules apply.";
+            document.getElementById('dtRulesText').innerHTML = t.rules || "No specific rules provided.";
+            
+            // --- NEW PRIZE DISTRIBUTION ENGINE (NO IMAGES NEEDED) ---
+            const prizeArea = document.getElementById('prizeDistributionArea');
+            document.getElementById('dtPrizeTotalHead').innerText = getPrizeText(t.prize, t.prize_pts);
+
+            let prizeData = [];
+            try {
+                // MATCHES BACKEND JSON PERFECTLY
+                let pData = t.prize_json || t.prize_distribution_image || t.prize_distribution || t.prize_image || "";
+                if(pData && pData.startsWith("{")) {
+                    let parsed = typeof pData === 'string' ? JSON.parse(pData) : pData;
+                    if (parsed["1"]) prizeData.push({ rank: "1st Place", val: parsed["1"], class: "gold", iconColor: "#FFD700" });
+                    if (parsed["2"]) prizeData.push({ rank: "2nd Place", val: parsed["2"], class: "silver", iconColor: "#C0C0C0" });
+                    if (parsed["3"]) prizeData.push({ rank: "3rd Place", val: parsed["3"], class: "bronze", iconColor: "#CD7F32" });
+                }
+            } catch(e) { console.log("Prize parse error"); }
+
+            // Fallback for your existing individual columns (prize1, prize2, prize3)
+            if (prizeData.length === 0) {
+                if(t.prize1) prizeData.push({ rank: "1st Place", val: t.prize1, class: "gold", iconColor: "#FFD700" });
+                if(t.prize2) prizeData.push({ rank: "2nd Place", val: t.prize2, class: "silver", iconColor: "#C0C0C0" });
+                if(t.prize3) prizeData.push({ rank: "3rd Place", val: t.prize3, class: "bronze", iconColor: "#CD7F32" });
+            }
+
+            let prizeHTML = '';
+            if (prizeData.length > 0) {
+                // Renders the 3 cards perfectly without needing an image flip
+                prizeData.forEach(p => {
+                    prizeHTML += `<div class="prize-card ${p.class}">
+                                    <div class="pc-rank"><i class="fa-solid fa-medal" style="color:${p.iconColor}; font-size:1.5rem;"></i> ${p.rank}</div>
+                                    <div class="pc-val">${p.val}</div>
+                                  </div>`;
+                });
+            } else {
+                // Fallback to Ultimate Reward Card if only total prize is listed
+                let textToDisplay = getPrizeText(t.prize, t.prize_pts);
+                prizeHTML = `
+                    <div class="prize-card gold" style="justify-content: center; flex-direction: column; gap: 10px; text-align: center; padding: 25px;">
+                        <i class="fa-solid fa-trophy" style="color:#FFD700; font-size:3.5rem; filter: drop-shadow(0 0 15px rgba(255,215,0,0.5)); margin-bottom: 10px;"></i>
+                        <div style="font-family: var(--font-head); font-size: 1.5rem; font-weight: bold; color: white;">${textToDisplay}</div>
+                        <div style="font-size: 0.85rem; color: #ccc; text-transform: uppercase; letter-spacing: 1px;">Ultimate Reward</div>
+                    </div>`;
+            }
+            prizeArea.innerHTML = prizeHTML;
+
+            // --- NEW MATCH SCHEDULE TIMELINE ENGINE (NO IMAGES NEEDED) ---
+            const bracketArea = document.getElementById('bracketDisplayArea');
+            let scheduleData = [];
+            try {
+                // MATCHES BACKEND JSON PERFECTLY
+                let rawBracket = t.bracket_json || t.bracket_image || t.bracket || "[]";
+                if(rawBracket.startsWith("[")) {
+                    scheduleData = JSON.parse(rawBracket);
+                }
+            } catch(e) { console.log("Schedule parse error", e); }
+
+            if(scheduleData && scheduleData.length > 0) {
+                renderTimeline(scheduleData, bracketArea);
+            } else {
+                bracketArea.innerHTML = `<div style="text-align:center; color:#888; padding:20px;"><i class="fa-solid fa-calendar-xmark" style="font-size:2rem; margin-bottom:10px; opacity:0.5;"></i><br>No schedule has been published yet.</div>`;
+            }
+
+            const strmSec = document.getElementById('dtStreamSection');
+            if (t.stream_url && t.stream_url.trim() !== "") {
+                strmSec.style.display = 'block';
+                document.getElementById('dtStreamBtn').onclick = () => { triggerHaptic(); window.open(t.stream_url, '_blank');};
+            } else {
+                strmSec.style.display = 'none';
+            }
+
+            document.getElementById('dtMatchDateRange').innerText = t.match_period || "TBA";
+            
+            let isFull = parseInt(t.filled_slots) >= parseInt(t.slots);
+            let sLower = (t.status || "Upcoming").toLowerCase();
+            let timeData = calculateTimeRemaining(t.date);
+            let isRegClosed = timeData.isClosed;
+            let isCancelled = sLower.includes("cancel");
+            let isCompleted = sLower.includes('completed') || sLower.includes('past');
+            
+            if(activeCountdown) clearInterval(activeCountdown);
+            if(!isCancelled && !isCompleted && !isFull && !isRegClosed) {
+                updateLiveCountdown(t.date, 'dtRegDateRange', 'dtRegStatus');
+            } else {
+                document.getElementById('dtRegDateRange').innerText = formatDateTime(t.date);
+            }
+
+            let regStatus = document.getElementById('dtRegStatus');
+            
+            if(isCancelled || isCompleted || isFull || isRegClosed) {
+                regStatus.innerText = "CLOSED"; 
+                regStatus.style.color = "#ff4d4d"; 
+                regStatus.style.background = "rgba(255,77,77,0.1)"; 
+                regStatus.style.borderColor = "#ff4d4d";
+                document.getElementById('dtRegDateRange').style.color = "white"; 
+            } else {
+                regStatus.innerText = sLower.includes("live") ? "LIVE NOW" : "OPEN"; 
+                regStatus.style.color = "var(--accent-green)"; 
+                regStatus.style.background = "rgba(0,255,127,0.1)"; 
+                regStatus.style.borderColor = "var(--accent-green)";
+            }
+
+            let t_slots = parseInt(t.slots) || 48;
+            let t_filled = parseInt(t.filled_slots) || 0;
+            document.getElementById('dtRegistrations').innerText = `${t_filled}/${t_slots}`;
+
+            let btn = document.getElementById('masterJoinBtn');
+            let isJoined = userLiveMatches.some(m => m.tournament_title === t.title || m.match_id === (t.id || t.title)); 
+            
+            let roomArea = document.getElementById('roomDetailsArea');
+            if (isJoined) {
+                if (t.room_id != null && String(t.room_id).trim() !== "") {
+                    roomArea.innerHTML = `
+                        <div class="dm-section" style="border-color: var(--accent-green) !important;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding-bottom:15px; border-bottom:1px solid rgba(0,255,127,0.2);">
+                                <div>
+                                    <div style="font-size:0.75rem; color:#888; text-transform:uppercase; letter-spacing:1px;">Room ID</div>
+                                    <div style="font-family:var(--font-head); font-size:1.3rem; color:white; font-weight:bold; letter-spacing:1px;" id="dispRoomId">${t.room_id}</div>
+                                </div>
+                                <button class="btn-secondary" style="padding:8px 15px; font-size:0.8rem; border-color:var(--accent-green); color:var(--accent-green);" onclick="navigator.clipboard.writeText('${t.room_id}'); showToast('Room ID Copied!'); triggerHaptic();"><i class="fa-solid fa-copy"></i></button>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div>
+                                    <div style="font-size:0.75rem; color:#888; text-transform:uppercase; letter-spacing:1px;">Password</div>
+                                    <div style="font-family:var(--font-head); font-size:1.1rem; color:var(--accent-cyan); font-weight:bold; letter-spacing:1px;" id="dispRoomPass">${t.room_pass != null ? t.room_pass : 'No Password Needed'}</div>
+                                </div>
+                                <button class="btn-secondary" style="padding:8px 15px; font-size:0.8rem; border-color:var(--accent-cyan); color:var(--accent-cyan);" onclick="navigator.clipboard.writeText('${t.room_pass || ''}'); showToast('Password Copied!'); triggerHaptic();"><i class="fa-solid fa-copy"></i></button>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    roomArea.innerHTML = `
+                        <div class="dm-section" style="border-style: dashed !important; text-align: center;">
+                            <i class="fa-solid fa-clock-rotate-left" style="font-size: 2rem; color: var(--accent-cyan); margin-bottom: 10px;"></i>
+                            <div style="font-family: var(--font-head); font-weight: bold; color: white; margin-bottom: 5px;">Waiting for Organizer</div>
+                            <div style="font-size: 0.85rem; color: #ccc;">You are successfully registered! Room ID and Password will be fetched securely from the server once the organizer provides them.</div>
+                        </div>
+                    `;
+                }
+            } else {
+                roomArea.innerHTML = `
+                    <div class="dm-section" style="border-color: var(--accent-orange) !important; border-style: dashed !important; text-align: center;">
+                        <i class="fa-solid fa-lock" style="font-size: 2rem; color: var(--accent-orange); margin-bottom: 10px;"></i>
+                        <div style="font-family: var(--font-head); font-weight: bold; color: white; margin-bottom: 5px;">ID & Password Locked</div>
+                        <div style="font-size: 0.85rem; color: #ccc;">Details are only visible to securely registered players. Confirm your slot to get access to the Room.</div>
+                    </div>
+                `;
+            }
+
+            if(isGuestMode) {
+                btn.innerHTML = "<i class='fa-solid fa-user-plus'></i> LOGIN TO REGISTER";
+                btn.classList.add('guest-mode-btn');
+                btn.disabled = false;
+            } else if(isJoined) {
+                btn.innerHTML = "<i class='fa-solid fa-check'></i> ALREADY JOINED";
+                btn.disabled = true;
+            } else if (isCancelled) {
+                btn.innerHTML = "<i class='fa-solid fa-ban'></i> CANCELLED";
+                btn.disabled = true;
+            } else if(isFull) {
+                btn.innerHTML = "<i class='fa-solid fa-users-slash'></i> SLOT FILLED";
+                btn.disabled = true;
+            } else if (isCompleted) {
+                btn.innerText = "COMPLETED";
+                btn.disabled = true;
+            } else if (isRegClosed) {
+                btn.innerHTML = "<i class='fa-solid fa-clock'></i> REGISTRATION CLOSED";
+                btn.disabled = true;
+            } else {
+                btn.innerText = "Register Now";
+                btn.classList.remove('guest-mode-btn');
+                btn.disabled = false;
+            }
+
+            document.getElementById('dtTimeLeft').innerText = t.status || "Upcoming";
+            
+            let viewCount = t.views ? parseInt(t.views) : (Math.floor((t.title.length * 7) + ((parseInt(t.id) || 12) * 3)) % 300) + 12;
+            document.getElementById('realViewerCount').innerText = viewCount;
+            fetch(API_URL + "?action=increment_view&match_id=" + encodeURIComponent(t.id || t.title), { mode: 'no-cors' }).catch(e=>console.log(e));
+
+            // Load Organizer's Other Tournaments
+            loadOtherTournaments(orgId, t.id || t.title);
+
+            document.querySelector('.dm-nav-item[data-tab="dtTabOverview"]').click();
+            document.getElementById('tourneyDetailModal').classList.add('active');
+        }
+
+        function openHostProfile() {
+            triggerHaptic();
+            let t = activeTournament;
+            if(!t) return;
+            
+            let orgId = t.org_username || t.email || 'Verified Organizer';
+            document.getElementById('hostProfileOverlay').classList.add('active');
+            
+            let fallbackAvatar = t.avatar ? formatImageUrl(t.avatar) : (t.org_avatar ? formatImageUrl(t.org_avatar) : `https://ui-avatars.com/api/?name=${encodeURIComponent(orgId)}&background=070311&color=00f2ff&bold=true&border=1`);
+            let fallbackHosted = t.org_hosted_count ? parseInt(t.org_hosted_count) : Math.max(localTournamentsData.filter(x => x.org_username === orgId || x.email === orgId).length, 1);
+            
+            document.getElementById('hpName').innerText = orgId;
+            document.getElementById('hpAvatar').src = fallbackAvatar;
+            document.getElementById('hpHosted').innerText = fallbackHosted;
+            document.getElementById('hpSuccess').innerText = "100%"; 
+            document.getElementById('hpRating').innerText = "4.9"; 
+
+            fetch(API_URL + "?action=get_avatar&username=" + encodeURIComponent(orgId))
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === 'success') {
+                    let avatarUrl = data.data || data.avatar;
+                    if(avatarUrl) {
+                        let formatted = formatImageUrl(avatarUrl);
+                        document.getElementById('orgAvatarImg').src = formatted;
+                        let hpAv = document.getElementById('hpAvatar');
+                        if(hpAv) hpAv.src = formatted;
+                    }
                 }
             }).catch(e => console.log("Profile fetch skipped, using instant fallback data."));
         }
