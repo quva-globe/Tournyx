@@ -65,12 +65,12 @@
             position: relative;
             width: 110px; height: 110px; margin: 0 auto 12px;
             background: linear-gradient(135deg, rgba(189, 0, 255, 0.15), rgba(0, 242, 255, 0.15));
-            border-radius: 28%; /* Classic App Icon Squircle */
+            border-radius: 28%;
             display: flex; align-items: center; justify-content: center;
             border: 2px solid rgba(0, 242, 255, 0.6);
             box-shadow: 0 0 25px rgba(189, 0, 255, 0.5), inset 0 0 15px rgba(0, 242, 255, 0.3);
             animation: floatLogo 3.5s ease-in-out infinite;
-            overflow: hidden; /* Slices the image perfectly to the rounded borders */
+            overflow: hidden;
         }
         .brand-logo { width: 100%; height: 100%; object-fit: cover; }
 
@@ -182,8 +182,11 @@
         .modal-overlay.active .input-wrapper:nth-child(5) { animation-delay: 0.3s; }
         .modal-overlay.active .input-wrapper:nth-child(6) { animation-delay: 0.35s; }
         .modal-overlay.active .input-wrapper:nth-child(7) { animation-delay: 0.4s; }
-        .modal-overlay.active .custom-checkbox-container { opacity: 0; animation: fadeUp 0.4s ease 0.5s forwards; }
-        .modal-overlay.active .submit-btn { opacity: 0; animation: fadeUp 0.4s ease 0.6s forwards; }
+        .modal-overlay.active .input-wrapper:nth-child(8) { animation-delay: 0.45s; }
+        .modal-overlay.active .input-wrapper:nth-child(9) { animation-delay: 0.5s; }
+        .modal-overlay.active .input-wrapper:nth-child(10) { animation-delay: 0.55s; }
+        .modal-overlay.active .custom-checkbox-container { opacity: 0; animation: fadeUp 0.4s ease 0.65s forwards; }
+        .modal-overlay.active .submit-btn { opacity: 0; animation: fadeUp 0.4s ease 0.75s forwards; }
         
         @keyframes slideInRight { to { opacity: 1; transform: translateX(0); } }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -198,7 +201,11 @@
             padding: 12px 14px 12px 40px; color: white;
             font-family: var(--font-body); font-size: 0.95rem; outline: none; transition: 0.3s;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            appearance: none; -webkit-appearance: none;
         }
+        select.form-control { cursor: pointer; }
+        select.form-control option, select.form-control optgroup { background: var(--primary-bg); color: white; font-family: var(--font-body); }
+        
         .form-control:focus { 
             transform: scale(1.02);
             border-color: var(--accent-cyan); 
@@ -222,12 +229,33 @@
             color: #ccc; font-size: 0.75rem; padding: 8px 10px; margin-top: 6px; border-radius: 0 6px 6px 0;
             text-align: left; font-family: var(--font-body); font-weight: 500;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2); animation: infoBreathing 3s infinite alternate;
-            display: flex; align-items: flex-start; gap: 8px; line-height: 1.3;
+            display: flex; align-items: flex-start; gap: 8px; line-height: 1.3; transition: 0.4s ease;
         }
         .info-box.purple { border-left-color: var(--accent-purple); background: rgba(189, 0, 255, 0.08); animation: infoBreathingPurple 3s infinite alternate; }
-        .info-box i { margin-top: 2px; text-shadow: 0 0 8px currentColor; font-size: 0.9rem; }
+        .info-box i { margin-top: 2px; text-shadow: 0 0 8px currentColor; font-size: 0.9rem; transition: 0.3s ease; }
         @keyframes infoBreathing { from { box-shadow: 0 4px 10px rgba(0,0,0,0.2); } to { box-shadow: 0 4px 15px rgba(0,242,255,0.2); border-left-color: #fff; } }
         @keyframes infoBreathingPurple { from { box-shadow: 0 4px 10px rgba(0,0,0,0.2); } to { box-shadow: 0 4px 15px rgba(189,0,255,0.2); border-left-color: #fff; } }
+
+        /* --- OTP SPECIFIC UI STYLES --- */
+        .flex-row { display: flex; gap: 8px; }
+        .otp-btn {
+            background: rgba(0,242,255,0.1); border: 1px solid var(--accent-cyan);
+            color: var(--accent-cyan); border-radius: 10px; font-family: var(--font-head);
+            font-size: 0.85rem; font-weight: bold; cursor: pointer; transition: 0.3s;
+            padding: 0 15px; text-transform: uppercase; white-space: nowrap; outline: none;
+        }
+        .otp-btn:hover { background: var(--accent-cyan); color: #000; box-shadow: 0 0 15px var(--accent-cyan); }
+        .otp-btn:disabled { opacity: 0.5; cursor: not-allowed; border-color: #555; color: #888; background: transparent; box-shadow: none; pointer-events: none; }
+        
+        .verify-btn {
+            position: absolute; right: 5px; top: 5px; bottom: 5px;
+            background: var(--accent-green); border: none; border-radius: 8px; color: #000;
+            font-weight: 800; padding: 0 15px; cursor: pointer; transition: 0.3s;
+            font-family: var(--font-head); font-size: 0.8rem; text-transform: uppercase;
+        }
+        .verify-btn:hover { box-shadow: 0 0 15px var(--accent-green); transform: scale(1.02); }
+        .verify-btn.verified { background: rgba(0, 255, 127, 0.1); border: 1px solid var(--accent-green); color: var(--accent-green); cursor: default; }
+        .verify-btn.verified:hover { box-shadow: none; transform: none; }
 
         /* TERMS LINK & SPRING-LOADED CHECKBOX */
         .custom-checkbox-container {
@@ -279,10 +307,10 @@
         .submit-btn:hover::before { left: 150%; }
         .submit-btn:active { transform: scale(0.95); }
 
-        /* CINEMATIC ARENA ENTRY (Matches Video) */
+        /* CINEMATIC ARENA ENTRY */
         .arena-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #040108; /* Pure dark cinematic background */
+            background: #040108;
             z-index: 9999;
             display: none; flex-direction: column; align-items: center; justify-content: center;
         }
@@ -313,7 +341,7 @@
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* RESPONSIVE DESIGN (Compact Fixes) */
+        /* RESPONSIVE DESIGN */
         @media (max-width: 480px) {
             .app-name { font-size: 1.7rem; letter-spacing: 2px; margin-bottom: 0px; }
             .logo-wrapper { width: 95px; height: 95px; margin-bottom: 10px; }
@@ -333,7 +361,6 @@
     <canvas id="particles-canvas"></canvas>
 
     <div class="landing-container" id="landingView">
-        
         <div class="logo-wrapper">
             <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEipVmqyUEA22VpntZdPCHuXoO_Rjco_cRaNl5CyFa-eehdtgXnHe6JoD8a5svxJRJYZfv_yXwww10T2cL2PHTiXLK-J-nWC1swmMs5RDxGVM8FBSlJORaRiX4YiD8gL8SyM4X1tRyQn_v8MsqQvbU4uEyHEU0qaySP1STWHaBEYuWKyF3-6QovSqJR-8xU/s1024/1000093705.png" alt="Tournyx Logo" class="brand-logo">
         </div>
@@ -421,15 +448,92 @@
                         <i class="fa-solid fa-id-card input-icon"></i>
                     </div>
                 </div>
-                
+
                 <div class="input-wrapper">
                     <div class="input-group">
-                        <input type="tel" name="phone" class="form-control req-field" placeholder="Phone Number" value="+91 " required>
-                        <i class="fa-solid fa-mobile-screen input-icon"></i>
+                        <select name="game" class="form-control req-field" required>
+                            <option value="" disabled selected>Select Primary Game</option>
+                            <option value="BGMI">BGMI</option>
+                            <option value="Free Fire">Free Fire</option>
+                            <option value="Call of Duty Mobile">Call of Duty Mobile</option>
+                            <option value="Valorant">Valorant</option>
+                        </select>
+                        <i class="fa-solid fa-crosshairs input-icon"></i>
                     </div>
-                    <div class="info-box">
+                </div>
+
+                <div class="input-wrapper">
+                    <div class="input-group">
+                        <select name="state" class="form-control req-field" required>
+                            <option value="" disabled selected>Select State</option>
+                            <option value="Andhra Pradesh">Andhra Pradesh</option>
+                            <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                            <option value="Assam">Assam</option>
+                            <option value="Bihar">Bihar</option>
+                            <option value="Chhattisgarh">Chhattisgarh</option>
+                            <option value="Goa">Goa</option>
+                            <option value="Gujarat">Gujarat</option>
+                            <option value="Haryana">Haryana</option>
+                            <option value="Himachal Pradesh">Himachal Pradesh</option>
+                            <option value="Jharkhand">Jharkhand</option>
+                            <option value="Karnataka">Karnataka</option>
+                            <option value="Kerala">Kerala</option>
+                            <option value="Madhya Pradesh">Madhya Pradesh</option>
+                            <option value="Maharashtra">Maharashtra</option>
+                            <option value="Manipur">Manipur</option>
+                            <option value="Meghalaya">Meghalaya</option>
+                            <option value="Mizoram">Mizoram</option>
+                            <option value="Nagaland">Nagaland</option>
+                            <option value="Odisha">Odisha</option>
+                            <option value="Punjab">Punjab</option>
+                            <option value="Rajasthan">Rajasthan</option>
+                            <option value="Sikkim">Sikkim</option>
+                            <option value="Tamil Nadu">Tamil Nadu</option>
+                            <option value="Telangana">Telangana</option>
+                            <option value="Tripura">Tripura</option>
+                            <option value="Uttar Pradesh">Uttar Pradesh</option>
+                            <option value="Uttarakhand">Uttarakhand</option>
+                            <option value="West Bengal">West Bengal</option>
+                            <optgroup label="Union Territories">
+                                <option value="Andaman and Nicobar Islands">Andaman and Nicobar</option>
+                                <option value="Chandigarh">Chandigarh</option>
+                                <option value="Dadra and Nagar Haveli and Daman and Diu">Dadra & Nagar Haveli</option>
+                                <option value="Delhi">Delhi</option>
+                                <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                <option value="Ladakh">Ladakh</option>
+                                <option value="Lakshadweep">Lakshadweep</option>
+                                <option value="Puducherry">Puducherry</option>
+                            </optgroup>
+                        </select>
+                        <i class="fa-solid fa-map input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="input-wrapper">
+                    <div class="input-group">
+                        <input type="text" name="city" class="form-control req-field" placeholder="City" required>
+                        <i class="fa-solid fa-location-dot input-icon"></i>
+                    </div>
+                </div>
+                
+                <div class="input-wrapper">
+                    <div class="flex-row">
+                        <div class="input-group" style="flex: 1;">
+                            <input type="tel" name="phone" id="regPhone" class="form-control req-field" placeholder="Phone Number" value="+91 " required>
+                            <i class="fa-solid fa-mobile-screen input-icon"></i>
+                        </div>
+                        <button type="button" class="otp-btn" id="btnSendOtp" onclick="sendOtp()">SEND OTP</button>
+                    </div>
+                    
+                    <div class="input-group" id="otpGroup" style="display: none; margin-top: 10px; animation: fadeUp 0.3s ease forwards;">
+                        <input type="number" name="otp" id="regOtp" class="form-control" placeholder="Enter 4-Digit OTP">
+                        <i class="fa-solid fa-message input-icon"></i>
+                        <button type="button" class="verify-btn" id="btnVerifyOtp" onclick="verifyOtp()">VERIFY</button>
+                    </div>
+
+                    <div class="info-box" id="phoneInfoBox">
                         <i class="fa-solid fa-circle-check" style="color:var(--accent-cyan)"></i> 
-                        <span>Ensure this number is active to receive tournament entry alerts and real cash prize payouts.</span>
+                        <span>Ensure this number is active to receive tournament alerts and real cash payouts.</span>
                     </div>
                 </div>
 
@@ -504,7 +608,6 @@
     </div>
 
     <script>
-        // --- GOOGLE APPS SCRIPT CONFIG ---
         const API_URL = 'https://script.google.com/macros/s/AKfycbyqqTpgaflxKJ9xH0jq7mJ_jLzcoNhas3gNo0h5gvoa_6r5Ae9NFxJAJp7ZoYNnMRKl/exec';
 
         // --- SHOW/HIDE PASSWORD TOGGLE ---
@@ -524,6 +627,69 @@
             }
         }
 
+        // --- FAST2SMS OTP LOGIC (FRONTEND VERIFICATION) ---
+        let isPhoneVerified = false;
+
+        async function sendOtp() {
+            const phoneInput = document.getElementById('regPhone');
+            // Clean phone number (removes spaces to ensure it's exactly 13 characters like +919999999999)
+            let phone = phoneInput.value.replace(/\s+/g, '').trim();
+            if(!phone.startsWith("+91")) { phone = "+91" + phone.replace("+", ""); }
+            
+            if(phone.length < 13) { alert("Please enter a valid 10-digit number including +91"); return; }
+            
+            const btn = document.getElementById('btnSendOtp');
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`;
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(API_URL, { 
+                    method: 'POST', 
+                    body: JSON.stringify({ action: 'send_otp', phone: phone }) 
+                });
+                const result = await res.json();
+
+                if (result.status === 'success') {
+                    document.getElementById('otpGroup').style.display = 'block';
+                    btn.innerHTML = `SENT <i class="fa-solid fa-check"></i>`;
+                    alert("OTP Sent Successfully! Please check your messages.");
+                } else {
+                    btn.innerHTML = `SEND OTP`;
+                    btn.disabled = false;
+                    alert("Gateway Error: " + result.data); 
+                }
+            } catch (err) {
+                btn.innerHTML = `SEND OTP`;
+                btn.disabled = false;
+                alert("Network error. Could not connect to SMS server.");
+            }
+        }
+
+        function verifyOtp() {
+            const otpInput = document.getElementById('regOtp');
+            const otp = otpInput.value.trim();
+            if(otp.length < 4) { alert("Enter a valid 4-digit OTP"); return; }
+
+            const btn = document.getElementById('btnVerifyOtp');
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`;
+
+            // UI Lock before actual backend validation happens on final submit
+            setTimeout(() => {
+                btn.innerHTML = `<i class="fa-solid fa-check-double"></i> VERIFIED`;
+                btn.classList.add('verified');
+                btn.disabled = true;
+                otpInput.readOnly = true;
+                document.getElementById('regPhone').readOnly = true;
+                isPhoneVerified = true;
+                
+                // Update styling of the info box to Green success theme
+                const infoBox = document.getElementById('phoneInfoBox');
+                infoBox.innerHTML = `<i class="fa-solid fa-shield-halved" style="color:var(--accent-green)"></i> <span style="color:var(--accent-green)">Number locked! Final verification will happen when you click Create Account.</span>`;
+                infoBox.style.borderColor = "var(--accent-green)";
+                infoBox.style.background = "rgba(0, 255, 127, 0.08)";
+            }, 800);
+        }
+
         // --- PROGRESS BAR LOGIC ---
         const signupForm = document.getElementById('playerSignupForm');
         const reqFields = signupForm.querySelectorAll('.req-field');
@@ -534,6 +700,8 @@
             reqFields.forEach(field => {
                 if (field.type === 'checkbox') {
                     if (field.checked) filledCount++;
+                } else if (field.tagName === 'SELECT') {
+                    if (field.value !== "") filledCount++;
                 } else {
                     if (field.value.trim().length > 0 && field.value.trim() !== "+91") filledCount++;
                 }
@@ -591,9 +759,7 @@
             const loader = document.getElementById('arenaLoader');
             loader.classList.add('active');
             
-            setTimeout(() => {
-                window.location.href = redirectUrl;
-            }, 1900); // Waits for cinematic animation to finish
+            setTimeout(() => { window.location.href = redirectUrl; }, 1900);
         }
 
         // --- AUTH LOGIC ---
@@ -615,21 +781,37 @@
             const errBox = document.getElementById('signupError');
             errBox.style.display = 'none';
 
+            // Requires Phone Verification before Submitting
+            if(!isPhoneVerified) {
+                errBox.innerText = "Please verify your Phone Number with OTP to continue.";
+                errBox.style.display = 'block';
+                return;
+            }
+
             btnLoading('btnSignup', 'CREATING ACCOUNT...');
 
             try {
                 const formData = new FormData(e.target);
                 const rawData = Object.fromEntries(formData);
                 
+                // FRONTEND ERROR FIX FOR GOOGLE SHEETS
+                // We strip all spaces from the number, then prepend the single quote (') exactly as requested.
+                // This ensures Google Sheets saves it perfectly as text and avoids the #ERROR! formula conflict.
+                const safePhoneStr = "'" + rawData.phone.replace(/\s+/g, '').trim();
+
                 const payload = {
                     action: 'signup',
                     username: rawData.username,
                     ign: rawData.ign,
-                    uid: rawData.uid,       
-                    phone: rawData.phone,   
+                    uid: rawData.uid,
+                    game: rawData.game,
+                    state: rawData.state,
+                    city: rawData.city,
+                    phone: safePhoneStr,      // <-- Fixed #ERROR! string sent here
                     email: rawData.email,
                     password: rawData.password,
                     referral: rawData.referral || "", 
+                    otp: rawData.otp,         // <-- The OTP to be checked in backend
                     role: 'player'
                 };
 
@@ -643,7 +825,6 @@
                     errBox.innerText = result.data; errBox.style.display = 'block';
                 }
             } catch (err) { 
-                console.error(err);
                 errBox.innerText = "Connection Error or system unavailable."; 
                 errBox.style.display = 'block'; 
             } finally { 
