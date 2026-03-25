@@ -173,6 +173,15 @@
         .mi-share { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 10px; color: white; cursor: pointer; transition: 0.3s; font-size: 0.9rem;}
         .mi-share:active { background: var(--accent-cyan); color: black; transform: scale(0.95); }
 
+        /* --- RESOLVE MATCH PANEL (NEW) --- */
+        .resolve-box { background: rgba(255,215,0,0.05); border: 1px solid rgba(255,215,0,0.3); border-radius: 15px; padding: 20px; margin-bottom: 25px; box-shadow: 0 5px 15px rgba(255,215,0,0.1); }
+        .resolve-header { font-family: var(--font-head); font-size: 1.2rem; color: #FFD700; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;}
+        .team-resolve-item { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 12px 15px; border-radius: 10px; margin-bottom: 8px; transition: 0.3s; }
+        .team-resolve-item:hover { border-color: #FFD700; background: rgba(255,215,0,0.05); }
+        .team-r-name { font-family: var(--font-head); font-weight: bold; font-size: 1rem; color: white; }
+        .declare-btn { background: linear-gradient(90deg, #FFD700, #FFA500); border: none; color: black; font-family: var(--font-head); font-weight: bold; font-size: 0.8rem; padding: 6px 12px; border-radius: 8px; cursor: pointer; box-shadow: 0 0 10px rgba(255,215,0,0.4); text-transform: uppercase; transition: 0.3s; }
+        .declare-btn:active { transform: scale(0.95); }
+
         /* --- UPDATED PROFESSIONAL SETTINGS CARDS --- */
         .settings-list { margin-top: 25px; padding: 0 20px; display: flex; flex-direction: column; gap: 12px;}
         .setting-item { display: flex; align-items: center; padding: 16px 20px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; cursor: pointer; transition: 0.3s; will-change: transform; backdrop-filter: blur(10px); box-shadow: 0 5px 15px rgba(0,0,0,0.2);}
@@ -797,6 +806,17 @@
             </div>
             
             <div class="fs-content" style="padding-right: 5px; flex: 1; overflow-y: auto;">
+                
+                <!-- NEW: RESOLVE MATCH PANEL (DECLARE WINNER) -->
+                <div class="resolve-box" id="resolveMatchPanel">
+                    <div class="resolve-header"><i class="fa-solid fa-trophy"></i> Resolve Match</div>
+                    <p style="font-size:0.85rem; color:#aaa; margin-bottom:15px; line-height:1.4;">Declare a winner to instantly transfer the prize pool to their wallet and close the match.</p>
+                    
+                    <button class="mi-btn" id="btnLoadTeams" style="width:100%; margin-bottom:15px;" onclick="loadRegisteredTeamsForResolution()">Load Registered Teams</button>
+                    
+                    <div id="resolveTeamsList"></div>
+                </div>
+
                 <input type="hidden" id="editTourneyId">
                 <input type="hidden" id="editTourneyBannerStr">
                 
@@ -1302,7 +1322,6 @@
             }
         }
 
-        // UPDATED EXACT MILESTONE RANGES
         const milestones = {
             organizer: [
                 { tier: "Rookie", req: 5, benefit: "15% Commission", reward: "Active Tier" },
@@ -1547,7 +1566,7 @@
                             </div>
                             <div class="mi-btn-group">
                                 <button class="mi-share" onclick="shareSpecificTournament('${title}'); triggerHaptic();" title="Share Invite"><i class="fa-solid fa-share-nodes"></i></button>
-                                <button class="mi-btn" onclick="openManageModal('${matchId}'); triggerHaptic();">Edit</button>
+                                <button class="mi-btn" onclick="openManageModal('${matchId}'); triggerHaptic();">Manage</button>
                             </div>
                         </div>
                     `;
@@ -1696,7 +1715,8 @@
             
             document.getElementById('editTourneySlots').value = t.slots || t.total_slots || "";
             document.getElementById('editTourneyEntry').value = t.entry_fee || t.fee || "0";
-            document.getElementById('editTourneyPrize').value = t.prize_pool || t.prize || "0";
+            let prizeStr = t.prize_pool || t.prize || "0";
+            document.getElementById('editTourneyPrize').value = prizeStr.replace(/[^0-9]/g, ''); // Store only numbers for math
             document.getElementById('editTourneyStream').value = t.stream_url || t.stream || "";
             
             let rawRules = t.description || t.rules || "";
@@ -1707,10 +1727,88 @@
             s.value = t.status || "Upcoming";
             if(!s.value) s.value = "Upcoming";
 
+            // Determine if Resolve Match Panel should be shown
+            if (String(t.status).toLowerCase() === 'completed') {
+                document.getElementById('resolveMatchPanel').style.display = 'none';
+            } else {
+                document.getElementById('resolveMatchPanel').style.display = 'block';
+                document.getElementById('resolveTeamsList').innerHTML = ""; // Reset lists
+                document.getElementById('btnLoadTeams').innerHTML = "Load Registered Teams";
+            }
+
             document.getElementById('manageTourneyModal').classList.add('active');
         }
 
         function closeManageModal() { document.getElementById('manageTourneyModal').classList.remove('active'); }
+
+        // --- NEW: MATCH RESOLUTION LOGIC ---
+        function loadRegisteredTeamsForResolution() {
+            let matchId = document.getElementById('editTourneyId').value;
+            const btn = document.getElementById('btnLoadTeams');
+            btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Fetching from database...";
+            btn.disabled = true;
+
+            fetch(API_URL + "?action=get_matches&email=" + encodeURIComponent(userData.email))
+            .then(res => res.json())
+            .then(data => {
+                let teamsHtml = "";
+                if(data.status === "success" && data.data) {
+                    let matchRegs = data.data.filter(m => String(m.match_id) === String(matchId));
+                    if(matchRegs.length > 0) {
+                        matchRegs.forEach(team => {
+                            let teamName = team.clan || team.username || "Unknown";
+                            let cleanTeamName = teamName.replace(/"/g, "&quot;").replace(/'/g, "\\'"); // Sanitize for JS string
+                            
+                            teamsHtml += `
+                            <div class="team-resolve-item">
+                                <div class="team-r-name">${teamName}</div>
+                                <button class="declare-btn" onclick="declareWinner('${cleanTeamName}')">👑 Declare Winner</button>
+                            </div>`;
+                        });
+                    } else {
+                        teamsHtml = "<div style='color:#888; font-size:0.85rem; text-align:center;'>No teams registered for this match yet.</div>";
+                    }
+                } else {
+                    teamsHtml = "<div style='color:#ff4d4d; font-size:0.85rem; text-align:center;'>Error loading teams.</div>";
+                }
+                document.getElementById('resolveTeamsList').innerHTML = teamsHtml;
+                btn.style.display = 'none'; // Hide button after loading
+            })
+            .catch(() => {
+                btn.innerHTML = "Error loading teams. Try again.";
+                btn.disabled = false;
+            });
+        }
+
+        function declareWinner(winnerName) {
+            let matchId = document.getElementById('editTourneyId').value;
+            let matchTitle = document.getElementById('editTourneyTitle').value;
+            let rawPrize = document.getElementById('editTourneyPrize').value;
+            let safePrize = parseInt(rawPrize.replace(/[^0-9]/g, '')) || 0;
+
+            let confirmMsg = `Are you sure you want to declare "${winnerName}" as the winner?\n\nThis will permanently close "${matchTitle}" and transfer ₹${safePrize} to their wallet. This cannot be undone.`;
+            
+            if(!confirm(confirmMsg)) return;
+
+            showToast("Processing Payout & Closing Match...");
+            
+            // Instantly update UI locally
+            document.getElementById('resolveTeamsList').innerHTML = `<div style="text-align:center; color:var(--accent-green); font-family:var(--font-head);"><i class="fa-solid fa-check-double"></i> Match Resolved. Prize transferred to ${winnerName}.</div>`;
+            document.getElementById('editTourneyStatus').value = "Completed";
+
+            let payload = {
+                action: "resolve_match",
+                match_id: matchId,
+                winner: winnerName,
+                prize: safePrize
+            };
+
+            fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) })
+            .then(() => {
+                // Background process, save tournament changes as well to ensure status updates
+                saveTournamentChanges();
+            });
+        }
 
         let cropper = null;
         let currentUploadState = {
@@ -1908,7 +2006,6 @@
             document.getElementById('editUid').value = userData.uid || ""; 
             document.getElementById('editPhone').value = userData.phone || ""; 
             
-            // Populating newly added fields
             document.getElementById('editState').value = userData.state || ""; 
             document.getElementById('editCity').value = userData.city || ""; 
         }
@@ -1926,8 +2023,8 @@
                 yt_link: document.getElementById('editYtLink').value,
                 uid: document.getElementById('editUid').value, 
                 phone: document.getElementById('editPhone').value,
-                state: document.getElementById('editState').value, // ADDED
-                city: document.getElementById('editCity').value   // ADDED
+                state: document.getElementById('editState').value,
+                city: document.getElementById('editCity').value
             };
 
             fetch(API_URL, {
