@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2610280925070403"
-     crossorigin="anonymous"></script>
     <link rel="icon" href="https://tournyx.in/favicon.ico" sizes="any">
 <link rel="icon" href="https://tournyx.in/favicon.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="https://tournyx.in/apple-touch-icon.png">
@@ -175,7 +173,7 @@
         .mi-share { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 10px; color: white; cursor: pointer; transition: 0.3s; font-size: 0.9rem;}
         .mi-share:active { background: var(--accent-cyan); color: black; transform: scale(0.95); }
 
-        /* --- RESOLVE MATCH PANEL (NEW) --- */
+        /* --- RESOLVE MATCH PANEL --- */
         .resolve-box { background: rgba(255,215,0,0.05); border: 1px solid rgba(255,215,0,0.3); border-radius: 15px; padding: 20px; margin-bottom: 25px; box-shadow: 0 5px 15px rgba(255,215,0,0.1); }
         .resolve-header { font-family: var(--font-head); font-size: 1.2rem; color: #FFD700; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;}
         .team-resolve-item { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 12px 15px; border-radius: 10px; margin-bottom: 8px; transition: 0.3s; }
@@ -1717,11 +1715,13 @@
             
             document.getElementById('editTourneySlots').value = t.slots || t.total_slots || "";
             document.getElementById('editTourneyEntry').value = t.entry_fee || t.fee || "0";
-            let prizeStr = t.prize_pool || t.prize || "0";
-            document.getElementById('editTourneyPrize').value = prizeStr.replace(/[^0-9]/g, ''); // Store only numbers for math
+            
+            let prizeStr = String(t.prize_pool || t.prize || "0");
+            document.getElementById('editTourneyPrize').value = prizeStr.replace(/[^0-9]/g, ''); 
+            
             document.getElementById('editTourneyStream').value = t.stream_url || t.stream || "";
             
-            let rawRules = t.description || t.rules || "";
+            let rawRules = String(t.description || t.rules || "");
             rawRules = rawRules.replace(/<div>/g, '\n').replace(/<\/div>/g, '').replace(/<br>/g, '\n').replace(/&nbsp;/g, ' ').replace(/<[^>]*>?/gm, '');
             document.getElementById('editTourneyDesc').value = rawRules.trim();
             
@@ -1734,8 +1734,11 @@
                 document.getElementById('resolveMatchPanel').style.display = 'none';
             } else {
                 document.getElementById('resolveMatchPanel').style.display = 'block';
-                document.getElementById('resolveTeamsList').innerHTML = ""; // Reset lists
-                document.getElementById('btnLoadTeams').innerHTML = "Load Registered Teams";
+                document.getElementById('resolveTeamsList').innerHTML = ""; 
+                let loadBtn = document.getElementById('btnLoadTeams');
+                loadBtn.innerHTML = "Load Registered Teams";
+                loadBtn.style.display = "block";
+                loadBtn.disabled = false;
             }
 
             document.getElementById('manageTourneyModal').classList.add('active');
