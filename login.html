@@ -239,12 +239,12 @@
         /* --- OTP SPECIFIC UI STYLES --- */
         .flex-row { display: flex; gap: 8px; }
         .otp-btn {
-            background: rgba(0,242,255,0.1); border: 1px solid var(--accent-cyan);
-            color: var(--accent-cyan); border-radius: 10px; font-family: var(--font-head);
+            background: rgba(189,0,255,0.1); border: 1px solid var(--accent-purple);
+            color: var(--accent-purple); border-radius: 10px; font-family: var(--font-head);
             font-size: 0.85rem; font-weight: bold; cursor: pointer; transition: 0.3s;
             padding: 0 15px; text-transform: uppercase; white-space: nowrap; outline: none;
         }
-        .otp-btn:hover { background: var(--accent-cyan); color: #000; box-shadow: 0 0 15px var(--accent-cyan); }
+        .otp-btn:hover { background: var(--accent-purple); color: #fff; box-shadow: 0 0 15px var(--accent-purple); }
         .otp-btn:disabled { opacity: 0.5; cursor: not-allowed; border-color: #555; color: #888; background: transparent; box-shadow: none; pointer-events: none; }
         
         .verify-btn {
@@ -517,10 +517,21 @@
                 </div>
                 
                 <div class="input-wrapper">
+                    <div class="input-group">
+                        <input type="tel" name="phone" class="form-control req-field" placeholder="Phone Number" value="+91 " required>
+                        <i class="fa-solid fa-mobile-screen input-icon"></i>
+                    </div>
+                    <div class="info-box">
+                        <i class="fa-solid fa-circle-check" style="color:var(--accent-cyan)"></i> 
+                        <span>Ensure this number is active to receive tournament alerts and real cash payouts.</span>
+                    </div>
+                </div>
+
+                <div class="input-wrapper">
                     <div class="flex-row">
                         <div class="input-group" style="flex: 1;">
-                            <input type="tel" name="phone" id="regPhone" class="form-control req-field" placeholder="Phone Number" value="+91 " required>
-                            <i class="fa-solid fa-mobile-screen input-icon"></i>
+                            <input type="email" name="email" id="regEmail" class="form-control req-field" placeholder="Email Address" required>
+                            <i class="fa-solid fa-envelope input-icon"></i>
                         </div>
                         <button type="button" class="otp-btn" id="btnSendOtp" onclick="sendOtp()">SEND OTP</button>
                     </div>
@@ -531,18 +542,7 @@
                         <button type="button" class="verify-btn" id="btnVerifyOtp" onclick="verifyOtp()">VERIFY</button>
                     </div>
 
-                    <div class="info-box" id="phoneInfoBox">
-                        <i class="fa-solid fa-circle-check" style="color:var(--accent-cyan)"></i> 
-                        <span>Ensure this number is active to receive tournament alerts and real cash payouts.</span>
-                    </div>
-                </div>
-
-                <div class="input-wrapper">
-                    <div class="input-group">
-                        <input type="email" name="email" class="form-control req-field" placeholder="Email Address" required>
-                        <i class="fa-solid fa-envelope input-icon"></i>
-                    </div>
-                    <div class="info-box purple">
+                    <div class="info-box purple" id="emailInfoBox">
                         <i class="fa-solid fa-shield-halved" style="color:var(--accent-purple)"></i> 
                         <span>Your email serves as your primary account recovery and receipt method.</span>
                     </div>
@@ -627,16 +627,17 @@
             }
         }
 
-        // --- FAST2SMS OTP LOGIC (FRONTEND VERIFICATION) ---
-        let isPhoneVerified = false;
+        // --- EMAIL OTP LOGIC (FRONTEND VERIFICATION) ---
+        let isEmailVerified = false;
 
         async function sendOtp() {
-            const phoneInput = document.getElementById('regPhone');
-            // Clean phone number (removes spaces to ensure it's exactly 13 characters like +919999999999)
-            let phone = phoneInput.value.replace(/\s+/g, '').trim();
-            if(!phone.startsWith("+91")) { phone = "+91" + phone.replace("+", ""); }
+            const emailInput = document.getElementById('regEmail');
+            let email = emailInput.value.trim();
             
-            if(phone.length < 13) { alert("Please enter a valid 10-digit number including +91"); return; }
+            if(!email.includes("@") || !email.includes(".")) { 
+                alert("Please enter a valid email address."); 
+                return; 
+            }
             
             const btn = document.getElementById('btnSendOtp');
             btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`;
@@ -645,23 +646,24 @@
             try {
                 const res = await fetch(API_URL, { 
                     method: 'POST', 
-                    body: JSON.stringify({ action: 'send_otp', phone: phone }) 
+                    // New action: 'send_email_otp'
+                    body: JSON.stringify({ action: 'send_email_otp', email: email }) 
                 });
                 const result = await res.json();
 
                 if (result.status === 'success') {
                     document.getElementById('otpGroup').style.display = 'block';
                     btn.innerHTML = `SENT <i class="fa-solid fa-check"></i>`;
-                    alert("OTP Sent Successfully! Please check your messages.");
+                    alert("OTP Sent Successfully! Please check your email inbox (and spam folder).");
                 } else {
                     btn.innerHTML = `SEND OTP`;
                     btn.disabled = false;
-                    alert("Gateway Error: " + result.data); 
+                    alert("Error: " + result.data); 
                 }
             } catch (err) {
                 btn.innerHTML = `SEND OTP`;
                 btn.disabled = false;
-                alert("Network error. Could not connect to SMS server.");
+                alert("Network error. Could not connect to mail server.");
             }
         }
 
@@ -679,12 +681,12 @@
                 btn.classList.add('verified');
                 btn.disabled = true;
                 otpInput.readOnly = true;
-                document.getElementById('regPhone').readOnly = true;
-                isPhoneVerified = true;
+                document.getElementById('regEmail').readOnly = true;
+                isEmailVerified = true;
                 
                 // Update styling of the info box to Green success theme
-                const infoBox = document.getElementById('phoneInfoBox');
-                infoBox.innerHTML = `<i class="fa-solid fa-shield-halved" style="color:var(--accent-green)"></i> <span style="color:var(--accent-green)">Number locked! Final verification will happen when you click Create Account.</span>`;
+                const infoBox = document.getElementById('emailInfoBox');
+                infoBox.innerHTML = `<i class="fa-solid fa-shield-halved" style="color:var(--accent-green)"></i> <span style="color:var(--accent-green)">Email locked! Final verification will happen when you click Create Account.</span>`;
                 infoBox.style.borderColor = "var(--accent-green)";
                 infoBox.style.background = "rgba(0, 255, 127, 0.08)";
             }, 800);
@@ -781,9 +783,9 @@
             const errBox = document.getElementById('signupError');
             errBox.style.display = 'none';
 
-            // Requires Phone Verification before Submitting
-            if(!isPhoneVerified) {
-                errBox.innerText = "Please verify your Phone Number with OTP to continue.";
+            // Requires Email Verification before Submitting
+            if(!isEmailVerified) {
+                errBox.innerText = "Please verify your Email Address with OTP to continue.";
                 errBox.style.display = 'block';
                 return;
             }
@@ -794,9 +796,7 @@
                 const formData = new FormData(e.target);
                 const rawData = Object.fromEntries(formData);
                 
-                // FRONTEND ERROR FIX FOR GOOGLE SHEETS
-                // We strip all spaces from the number, then prepend the single quote (') exactly as requested.
-                // This ensures Google Sheets saves it perfectly as text and avoids the #ERROR! formula conflict.
+                // Keep the phone string fix active so it writes safely to Google Sheets
                 const safePhoneStr = "'" + rawData.phone.replace(/\s+/g, '').trim();
 
                 const payload = {
@@ -807,11 +807,11 @@
                     game: rawData.game,
                     state: rawData.state,
                     city: rawData.city,
-                    phone: safePhoneStr,      // <-- Fixed #ERROR! string sent here
+                    phone: safePhoneStr,      
                     email: rawData.email,
                     password: rawData.password,
                     referral: rawData.referral || "", 
-                    otp: rawData.otp,         // <-- The OTP to be checked in backend
+                    otp: rawData.otp,         // <-- Sent to backend to verify email
                     role: 'player'
                 };
 
