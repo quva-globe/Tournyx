@@ -83,7 +83,7 @@
             .desktop-icon-btn { display: flex; }
         }
 
-        .sync-indicator { font-size: 0.75rem; color: var(--accent-cyan); font-family: var(--font-head); display: flex; align-items: center; gap: 5px; opacity: 0; transition: 0.3s; margin-right: 12px; font-weight:bold;}
+        .sync-indicator { font-size: 0.65rem; color: var(--accent-cyan); font-family: var(--font-head); display: flex; align-items: center; gap: 5px; opacity: 0; transition: 0.3s; margin-right: 12px; font-weight:bold; text-transform: uppercase;}
         .sync-indicator.active { opacity: 1; }
 
         .tabs { display: flex; padding: 10px 15px 0; border-bottom: 1px solid var(--card-border); margin-bottom: 15px; }
@@ -148,13 +148,17 @@
         .stat-val { font-family: var(--font-head); font-size: 1.3rem; font-weight: bold; color: white; margin: 5px 0; white-space: nowrap; text-overflow: ellipsis; max-width: 100%; overflow: hidden;}
         .stat-lbl { font-size: 0.65rem; color: #888; text-transform: uppercase; font-weight: bold; text-align: center;}
         
+        /* UNIQUE SMALL LIVE SYMBOL */
+        .live-indicator { position: absolute; top: 6px; right: 6px; background: rgba(255, 77, 77, 0.15); border: 1px solid rgba(255, 77, 77, 0.5); color: var(--accent-red); font-size: 0.55rem; padding: 2px 6px; border-radius: 8px; font-family: var(--font-head); font-weight: 900; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px; box-shadow: 0 0 8px rgba(255, 77, 77, 0.3); animation: livePulse 1.5s infinite; text-transform: uppercase; }
+        @keyframes livePulse { 0% { box-shadow: 0 0 5px rgba(255,77,77,0.2); opacity: 1; } 50% { box-shadow: 0 0 12px rgba(255,77,77,0.6); opacity: 0.7; } 100% { box-shadow: 0 0 5px rgba(255,77,77,0.2); opacity: 1; } }
+
         .info-row { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); padding: 12px 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.05); flex-wrap: wrap; gap: 10px; }
         .recruit-badge.open { background: rgba(0,255,127,0.1); color: var(--accent-green); border: 1px solid var(--accent-green); }
         .recruit-badge.closed { background: rgba(255,77,77,0.1); color: #ff4d4d; border: 1px solid #ff4d4d; }
         .recruit-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-family: var(--font-head); font-weight: bold; text-transform: uppercase; cursor: pointer; flex-shrink: 0;}
 
-        /* --- 30+ ESPORTS FEATURES GRID --- */
-        .esports-cmd-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+        /* --- 30+ ESPORTS FEATURES GRID (3 Columns to fit perfectly without PDF) --- */
+        .esports-cmd-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
         .cmd-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 12px 5px; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; }
         .cmd-btn:hover { background: rgba(0,242,255,0.1); border-color: var(--accent-cyan); transform: translateY(-3px); }
         .cmd-btn i { font-size: 1.4rem; color: var(--accent-cyan); }
@@ -252,7 +256,7 @@
             <div style="display:flex; align-items:center; gap: 15px;">
                 <a href="tournament.html" class="desktop-icon-btn" title="Create Tournament"><i class="fa-solid fa-plus"></i></a>
                 <a href="notifications.html" class="desktop-icon-btn" title="Notifications"><i class="fa-regular fa-bell"></i></a>
-                <div class="sync-indicator" id="syncTag"><i class="fa-solid fa-cloud-arrow-up fa-fade"></i> Live</div>
+                <div class="sync-indicator" id="syncTag"><i class="fa-solid fa-cloud-arrow-up fa-fade"></i> LIVE</div>
                 <img src="https://via.placeholder.com/40" class="header-profile-img" id="headerProfilePic" onclick="if(isGuestMode) document.getElementById('guestLoginModal').classList.add('active'); else window.location.href='profile.html';">
             </div>
         </div>
@@ -364,10 +368,6 @@
                     <div class="cmd-btn" onclick="showToast('Clan Wars ranking system syncing...')">
                         <i class="fa-solid fa-khanda" style="color:var(--accent-orange);"></i>
                         <span class="cmd-lbl">Clan Wars</span>
-                    </div>
-                    <div class="cmd-btn" onclick="showToast('Generating official roster PDF...')">
-                        <i class="fa-solid fa-file-pdf" style="color:var(--accent-red);"></i>
-                        <span class="cmd-lbl">Export Roster</span>
                     </div>
                     <div class="cmd-btn edit-admin" onclick="showToast('Earnings distribution panel locked.')">
                         <i class="fa-solid fa-money-bill-transfer" style="color:#ffd700;"></i>
@@ -1173,7 +1173,7 @@
                 clanId: id, name: name, tag: tag, game: game, bio: "Welcome to our new clan!", status: "OPEN", region: "🌍", motto: "We play to win", minRank: "None", autoAccept: false,
                 state: userState, city: userCity,
                 captain: user.username, 
-                roster: [{name: user.username, role: 'Owner', phone: phone, gameName: ign, uid: uid}], 
+                roster: [{name: user.username, role: 'Owner', phone: phone, gameName: ign, uid: uid, state: userState, city: userCity}], 
                 requests: [], notifications: [{msg: `Clan founded by ${user.username}!`}]
             };
 
@@ -1290,7 +1290,7 @@
 
         function processJoinRequest(e) {
             let phone = user.phone || ""; let ign = user.gameName || user.username || ""; let uid = user.uid || "";
-            let playerObj = { name: user.username, role: "Player", phone: phone, gameName: ign, uid: uid };
+            let playerObj = { name: user.username, role: "Player", phone: phone, gameName: ign, uid: uid, state: user.state || "N/A", city: user.city || "N/A" };
             
             document.getElementById('btnFinalJoin').innerText = "Processing..."; document.getElementById('btnFinalJoin').disabled = true;
 
