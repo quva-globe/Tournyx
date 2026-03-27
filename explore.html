@@ -1929,7 +1929,6 @@
             }
         }
 
-        // PERFECT CLAN LOGO & SOLO AVATAR ROUTING
         function fetchLiveTeams() {
             if(!activeTournament.title) return;
             const container = document.getElementById('liveTeamsList');
@@ -1955,53 +1954,62 @@
 
                 let isSolo = activeTournament.format && activeTournament.format.toLowerCase().includes('solo');
 
-                if(data.status === 'success' && data.data.length > 0) {
-                    document.getElementById('dtRegistrations').innerText = `${data.data.length}/${activeTournament.slots || 48}`;
-                    
-                    data.data.forEach((team, i) => {
-                        let currentTeamStr = String(team.clan).toLowerCase().trim();
-                        let isMyClan = userClanNames.includes(currentTeamStr) || (team.username === JSON.parse(localStorage.getItem('tournyx_user'))?.username);
-                        let highlightClass = isMyClan ? "my-clan" : "";
-                        
-                        let displayClanName = team.clan;
-                        if(displayClanName.startsWith("{")) {
-                            try { let sd = JSON.parse(displayClanName); displayClanName = sd.username; } catch(e){}
-                        }
-
-                        if (isSolo) {
-                            let playerName = team.username || displayClanName;
-                            let safePlayerName = encodeURIComponent(playerName);
-                            let fallbackAvatar = team.avatar ? formatImageUrl(team.avatar) : `https://ui-avatars.com/api/?name=${safePlayerName}&background=070311&color=00f2ff&bold=true`;
-                            
-                            container.innerHTML += `
-                                <div class="clan-item ${highlightClass}" style="flex-direction: row; align-items: center;">
-                                    <div class="clan-item-icon" style="overflow: hidden;"><img id="solo-avatar-${i}" src="${fallbackAvatar}"></div>
-                                    <div class="clan-item-name">${playerName} ${isMyClan ? '(You)' : ''}</div>
-                                    <div style="font-size:0.75rem; color:var(--accent-cyan); font-weight: bold; background: rgba(0,242,255,0.1); padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(0,242,255,0.2);">Solo</div>
-                                </div>
-                            `;
-
-                            // Fetch real avatar from Users Col F
-                            fetch(API_URL + "?action=get_avatar&username=" + safePlayerName)
-                                .then(r => r.json()).then(d => {
-                                    if(d.status === 'success' && (d.data || d.avatar)) {
-                                        document.getElementById(`solo-avatar-${i}`).src = formatImageUrl(d.data || d.avatar);
-                                    }
-                            }).catch(e => {});
-                        } else {
-                            let mappedLogo = clanMap[String(displayClanName).toLowerCase().trim()];
-                            let clanLogo = mappedLogo ? formatImageUrl(mappedLogo) : (team.logo ? formatImageUrl(team.logo) : (team.clan_logo ? formatImageUrl(team.clan_logo) : `https://ui-avatars.com/api/?name=${encodeURIComponent(displayClanName)}&background=070311&color=00ff7f&bold=true`));
-                            
-                            container.innerHTML += `
-                                <div class="clan-item ${highlightClass}">
-                                    <div class="clan-item-header">
-                                        <div class="clan-item-icon"><img src="${clanLogo}"></div>
-                                        <div class="clan-item-name">${displayClanName} ${isMyClan ? '(You)' : ''}</div>
-                                    </div>
-                                </div>
-                            `;
-                        }
+                if(data.status === 'success' && data.data) {
+                    // SMART FILTER: Remove 'Leaved' entries from the visible roster
+                    let activeTeams = data.data.filter(team => {
+                        return !Object.values(team).some(v => String(v).toLowerCase().includes('leaved') || String(v).toLowerCase() === 'leave');
                     });
+
+                    document.getElementById('dtRegistrations').innerText = `${activeTeams.length}/${activeTournament.slots || 48}`;
+                    
+                    if(activeTeams.length > 0) {
+                        activeTeams.forEach((team, i) => {
+                            let currentTeamStr = String(team.clan).toLowerCase().trim();
+                            let isMyClan = userClanNames.includes(currentTeamStr) || (team.username === JSON.parse(localStorage.getItem('tournyx_user'))?.username);
+                            let highlightClass = isMyClan ? "my-clan" : "";
+                            
+                            let displayClanName = team.clan;
+                            if(displayClanName.startsWith("{")) {
+                                try { let sd = JSON.parse(displayClanName); displayClanName = sd.username; } catch(e){}
+                            }
+
+                            if (isSolo) {
+                                let playerName = team.username || displayClanName;
+                                let safePlayerName = encodeURIComponent(playerName);
+                                let fallbackAvatar = team.avatar ? formatImageUrl(team.avatar) : `https://ui-avatars.com/api/?name=${safePlayerName}&background=070311&color=00f2ff&bold=true`;
+                                
+                                container.innerHTML += `
+                                    <div class="clan-item ${highlightClass}" style="flex-direction: row; align-items: center;">
+                                        <div class="clan-item-icon" style="overflow: hidden;"><img id="solo-avatar-${i}" src="${fallbackAvatar}"></div>
+                                        <div class="clan-item-name">${playerName} ${isMyClan ? '(You)' : ''}</div>
+                                        <div style="font-size:0.75rem; color:var(--accent-cyan); font-weight: bold; background: rgba(0,242,255,0.1); padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(0,242,255,0.2);">Solo</div>
+                                    </div>
+                                `;
+
+                                // Fetch real avatar from Users Col F
+                                fetch(API_URL + "?action=get_avatar&username=" + safePlayerName)
+                                    .then(r => r.json()).then(d => {
+                                        if(d.status === 'success' && (d.data || d.avatar)) {
+                                            document.getElementById(`solo-avatar-${i}`).src = formatImageUrl(d.data || d.avatar);
+                                        }
+                                }).catch(e => {});
+                            } else {
+                                let mappedLogo = clanMap[String(displayClanName).toLowerCase().trim()];
+                                let clanLogo = mappedLogo ? formatImageUrl(mappedLogo) : (team.logo ? formatImageUrl(team.logo) : (team.clan_logo ? formatImageUrl(team.clan_logo) : `https://ui-avatars.com/api/?name=${encodeURIComponent(displayClanName)}&background=070311&color=00ff7f&bold=true`));
+                                
+                                container.innerHTML += `
+                                    <div class="clan-item ${highlightClass}">
+                                        <div class="clan-item-header">
+                                            <div class="clan-item-icon"><img src="${clanLogo}"></div>
+                                            <div class="clan-item-name">${displayClanName} ${isMyClan ? '(You)' : ''}</div>
+                                        </div>
+                                    </div>
+                                `;
+                            }
+                        });
+                    } else {
+                        container.innerHTML = `<div style="text-align:center; color:#888; padding:40px;">No entries registered yet. Be the first!</div>`;
+                    }
                 } else {
                     container.innerHTML = `<div style="text-align:center; color:#888; padding:40px;">No entries registered yet. Be the first!</div>`;
                 }
