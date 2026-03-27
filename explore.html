@@ -1909,6 +1909,7 @@
             }
         }
 
+        // PERFECT CLAN LOGO, SOLO AVATAR & DEDUPLICATION ROUTING
         function fetchLiveTeams() {
             if(!activeTournament.title) return;
             const container = document.getElementById('liveTeamsList');
@@ -1935,11 +1936,24 @@
                 let isSolo = activeTournament.format && activeTournament.format.toLowerCase().includes('solo');
 
                 if(data.status === 'success' && data.data) {
-                    // SMART FILTER: Remove 'Leaved' entries from the visible roster
-                    let activeTeams = data.data.filter(team => {
+                    
+                    // 1. SMART FILTER: Remove explicit 'Leaved' entries (if backend provides it)
+                    let validTeams = data.data.filter(team => {
                         return !Object.values(team).some(v => String(v).toLowerCase().includes('leaved') || String(v).toLowerCase() === 'leave');
                     });
 
+                    // 2. BULLETPROOF DEDUPLICATION: Prevents double rendering if user rejoined
+                    let uniqueTeamsMap = new Map();
+                    validTeams.forEach(team => {
+                        let teamIdentifier = String(team.clan || team.username).toLowerCase().trim();
+                        // This overwrites duplicates, guaranteeing only 1 entry per player/clan
+                        uniqueTeamsMap.set(teamIdentifier, team); 
+                    });
+                    
+                    // Convert the deduplicated Map back to an Array
+                    let activeTeams = Array.from(uniqueTeamsMap.values());
+
+                    // Update slot count accurately based on unique players
                     document.getElementById('dtRegistrations').innerText = `${activeTeams.length}/${activeTournament.slots || 48}`;
                     
                     if(activeTeams.length > 0) {
