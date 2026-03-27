@@ -114,7 +114,7 @@
         
         .real-content-wrapper { display: none; flex-direction: column; gap: 20px; width: 100%; }
 
-        /* --- 3D MATCH CARD & DYNAMIC GLOW (IMPORTED FROM EXPLORE) --- */
+        /* --- 3D MATCH CARD & DYNAMIC GLOW --- */
         .match-card { 
             background-color: var(--card-bg); 
             border-radius: 16px; 
@@ -150,7 +150,7 @@
         .m-banner-wrapper { position: relative; width: 100%; height: 140px; background: #000; overflow: hidden; }
         /* IMAGE FADE OVERLAY */
         .m-banner-wrapper::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 60px; background: linear-gradient(to bottom, transparent, var(--card-bg)); z-index: 1; }
-        .m-banner { width: 100%; height: 100%; object-fit: cover; opacity: 0.85; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .m-banner { width: 100%; height: 100%; object-fit: cover; opacity: 0.85; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); border-bottom: 1px solid rgba(255,255,255,0.05); }
         .match-card:hover .m-banner { opacity: 1; transform: scale(1.08); }
 
         .m-share-btn { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.8); color: var(--accent-cyan); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid var(--accent-cyan); backdrop-filter: blur(5px); z-index: 5; transition: 0.3s; box-shadow: 0 0 10px rgba(0,0,0,0.8); }
@@ -208,7 +208,7 @@
         .full-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(7,3,17,0.98); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.4s; backdrop-filter: blur(10px); }
         .full-overlay.active { opacity: 1; pointer-events: all; }
         .anim-circle { width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin-bottom: 20px; }
-        .anim-loading { border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--accent-danger); animation: spin 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite; box-shadow: 0 0 20px rgba(255,77,77,0.5); }
+        .anim-loading { border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--accent-red); animation: spin 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite; box-shadow: 0 0 20px rgba(255,77,77,0.5); }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         /* --- FOOTER --- */
@@ -522,6 +522,9 @@
             document.getElementById('realContent').style.display = 'none';
             document.getElementById('skeletonLoader').style.display = 'flex';
             
+            document.getElementById('statActive').innerHTML = '<div class="skeleton" style="width:40px; height:24px; margin:0 auto; border-radius:4px;"></div>';
+            document.getElementById('statHistory').innerHTML = '<div class="skeleton" style="width:40px; height:24px; margin:0 auto; border-radius:4px;"></div>';
+            
             fetchLiveMatches(true).then(() => {
                 setTimeout(() => {
                     document.getElementById('refreshIcon').classList.remove('fa-spin');
@@ -548,12 +551,20 @@
                 let freshMatches = [];
 
                 myEntries.forEach(entry => {
-                    // Check every string in the entry object to accurately capture "Leaved" & "Refund" states from Columns K & L
-                    let isLeaved = Object.values(entry).some(v => String(v).toLowerCase().includes('leaved') || String(v).toLowerCase() === 'leave');
-                    let isRefundPending = Object.values(entry).some(v => String(v).toLowerCase().includes('refund pending'));
-                    let isRefundSuccess = Object.values(entry).some(v => String(v).toLowerCase().includes('refund success') || String(v).toLowerCase().includes('refunded'));
-
-                    let entryStatus = isLeaved ? "Leaved" : (entry.status || "Upcoming");
+                    let entryStatus = entry.user_status || entry.status || "Upcoming";
+                    let isLeaved = (entryStatus.toLowerCase() === "leaved") || Object.values(entry).some(v => String(v).toLowerCase() === 'leaved');
+                    
+                    let isRefundPending = false;
+                    let isRefundSuccess = false;
+                    
+                    if (entry.refund_status) {
+                        let rStat = String(entry.refund_status).toLowerCase();
+                        if (rStat.includes('success') || rStat.includes('refunded')) isRefundSuccess = true;
+                        else isRefundPending = true;
+                    } else {
+                        isRefundPending = Object.values(entry).some(v => String(v).toLowerCase().includes('refund pending'));
+                        isRefundSuccess = Object.values(entry).some(v => String(v).toLowerCase().includes('refund success') || String(v).toLowerCase().includes('refunded'));
+                    }
 
                     let matchIdToCheck = entry.match_id || entry.id;
                     let tDetails = allTournaments.find(t => String(t.id) === String(matchIdToCheck) || String(t.match_id) === String(matchIdToCheck) || String(t.title) === String(entry.tournament_title));
@@ -575,7 +586,6 @@
                             fetchedPass = "WAITING";
                         }
 
-                        // Parse out JSON string if registered as Solo
                         let clanData = s(entry.clan, "Solo Player");
                         if(clanData.startsWith("{")) {
                             try { 
@@ -590,7 +600,7 @@
                             date: s(tDetails.match_period) || s(tDetails.date, "TBA"),
                             img: formatImageUrl(tDetails.banner),
                             status: s(tDetails.status, "Upcoming"), // Organizer's status
-                            user_status: entryStatus, // Accurate Local Status
+                            user_status: isLeaved ? "Leaved" : entryStatus, // Accurate Local Status
                             isRefundPending: isRefundPending,
                             isRefundSuccess: isRefundSuccess,
                             roomID: fetchedId,
