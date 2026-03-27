@@ -327,7 +327,6 @@
                 <a href="explore.html">Explore</a>
                 <a href="matches.html">Matches</a>
                 <a href="clans.html">Clan</a>
-                <a href="tournament.html" style="color:var(--accent-cyan); font-size: 1.4rem;" title="Create"><i class="fa-solid fa-plus"></i></a>
                 <a href="wallet.html" class="active">Wallet</a>
                 <a href="profile.html">Profile</a>
             </div>
@@ -566,7 +565,7 @@
 
     <div class="app-footer">
         © 2026 TOURNYX. All rights reserved.<br>
-        <div class="footer-made-with">made with 🔥 for gamers worldwide</div>
+        <div class="footer-made-with">made with ⚡ for gamers worldwide</div>
         <div style="margin-top: 15px; font-size: 0.85rem; color: #888; font-family: var(--font-head); letter-spacing: 1px;">
             Powered by <span style="font-weight: 900; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 2px;">QUVA</span>
         </div>
@@ -824,8 +823,7 @@
                 let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
                 let dateStr = new Date().toLocaleString('en-US', { month:'short', day:'2-digit', year:'numeric', hour:'numeric', minute:'2-digit', hour12:true });
                 
-                // STRICT TXN FORMATTING FOR WEBHOOK MATCHING
-                let newTxn = { id: "TXN" + utr, title: "Wallet Top-up (UPI)", amount: amt, type: "Credit", status: "Pending", category: "Deposit", date: dateStr };
+                let newTxn = { id: "TXN" + utr.substring(6), title: "Wallet Top-up (UPI)", amount: amt, type: "Credit", status: "Pending", category: "Deposit", date: dateStr };
                 txns.unshift(newTxn);
 
                 if(bonusAmt > 0) {
@@ -835,8 +833,7 @@
                 
                 localStorage.setItem('tournyx_txns', JSON.stringify(txns)); renderTransactions(); checkFirstDeposit(txns);
                 
-                // BACKEND FETCH
-                fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "submit_utr", email: currentUser.email, amount: amt, utr: utr, date: dateStr }) });
+                fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "submit_utr", email: currentUser.email, amount: amt, utr: utr }) });
                 if(bonusAmt > 0) { fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "claim_offer", email: currentUser.email, offerName: "First Deposit Bonus Setup", reward: bonusAmt }) }); }
             }, 8500);
         }
@@ -920,18 +917,18 @@
             let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
             container.innerHTML = "";
             if (txns.length === 0) { container.innerHTML = `<div style="text-align:center; padding:30px; color:#666;">No recent transactions.</div>`; return; }
-            txns.slice(0, 5).forEach((t, i) => { container.innerHTML += buildTxnHtml(t, i); });
+            txns.slice(0, 5).forEach((t, i) => { container.innerHTML += buildTxnHtml(t, i, i); });
         }
 
         function openAllTxns() {
             document.getElementById('ledgerModal').classList.add('active');
             let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
             const container = document.getElementById('fullTxnListContainer'); container.innerHTML = "";
-            txns.forEach((t, i) => { container.innerHTML += buildTxnHtml(t, i); });
+            txns.forEach((t, i) => { container.innerHTML += buildTxnHtml(t, i, i); });
         }
         function closeAllTxns() { document.getElementById('ledgerModal').classList.remove('active'); }
 
-        function buildTxnHtml(t, delay) {
+        function buildTxnHtml(t, delay, index) {
             let typeStr = String(t.type || "").toLowerCase(); let isCredit = typeStr === "credit"; 
             let stat = String(t.status || "").toLowerCase(); let isPending = stat === "pending"; let isFailed = stat === "failed" || stat === "cancelled" || stat === "refunded"; let isSuccess = stat === "success" || stat === "completed";
             
@@ -955,7 +952,7 @@
             let amtHTML = t.amount > 0 ? `${isCredit?'+':'-'} ₹${formatNum(t.amount)}` : `---`;
 
             return `
-                <div class="txn-item glow-hover" style="animation-delay:${delay*0.1}s" onclick="openReceipt('${t.id}')">
+                <div class="txn-item glow-hover" style="animation-delay:${delay*0.1}s" onclick="openReceipt(${index})">
                     <div class="txn-left">
                         <div class="txn-icon ${iconClass}"><i class="fa-solid ${mainIcon}"></i></div>
                         <div class="txn-info">
@@ -971,10 +968,13 @@
                 </div>`;
         }
 
-        function openReceipt(id) {
+        function openReceipt(index) {
             let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
-            let t = txns.find(x => x.id === id); if(!t) return;
-            activeReceiptId = id; activeReceiptData = t;
+            let t = txns[index]; if(!t) return;
+            
+            // Generate a fallback ID if the backend didn't provide one
+            activeReceiptId = t.id && t.id.trim() !== "" ? t.id : "TXN_SYS_" + Math.floor(100000 + Math.random() * 900000); 
+            activeReceiptData = t;
             
             let typeStr = String(t.type || "").toLowerCase(); let isCredit = typeStr === "credit"; 
             let stat = String(t.status || "").toLowerCase(); let isPending = stat === "pending"; let isFailed = stat === "failed" || stat === "cancelled" || stat === "refunded"; let isSuccess = stat === "success" || stat === "completed";
@@ -998,8 +998,10 @@
             document.getElementById('rcptTitle').innerText = t.title;
             document.getElementById('rcptCat').innerHTML = catStr;
             
-            document.getElementById('receiptDate').innerText = t.date || "N/A";
-            document.getElementById('receiptId').innerText = t.id || "N/A";
+            // Use fallback date if none provided by backend
+            let displayDate = t.date && t.date.trim() !== "" ? t.date : "Recent";
+            document.getElementById('receiptDate').innerText = displayDate;
+            document.getElementById('receiptId').innerText = activeReceiptId;
             
             let statusColor = isSuccess ? "var(--accent-green)" : (isFailed ? "var(--accent-red)" : "#ff9900");
             let sEl = document.getElementById('rcptStatusVal');
@@ -1013,11 +1015,11 @@
                 <table style="width:100%; border-collapse:collapse; text-align:left; font-size:14px;">
                     <tr style="border-bottom:1px solid #1a0a3a;">
                         <td style="padding:15px 0; color:#888;">Transaction ID</td>
-                        <td style="padding:15px 0; text-align:right; font-weight:bold; color:#ffffff;">${t.id}</td>
+                        <td style="padding:15px 0; text-align:right; font-weight:bold; color:#ffffff;">${activeReceiptId}</td>
                     </tr>
                     <tr style="border-bottom:1px solid #1a0a3a;">
                         <td style="padding:15px 0; color:#888;">Date & Time</td>
-                        <td style="padding:15px 0; text-align:right; font-weight:bold; color:#ffffff;">${t.date}</td>
+                        <td style="padding:15px 0; text-align:right; font-weight:bold; color:#ffffff;">${displayDate}</td>
                     </tr>
                     <tr style="border-bottom:1px solid #1a0a3a;">
                         <td style="padding:15px 0; color:#888;">Description</td>
@@ -1082,8 +1084,8 @@
                 
                 tableHTML += `
                     <tr style="border-bottom:1px solid #1a0a3a;">
-                        <td style="padding:12px; color:#aaa;">${t.date.split(',')[0]}</td>
-                        <td style="padding:12px; font-family:monospace; color:#fff;">${t.id}</td>
+                        <td style="padding:12px; color:#aaa;">${t.date ? t.date.split(',')[0] : "Recent"}</td>
+                        <td style="padding:12px; font-family:monospace; color:#fff;">${t.id || "SYS_TXN"}</td>
                         <td style="padding:12px; color:#fff;">${t.title}</td>
                         <td style="padding:12px; font-weight:bold; color:${statusCol};">${t.status}</td>
                         <td style="padding:12px; text-align:right; font-weight:bold; color:${amtCol};">${isCredit?'+':'-'} Rs. ${formatNum(t.amount)}</td>
