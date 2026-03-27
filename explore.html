@@ -1295,8 +1295,15 @@
             } else {
                 if(user.avatar) document.getElementById('headerProfilePic').src = user.avatar;
                 fetch(API_URL + "?action=get_matches&email=" + encodeURIComponent(user.email))
-                    .then(res => res.json())
-                    .then(data => { if(data.status === 'success') userLiveMatches = data.data; });
+    .then(res => res.json())
+    .then(data => { 
+        if(data.status === 'success') {
+            userLiveMatches = data.data.filter(m => {
+                let isLeaved = Object.values(m).some(v => String(v).toLowerCase().includes('leaved') || String(v).toLowerCase() === 'leave');
+                return !isLeaved;
+            });
+        } 
+    });
                 
                 fetch(API_URL + "?action=get_my_clans&username=" + encodeURIComponent(user.username))
                     .then(res => res.json())
