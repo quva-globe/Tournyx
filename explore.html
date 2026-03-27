@@ -174,7 +174,7 @@
         .t-banner-wrapper::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 60px; background: linear-gradient(to bottom, transparent, var(--card-bg)); z-index: 1; }
         .t-banner-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.85; transition: 0.5s; }
         
-        .t-status-badge { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.8); color: var(--accent-cyan); font-family: var(--font-head); font-size: 0.7rem; font-weight: bold; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--accent-cyan); display: flex; align-items: center; gap: 6px; backdrop-filter: blur(5px); z-index: 2;}
+        .t-status-badge { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.8); color: var(--accent-cyan); font-family: var(--font-head); font-weight: bold; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--accent-cyan); display: flex; align-items: center; gap: 6px; backdrop-filter: blur(5px); z-index: 2;}
         .pulse-dot { width: 6px; height: 6px; background: var(--accent-green); border-radius: 50%; box-shadow: 0 0 8px var(--accent-green); animation: pulseBlue 1s infinite alternate; }
         
         .t-timer-badge { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.2); color: white; font-family: var(--font-head); font-size: 0.7rem; font-weight: bold; padding: 6px 12px; border-radius: 20px; backdrop-filter: blur(5px); z-index: 2;}
@@ -351,24 +351,6 @@
         .tournyx-ad-slot { min-height: 90px; margin: 20px 0; border-radius: 15px; background: rgba(255,255,255,0.02); border: 1px dashed rgba(var(--dynamic-t-color, 255,255,255), 0.3); display:flex; align-items:center; justify-content:center; overflow:hidden; backdrop-filter: blur(10px); position: relative; }
         .tournyx-ad-slot::after { content: 'SPONSORED'; position: absolute; bottom: 5px; right: 10px; font-size: 0.5rem; color: #666; font-family: var(--font-head); pointer-events: none;}
 
-        /* CROSSHAIR ANIMATION FOR SECURE SLOT */
-        .crosshair-target { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(5); opacity: 0; color: var(--accent-cyan); font-size: 8rem; z-index: 10000; pointer-events: none; text-shadow: 0 0 20px rgba(0,242,255,0.8);}
-        .crosshair-target.active { animation: targetLock 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        @keyframes targetLock {
-            0% { transform: translate(-50%, -50%) scale(5) rotate(45deg); opacity: 0; }
-            40% { transform: translate(-50%, -50%) scale(0.8) rotate(-15deg); opacity: 1; }
-            60% { transform: translate(-50%, -50%) scale(1.1) rotate(0deg); opacity: 1; color: #fff; }
-            100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 0; }
-        }
-
-        /* eSPORTS SECURE LOADER */
-        #securePaymentLoader { display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:9999; background: radial-gradient(circle at center, #0a0514 0%, #000 100%); flex-direction:column; align-items:center; justify-content:center; }
-        .cyber-hex { width: 120px; height: 120px; background: rgba(0,242,255,0.05); border: 2px solid var(--accent-cyan); display: flex; align-items: center; justify-content: center; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); animation: hexPulse 2s infinite alternate; margin-bottom: 30px; box-shadow: 0 0 30px rgba(0,242,255,0.2); }
-        .glitch-text { color: white; font-family: var(--font-head); font-size: 2rem; font-weight: 900; text-transform: uppercase; letter-spacing: 4px; text-shadow: 2px 2px 0px var(--accent-cyan), -2px -2px 0px var(--accent-purple); margin-bottom: 10px; }
-        .cyber-bar-container { width: 250px; height: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(0,242,255,0.3); border-radius: 4px; margin-top: 20px; overflow: hidden; }
-        .cyber-bar-fill { height: 100%; width: 0%; background: var(--accent-cyan); box-shadow: 0 0 15px var(--accent-cyan); transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s; }
-        @keyframes hexPulse { 0% { transform: scale(1); filter: hue-rotate(0deg); } 100% { transform: scale(1.1); filter: hue-rotate(30deg); border-color: var(--accent-green); } }
-
         /* ORGANIZER'S OTHER TOURNAMENTS SLIDER */
         .org-other-card { min-width: 280px; max-width: 280px; background: rgba(255,255,255,0.03); backdrop-filter: blur(15px); border: 1px solid rgba(var(--dynamic-t-color, 255,255,255), 0.2); border-radius: 12px; overflow: hidden; cursor: pointer; transition: 0.3s; flex-shrink: 0; }
         .org-other-card:active { transform: scale(0.96); }
@@ -450,7 +432,7 @@
         .single-page-mode .guest-banner { position: fixed; top: 0; width: 100%; z-index: 9999; }
         .single-page-mode .dm-header { margin-top: 40px; } 
 
-        /* Share Page Initial Loader */
+        /* MAIN PAGE LOADER (Reverted to standard spinner) */
         #shareLoader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary-bg); z-index: 99999; align-items: center; justify-content: center; flex-direction: column; transition: opacity 0.4s; }
 
         /* GUEST LOGIN POPUP */
@@ -460,6 +442,20 @@
         .modal-box { background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(15px); width: 90%; max-width: 400px; border-radius: 20px; border: 1px solid var(--card-border); padding: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); text-align: center; position: relative;}
         .modal-close { position: absolute; top: 15px; right: 15px; color: #888; font-size: 1.3rem; cursor: pointer; transition: 0.3s;}
         .modal-close:hover { color: white; transform: rotate(90deg); }
+
+        /* REGISTRATION ANIMATION OVERRIDES */
+        #securePaymentLoader { display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:9999; background: radial-gradient(circle at center, #0a0514 0%, #000 100%); flex-direction:column; align-items:center; justify-content:center; }
+        .cycle-logos { position: relative; width: 130px; height: 130px; margin-bottom: 25px; }
+        .cycle-logos img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 20px; opacity: 0; animation: logoFadeCycle 8s infinite; box-shadow: 0 0 25px rgba(0, 242, 255, 0.3); border: 2px solid rgba(255,255,255,0.1); }
+        .cycle-logos img:nth-child(1) { animation-delay: 0s; border-radius: 50%; box-shadow: 0 0 25px var(--accent-purple); border-color: var(--accent-purple); object-fit: contain;}
+        .cycle-logos img:nth-child(2) { animation-delay: 2s; }
+        .cycle-logos img:nth-child(3) { animation-delay: 4s; }
+        .cycle-logos img:nth-child(4) { animation-delay: 6s; }
+        @keyframes logoFadeCycle { 0%, 20% { opacity: 1; transform: scale(1.1); } 25%, 95% { opacity: 0; transform: scale(1); } 100% { opacity: 1; transform: scale(1.1); } }
+        
+        .glitch-text { color: white; font-family: var(--font-head); font-size: 1.8rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; text-shadow: 2px 2px 0px var(--accent-cyan), -2px -2px 0px var(--accent-purple); margin-bottom: 10px; text-align: center; }
+        .cyber-bar-container { width: 260px; height: 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(0,242,255,0.3); border-radius: 8px; margin-top: 15px; overflow: hidden; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+        .cyber-bar-fill { height: 100%; width: 0%; background: var(--accent-cyan); box-shadow: 0 0 15px var(--accent-cyan); transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.4s; }
     </style>
     
     <script>
@@ -474,7 +470,6 @@
     <canvas id="particles-canvas"></canvas>
 
     <div class="headshot-flash" id="screenFlash"></div>
-    <div class="crosshair-target" id="crosshairAnim"><i class="fa-solid fa-crosshairs"></i></div>
 
     <div id="shareLoader">
         <i class="fa-solid fa-spinner fa-spin" style="font-size: 3rem; color: var(--accent-cyan); margin-bottom: 15px;"></i>
@@ -580,7 +575,6 @@
         </div>
     </div>
 
-    <!-- DESKTOP RESPONSIVE DETAIL MODAL -->
     <div class="detail-modal" id="tourneyDetailModal">
       <div class="dm-container">
         <div class="dm-header">
@@ -680,7 +674,6 @@
                         </div>
                     </div>
 
-                    <!-- Native AdSense Integration under Info -->
                     <div class="tournyx-ad-slot">
                         <ins class="adsbygoogle"
                              style="display:block; text-align:center;"
@@ -718,7 +711,6 @@
 
                     <div id="prizeDistributionArea"></div>
 
-                    <!-- Native AdSense Integration under Prizes -->
                     <div class="tournyx-ad-slot">
                         <ins class="adsbygoogle"
                              style="display:block"
@@ -788,17 +780,16 @@
         </div>
     </div>
 
-    <div class="modal-overlay" id="guestLoginModal">
-        <div class="modal-box">
-            <i class="fa-solid fa-xmark modal-close" onclick="document.getElementById('guestLoginModal').classList.remove('active');"></i>
-            <i class="fa-solid fa-user-astronaut" style="font-size: 4rem; color: var(--accent-cyan); margin-bottom: 15px; filter: drop-shadow(0 0 15px var(--accent-cyan));"></i>
-            <h3 style="font-family: var(--font-head); font-size: 1.5rem; margin-bottom: 10px; color: white;">Join the Elite!</h3>
-            <p style="color: #aaa; font-size: 0.95rem; margin-bottom: 25px; line-height: 1.5;">Login or Sign Up to secure your slot, track your stats, and manage tournaments.</p>
-            <button class="save-btn" style="background: linear-gradient(90deg, #ff4d4d, #ff9900); box-shadow: 0 5px 20px rgba(255, 77, 77, 0.4); border:none; color:white; width:100%; padding:15px; font-family:var(--font-head); font-weight:bold; border-radius:12px; cursor:pointer;" onclick="window.location.href='login.html'">Login / Sign Up</button>
-            <div style="margin-top: 25px; font-size: 0.75rem; color: #888; display: flex; align-items: center; justify-content: center; gap: 6px;">
-                Powered by <strong style="color: white; font-family: var(--font-head); font-size: 0.95rem; letter-spacing: 1px;">QUVA</strong>
-            </div>
+    <div id="securePaymentLoader">
+        <div class="cycle-logos" id="regAnimLogoBox">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_20wCR-WBMpQmw3vxcYUf-vxIO1PYDJoQN_Sid3UDjA9tf0cuX0eH40jbzHoJad4cxbnjhPjqfCw1Z5V1LhgN9zFuIQC0fJjecTy3D9PFu5WjR2H1wHwTD1bUGnXY_NiApWn5gMs6velcQngSzKoP1yHzX0cVsFSUFM8zIefcbiPayY7680Kz0V0ZAAE/s1264/1000093706.png">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj3MKUI87mMK4_3DltS3LQgqfrK1sESUIMMqlENdi0dPRtOFkeDbvPsTbSaCRaJOb17QZ5s9OO5dR6kFCYiCkgUCF2zBWwvGFSb3T-9Nz51XuIzMvIiOuqwcLzyzeFmn1orKbiETP4LrlaG-RidnWAAzBwUA3aL5_z62HP4_F7R02lAK_WSYdH0U_Gn7Es/s250/1000094211.jpg">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiJvPTY_y_XU-0Lwbnjwm7961lCDkSlQh2MtCWHunFVX6WS7WCprCtkPyB334BU_-4vGsP0NseDQf4NPBEOIxqjk7VZQqZUHpnLb4Bw-c1UeXQy2M9DzNrNdYt_aL0GEb1AlTPupC5zEjJiP3Ci0Oxk-wdg5TF5cs8_UNSe3uTT1BE884je3iXr8QlMjx8/s240/1000094210.jpg">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg8vsDFFkLAXTA234WJzc3OqsLbmB3HBlKaXhiJo-JFVcTtYmMUI2DVdk5ljTPvGPKj-vtcejjFAxZO0sapDafr6xqN7VpHLGCcxqYWWY2LIZszXhrnnO1gcXFeJzY2EclP6G1bLoea5bshOtT7Dl3p4F_l0pGDuz1j5KJ78dEnI7cQixwAeDC1vKG89N4/s460/1000094209.jpg">
         </div>
+        <h2 class="glitch-text" id="loaderTxtHead">GEARING UP</h2>
+        <div class="cyber-bar-container"><div class="cyber-bar-fill" id="secureLoaderBar"></div></div>
+        <p id="loaderTxt" style="color:var(--accent-cyan); font-family:var(--font-head); margin-top:15px; font-size:1rem; font-weight:bold; text-transform:uppercase;">Equipping loadout...</p>
     </div>
 
     <div class="bottom-sheet-overlay" id="paymentOverlay">
@@ -833,16 +824,6 @@
             </div>
             <div style="text-align:center; margin-top:10px; font-size:0.75rem; color:#888;"><i class="fa-solid fa-shield"></i> 256-bit Secure Esports Transactions</div>
         </div>
-    </div>
-
-    <!-- eSPORTS SECURE LOADER -->
-    <div id="securePaymentLoader">
-        <div class="cyber-hex">
-            <i class="fa-solid fa-crosshairs" id="cyberIcon" style="color:var(--accent-cyan);"></i>
-        </div>
-        <h2 class="glitch-text" id="loaderTxtHead">AUTHENTICATING</h2>
-        <div class="cyber-bar-container"><div class="cyber-bar-fill" id="secureLoaderBar"></div></div>
-        <p id="loaderTxt" style="color:var(--accent-cyan); font-family:monospace; margin-top:15px; font-size:0.9rem;">Establishing secure connection...</p>
     </div>
 
     <div class="bottom-sheet-overlay" id="regOverlay">
@@ -1315,7 +1296,6 @@
             loadLiveTournaments(targetTourneyId);
             
             initTabSwitching(); 
-            startSilentDataSync(); 
             startLandingPageTimers(); 
         });
 
@@ -1482,7 +1462,7 @@
                         }
                     });
                     
-                    if(autoOpenId && document.getElementById('shareLoader').style.display === 'flex') {
+                    if(!autoOpenId) {
                         document.getElementById('shareLoader').style.opacity = '0';
                         setTimeout(() => document.getElementById('shareLoader').style.display = 'none', 400);
                     }
@@ -2199,25 +2179,24 @@
             let txt = document.getElementById('loaderTxt');
             let head = document.getElementById('loaderTxtHead');
             let bar = document.getElementById('secureLoaderBar');
-            let icon = document.getElementById('cyberIcon');
+            let logoBox = document.getElementById('regAnimLogoBox');
             
             bar.style.width = "0%";
             bar.style.background = "var(--accent-cyan)";
-            icon.className = "fa-solid fa-crosshairs";
-            icon.style.color = "var(--accent-cyan)";
-            head.innerText = "AUTHENTICATING";
-            txt.innerText = "Establishing secure connection...";
+            logoBox.style.filter = "drop-shadow(0 0 15px var(--accent-cyan))";
+            head.innerText = "GEARING UP";
+            txt.innerText = "Equipping armor & loadout...";
             txt.style.color = "var(--accent-cyan)";
             
-            setTimeout(() => { head.innerText = "ENCRYPTING"; txt.innerText = "Securing transaction protocol..."; bar.style.width = "40%"; }, 600);
-            setTimeout(() => { head.innerText = "VERIFYING"; txt.innerText = "Checking roster eligibility..."; bar.style.width = "75%"; }, 1400);
-            setTimeout(() => { head.innerText = "LOCKING SLOT"; txt.innerText = "Committing to server..."; bar.style.width = "90%"; bar.style.background = "var(--accent-orange)"; icon.style.color = "var(--accent-orange)"; }, 2200);
+            setTimeout(() => { head.innerText = "TACTICAL SYNC"; txt.innerText = "Connecting squad to server..."; bar.style.width = "40%"; }, 600);
+            setTimeout(() => { head.innerText = "DROPPING IN"; txt.innerText = "Deploying to the battleground..."; bar.style.width = "75%"; }, 1400);
+            setTimeout(() => { head.innerText = "LOCKING TARGET"; txt.innerText = "Securing your drop zone..."; bar.style.width = "90%"; bar.style.background = "var(--accent-orange)"; logoBox.style.filter = "drop-shadow(0 0 15px var(--accent-orange))"; }, 2200);
             setTimeout(() => { 
-                submitFinalRegistration(clanName, cost, method, bar, txt, head, icon);
+                submitFinalRegistration(clanName, cost, method, bar, txt, head, logoBox);
             }, 3000);
         }
 
-        function submitFinalRegistration(clanName, cost, method, bar, txt, head, icon) {
+        function submitFinalRegistration(clanName, cost, method, bar, txt, head, logoBox) {
             const t = activeTournament;
             let user = JSON.parse(localStorage.getItem('tournyx_user'));
 
@@ -2256,20 +2235,16 @@
                 
                 // --- INTENSE eSPORTS CONFIRMATION SEQUENCE ---
                 playGunshotSound();
-                let animTarget = document.getElementById('crosshairAnim');
-                animTarget.classList.add('active');
                 document.body.classList.add('screen-shake');
                 let flash = document.getElementById('screenFlash');
                 if(flash) { flash.classList.add('active'); setTimeout(()=>flash.classList.remove('active'), 500); }
                 setTimeout(() => document.body.classList.remove('screen-shake'), 400);
-                setTimeout(() => animTarget.classList.remove('active'), 1600);
 
                 bar.style.width = "100%"; 
                 bar.style.background = "#00ff7f";
-                icon.style.color = "#00ff7f";
-                icon.className = "fa-solid fa-check";
-                head.innerText = "SLOT SECURED"; 
-                txt.innerText = "Registration Confirmed."; 
+                logoBox.style.filter = "drop-shadow(0 0 25px #00ff7f)";
+                head.innerText = "BATTLE READY"; 
+                txt.innerText = "Slot Secured. GLHF!"; 
                 txt.style.color = "#00ff7f";
                 
                 setTimeout(() => {
@@ -2337,11 +2312,10 @@
                     });
                 }, 1800);
             }).catch(e => {
-                txt.innerText = "Network Error! Try Again.";
+                txt.innerText = "Connection Failed! Try Again.";
                 txt.style.color = "#ff4d4d";
                 bar.style.background = "#ff4d4d";
-                icon.className = "fa-solid fa-triangle-exclamation";
-                icon.style.color = "#ff4d4d";
+                logoBox.style.filter = "drop-shadow(0 0 15px #ff4d4d)";
                 setTimeout(() => { document.getElementById('securePaymentLoader').style.display = 'none'; }, 2500);
             });
         }
