@@ -21,8 +21,8 @@
     <meta name="keywords" content="esports, tournaments, BGMI, Free Fire, Tournyx, gaming, competitive gaming">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://tournyx.in/explore.html">
-    <meta property="og:title" content="Explore Tournaments - Tournyx">
-    <meta property="og:description" content="Browse upcoming, live, and mega esports tournaments on Tournyx. Filter by BGMI, Free Fire, and entry fees to find your perfect match.">
+    <meta property="og:title" id="ogTitle" content="Explore Tournaments - Tournyx">
+    <meta property="og:description" id="ogDesc" content="Browse upcoming, live, and mega esports tournaments on Tournyx. Filter by BGMI, Free Fire, and entry fees to find your perfect match.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://tournyx.in/explore.html">
 
@@ -72,6 +72,15 @@
         /* TOP GAP PERFECTLY FIXED */
         body { background-color: var(--primary-bg); color: white; font-family: var(--font-body); padding-bottom: calc(90px + env(safe-area-bottom)); padding-top: calc(55px + env(safe-area-inset-top)); overflow-x: hidden; }
 
+        /* BATTLEGROUNDS SCREEN SHAKE */
+        .screen-shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-3px, 0, 0); }
+            20%, 80% { transform: translate3d(5px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-10px, 0, 0); }
+            40%, 60% { transform: translate3d(10px, 0, 0); }
+        }
+
         /* --- RESPONSIVE WRAPPER --- */
         .search-row, .game-scroll, .tourney-list, .app-footer, .top-header .header-wrapper { max-width: 1000px; margin-left: auto !important; margin-right: auto !important; width: 100%; }
 
@@ -79,22 +88,10 @@
         #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at 50% 0%, #15062e 0%, #070311 100%); }
 
         /* --- IMAGE LOADER EFFECT --- */
-        .img-loading {
-            background: linear-gradient(90deg, #110822 25%, #1a0a3a 50%, #110822 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite linear;
-            color: transparent !important;
-        }
-        .img-loaded {
-            animation: none !important;
-            background: transparent !important;
-        }
+        .img-loading { background: linear-gradient(90deg, #110822 25%, #1a0a3a 50%, #110822 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite linear; color: transparent !important; }
+        .img-loaded { animation: none !important; background: transparent !important; }
 
-        /* --- GUEST MODE BANNER --- */
-        .guest-banner { display: none; background: linear-gradient(90deg, #ff4d4d, #ff9900); padding: 10px; text-align: center; color: white; font-family: var(--font-head); font-weight: bold; font-size: 0.85rem; letter-spacing: 1px; z-index: 2500; position: sticky; top: 0; text-transform: uppercase; box-shadow: 0 5px 15px rgba(255, 77, 77, 0.4); cursor: pointer; }
-        .guest-banner.active { display: block; }
-
-        /* --- HEADER (OPTIMIZED FOR FULL NAME VISIBILITY) --- */
+        /* --- HEADER --- */
         .top-header { 
             position: fixed; top: 0; left: 0; width: 100%; 
             padding: calc(12px + env(safe-area-inset-top)) 10px 12px; 
@@ -134,7 +131,19 @@
 
         /* --- TOURNAMENT CARDS & GLOW EFFECTS --- */
         .tourney-list { padding: 0 15px; display: flex; flex-direction: column; gap: 20px; min-height: 400px; }
-        .tourney-card { background: var(--card-bg); border-radius: 15px; overflow: hidden; animation: slideUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; transition: 0.3s; cursor: pointer; background-clip: padding-box; }
+        .tourney-card { 
+            background-color: var(--card-bg); 
+            border-radius: 15px; 
+            overflow: hidden; 
+            animation: slideUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            position: relative; 
+            transition: 0.3s; 
+            cursor: pointer; 
+            border: 1px solid transparent;
+            background-image: linear-gradient(var(--card-bg), var(--card-bg)), var(--accent-gradient);
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+        }
         .tourney-card:active { transform: scale(0.98); }
         
         @keyframes goldenPulse {
@@ -142,34 +151,31 @@
             50% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.8); border-color: #FFD700; }
             100% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.4); }
         }
-        .tourney-card.mega-event { border: 1px solid rgba(255,215,0,0.5); animation: goldenPulse 2.5s infinite; }
+        .tourney-card.mega-event { background-image: linear-gradient(var(--card-bg), var(--card-bg)), linear-gradient(90deg, #FFD700, #FFA500); animation: goldenPulse 2.5s infinite; }
         
         @keyframes livePulse {
             0% { box-shadow: 0 0 10px rgba(0, 255, 127, 0.2); }
             50% { box-shadow: 0 0 20px rgba(0, 255, 127, 0.5); border-color: #00ff7f; }
             100% { box-shadow: 0 0 10px rgba(0, 255, 127, 0.2); }
         }
-        .tourney-card.live-glow { border: 1px solid rgba(0,255,127,0.4); animation: livePulse 2.5s infinite; }
+        .tourney-card.live-glow { background-image: linear-gradient(var(--card-bg), var(--card-bg)), linear-gradient(90deg, #00ff7f, #00b09b); animation: livePulse 2.5s infinite; }
         
-        .tourney-card.upcoming-glow { border: 1px solid rgba(0,242,255,0.3); box-shadow: 0 5px 20px rgba(0,242,255,0.1); }
-        .tourney-card.upcoming-glow:hover { box-shadow: 0 5px 25px rgba(0,242,255,0.3); border-color: var(--accent-cyan); }
+        .tourney-card.upcoming-glow { box-shadow: 0 5px 20px rgba(0,242,255,0.1); }
+        .tourney-card.upcoming-glow:hover { box-shadow: 0 5px 25px rgba(0,242,255,0.4); }
         
-        .tourney-card.is-full { opacity: 0.65; filter: grayscale(70%); animation: none !important; border-color: #444 !important; box-shadow: 0 5px 15px rgba(0,0,0,0.5) !important; }
+        .tourney-card.is-full { opacity: 0.65; filter: grayscale(70%); animation: none !important; background-image: linear-gradient(var(--card-bg), var(--card-bg)), linear-gradient(90deg, #444, #666) !important; box-shadow: 0 5px 15px rgba(0,0,0,0.5) !important; }
 
         @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        /* PREMIUM FADE FOR IMAGES */
-        .t-banner-wrapper { position: relative; height: 160px; width: 100%; background: #000; overflow: hidden; z-index: 1; }
-        .t-banner-wrapper::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 60px; background: linear-gradient(to top, var(--card-bg) 0%, transparent 100%); z-index: 1; pointer-events: none; }
-        .t-banner-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.9; transition: 0.5s; z-index: 0; }
+        .t-banner-wrapper { position: relative; height: 160px; width: 100%; background: #000; overflow: hidden; }
+        /* PERFECT IMAGE FADE TO MATCH CARD BG */
+        .t-banner-wrapper::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 60px; background: linear-gradient(to bottom, transparent, var(--card-bg)); z-index: 1; }
+        .t-banner-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.85; transition: 0.5s; }
         
-        .t-status-badge, .t-timer-badge, .t-like, .t-plat-badge { z-index: 2; position: relative; }
+        .t-status-badge { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.8); color: var(--accent-cyan); font-family: var(--font-head); font-size: 0.7rem; font-weight: bold; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--accent-cyan); display: flex; align-items: center; gap: 6px; backdrop-filter: blur(5px); z-index: 2;}
+        .pulse-dot { width: 6px; height: 6px; background: var(--accent-green); border-radius: 50%; box-shadow: 0 0 8px var(--accent-green); animation: pulseBlue 1s infinite alternate; }
         
-        .t-status-badge { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.8); color: var(--accent-cyan); font-family: var(--font-head); font-size: 0.7rem; font-weight: bold; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--accent-cyan); display: flex; align-items: center; gap: 6px; backdrop-filter: blur(5px);}
-        .pulse-dot { width: 6px; height: 6px; background: var(--accent-green); border-radius: 50%; box-shadow: 0 0 8px var(--accent-green); animation: pulse 1s infinite alternate; }
-        @keyframes pulse { from { opacity: 0.3; transform: scale(0.8); } to { opacity: 1; transform: scale(1.2); } }
-        
-        .t-timer-badge { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.2); color: white; font-family: var(--font-head); font-size: 0.7rem; font-weight: bold; padding: 6px 12px; border-radius: 20px; backdrop-filter: blur(5px); }
+        .t-timer-badge { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.2); color: white; font-family: var(--font-head); font-size: 0.7rem; font-weight: bold; padding: 6px 12px; border-radius: 20px; backdrop-filter: blur(5px); z-index: 2;}
         .t-timer-badge.ending-soon { background: linear-gradient(90deg, #ff4d4d, #ff9900); border: none; box-shadow: 0 0 10px rgba(255,77,77,0.5); }
         
         .t-like { position: absolute; bottom: 12px; left: 12px; background: rgba(0,0,0,0.7); color: white; padding: 4px 10px; border-radius: 20px; display: flex; align-items: center; justify-content: center; gap: 6px; backdrop-filter: blur(5px); transition: 0.3s; border: 1px solid rgba(255,255,255,0.2); font-family: var(--font-head); font-size: 0.8rem; font-weight: bold; cursor: pointer; z-index: 5; }
@@ -177,9 +183,9 @@
         .t-like i { transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .t-like:active i { transform: scale(1.4); }
         
-        .t-plat-badge { position: absolute; bottom: 12px; right: 12px; background: rgba(0,0,0,0.7); border: 1px solid #fff; color: white; padding: 4px 8px; border-radius: 8px; font-size: 0.65rem; font-family: var(--font-head); font-weight: bold; backdrop-filter: blur(5px); }
+        .t-plat-badge { position: absolute; bottom: 12px; right: 12px; background: rgba(0,0,0,0.7); border: 1px solid #fff; color: white; padding: 4px 8px; border-radius: 8px; font-size: 0.65rem; font-family: var(--font-head); font-weight: bold; backdrop-filter: blur(5px); z-index: 2;}
 
-        .t-info-box { padding: 15px; position: relative; z-index: 2; margin-top: -5px;}
+        .t-info-box { padding: 5px 15px 15px 15px; position: relative; z-index: 2; }
         .t-title { font-family: var(--font-head); font-size: 1.2rem; color: white; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; text-shadow: 0 0 5px rgba(255,255,255,0.3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
         .verified-badge { color: #1da1f2; font-size: 0.9rem; flex-shrink:0; }
         
@@ -197,7 +203,8 @@
         .t-prize-area { display: flex; flex-direction: column; }
         .t-prize-label { font-size: 0.7rem; color: #888; text-transform: uppercase; font-family: var(--font-head); }
         .t-prize-val { font-size: 1.1rem; font-weight: 900; color: var(--accent-green); }
-        .join-btn-card { background: var(--accent-cyan); border: none; color: black; padding: 8px 18px; border-radius: 8px; font-weight: bold; font-size: 0.85rem; font-family: var(--font-head); transition: 0.3s; box-shadow: 0 0 15px rgba(0,242,255,0.4); text-transform: uppercase; letter-spacing: 0.5px;}
+        .join-btn-card { background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); padding: 8px 18px; border-radius: 8px; font-weight: bold; font-size: 0.8rem; font-family: var(--font-head); transition: 0.3s; box-shadow: 0 0 10px rgba(0,242,255,0.2); cursor: pointer;}
+        .join-btn-card:hover { box-shadow: 0 0 20px rgba(0,242,255,0.6); background: var(--accent-cyan); color: #000; }
 
         /* --- SKELETON LOADER --- */
         .skeleton-wrapper { padding: 0; display: flex; flex-direction: column; gap: 20px; width: 100%; }
@@ -227,9 +234,6 @@
         .fee-tag { padding: 8px 15px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; font-size: 0.85rem; font-family: var(--font-head); color: #ccc; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; white-space: nowrap; text-align: center;}
         .fee-tag.active { background: rgba(0,242,255,0.15); border-color: var(--accent-cyan); color: var(--accent-cyan); box-shadow: 0 0 10px rgba(0,242,255,0.3); transform: scale(1.05); }
 
-        /* --- ADSENSE WRAPPER --- */
-        .tournyx-native-ad { margin: 20px 0; min-height: 100px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1); padding: 10px; overflow: hidden; text-align: center; }
-
         /* --- FULL SCREEN DETAIL MODAL --- */
         .detail-modal { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
@@ -237,28 +241,30 @@
             transform: translateY(100%); 
             transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.4s;
             display: flex; flex-direction: column; overflow: hidden; opacity: 0;
+            --dynamic-t-color: 0, 242, 255; /* Default Cyan */
         }
         .detail-modal.active { transform: translateY(0); opacity: 1; }
         
-        .dm-header { background: rgba(7,3,17,0.95); padding: env(safe-area-inset-top) 15px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); flex-shrink: 0; z-index: 10; backdrop-filter: blur(10px);}
+        .dm-header { background: rgba(7,3,17,0.95); padding: env(safe-area-inset-top) 15px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(var(--dynamic-t-color), 0.2); flex-shrink: 0; z-index: 10; backdrop-filter: blur(10px); transition: border-color 0.4s ease;}
         .dm-back { font-size: 1.3rem; cursor: pointer; color: white; padding: 5px; }
         .dm-title { font-family: var(--font-head); font-weight: bold; flex: 1; text-align: center; font-size: 1.1rem; text-shadow: 0 0 5px rgba(255,255,255,0.5); }
-        .dm-share { font-size: 1.3rem; color: var(--accent-cyan); cursor: pointer; padding: 5px; }
+        .dm-share { font-size: 1.3rem; color: rgb(var(--dynamic-t-color)); cursor: pointer; padding: 5px; transition: 0.3s; }
+        .dm-share:active { transform: scale(0.9); }
 
         .dm-scroll-area { flex: 1; overflow-y: auto; padding-bottom: 20px; animation: fadeIn 0.4s; transition: opacity 0.3s ease-in-out; }
         .dm-scroll-content { max-width: 800px; margin: 0 auto; position: relative; padding-bottom: 80px;} 
         
         .dm-banner { width: 100%; height: 220px; object-fit: cover; }
         
-        .live-viewer-bubble { position: absolute; top: 180px; right: 15px; background: rgba(0,0,0,0.8); border: 1px solid var(--accent-cyan); color: white; font-family: var(--font-head); font-size: 0.75rem; padding: 6px 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px; box-shadow: 0 0 15px rgba(0,242,255,0.3); backdrop-filter: blur(5px); z-index: 5;}
-        .live-viewer-bubble .dot { width: 6px; height: 6px; background: var(--accent-cyan); border-radius: 50%; animation: pulseBlue 1s infinite alternate; }
+        .live-viewer-bubble { position: absolute; top: 180px; right: 15px; background: rgba(0,0,0,0.8); border: 1px solid rgb(var(--dynamic-t-color)); color: white; font-family: var(--font-head); font-size: 0.75rem; padding: 6px 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px; box-shadow: 0 0 15px rgba(var(--dynamic-t-color), 0.3); backdrop-filter: blur(5px); z-index: 5;}
+        .live-viewer-bubble .dot { width: 6px; height: 6px; background: rgb(var(--dynamic-t-color)); border-radius: 50%; animation: pulseBlue 1s infinite alternate; }
         @keyframes pulseBlue { from { opacity:0.3; transform:scale(0.8);} to {opacity:1; transform:scale(1.2);} }
 
         /* LIVELY TABS */
         .dm-nav { display: flex; gap: 20px; padding: 15px; border-bottom: 1px solid var(--card-border); overflow-x: auto; background: var(--primary-bg); position: sticky; top: 0; z-index: 5; flex-shrink: 0; }
         .dm-nav-item { display: flex; align-items: center; gap: 6px; font-family: var(--font-head); font-size: 0.85rem; color: #888; cursor: pointer; white-space: nowrap; padding-bottom: 8px; border-bottom: 2px solid transparent; transition: 0.3s; text-transform: uppercase; }
         .dm-nav-item i { font-size: 1rem; }
-        .dm-nav-item.active { color: var(--accent-cyan); border-bottom-color: var(--accent-cyan); text-shadow: 0 0 5px rgba(0,242,255,0.4); font-weight: bold; }
+        .dm-nav-item.active { color: rgb(var(--dynamic-t-color)); border-bottom-color: rgb(var(--dynamic-t-color)); text-shadow: 0 0 5px rgba(var(--dynamic-t-color), 0.4); font-weight: bold; }
 
         .dm-tab-content { display: none; padding: 20px 15px; animation: fadeIn 0.4s; }
         .dm-tab-content.active { display: block; }
@@ -270,13 +276,13 @@
 
         /* --- GLASSMORPHISM SECTIONS --- */
         .dm-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
-        .stat-box { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); padding: 15px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); }
+        .stat-box { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(var(--dynamic-t-color), 0.15); padding: 15px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: 0 10px 30px rgba(var(--dynamic-t-color), 0.05); }
         .stat-box i { font-size: 1.5rem; margin-bottom: 8px; color: var(--accent-purple); text-shadow: 0 0 10px rgba(189,0,255,0.4); }
         .stat-box .val { font-family: var(--font-head); font-size: 1.1rem; font-weight: bold; color: white; text-shadow: 0 0 5px rgba(255,255,255,0.3); text-align: center; width: 100%; }
         .stat-box .lbl { font-size: 0.7rem; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; }
 
-        .dm-section { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2); }
-        .dm-sec-title { font-family: var(--font-head); font-size: 1.1rem; margin-bottom: 15px; color: var(--accent-cyan); display: flex; align-items: center; gap: 8px; }
+        .dm-section { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(var(--dynamic-t-color), 0.15); border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(var(--dynamic-t-color), 0.05); }
+        .dm-sec-title { font-family: var(--font-head); font-size: 1.1rem; margin-bottom: 15px; color: rgb(var(--dynamic-t-color)); display: flex; align-items: center; gap: 8px; text-shadow: 0 0 10px rgba(var(--dynamic-t-color), 0.3); }
         
         .timeline-item { display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); align-items: center; gap:10px; }
         .timeline-item:last-child { border: none; margin: 0; padding: 0; }
@@ -285,15 +291,10 @@
         .tl-val { font-family: var(--font-body); font-size: 0.95rem; color: white; white-space: normal; }
         .tl-status { background: rgba(0,255,127,0.1); color: var(--accent-green); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; border: 1px solid var(--accent-green); text-transform: uppercase; white-space: nowrap; }
 
-        /* --- 10 NEW LIVE FEATURES GRID --- */
-        .lf-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-        .lf-item { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; display: flex; align-items: center; gap: 8px; font-size: 0.75rem; color: #ccc; font-family: var(--font-head); text-transform: uppercase; }
-        .lf-item i { color: var(--accent-cyan); font-size: 1.1rem; width: 22px; text-align: center; }
-
-        /* --- NEW TIMELINE SCHEDULE CSS --- */
+        /* --- NEW TIMELINE SCHEDULE CSS WITH VERTICAL SLIDER --- */
         .schedule-timeline { position: relative; padding-left: 20px; margin-top: 15px; }
         .schedule-timeline::before { content: ''; position: absolute; left: 0; top: 10px; bottom: 10px; width: 2px; background: rgba(255,255,255,0.1); }
-        .st-block { position: relative; margin-bottom: 20px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 15px; transition: 0.3s; cursor: pointer; overflow: hidden; }
+        .st-block { position: relative; margin-bottom: 20px; background: rgba(255,255,255,0.03); border: 1px solid rgba(var(--dynamic-t-color), 0.15); border-radius: 12px; padding: 15px; transition: 0.3s; cursor: pointer; overflow: hidden; backdrop-filter: blur(10px); }
         .st-block::before { content: ''; position: absolute; left: -25px; top: 20px; width: 12px; height: 12px; border-radius: 50%; background: var(--primary-bg); border: 2px solid #888; z-index: 2; transition: 0.3s; }
         .st-block:active { transform: scale(0.98); }
         .st-block.upcoming::before { border-color: var(--accent-cyan); }
@@ -308,23 +309,43 @@
         .st-block.upcoming .st-status { color: var(--accent-cyan); border-color: rgba(0,242,255,0.3); background: rgba(0,242,255,0.1); }
         .st-block.live .st-status { color: var(--accent-green); border-color: rgba(0,255,127,0.3); background: rgba(0,255,127,0.1); animation: pulse 1.5s infinite alternate; }
         .st-block.completed .st-status { color: #888; border-color: rgba(136,136,136,0.3); background: rgba(136,136,136,0.1); }
-        .st-countdown { display: none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed rgba(255,255,255,0.1); text-align: center; }
-        .st-block.expanded .st-countdown { display: block; animation: fadeIn 0.3s; }
+        
+        .st-countdown { max-height: 0; overflow: hidden; margin-top: 0; padding-top: 0; border-top: none; text-align: center; transition: max-height 0.4s ease, margin-top 0.4s ease, padding-top 0.4s ease; }
+        .st-block.expanded .st-countdown { max-height: 150px; margin-top: 15px; padding-top: 15px; border-top: 1px dashed rgba(255,255,255,0.1); }
         .st-timer-text { font-family: var(--font-head); font-size: 1.4rem; font-weight: bold; color: white; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
 
-        .prize-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); }
+        .prize-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); transition: transform 0.3s; cursor: pointer; }
+        .prize-card:hover { transform: scale(1.03) translateY(-3px); }
         .prize-card.gold { border-color: rgba(255, 215, 0, 0.4); background: rgba(255, 215, 0, 0.08); }
         .prize-card.silver { border-color: rgba(192, 192, 192, 0.4); background: rgba(192, 192, 192, 0.08); }
         .prize-card.bronze { border-color: rgba(205, 127, 50, 0.4); background: rgba(205, 127, 50, 0.08); }
         .pc-rank { font-family: var(--font-head); font-weight: bold; font-size: 1rem; display: flex; align-items: center; gap: 10px; }
         .pc-val { font-size: 1rem; font-weight: bold; color: var(--accent-cyan); text-shadow: 0 0 5px rgba(0,242,255,0.3); }
 
-        .clan-item { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); padding: 12px; border-radius: 12px; margin-bottom: 10px; transition: 0.3s; cursor: pointer; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); }
+        .clan-item { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); padding: 12px; border-radius: 12px; margin-bottom: 10px; transition: 0.3s; cursor: pointer; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); }
         .clan-item.my-clan { border: 1px solid var(--accent-cyan); background: rgba(0,242,255,0.1); box-shadow: 0 0 10px rgba(0,242,255,0.2); }
         .clan-item-header { display: flex; align-items: center; width: 100%; gap: 12px; }
         .clan-item-icon { width: 35px; height: 35px; border-radius: 8px; background: rgba(0,242,255,0.1); color: var(--accent-cyan); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; overflow: hidden; }
         .clan-item-icon img { width: 100%; height: 100%; border-radius: 8px; object-fit: cover; }
         .clan-item-name { font-family: var(--font-head); font-size: 1rem; color: white; flex: 1; }
+
+        /* ADS NATIVE INTEGRATION */
+        .tournyx-ad-slot { min-height: 90px; margin: 20px 0; border-radius: 15px; background: rgba(255,255,255,0.02); border: 1px dashed rgba(var(--dynamic-t-color, 255,255,255), 0.3); display:flex; align-items:center; justify-content:center; overflow:hidden; backdrop-filter: blur(10px); position: relative; }
+        .tournyx-ad-slot::after { content: 'SPONSORED'; position: absolute; bottom: 5px; right: 10px; font-size: 0.5rem; color: #666; font-family: var(--font-head); pointer-events: none;}
+
+        /* CROSSHAIR ANIMATION FOR SECURE SLOT */
+        .crosshair-target { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(5); opacity: 0; color: var(--accent-green); font-size: 8rem; z-index: 10000; pointer-events: none; text-shadow: 0 0 20px rgba(0,255,127,0.8);}
+        .crosshair-target.active { animation: targetLock 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        @keyframes targetLock {
+            0% { transform: translate(-50%, -50%) scale(5) rotate(45deg); opacity: 0; }
+            40% { transform: translate(-50%, -50%) scale(0.8) rotate(-15deg); opacity: 1; }
+            60% { transform: translate(-50%, -50%) scale(1.1) rotate(0deg); opacity: 1; color: #fff; }
+            100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 0; }
+        }
+
+        /* ORGANIZER'S OTHER TOURNAMENTS SLIDER */
+        .org-other-card { min-width: 280px; max-width: 280px; background: rgba(255,255,255,0.03); backdrop-filter: blur(15px); border: 1px solid rgba(var(--dynamic-t-color, 255,255,255), 0.2); border-radius: 12px; overflow: hidden; cursor: pointer; transition: 0.3s; flex-shrink: 0; }
+        .org-other-card:active { transform: scale(0.96); }
 
         /* LOCKED FOOTER */
         .locked-footer { background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(10px); padding: 15px 15px calc(15px + env(safe-area-inset-bottom)); border-top: 1px solid var(--card-border); display: flex; gap: 10px; flex-shrink: 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); z-index: 50;}
@@ -386,13 +407,13 @@
         /* --- PERFECT SINGLE PAGE SHARE MODE --- */
         .single-page-mode .top-header, .single-page-mode .search-row, .single-page-mode .game-scroll, .single-page-mode .tourney-list, .single-page-mode .bottom-nav, .single-page-mode .app-footer, .single-page-mode .floating-plus { display: none !important; }
         .single-page-mode body { padding: 0 !important; background: var(--primary-bg); }
-        .single-page-mode .detail-modal { position: fixed !important; transform: none !important; transition: none !important; height: 100vh !important; width: 100vw !important; top: 0 !important; left: 0 !important; }
+        .single-page-mode .detail-modal { position: fixed !important; transform: none !important; transition: none !important; height: 100vh !important; width: 100vw !important; top: 0 !important; left: 0 !important; opacity: 1 !important;}
         .single-page-mode .locked-footer { position: fixed; bottom: 0; width: 100%; z-index: 9999; }
         .single-page-mode .guest-banner { position: fixed; top: 0; width: 100%; z-index: 9999; }
-        .single-page-mode .dm-header { margin-top: 40px; } /* Space for banner */
+        .single-page-mode .dm-header { margin-top: 40px; } 
 
         /* Share Page Initial Loader */
-        #shareLoader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary-bg); z-index: 99999; align-items: center; justify-content: center; flex-direction: column; transition: opacity 0.5s ease; }
+        #shareLoader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary-bg); z-index: 99999; align-items: center; justify-content: center; flex-direction: column; transition: opacity 0.4s; }
         
         /* NEW SECURE PAYMENT LOADER */
         #securePaymentLoader { display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:9999; background:rgba(0,0,0,0.95); backdrop-filter:blur(10px); flex-direction:column; align-items:center; justify-content:center; }
@@ -404,14 +425,6 @@
         .modal-box { background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(15px); width: 90%; max-width: 400px; border-radius: 20px; border: 1px solid var(--card-border); padding: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); text-align: center; position: relative;}
         .modal-close { position: absolute; top: 15px; right: 15px; color: #888; font-size: 1.3rem; cursor: pointer; transition: 0.3s;}
         .modal-close:hover { color: white; transform: rotate(90deg); }
-
-        /* CONFIRMATION ANIMATION */
-        @keyframes confirmPop {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.5); text-shadow: 0 0 20px #00ff7f; }
-            100% { transform: scale(1); }
-        }
-        .confirm-pop { animation: confirmPop 0.5s ease-out; }
     </style>
     
     <script>
@@ -424,6 +437,8 @@
 </head>
 <body>
     <canvas id="particles-canvas"></canvas>
+
+    <div class="crosshair-target" id="crosshairAnim"><i class="fa-solid fa-crosshairs"></i></div>
 
     <div id="shareLoader">
         <i class="fa-solid fa-spinner fa-spin" style="font-size: 3rem; color: var(--accent-cyan); margin-bottom: 15px;"></i>
@@ -599,23 +614,6 @@
                         <button class="btn-primary" style="background:#FF0000; box-shadow:0 5px 15px rgba(255,0,0,0.4);" id="dtStreamBtn"><i class="fa-brands fa-youtube"></i> Watch Live Stream</button>
                     </div>
 
-                    <!-- 10 NEW LIVE FEATURES GRID -->
-                    <div class="dm-section" id="tournyxLiveFeatures">
-                        <div class="dm-sec-title" style="color: var(--accent-orange);"><i class="fa-solid fa-bolt"></i> Tournyx Live Features</div>
-                        <div class="lf-grid">
-                            <div class="lf-item"><i class="fa-solid fa-sitemap"></i> Live Bracket Sync</div>
-                            <div class="lf-item"><i class="fa-solid fa-shield-halved"></i> Anti-Cheat Verif.</div>
-                            <div class="lf-item"><i class="fa-solid fa-wallet"></i> Instant Payouts</div>
-                            <div class="lf-item"><i class="fa-solid fa-crosshairs"></i> Real-Time KDs</div>
-                            <div class="lf-item"><i class="fa-solid fa-video"></i> VOD Replays</div>
-                            <div class="lf-item"><i class="fa-solid fa-robot"></i> Auto-Slot Assign</div>
-                            <div class="lf-item"><i class="fa-solid fa-sack-dollar"></i> MVP Cash Bounty</div>
-                            <div class="lf-item"><i class="fa-solid fa-khanda"></i> Clan Wars XP</div>
-                            <div class="lf-item"><i class="fa-solid fa-comment-dots"></i> Live Scrim Chat</div>
-                            <div class="lf-item"><i class="fa-brands fa-discord"></i> Discord Sync</div>
-                        </div>
-                    </div>
-
                     <div class="dm-section">
                         <div class="dm-sec-title"><i class="fa-regular fa-calendar-days"></i> Tournament Timeline</div>
                         <div class="timeline-item">
@@ -643,19 +641,15 @@
                             <div class="t-detail-item"><i class="fa-solid fa-sitemap"></i> Format: <span id="dtFormat" style="color:white; font-weight:bold; margin-left: 5px;">Loading...</span></div>
                         </div>
                     </div>
+
                     
-                    <!-- ADSENSE SLOT 1: Overview Bottom -->
-                    <div class="tournyx-native-ad" style="margin-bottom: 0;">
-                        <span style="color:#555; font-size:0.6rem; margin-bottom:5px; display:block;">ADVERTISEMENT</span>
+<div class="tournyx-ad-slot">
                         <ins class="adsbygoogle"
-                             style="display:block"
+                             style="display:block; text-align:center;"
+                             data-ad-layout="in-article"
+                             data-ad-format="fluid"
                              data-ad-client="ca-pub-2610280925070403"
-                             data-ad-slot="1111111111"
-                             data-ad-format="auto"
-                             data-full-width-responsive="true"></ins>
-                        <script>
-                             (adsbygoogle = window.adsbygoogle || []).push({});
-                        </script>
+                             data-ad-slot="1234567890"></ins>
                     </div>
                 </div>
 
@@ -686,19 +680,15 @@
 
                     <div id="prizeDistributionArea">
                         </div>
-                        
-                    <!-- ADSENSE SLOT 2: Below Prize Pool -->
-                    <div class="tournyx-native-ad" style="margin-top: 25px;">
-                        <span style="color:#555; font-size:0.6rem; margin-bottom:5px; display:block;">ADVERTISEMENT</span>
+
+                    
+<div class="tournyx-ad-slot">
                         <ins class="adsbygoogle"
                              style="display:block"
                              data-ad-client="ca-pub-2610280925070403"
-                             data-ad-slot="2222222222"
+                             data-ad-slot="1234567891"
                              data-ad-format="auto"
                              data-full-width-responsive="true"></ins>
-                        <script>
-                             (adsbygoogle = window.adsbygoogle || []).push({});
-                        </script>
                     </div>
                 </div>
 
@@ -808,7 +798,7 @@
     </div>
 
     <div id="securePaymentLoader">
-        <i class="fa-solid fa-shield-halved fa-beat" id="securePaymentIcon" style="color:var(--accent-cyan); font-size:5rem; margin-bottom:20px;"></i>
+        <i class="fa-solid fa-shield-halved fa-beat" style="color:var(--accent-cyan); font-size:5rem; margin-bottom:20px;"></i>
         <h2 style="color:white; font-family:var(--font-head); text-transform:uppercase; letter-spacing:2px; text-shadow:0 0 15px var(--accent-cyan);">Securing Slot...</h2>
         <div style="color:var(--accent-green); font-family:var(--font-head); margin-top:10px; font-weight:bold;"><i class="fa-solid fa-lock"></i> 100% SECURE PAYMENT</div>
         <div class="progress-container" style="width: 200px; margin-top:20px;"><div class="progress-bar" id="secureLoaderBar" style="width: 0%; background:var(--accent-gradient);"></div></div>
@@ -917,9 +907,8 @@
         let backgroundSyncInterval = null;
         let localTournamentsData = []; 
         let activeCountdown = null;
-        let activeTimelineInterval = null; 
+        let activeTimelineInterval = null;
 
-        // --- HARDWARE BACK BUTTON LOGIC SMOOTH FIX ---
         window.addEventListener('popstate', function(event) {
             const modal = document.getElementById('tourneyDetailModal');
             if (modal && modal.classList.contains('active')) {
@@ -931,6 +920,38 @@
 
         function triggerHaptic() {
             if(navigator.vibrate) { navigator.vibrate(40); }
+        }
+        
+        // UNIQUE BATTLEGROUND GUNSHOT SYNTH
+        function playGunshotSound() {
+            try {
+                const audio = new Audio('A_quick,_aggressive__#4-1774074038662.mp3');
+                audio.volume = 1.0;
+                audio.play().catch(e => {
+                    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain); gain.connect(audioCtx.destination);
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+                    gain.gain.setValueAtTime(1, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.5);
+                    
+                    setTimeout(() => {
+                        const osc2 = audioCtx.createOscillator();
+                        const gain2 = audioCtx.createGain();
+                        osc2.connect(gain2); gain2.connect(audioCtx.destination);
+                        osc2.type = 'square';
+                        osc2.frequency.setValueAtTime(800, audioCtx.currentTime);
+                        osc2.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.1);
+                        gain2.gain.setValueAtTime(0.5, audioCtx.currentTime);
+                        gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                        osc2.start(); osc2.stop(audioCtx.currentTime + 0.1);
+                    }, 400);
+                });
+            } catch(e) {}
         }
         
         function playSuccessSound() {
@@ -947,7 +968,7 @@
                 gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
                 oscillator.start();
                 oscillator.stop(audioCtx.currentTime + 0.5);
-            } catch(e) { console.log("Audio not supported"); }
+            } catch(e) {}
         }
 
         function showToast(msg, isError = false) {
@@ -988,10 +1009,8 @@
             const loc = window.location;
             const link = loc.protocol + '//' + loc.host + loc.pathname + "?tournament=" + encodeURIComponent(tId);
             
-            let shareText = `Compete in ${activeTournament.title} - Massive Prize Pool & Live Streaming on Tournyx!`;
-            
             if (navigator.share) {
-                navigator.share({ title: activeTournament.title, text: shareText, url: link }).catch((e) => console.log(e));
+                navigator.share({ title: 'Join ' + activeTournament.title, text: 'Check out ' + activeTournament.title + ' on Tournyx!', url: link }).catch((e) => console.log(e));
             } else {
                 navigator.clipboard.writeText(link).then(() => showToast("Deep Link Copied!"));
             }
@@ -1125,7 +1144,6 @@
             }, 1000);
         }
 
-        // --- NEW TIMELINE RENDERER ---
         function renderTimeline(scheduleArr, container) {
             if(activeTimelineInterval) clearInterval(activeTimelineInterval);
             container.innerHTML = '<div class="schedule-timeline" id="stContainer"></div>';
@@ -1215,7 +1233,7 @@
         
         function formatImageUrl(url) {
             if (!url) return 'https://via.placeholder.com/600x300';
-            if (url.startsWith('data:image')) return url; // BASE64 EXACT FIX
+            if (url.startsWith('data:image')) return url;
             if (url.includes('drive.google.com/file/d/')) { let id = url.split('/d/')[1].split('/')[0]; return `https://drive.google.com/uc?export=view&id=${id}`; }
             return url;
         }
@@ -1229,10 +1247,8 @@
                 document.body.classList.add('single-page-mode');
                 document.getElementById('dmBackButton').onclick = function() { window.location.href = 'explore.html'; };
                 document.getElementById('shareLoader').style.display = 'flex';
-                document.getElementById('shareLoader').style.opacity = '1';
             }
 
-            // GUEST MODE REMOVAL OF REDIRECT & HEADER
             if(!user || !user.email) { 
                 isGuestMode = true;
                 document.getElementById('headerProfilePic').style.display = 'none';
@@ -1255,53 +1271,6 @@
             startSilentDataSync(); 
             startLandingPageTimers(); 
         });
-
-        function startSilentDataSync() {
-            if(backgroundSyncInterval) clearInterval(backgroundSyncInterval);
-            backgroundSyncInterval = setInterval(() => {
-                fetch(API_URL + "?action=get_tournaments")
-                .then(res => res.json())
-                .then(data => {
-                    if (data.status === "success") {
-                        localTournamentsData = data.data; 
-                        data.data.forEach(t => {
-                            // Check if marked deleted by backend
-                            let dbStatus = String(t.db_status || t.col_u || t.status || "").toLowerCase();
-                            if(dbStatus === "deleted") return;
-
-                            let targetDate = new Date(t.date).getTime();
-                            let now = new Date().getTime();
-                            if(!isNaN(targetDate) && (now > targetDate + (24 * 60 * 60 * 1000))) return;
-
-                            let cardIdToFind = String(t.id || t.title).trim();
-                            let totalSlots = parseInt(t.slots) || 48;
-                            let slotsFilled = parseInt(t.filled_slots) || 0;
-                            let pct = (slotsFilled / totalSlots) * 100;
-                            
-                            document.querySelectorAll('.tourney-card').forEach(card => {
-                                if(String(card.getAttribute('data-id')).trim() === cardIdToFind) {
-                                    let tracker = card.querySelector('.slot-text');
-                                    let bar = card.querySelector('.progress-bar');
-                                    if(tracker) tracker.innerHTML = `<i class="fa-solid fa-users"></i> ${slotsFilled}/${totalSlots} Slots Filled`;
-                                    if(bar) {
-                                        bar.style.width = `${pct}%`;
-                                        if (pct >= 90) bar.className = 'progress-bar full';
-                                        else if (pct >= 60) bar.className = 'progress-bar filling';
-                                        else bar.className = 'progress-bar';
-                                    }
-                                    
-                                    if(slotsFilled >= totalSlots) {
-                                        card.classList.add('is-full');
-                                        let badge = card.querySelector('.t-status-badge');
-                                        if(badge) badge.outerHTML = `<div class="t-status-badge" style="color:#ff4d4d; border-color:#ff4d4d; background:rgba(0,0,0,0.8);"><i class="fa-solid fa-users-slash"></i> SLOT FILLED</div>`;
-                                    }
-                                }
-                            });
-                        });
-                    }
-                }).catch(e => console.log("Silent sync skipped."));
-            }, 15000); 
-        }
 
         function getStatusBadgeHtml(status, isFull, isRegClosed, isCancelled) {
             if (isCancelled) return `<div class="t-status-badge" style="color:#ff4d4d; border-color:#ff4d4d; background:rgba(0,0,0,0.8);"><i class="fa-solid fa-ban"></i> CANCELLED</div>`;
@@ -1459,18 +1428,16 @@
                         
                         if (autoOpenId && (tIdSafe == autoOpenId || t.title.replace(/\s+/g, '') == autoOpenId)) {
                             setTimeout(() => {
-                                let sl = document.getElementById('shareLoader');
-                                sl.style.opacity = '0';
-                                setTimeout(() => sl.style.display = 'none', 500);
+                                document.getElementById('shareLoader').style.opacity = '0';
+                                setTimeout(() => document.getElementById('shareLoader').style.display = 'none', 400);
                                 openTournamentDetails(encodeURIComponent(JSON.stringify(t)));
                             }, 500);
                         }
                     });
                     
                     if(autoOpenId && document.getElementById('shareLoader').style.display === 'flex') {
-                        let sl = document.getElementById('shareLoader');
-                        sl.style.opacity = '0';
-                        setTimeout(() => sl.style.display = 'none', 500); 
+                        document.getElementById('shareLoader').style.opacity = '0';
+                        setTimeout(() => document.getElementById('shareLoader').style.display = 'none', 400);
                     }
                     applyFilter(); 
                 }
@@ -1478,9 +1445,7 @@
             })
             .catch(err => {
                 document.getElementById('refreshIcon').classList.remove('fa-spin');
-                let sl = document.getElementById('shareLoader');
-                sl.style.opacity = '0';
-                setTimeout(() => sl.style.display = 'none', 500);
+                document.getElementById('shareLoader').style.display = 'none';
             });
         }
 
@@ -1492,6 +1457,15 @@
                     this.classList.add('active');
                     document.querySelectorAll('.dm-tab-content').forEach(content => content.classList.remove('active'));
                     document.getElementById(this.getAttribute('data-tab')).classList.add('active');
+                    
+                    // Native AdSense Injection triggers securely when tab switches
+                    try {
+                        Array.from(document.querySelectorAll('.adsbygoogle')).forEach(ad => {
+                            if(ad.innerHTML === '') {
+                                (adsbygoogle = window.adsbygoogle || []).push({});
+                            }
+                        });
+                    } catch(e) {}
                 });
             });
         }
@@ -1536,7 +1510,7 @@
                     let applyBlur = isFull || isRegClosed || isCancelled || sLower.includes("completed");
                     let isMega = parseInt(t.prize) >= 5000;
                     
-                    let cardClasses = ['tourney-card'];
+                    let cardClasses = ['org-other-card'];
                     if (applyBlur) {
                         cardClasses.push('is-full');
                     } else {
@@ -1546,7 +1520,6 @@
                     }
 
                     let card = document.createElement('div');
-                    card.style.cssText = "min-width: 300px; max-width: 320px; background: var(--card-bg); border-radius: 15px; border: 1px solid var(--card-border); overflow: hidden; cursor: pointer; flex-shrink: 0;";
                     card.className = cardClasses.join(' ');
 
                     card.onclick = () => { 
@@ -1610,14 +1583,20 @@
             const t = JSON.parse(decodeURIComponent(tDataEncoded));
             activeTournament = t; 
 
-            // Single Page Search Engine Title Hack
-            if(document.body.classList.contains('single-page-mode')) {
-                document.title = t.title + " - Tournyx Esports";
-                let metaDesc = document.querySelector('meta[name="description"]');
-                if(metaDesc) metaDesc.content = "Register for " + t.title + " on Tournyx. Win amazing prizes and build your esports legacy!";
-            }
+            // Rewrite Metadata for Deep Linking
+            document.title = t.title + " - Tournyx";
+            const metaTitle = document.querySelector('meta[property="og:title"]');
+            if (metaTitle) metaTitle.setAttribute("content", t.title + " on Tournyx");
+            
+            let sLower = (t.status || "Upcoming").toLowerCase();
+            let isMega = parseInt(t.prize) >= 5000;
+            let tColor = '0, 242, 255'; // Cyan
+            if(isMega) tColor = '255, 215, 0'; // Gold
+            else if(sLower.includes('live')) tColor = '0, 255, 127'; // Green
+            
+            const modalEl = document.getElementById('tourneyDetailModal');
+            modalEl.style.setProperty('--dynamic-t-color', tColor);
 
-            // Handle Hardware Back Button Smoothly
             history.pushState({ modal: 'tourneyDetailModal' }, '', '#tournamentDetails');
 
             document.getElementById('dtBanner').src = formatImageUrl(t.banner);
@@ -1639,7 +1618,8 @@
             let hostedCount = t.org_hosted_count ? parseInt(t.org_hosted_count) : Math.max(localTournamentsData.filter(x => x.org_username === orgId || x.email === orgId).length, 1);
             document.getElementById('dtOrgStats').innerHTML = `<i class="fa-solid fa-star"></i> Hosted: ${hostedCount} Match${hostedCount > 1 ? 'es' : ''}`;
 
-            fetch(API_URL + "?action=get_avatar&username=" + encodeURIComponent(orgId))
+            // ADVANCED AVATAR FETCH (Col F Backup)
+            fetch(API_URL + "?action=get_avatar&username=" + encodeURIComponent(orgId) + "&email=" + encodeURIComponent(t.email || t.org_email || orgId))
             .then(res => res.json())
             .then(data => {
                 if(data.status === 'success') {
@@ -1662,13 +1642,11 @@
             document.getElementById('dtDescription').innerHTML = t.rules || "Standard competitive rules apply.";
             document.getElementById('dtRulesText').innerHTML = t.rules || "No specific rules provided.";
             
-            // --- NEW PRIZE DISTRIBUTION ENGINE (NO IMAGES NEEDED) ---
             const prizeArea = document.getElementById('prizeDistributionArea');
             document.getElementById('dtPrizeTotalHead').innerText = getPrizeText(t.prize, t.prize_pts);
 
             let prizeData = [];
             try {
-                // MATCHES BACKEND JSON PERFECTLY
                 let pData = t.prize_json || t.prize_distribution_image || t.prize_distribution || t.prize_image || "";
                 if(pData && pData.startsWith("{")) {
                     let parsed = typeof pData === 'string' ? JSON.parse(pData) : pData;
@@ -1678,7 +1656,6 @@
                 }
             } catch(e) { console.log("Prize parse error"); }
 
-            // Fallback for your existing individual columns (prize1, prize2, prize3)
             if (prizeData.length === 0) {
                 if(t.prize1) prizeData.push({ rank: "1st Place", val: t.prize1, class: "gold", iconColor: "#FFD700" });
                 if(t.prize2) prizeData.push({ rank: "2nd Place", val: t.prize2, class: "silver", iconColor: "#C0C0C0" });
@@ -1687,7 +1664,6 @@
 
             let prizeHTML = '';
             if (prizeData.length > 0) {
-                // Renders the 3 cards perfectly without needing an image flip
                 prizeData.forEach(p => {
                     prizeHTML += `<div class="prize-card ${p.class}">
                                     <div class="pc-rank"><i class="fa-solid fa-medal" style="color:${p.iconColor}; font-size:1.5rem;"></i> ${p.rank}</div>
@@ -1695,7 +1671,6 @@
                                   </div>`;
                 });
             } else {
-                // Fallback to Ultimate Reward Card if only total prize is listed
                 let textToDisplay = getPrizeText(t.prize, t.prize_pts);
                 prizeHTML = `
                     <div class="prize-card gold" style="justify-content: center; flex-direction: column; gap: 10px; text-align: center; padding: 25px;">
@@ -1706,11 +1681,9 @@
             }
             prizeArea.innerHTML = prizeHTML;
 
-            // --- NEW MATCH SCHEDULE TIMELINE ENGINE (NO IMAGES NEEDED) ---
             const bracketArea = document.getElementById('bracketDisplayArea');
             let scheduleData = [];
             try {
-                // MATCHES BACKEND JSON PERFECTLY
                 let rawBracket = t.bracket_json || t.bracket_image || t.bracket || "[]";
                 if(rawBracket.startsWith("[")) {
                     scheduleData = JSON.parse(rawBracket);
@@ -1734,7 +1707,6 @@
             document.getElementById('dtMatchDateRange').innerText = t.match_period || "TBA";
             
             let isFull = parseInt(t.filled_slots) >= parseInt(t.slots);
-            let sLower = (t.status || "Upcoming").toLowerCase();
             let timeData = calculateTimeRemaining(t.date);
             let isRegClosed = timeData.isClosed;
             let isCancelled = sLower.includes("cancel");
@@ -1840,11 +1812,13 @@
             document.getElementById('realViewerCount').innerText = viewCount;
             fetch(API_URL + "?action=increment_view&match_id=" + encodeURIComponent(t.id || t.title), { mode: 'no-cors' }).catch(e=>console.log(e));
 
-            // Load Organizer's Other Tournaments
             loadOtherTournaments(orgId, t.id || t.title);
 
+            document.querySelector('.dm-scroll-area').scrollTo(0,0);
             document.querySelector('.dm-nav-item[data-tab="dtTabOverview"]').click();
-            document.getElementById('tourneyDetailModal').classList.add('active');
+            modalEl.classList.add('active');
+            
+            try { Array.from(document.querySelectorAll('.adsbygoogle')).forEach(ad => { if(ad.innerHTML === '') { (adsbygoogle = window.adsbygoogle || []).push({}); } }); } catch(e) {}
         }
 
         function openHostProfile() {
@@ -1864,7 +1838,7 @@
             document.getElementById('hpSuccess').innerText = "100%"; 
             document.getElementById('hpRating').innerText = "4.9"; 
 
-            fetch(API_URL + "?action=get_avatar&username=" + encodeURIComponent(orgId))
+            fetch(API_URL + "?action=get_avatar&username=" + encodeURIComponent(orgId) + "&email=" + encodeURIComponent(t.email || t.org_email || orgId))
             .then(res => res.json())
             .then(data => {
                 if(data.status === 'success') {
@@ -1883,17 +1857,21 @@
 
         function closeDetailModal() { 
             triggerHaptic(); 
+            document.title = "Explore Tournaments - Tournyx";
+            const metaTitle = document.querySelector('meta[property="og:title"]');
+            if (metaTitle) metaTitle.setAttribute("content", "Explore Tournaments - Tournyx");
+            
             if(window.location.hash === '#tournamentDetails') {
-                history.back(); // This triggers popstate smoothly sliding the card away
+                history.back();
             } else {
                 const modal = document.getElementById('tourneyDetailModal');
                 if (modal) modal.classList.remove('active'); 
                 if(activeCountdown) clearInterval(activeCountdown);
-                if(activeTimelineInterval) clearInterval(activeTimelineInterval); // Cleanly stop the timeline ticks
+                if(activeTimelineInterval) clearInterval(activeTimelineInterval); 
             }
         }
 
-        // --- SOLO PLAYER & CLAN LOGO RENDERING ---
+        // PERFECT CLAN LOGO & SOLO AVATAR ROUTING
         function fetchLiveTeams() {
             if(!activeTournament.title) return;
             const container = document.getElementById('liveTeamsList');
@@ -1912,7 +1890,8 @@
                 if (clansData.status === 'success' && clansData.data) {
                     clansData.data.forEach(c => {
                         let cName = c.name || c.Tag || c.tag;
-                        if (cName) clanMap[String(cName).toLowerCase().trim()] = c.logo;
+                        let rawLogo = c.logo || c.Logo || c[4]; 
+                        if (cName && rawLogo) clanMap[String(cName).toLowerCase().trim()] = rawLogo;
                     });
                 }
 
@@ -1933,17 +1912,17 @@
 
                         if (isSolo) {
                             let playerName = team.username || displayClanName;
-                            let playerAvatar = team.avatar ? formatImageUrl(team.avatar) : `https://ui-avatars.com/api/?name=${encodeURIComponent(playerName)}&background=random`;
+                            let playerAvatar = team.avatar ? formatImageUrl(team.avatar) : `https://ui-avatars.com/api/?name=${encodeURIComponent(playerName)}&background=070311&color=00f2ff&bold=true`;
                             container.innerHTML += `
                                 <div class="clan-item ${highlightClass}" style="flex-direction: row; align-items: center;">
                                     <div class="clan-item-icon" style="overflow: hidden;"><img src="${playerAvatar}"></div>
                                     <div class="clan-item-name">${playerName} ${isMyClan ? '(You)' : ''}</div>
-                                    <div style="font-size:0.75rem; color:var(--accent-cyan); font-weight: bold; background: rgba(0,242,255,0.1); padding: 4px 8px; border-radius: 6px;">Solo</div>
+                                    <div style="font-size:0.75rem; color:var(--accent-cyan); font-weight: bold; background: rgba(0,242,255,0.1); padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(0,242,255,0.2);">Solo</div>
                                 </div>
                             `;
                         } else {
                             let mappedLogo = clanMap[String(displayClanName).toLowerCase().trim()];
-                            let clanLogo = mappedLogo ? formatImageUrl(mappedLogo) : (team.logo ? formatImageUrl(team.logo) : (team.clan_logo ? formatImageUrl(team.clan_logo) : `https://ui-avatars.com/api/?name=${encodeURIComponent(displayClanName)}&background=random&color=fff&bold=true`));
+                            let clanLogo = mappedLogo ? formatImageUrl(mappedLogo) : (team.logo ? formatImageUrl(team.logo) : (team.clan_logo ? formatImageUrl(team.clan_logo) : `https://ui-avatars.com/api/?name=${encodeURIComponent(displayClanName)}&background=070311&color=00ff7f&bold=true`));
                             
                             container.innerHTML += `
                                 <div class="clan-item ${highlightClass}">
@@ -2143,7 +2122,7 @@
             document.getElementById('securePaymentLoader').style.display = 'flex';
             let txt = document.getElementById('loaderTxt');
             let bar = document.getElementById('secureLoaderBar');
-            let icon = document.querySelector('#securePaymentIcon');
+            let icon = document.querySelector('#securePaymentLoader .fa-shield-halved');
             
             bar.style.width = "0%";
             bar.style.background = "var(--accent-gradient)";
@@ -2197,14 +2176,20 @@
                 
                 userLiveMatches.push({ tournament_title: t.title, match_id: t.id || t.title });
                 
-                // PERFECT SUCCESS ANIMATION & SOUND
+                // --- GUNSHOT AUDIO & CROSSHAIR ANIMATION ---
+                playGunshotSound();
+                let animTarget = document.getElementById('crosshairAnim');
+                animTarget.classList.add('active');
+                document.body.classList.add('screen-shake');
+                setTimeout(() => document.body.classList.remove('screen-shake'), 400);
+                setTimeout(() => animTarget.classList.remove('active'), 1600);
+
                 bar.style.width = "100%"; 
                 bar.style.background = "#00ff7f";
                 icon.style.color = "#00ff7f";
-                icon.className = "fa-solid fa-check-circle confirm-pop";
+                icon.className = "fa-solid fa-check-circle";
                 txt.innerText = "Success! Slot Secured!"; 
                 txt.style.color = "#00ff7f";
-                playSuccessSound(); // TRIGGER SOUND HERE
                 
                 setTimeout(() => {
                     document.getElementById('securePaymentLoader').style.display = 'none';
@@ -2311,7 +2296,6 @@
                 body: JSON.stringify({ action: 'contribute', match_id: activeTournament.id || activeTournament.title, amount: val, user: user.email })
             });
 
-            // ADD TO LOCAL TRANSACTIONS FOR IMMEDIATE UI FEEDBACK
             let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
             let dateStr = new Date().toLocaleString('en-US', { month:'short', day:'2-digit', year:'numeric', hour:'numeric', minute:'2-digit', hour12:true });
             let newTxn = { 
