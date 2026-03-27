@@ -37,7 +37,7 @@
         :root {
             --primary-bg: #05020c;
             --secondary-bg: #0a0514;
-            --card-bg: rgba(20, 10, 35, 0.5);
+            --card-bg: rgba(20, 10, 35, 0.7); /* Deepened for gradient borders */
             --card-border: rgba(255, 255, 255, 0.08);
             --accent-cyan: #00f2ff;
             --accent-purple: #bd00ff;
@@ -114,25 +114,56 @@
         
         .real-content-wrapper { display: none; flex-direction: column; gap: 20px; width: 100%; }
 
-        /* --- 3D MATCH CARD & DYNAMIC GLOW --- */
-        .match-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; overflow: hidden; position: relative; display: flex; flex-direction: column; box-shadow: 0 10px 25px rgba(0,0,0,0.5); transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s; cursor: pointer; animation: slideInUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); backdrop-filter: blur(10px);}
+        /* --- 3D MATCH CARD & DYNAMIC GLOW (UPGRADED TO MATCH EXPLORE.HTML) --- */
+        .match-card { 
+            background-color: var(--card-bg); 
+            border-radius: 15px; 
+            border: 1px solid transparent;
+            background-image: linear-gradient(var(--card-bg), var(--card-bg)), var(--accent-gradient);
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+            overflow: hidden; 
+            position: relative; 
+            display: flex; 
+            flex-direction: column; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5); 
+            transition: transform 0.3s, box-shadow 0.3s; 
+            cursor: pointer; 
+            animation: slideInUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            backdrop-filter: blur(10px);
+        }
         .match-card:hover { transform: translateY(-3px); }
         .match-card:active { transform: scale(0.98); }
         
-        .match-card.glow-upcoming:hover { border-color: var(--accent-cyan); box-shadow: 0 10px 30px rgba(0,242,255,0.15); }
-        .match-card.glow-live { border-color: rgba(0,255,127,0.4); box-shadow: 0 0 20px rgba(0,255,127,0.1); }
-        .match-card.glow-live:hover { border-color: var(--accent-green); box-shadow: 0 10px 30px rgba(0,255,127,0.2); }
+        .match-card.glow-upcoming { background-image: linear-gradient(var(--card-bg), var(--card-bg)), var(--accent-gradient); }
+        .match-card.glow-upcoming:hover { box-shadow: 0 5px 25px rgba(0,242,255,0.4); }
+        
+        @keyframes livePulse {
+            0% { box-shadow: 0 0 10px rgba(0, 255, 127, 0.2); }
+            50% { box-shadow: 0 0 20px rgba(0, 255, 127, 0.5); }
+            100% { box-shadow: 0 0 10px rgba(0, 255, 127, 0.2); }
+        }
+        .match-card.glow-live { background-image: linear-gradient(var(--card-bg), var(--card-bg)), linear-gradient(90deg, #00ff7f, #00b09b); animation: livePulse 2.5s infinite; }
+        
+        .match-card.glow-completed { background-image: linear-gradient(var(--card-bg), var(--card-bg)), linear-gradient(90deg, #444, #666); opacity: 0.85; filter: grayscale(15%); }
+        
+        @keyframes leavePulse {
+            0% { box-shadow: 0 0 10px rgba(255, 77, 77, 0.1); }
+            100% { box-shadow: 0 0 20px rgba(255, 77, 77, 0.3); }
+        }
+        .match-card.glow-leaved { background-image: linear-gradient(var(--card-bg), var(--card-bg)), linear-gradient(90deg, #ff4d4d, #ff9900); animation: leavePulse 3s infinite alternate;}
         
         @keyframes slideInUp { from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);} }
 
-        .m-banner-wrapper { position: relative; width: 100%; height: 140px; background: #000; overflow: hidden; }
-        .m-banner { width: 100%; height: 100%; object-fit: cover; opacity: 0.85; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .match-card:hover .m-banner { opacity: 1; transform: scale(1.08); }
+        .m-banner-wrapper { position: relative; width: 100%; height: 160px; background: #000; overflow: hidden; }
+        .m-banner-wrapper::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 60px; background: linear-gradient(to bottom, transparent, var(--card-bg)); z-index: 1; }
+        .m-banner { width: 100%; height: 100%; object-fit: cover; opacity: 0.85; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .match-card:hover .m-banner { opacity: 1; transform: scale(1.05); }
 
         .m-share-btn { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.8); color: var(--accent-cyan); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid var(--accent-cyan); backdrop-filter: blur(5px); z-index: 5; transition: 0.3s; box-shadow: 0 0 10px rgba(0,0,0,0.8); }
         .m-share-btn:hover { background: var(--accent-cyan); color: #000; transform: scale(1.1); }
 
-        .m-content { padding: 15px; }
+        .m-content { position: relative; z-index: 2; padding: 5px 15px 15px 15px; }
 
         .m-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
         .m-title-box { flex: 1; padding-right: 10px; min-width: 0; }
@@ -140,9 +171,10 @@
         .m-date { font-size: 0.8rem; color: #aaa; display: flex; align-items: center; gap: 6px; }
 
         .m-actions-box { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
-        .status-badge { color: #000; background: var(--accent-cyan); padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: bold; font-family: var(--font-head); box-shadow: 0 0 10px rgba(0,242,255,0.3); text-transform: uppercase; }
+        .status-badge { color: #000; background: var(--accent-cyan); padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: bold; font-family: var(--font-head); box-shadow: 0 0 10px rgba(0,242,255,0.3); text-transform: uppercase; border: 1px solid transparent; }
         
         .leave-btn { background: rgba(255, 77, 77, 0.1); border: 1px solid rgba(255, 77, 77, 0.4); color: #ff4d4d; padding: 6px 12px; border-radius: 8px; font-size: 0.7rem; cursor: pointer; font-weight: bold; transition: 0.3s; font-family: var(--font-head); text-transform: uppercase; z-index: 5; min-width: 65px; text-align: center;}
+        .leave-btn:active { background: #ff4d4d; color: white; transform: scale(0.95); }
 
         .m-details-row { display: flex; justify-content: space-between; font-size: 0.85rem; color: #888; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
         .m-detail-item { display: flex; align-items: center; gap: 6px; }
@@ -163,6 +195,7 @@
         
         /* Instant Share Squad Button */
         .squad-share-btn { width: 100%; text-align: center; background: rgba(0,242,255,0.1); border: 1px solid var(--accent-cyan); color: var(--accent-cyan); padding: 8px; border-radius: 8px; font-family: var(--font-head); font-size: 0.8rem; cursor: pointer; margin-top: 5px; transition: 0.3s; z-index: 5;}
+        .squad-share-btn:hover { box-shadow: 0 0 15px rgba(0,242,255,0.4); }
         .squad-share-btn:active { background: var(--accent-cyan); color: black; transform: scale(0.98);}
 
         /* DYNAMIC EMPTY STATE */
@@ -242,7 +275,7 @@
                 <a href="explore.html"><i class="fa-solid fa-compass"></i> Explore</a>
                 <a href="matches.html" class="active"><i class="fa-solid fa-trophy"></i> Matches</a>
                 <a href="clans.html"><i class="fa-solid fa-shield-halved"></i> Clan</a>
-                <a href="tournament.html" style="color:var(--accent-cyan);"><i class="fa-solid fa-plus"></i> Create</a>
+                <a href="tournament.html" style="color:var(--accent-cyan); font-size: 1.4rem;" title="Create"><i class="fa-solid fa-plus"></i></a>
             </nav>
 
             <div style="display: flex; align-items: center; gap: 8px;">
@@ -256,11 +289,11 @@
 
     <div class="stats-row">
         <div class="stat-box">
-            <div class="stat-val" id="statActive" style="color:var(--accent-cyan);">0</div>
+            <div class="stat-val" id="statActive" style="color:var(--accent-cyan);"><i class="fa-solid fa-circle-notch fa-spin" style="font-size:1rem;"></i></div>
             <div class="stat-lbl">Active Registrations</div>
         </div>
         <div class="stat-box">
-            <div class="stat-val" id="statHistory" style="color:var(--accent-purple);">0</div>
+            <div class="stat-val" id="statHistory" style="color:var(--accent-purple);"><i class="fa-solid fa-circle-notch fa-spin" style="font-size:1rem;"></i></div>
             <div class="stat-lbl">Total History</div>
         </div>
     </div>
@@ -280,7 +313,7 @@
     <div class="match-list" id="matchList">
         <div id="skeletonLoader" class="skeleton-wrapper" style="display: none;">
             <div class="s-card skeleton">
-                <div style="height: 140px; background: rgba(255,255,255,0.05);"></div>
+                <div style="height: 160px; background: rgba(255,255,255,0.05);"></div>
                 <div style="padding: 15px; display:flex; flex-direction:column; gap:10px;">
                     <div style="height: 15px; width: 60%; background: rgba(255,255,255,0.05); border-radius:5px;"></div>
                     <div style="height: 10px; width: 40%; background: rgba(255,255,255,0.05); border-radius:5px;"></div>
@@ -288,7 +321,7 @@
                 </div>
             </div>
             <div class="s-card skeleton">
-                <div style="height: 140px; background: rgba(255,255,255,0.05);"></div>
+                <div style="height: 160px; background: rgba(255,255,255,0.05);"></div>
                 <div style="padding: 15px; display:flex; flex-direction:column; gap:10px;">
                     <div style="height: 15px; width: 60%; background: rgba(255,255,255,0.05); border-radius:5px;"></div>
                     <div style="height: 10px; width: 40%; background: rgba(255,255,255,0.05); border-radius:5px;"></div>
@@ -309,7 +342,7 @@
 
     <div class="app-footer">
         © 2026 TOURNYX. All rights reserved.<br>
-        <div class="footer-made-with">made with ⚡ for gamers worldwide</div>
+        <div class="footer-made-with">made with 🔥 for gamers worldwide</div>
     </div>
 
     <nav class="bottom-nav">
@@ -463,6 +496,8 @@
 
             if (!user || !user.email) {
                 document.getElementById('skeletonLoader').style.display = 'none';
+                document.getElementById('statActive').innerHTML = "0";
+                document.getElementById('statHistory').innerHTML = "0";
                 document.getElementById('realContent').style.display = 'flex';
                 document.getElementById('realContent').innerHTML = `
                     <div class="empty-box">
@@ -476,15 +511,6 @@
 
             fetchLiveMatches();
             startSilentPolling();
-
-            setTimeout(() => {
-                const loader = document.getElementById('skeletonLoader');
-                if (loader && loader.style.display !== 'none' && globalLiveMatches.length === 0) {
-                     loader.style.display = 'none';
-                     document.getElementById('realContent').style.display = 'flex';
-                     renderMatches();
-                }
-            }, 6000);
         });
 
         function manualRefresh() {
@@ -499,6 +525,8 @@
             
             document.getElementById('realContent').style.display = 'none';
             document.getElementById('skeletonLoader').style.display = 'flex';
+            document.getElementById('statActive').innerHTML = '<i class="fa-solid fa-circle-notch fa-spin" style="font-size:1rem;"></i>';
+            document.getElementById('statHistory').innerHTML = '<i class="fa-solid fa-circle-notch fa-spin" style="font-size:1rem;"></i>';
             
             fetchLiveMatches(true).then(() => {
                 setTimeout(() => {
@@ -513,6 +541,8 @@
             const user = JSON.parse(localStorage.getItem('tournyx_user'));
             if (!user || !user.email) return;
 
+            let fetchStartTime = Date.now(); 
+
             try {
                 const [tournamentsRes, myMatchesRes] = await Promise.all([
                     fetch(API_URL + "?action=get_tournaments").then(r => r.json()),
@@ -524,76 +554,88 @@
                 let freshMatches = [];
 
                 myEntries.forEach(entry => {
-                    // IGNORE LEAVED MATCHES
-                    if(String(entry.status || "").toLowerCase() === "leaved") return;
-
+                    let entryStatus = String(entry.status || entry.col_k || "").toLowerCase().trim();
+                    let entryRefund = String(entry.refund_status || entry.refund || entry.col_l || "").toLowerCase().trim();
+                    let isLeaved = entryStatus.includes("leaved") || entryStatus.includes("withdraw");
+                    
                     let matchIdToCheck = entry.match_id || entry.id;
                     let tDetails = allTournaments.find(t => String(t.id) === String(matchIdToCheck) || String(t.match_id) === String(matchIdToCheck) || String(t.title) === String(entry.tournament_title));
                     
-                    if (tDetails) {
-                        let fetchedId = s(tDetails.room_id);
-                        if (!fetchedId || fetchedId.toLowerCase() === "pending room id" || fetchedId === "undefined") {
-                            fetchedId = s(entry.room_id);
-                        }
-                        if (!fetchedId || fetchedId.toLowerCase() === "pending room id" || fetchedId === "undefined") {
-                            fetchedId = "WAITING";
-                        }
+                    if (tDetails || isLeaved) { 
+                        let tImg = tDetails ? formatImageUrl(tDetails.banner) : 'https://via.placeholder.com/600x300/15062e/00f2ff?text=Tournament+Banner';
+                        let tTitle = tDetails ? s(tDetails.title) : s(entry.tournament_title, "Unknown Tournament");
+                        let tDate = tDetails ? (s(tDetails.match_period) || s(tDetails.date, "TBA")) : "TBA";
+                        let tStatus = tDetails ? s(tDetails.status, "Upcoming") : "Completed";
+                        
+                        let fetchedId = tDetails ? s(tDetails.room_id) : "WAITING";
+                        if (!fetchedId || fetchedId.toLowerCase() === "pending room id" || fetchedId === "undefined") fetchedId = s(entry.room_id);
+                        if (!fetchedId || fetchedId.toLowerCase() === "pending room id" || fetchedId === "undefined") fetchedId = "WAITING";
 
-                        let fetchedPass = s(tDetails.room_pass);
-                        if (!fetchedPass || fetchedPass.toLowerCase() === "waiting" || fetchedPass === "undefined") {
-                            fetchedPass = s(entry.room_pass);
-                        }
-                        if (!fetchedPass || fetchedPass === "undefined") {
-                            fetchedPass = "WAITING";
-                        }
+                        let fetchedPass = tDetails ? s(tDetails.room_pass) : "WAITING";
+                        if (!fetchedPass || fetchedPass.toLowerCase() === "waiting" || fetchedPass === "undefined") fetchedPass = s(entry.room_pass);
+                        if (!fetchedPass || fetchedPass === "undefined") fetchedPass = "WAITING";
 
-                        // Parse out JSON string if registered as Solo
                         let clanData = s(entry.clan, "Solo Player");
                         if(clanData.startsWith("{")) {
-                            try { 
-                                let pd = JSON.parse(clanData); 
-                                clanData = pd.username || "Solo Player"; 
-                            } catch(e){}
+                            try { let pd = JSON.parse(clanData); clanData = pd.username || "Solo Player"; } catch(e){}
                         }
 
+                        let entryRowStr = JSON.stringify(entry).toLowerCase();
+                        let refundIsSuccess = entryRowStr.includes("success") || entryRefund.includes("success") || entryStatus.includes("refunded");
+                        
                         freshMatches.push({
-                            match_id: s(tDetails.id) || s(tDetails.match_id) || s(entry.match_id), 
-                            name: s(tDetails.title) || s(entry.tournament_title, "Unknown Tournament"),
-                            date: s(tDetails.match_period) || s(tDetails.date, "TBA"),
-                            img: formatImageUrl(tDetails.banner),
-                            status: s(tDetails.status, "Upcoming"),
+                            match_id: s(matchIdToCheck), 
+                            name: tTitle,
+                            date: tDate,
+                            img: tImg,
+                            status: tStatus,
                             roomID: fetchedId,
                             roomPass: fetchedPass,
-                            clan: clanData
+                            clan: clanData,
+                            entryStatus: entryStatus,
+                            isLeaved: isLeaved,
+                            refundSuccess: refundIsSuccess
                         });
                     }
                 });
 
                 globalLiveMatches = freshMatches;
                 
-                // Hide skeleton and show actual content ONLY AFTER data is ready
-                document.getElementById('skeletonLoader').style.display = 'none';
-                document.getElementById('realContent').style.display = 'flex';
-                
-                renderMatches(); 
+                // --- 3 SECONDS MINIMUM LOADER ENFORCEMENT ---
+                let elapsed = Date.now() - fetchStartTime;
+                let remainingTime = 3000 - elapsed;
+                if (remainingTime < 0) remainingTime = 0;
 
-                if(isManual) showToast("Matches Synced!");
+                setTimeout(() => {
+                    document.getElementById('skeletonLoader').style.display = 'none';
+                    document.getElementById('realContent').style.display = 'flex';
+                    renderMatches(); 
+                    if(isManual) showToast("Matches Synced!");
+                }, remainingTime);
 
             } catch (error) {
                 console.error("Live Fetch Error", error);
                 
-                document.getElementById('skeletonLoader').style.display = 'none';
-                document.getElementById('realContent').style.display = 'flex';
+                let elapsed = Date.now() - fetchStartTime;
+                let remainingTime = 3000 - elapsed;
+                if (remainingTime < 0) remainingTime = 0;
 
-                if(globalLiveMatches.length === 0) {
-                    document.getElementById('realContent').innerHTML = `
-                        <div class="empty-box">
-                            <i class="fa-solid fa-wifi empty-icon" style="color:#ff4d4d; animation:none;"></i>
-                            <h3 style="color:#ff4d4d; font-family:var(--font-head);">Connection Failed</h3>
-                            <p style="font-size:0.85rem; color:#888; margin-bottom:15px;">Unable to reach live servers.</p>
-                            <button onclick="manualRefresh()" class="browse-link" style="border:none; cursor:pointer;">Try Again</button>
-                        </div>`;
-                }
+                setTimeout(() => {
+                    document.getElementById('skeletonLoader').style.display = 'none';
+                    document.getElementById('realContent').style.display = 'flex';
+                    
+                    if(globalLiveMatches.length === 0) {
+                        document.getElementById('statActive').innerHTML = "0";
+                        document.getElementById('statHistory').innerHTML = "0";
+                        document.getElementById('realContent').innerHTML = `
+                            <div class="empty-box">
+                                <i class="fa-solid fa-wifi empty-icon" style="color:#ff4d4d; animation:none;"></i>
+                                <h3 style="color:#ff4d4d; font-family:var(--font-head);">Connection Failed</h3>
+                                <p style="font-size:0.85rem; color:#888; margin-bottom:15px;">Unable to reach live servers.</p>
+                                <button onclick="manualRefresh()" class="browse-link" style="border:none; cursor:pointer;">Try Again</button>
+                            </div>`;
+                    }
+                }, remainingTime);
             }
         }
 
@@ -614,10 +656,11 @@
 
         function updateStats(matches) {
             if(!Array.isArray(matches)) matches = [];
-            let active = matches.filter(m => !s(m.status).toLowerCase().includes('completed')).length;
-            let history = matches.filter(m => s(m.status).toLowerCase().includes('completed')).length;
-            document.getElementById('statActive').innerText = active;
-            document.getElementById('statHistory').innerText = history;
+            let active = matches.filter(m => !s(m.status).toLowerCase().includes('completed') && !s(m.status).toLowerCase().includes('past') && !m.isLeaved).length;
+            let history = matches.filter(m => s(m.status).toLowerCase().includes('completed') || s(m.status).toLowerCase().includes('past') || m.isLeaved).length;
+            
+            document.getElementById('statActive').innerHTML = active;
+            document.getElementById('statHistory').innerHTML = history;
         }
 
         function highlightText(text, search) {
@@ -639,9 +682,9 @@
             let search = searchInput ? s(searchInput.value).toLowerCase() : "";
             
             let displayMatches = globalLiveMatches.filter(m => {
-                let isCompleted = s(m.status).toLowerCase().includes('completed');
-                if (currentTab === 'Upcoming') return !isCompleted;
-                return isCompleted;
+                let isCompleted = s(m.status).toLowerCase().includes('completed') || s(m.status).toLowerCase().includes('past');
+                if (currentTab === 'Upcoming') return !isCompleted && !m.isLeaved;
+                return isCompleted || m.isLeaved;
             });
 
             if (search) {
@@ -679,16 +722,70 @@
                 let sColor = "var(--accent-cyan)";
                 let glowClass = "glow-upcoming"; 
                 
-                if (sLower.includes("live")) { rStatus = "LIVE NOW"; sColor = "var(--accent-green)"; glowClass = "glow-live"; }
-                else if (sLower.includes("wait") || sLower.includes("pending")) { rStatus = "WAITING ID"; sColor = "var(--accent-orange)"; glowClass = ""; }
-                else if (sLower.includes("completed")) { rStatus = "COMPLETED"; sColor = "#888"; glowClass = ""; }
+                if (match.isLeaved) {
+                    rStatus = "WITHDRAWN";
+                    sColor = "#ff4d4d";
+                    glowClass = "glow-leaved";
+                } else if (sLower.includes("live")) { 
+                    rStatus = "LIVE NOW"; 
+                    sColor = "var(--accent-green)"; 
+                    glowClass = "glow-live"; 
+                } else if (sLower.includes("wait") || sLower.includes("pending")) { 
+                    rStatus = "WAITING ID"; 
+                    sColor = "var(--accent-orange)"; 
+                    glowClass = ""; 
+                } else if (sLower.includes("completed") || sLower.includes("past")) { 
+                    rStatus = "COMPLETED"; 
+                    sColor = "#888"; 
+                    glowClass = "glow-completed"; 
+                }
 
-                let idClass = rID === 'WAITING' ? 'val-waiting' : 'val-active';
-                let passClass = rPass === 'WAITING' ? 'val-waiting' : 'val-active';
-                let shareBtnHtml = rID !== 'WAITING' ? `<div class="squad-share-btn" onclick="shareRoomDetails(event, '${s(match.name).replace(/'/g, "\\'")}', '${rID}', '${rPass}')"><i class="fa-brands fa-whatsapp"></i> Share Details to Squad</div>` : '';
+                let roomBoxHtml = '';
+                if (match.isLeaved) {
+                    let refIcon = match.refundSuccess ? '<i class="fa-solid fa-check-circle"></i>' : '<i class="fa-solid fa-clock-rotate-left"></i>';
+                    let refText = match.refundSuccess ? 'Refund Successful' : 'Refund Pending';
+                    let refColor = match.refundSuccess ? 'var(--accent-green)' : 'var(--accent-orange)';
+                    
+                    roomBoxHtml = `
+                        <div class="room-box-container" style="justify-content: center; padding: 15px; border-color: rgba(255,255,255,0.1);">
+                            <div style="text-align: center; color: ${refColor}; font-family: var(--font-head); font-weight: bold; letter-spacing: 1px; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                ${refIcon} ${refText}
+                            </div>
+                        </div>
+                    `;
+                } else if (sLower.includes("completed") || sLower.includes("past")) {
+                     roomBoxHtml = `
+                        <div class="room-box-container" style="justify-content: center; padding: 15px; border-color: rgba(255,255,255,0.1);">
+                            <div style="text-align: center; color: #888; font-family: var(--font-head); font-weight: bold; letter-spacing: 1px; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <i class="fa-solid fa-flag-checkered"></i> MATCH ENDED
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    let idClass = rID === 'WAITING' ? 'val-waiting' : 'val-active';
+                    let passClass = rPass === 'WAITING' ? 'val-waiting' : 'val-active';
+                    let shareBtnHtml = rID !== 'WAITING' ? `<div class="squad-share-btn" onclick="shareRoomDetails(event, '${s(match.name).replace(/'/g, "\\'")}', '${rID}', '${rPass}')"><i class="fa-brands fa-whatsapp"></i> Share Details to Squad</div>` : '';
+                    roomBoxHtml = `
+                        <div class="room-box-container">
+                            <div style="display:flex; width:100%;">
+                                <div class="room-item left-item" onclick="copyRoomData(event, this.querySelector('.room-val'), '${rID}', 'Room ID')">
+                                    <span class="room-label">Room ID <i class="fa-regular fa-copy"></i></span>
+                                    <span class="room-val ${idClass}">${rID}</span>
+                                </div>
+                                <div class="room-item" onclick="copyRoomData(event, this.querySelector('.room-val'), '${rPass}', 'Password')">
+                                    <span class="room-label">Password <i class="fa-regular fa-copy"></i></span>
+                                    <span class="room-val ${passClass}">${rPass}</span>
+                                </div>
+                            </div>
+                            ${shareBtnHtml}
+                        </div>
+                    `;
+                }
                 
                 let displayTitle = highlightText(match.name, search);
                 let displayClan = highlightText(match.clan, search);
+
+                let leaveBtnHtml = (!match.isLeaved && currentTab === 'Upcoming') ? `<button onclick="confirmLeave(event, '${s(match.name).replace(/'/g, "\\'")}', '${match.match_id}')" class="leave-btn">LEAVE</button>` : '';
 
                 htmlContent += `
                     <div class="match-card ${glowClass}" onclick="viewDetails('${match.match_id}')">
@@ -706,29 +803,19 @@
                                     </div>
                                 </div>
                                 <div class="m-actions-box">
-                                    <span class="status-badge" style="background:${sColor}; color:${(sLower.includes('completed')) ? 'white' : 'black'}">${rStatus}</span>
-                                    ${(currentTab === 'Upcoming') ? `<button onclick="confirmLeave(event, '${s(match.name).replace(/'/g, "\\'")}', '${match.match_id}')" class="leave-btn">LEAVE</button>` : ''}
+                                    <span class="status-badge" style="background:${sColor}; border: 1px solid ${sColor}; color:${(sLower.includes('completed') || sLower.includes('past') || match.isLeaved) ? 'white' : 'black'}">${rStatus}</span>
+                                    ${leaveBtnHtml}
                                 </div>
                             </div>
                             
                             <div class="m-details-row">
                                 <div class="m-detail-item"><i class="fa-solid fa-shield-halved"></i> Roster: <span style="color:white; font-weight:bold;">${displayClan}</span></div>
-                                <div class="m-detail-item"><span style="color:var(--accent-green); font-weight:bold;"><i class="fa-solid fa-check-circle"></i> Confirmed</span></div>
+                                <div class="m-detail-item">
+                                    ${match.isLeaved ? `<span style="color:var(--accent-danger); font-weight:bold;"><i class="fa-solid fa-xmark-circle"></i> Withdrawn</span>` : `<span style="color:var(--accent-green); font-weight:bold;"><i class="fa-solid fa-check-circle"></i> Confirmed</span>`}
+                                </div>
                             </div>
                             
-                            <div class="room-box-container">
-                                <div style="display:flex; width:100%;">
-                                    <div class="room-item left-item" onclick="copyRoomData(event, this.querySelector('.room-val'), '${rID}', 'Room ID')">
-                                        <span class="room-label">Room ID <i class="fa-regular fa-copy"></i></span>
-                                        <span class="room-val ${idClass}">${rID}</span>
-                                    </div>
-                                    <div class="room-item" onclick="copyRoomData(event, this.querySelector('.room-val'), '${rPass}', 'Password')">
-                                        <span class="room-label">Password <i class="fa-regular fa-copy"></i></span>
-                                        <span class="room-val ${passClass}">${rPass}</span>
-                                    </div>
-                                </div>
-                                ${shareBtnHtml}
-                            </div>
+                            ${roomBoxHtml}
                         </div>
                     </div>
                 `;
@@ -758,13 +845,18 @@
                 body: JSON.stringify({ action: "unjoin", title: tournamentName, email: user.email })
             }).then(() => {
                 
-                globalLiveMatches = globalLiveMatches.filter(m => m.match_id !== matchId);
+                let match = globalLiveMatches.find(m => m.match_id === matchId);
+                if(match) {
+                    match.isLeaved = true;
+                    match.entryStatus = 'leaved';
+                    match.refundSuccess = false; 
+                }
+                
                 renderMatches();
 
                 setTimeout(() => {
                     document.getElementById('leaveOverlay').classList.remove('active');
                     showToast("Successfully withdrawn from match!");
-                    fetchLiveMatches(); 
                 }, 1000);
                 
             }).catch(e => {
