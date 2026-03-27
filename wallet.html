@@ -327,6 +327,7 @@
                 <a href="explore.html">Explore</a>
                 <a href="matches.html">Matches</a>
                 <a href="clans.html">Clan</a>
+                <a href="tournament.html" style="color:var(--accent-cyan); font-size: 1.4rem;" title="Create"><i class="fa-solid fa-plus"></i></a>
                 <a href="wallet.html" class="active">Wallet</a>
                 <a href="profile.html">Profile</a>
             </div>
@@ -565,7 +566,7 @@
 
     <div class="app-footer">
         © 2026 TOURNYX. All rights reserved.<br>
-        <div class="footer-made-with">made with ⚡ for gamers worldwide</div>
+        <div class="footer-made-with">made with 🔥 for gamers worldwide</div>
         <div style="margin-top: 15px; font-size: 0.85rem; color: #888; font-family: var(--font-head); letter-spacing: 1px;">
             Powered by <span style="font-weight: 900; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 2px;">QUVA</span>
         </div>
@@ -823,7 +824,8 @@
                 let txns = JSON.parse(localStorage.getItem('tournyx_txns')) || [];
                 let dateStr = new Date().toLocaleString('en-US', { month:'short', day:'2-digit', year:'numeric', hour:'numeric', minute:'2-digit', hour12:true });
                 
-                let newTxn = { id: "TXN" + utr.substring(6), title: "Wallet Top-up (UPI)", amount: amt, type: "Credit", status: "Pending", category: "Deposit", date: dateStr };
+                // STRICT TXN FORMATTING FOR WEBHOOK MATCHING
+                let newTxn = { id: "TXN" + utr, title: "Wallet Top-up (UPI)", amount: amt, type: "Credit", status: "Pending", category: "Deposit", date: dateStr };
                 txns.unshift(newTxn);
 
                 if(bonusAmt > 0) {
@@ -833,7 +835,8 @@
                 
                 localStorage.setItem('tournyx_txns', JSON.stringify(txns)); renderTransactions(); checkFirstDeposit(txns);
                 
-                fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "submit_utr", email: currentUser.email, amount: amt, utr: utr }) });
+                // BACKEND FETCH
+                fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "submit_utr", email: currentUser.email, amount: amt, utr: utr, date: dateStr }) });
                 if(bonusAmt > 0) { fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "claim_offer", email: currentUser.email, offerName: "First Deposit Bonus Setup", reward: bonusAmt }) }); }
             }, 8500);
         }
@@ -995,7 +998,6 @@
             document.getElementById('rcptTitle').innerText = t.title;
             document.getElementById('rcptCat').innerHTML = catStr;
             
-            // ---> THE FIX YOU REQUESTED: WRITING ID & DATE <---
             document.getElementById('receiptDate').innerText = t.date || "N/A";
             document.getElementById('receiptId').innerText = t.id || "N/A";
             
