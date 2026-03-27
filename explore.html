@@ -72,7 +72,7 @@
         /* TOP GAP PERFECTLY FIXED */
         body { background-color: var(--primary-bg); color: white; font-family: var(--font-body); padding-bottom: calc(90px + env(safe-area-bottom)); padding-top: calc(55px + env(safe-area-inset-top)); overflow-x: hidden; }
 
-        /* BATTLEGROUNDS SCREEN SHAKE */
+        /* BATTLEGROUNDS SCREEN SHAKE & FLASH */
         .screen-shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
         @keyframes shake {
             10%, 90% { transform: translate3d(-3px, 0, 0); }
@@ -80,6 +80,9 @@
             30%, 50%, 70% { transform: translate3d(-10px, 0, 0); }
             40%, 60% { transform: translate3d(10px, 0, 0); }
         }
+        .headshot-flash { position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:10001; opacity:0; pointer-events:none; }
+        .headshot-flash.active { animation: flashbang 0.5s ease-out forwards; }
+        @keyframes flashbang { 0% {opacity:1;} 100% {opacity:0;} }
 
         /* --- RESPONSIVE WRAPPER --- */
         .search-row, .game-scroll, .tourney-list, .app-footer, .top-header .header-wrapper { max-width: 1000px; margin-left: auto !important; margin-right: auto !important; width: 100%; }
@@ -168,7 +171,6 @@
         @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
         .t-banner-wrapper { position: relative; height: 160px; width: 100%; background: #000; overflow: hidden; }
-        /* PERFECT IMAGE FADE TO MATCH CARD BG */
         .t-banner-wrapper::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 60px; background: linear-gradient(to bottom, transparent, var(--card-bg)); z-index: 1; }
         .t-banner-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.85; transition: 0.5s; }
         
@@ -234,10 +236,10 @@
         .fee-tag { padding: 8px 15px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; font-size: 0.85rem; font-family: var(--font-head); color: #ccc; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; white-space: nowrap; text-align: center;}
         .fee-tag.active { background: rgba(0,242,255,0.15); border-color: var(--accent-cyan); color: var(--accent-cyan); box-shadow: 0 0 10px rgba(0,242,255,0.3); transform: scale(1.05); }
 
-        /* --- FULL SCREEN DETAIL MODAL --- */
+        /* --- FULL SCREEN DETAIL MODAL (DESKTOP RESPONSIVE) --- */
         .detail-modal { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: var(--primary-bg); z-index: 3000; 
+            z-index: 3000; 
             transform: translateY(100%); 
             transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.4s;
             display: flex; flex-direction: column; overflow: hidden; opacity: 0;
@@ -245,6 +247,11 @@
         }
         .detail-modal.active { transform: translateY(0); opacity: 1; }
         
+        /* Inner Container for Desktop Restraint */
+        .dm-container {
+            width: 100%; height: 100%; display: flex; flex-direction: column; background: var(--primary-bg); position: relative;
+        }
+
         .dm-header { background: rgba(7,3,17,0.95); padding: env(safe-area-inset-top) 15px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(var(--dynamic-t-color), 0.2); flex-shrink: 0; z-index: 10; backdrop-filter: blur(10px); transition: border-color 0.4s ease;}
         .dm-back { font-size: 1.3rem; cursor: pointer; color: white; padding: 5px; }
         .dm-title { font-family: var(--font-head); font-weight: bold; flex: 1; text-align: center; font-size: 1.1rem; text-shadow: 0 0 5px rgba(255,255,255,0.5); }
@@ -252,7 +259,7 @@
         .dm-share:active { transform: scale(0.9); }
 
         .dm-scroll-area { flex: 1; overflow-y: auto; padding-bottom: 20px; animation: fadeIn 0.4s; transition: opacity 0.3s ease-in-out; }
-        .dm-scroll-content { max-width: 800px; margin: 0 auto; position: relative; padding-bottom: 80px;} 
+        .dm-scroll-content { width: 100%; position: relative; padding-bottom: 80px;} 
         
         .dm-banner { width: 100%; height: 220px; object-fit: cover; }
         
@@ -314,13 +321,24 @@
         .st-block.expanded .st-countdown { max-height: 150px; margin-top: 15px; padding-top: 15px; border-top: 1px dashed rgba(255,255,255,0.1); }
         .st-timer-text { font-family: var(--font-head); font-size: 1.4rem; font-weight: bold; color: white; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
 
-        .prize-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); transition: transform 0.3s; cursor: pointer; }
+        /* PRIZE ANIMATIONS */
+        .prize-card { position: relative; overflow: hidden; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); transition: transform 0.3s; cursor: pointer; }
         .prize-card:hover { transform: scale(1.03) translateY(-3px); }
         .prize-card.gold { border-color: rgba(255, 215, 0, 0.4); background: rgba(255, 215, 0, 0.08); }
         .prize-card.silver { border-color: rgba(192, 192, 192, 0.4); background: rgba(192, 192, 192, 0.08); }
         .prize-card.bronze { border-color: rgba(205, 127, 50, 0.4); background: rgba(205, 127, 50, 0.08); }
-        .pc-rank { font-family: var(--font-head); font-weight: bold; font-size: 1rem; display: flex; align-items: center; gap: 10px; }
-        .pc-val { font-size: 1rem; font-weight: bold; color: var(--accent-cyan); text-shadow: 0 0 5px rgba(0,242,255,0.3); }
+        .pc-rank { font-family: var(--font-head); font-weight: bold; font-size: 1rem; display: flex; align-items: center; gap: 10px; z-index: 2; }
+        .pc-val { font-size: 1.1rem; font-weight: bold; color: var(--accent-cyan); text-shadow: 0 0 5px rgba(0,242,255,0.3); z-index: 2; }
+
+        .prize-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent); transform: rotate(45deg); animation: shimmerSweep 3s infinite linear; pointer-events: none; }
+        @keyframes shimmerSweep { 0% { transform: translateX(-100%) rotate(45deg); } 100% { transform: translateX(100%) rotate(45deg); } }
+
+        .prize-high { box-shadow: 0 0 20px rgba(var(--dynamic-t-color), 0.4); animation: highPulse 2s infinite alternate; }
+        @keyframes highPulse { 0% { box-shadow: 0 0 10px rgba(var(--dynamic-t-color), 0.2); } 100% { box-shadow: 0 0 25px rgba(var(--dynamic-t-color), 0.6); } }
+        
+        .prize-mega { border: 2px solid #FFD700; background: rgba(255,215,0,0.15) !important; animation: megaPulse 1.5s infinite alternate; }
+        .prize-mega .pc-val { color: #FFD700; text-shadow: 0 0 10px rgba(255,215,0,0.8); font-size: 1.3rem; }
+        @keyframes megaPulse { 0% { transform: scale(1); box-shadow: 0 0 20px rgba(255,215,0,0.4); } 100% { transform: scale(1.02); box-shadow: 0 0 40px rgba(255,215,0,0.8); } }
 
         .clan-item { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); padding: 12px; border-radius: 12px; margin-bottom: 10px; transition: 0.3s; cursor: pointer; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); }
         .clan-item.my-clan { border: 1px solid var(--accent-cyan); background: rgba(0,242,255,0.1); box-shadow: 0 0 10px rgba(0,242,255,0.2); }
@@ -334,7 +352,7 @@
         .tournyx-ad-slot::after { content: 'SPONSORED'; position: absolute; bottom: 5px; right: 10px; font-size: 0.5rem; color: #666; font-family: var(--font-head); pointer-events: none;}
 
         /* CROSSHAIR ANIMATION FOR SECURE SLOT */
-        .crosshair-target { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(5); opacity: 0; color: var(--accent-green); font-size: 8rem; z-index: 10000; pointer-events: none; text-shadow: 0 0 20px rgba(0,255,127,0.8);}
+        .crosshair-target { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(5); opacity: 0; color: var(--accent-cyan); font-size: 8rem; z-index: 10000; pointer-events: none; text-shadow: 0 0 20px rgba(0,242,255,0.8);}
         .crosshair-target.active { animation: targetLock 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         @keyframes targetLock {
             0% { transform: translate(-50%, -50%) scale(5) rotate(45deg); opacity: 0; }
@@ -343,12 +361,20 @@
             100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 0; }
         }
 
+        /* eSPORTS SECURE LOADER */
+        #securePaymentLoader { display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:9999; background: radial-gradient(circle at center, #0a0514 0%, #000 100%); flex-direction:column; align-items:center; justify-content:center; }
+        .cyber-hex { width: 120px; height: 120px; background: rgba(0,242,255,0.05); border: 2px solid var(--accent-cyan); display: flex; align-items: center; justify-content: center; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); animation: hexPulse 2s infinite alternate; margin-bottom: 30px; box-shadow: 0 0 30px rgba(0,242,255,0.2); }
+        .glitch-text { color: white; font-family: var(--font-head); font-size: 2rem; font-weight: 900; text-transform: uppercase; letter-spacing: 4px; text-shadow: 2px 2px 0px var(--accent-cyan), -2px -2px 0px var(--accent-purple); margin-bottom: 10px; }
+        .cyber-bar-container { width: 250px; height: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(0,242,255,0.3); border-radius: 4px; margin-top: 20px; overflow: hidden; }
+        .cyber-bar-fill { height: 100%; width: 0%; background: var(--accent-cyan); box-shadow: 0 0 15px var(--accent-cyan); transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s; }
+        @keyframes hexPulse { 0% { transform: scale(1); filter: hue-rotate(0deg); } 100% { transform: scale(1.1); filter: hue-rotate(30deg); border-color: var(--accent-green); } }
+
         /* ORGANIZER'S OTHER TOURNAMENTS SLIDER */
         .org-other-card { min-width: 280px; max-width: 280px; background: rgba(255,255,255,0.03); backdrop-filter: blur(15px); border: 1px solid rgba(var(--dynamic-t-color, 255,255,255), 0.2); border-radius: 12px; overflow: hidden; cursor: pointer; transition: 0.3s; flex-shrink: 0; }
         .org-other-card:active { transform: scale(0.96); }
 
         /* LOCKED FOOTER */
-        .locked-footer { background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(10px); padding: 15px 15px calc(15px + env(safe-area-inset-bottom)); border-top: 1px solid var(--card-border); display: flex; gap: 10px; flex-shrink: 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); z-index: 50;}
+        .locked-footer { background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(10px); padding: 15px 15px calc(15px + env(safe-area-inset-bottom)); border-top: 1px solid rgba(var(--dynamic-t-color), 0.2); display: flex; gap: 10px; flex-shrink: 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); z-index: 50; transition: border-color 0.4s ease;}
         .btn-primary { flex: 1; background: var(--accent-gradient); color: white; border: none; padding: 14px; border-radius: 12px; font-family: var(--font-head); font-weight: bold; font-size: 1rem; cursor: pointer; box-shadow: 0 5px 15px rgba(189,0,255,0.4); text-transform: uppercase; transition: 0.3s; display:flex; align-items:center; justify-content:center; gap:8px;}
         .btn-primary:active { transform: scale(0.98); }
         .btn-primary:disabled { background: #2a2a3a; color: #666; border: 1px solid #444; box-shadow: none; cursor: default; }
@@ -398,6 +424,18 @@
             .tourney-list { flex-direction: row; flex-wrap: wrap; gap: 20px; }
             .bottom-nav { display: none !important; }
             body { padding-bottom: 0; }
+            
+            /* DESKTOP RESPONSIVE DETAIL MODAL & SHARE PAGE */
+            .detail-modal { align-items: center; justify-content: center; background: rgba(0,0,0,0.85) !important; backdrop-filter: blur(10px); }
+            .dm-container { width: 600px !important; height: 90vh !important; background: var(--primary-bg); border-radius: 20px; box-shadow: 0 10px 50px rgba(0,0,0,0.8); border: 1px solid rgba(var(--dynamic-t-color), 0.3); }
+            .dm-header { border-radius: 20px 20px 0 0; }
+            .locked-footer { border-radius: 0 0 20px 20px; position: absolute; bottom: 0; width: 100%; }
+            .dm-scroll-area { padding-bottom: 90px; }
+            
+            .single-page-mode .detail-modal { background: var(--primary-bg) !important; }
+            .single-page-mode .dm-container { height: 100vh !important; border-radius: 0; border: none; width: 800px !important; }
+            .single-page-mode .dm-header { border-radius: 0; }
+            .single-page-mode .locked-footer { border-radius: 0; position: fixed; }
         }
 
         /* MEDIAN DETECTOR */
@@ -414,9 +452,6 @@
 
         /* Share Page Initial Loader */
         #shareLoader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary-bg); z-index: 99999; align-items: center; justify-content: center; flex-direction: column; transition: opacity 0.4s; }
-        
-        /* NEW SECURE PAYMENT LOADER */
-        #securePaymentLoader { display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:9999; background:rgba(0,0,0,0.95); backdrop-filter:blur(10px); flex-direction:column; align-items:center; justify-content:center; }
 
         /* GUEST LOGIN POPUP */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 5000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
@@ -438,6 +473,7 @@
 <body>
     <canvas id="particles-canvas"></canvas>
 
+    <div class="headshot-flash" id="screenFlash"></div>
     <div class="crosshair-target" id="crosshairAnim"><i class="fa-solid fa-crosshairs"></i></div>
 
     <div id="shareLoader">
@@ -457,7 +493,7 @@
                 <a href="explore.html" class="active"><i class="fa-solid fa-compass"></i> Explore</a>
                 <a href="matches.html"><i class="fa-solid fa-trophy"></i> Matches</a>
                 <a href="clans.html"><i class="fa-solid fa-shield-halved"></i> Clan</a>
-                <a href="tournament.html" style="color:var(--accent-cyan);"><i class="fa-solid fa-plus"></i> Create</a>
+                <a href="tournament.html" style="color:var(--accent-cyan); font-size: 1.4rem;" title="Create"><i class="fa-solid fa-plus"></i></a>
             </nav>
 
             <div class="header-right">
@@ -544,7 +580,9 @@
         </div>
     </div>
 
+    <!-- DESKTOP RESPONSIVE DETAIL MODAL -->
     <div class="detail-modal" id="tourneyDetailModal">
+      <div class="dm-container">
         <div class="dm-header">
             <i class="fa-solid fa-arrow-left dm-back" id="dmBackButton" onclick="closeDetailModal()"></i>
             <div class="dm-title">Tournament Details</div>
@@ -642,8 +680,8 @@
                         </div>
                     </div>
 
-                    
-<div class="tournyx-ad-slot">
+                    <!-- Native AdSense Integration under Info -->
+                    <div class="tournyx-ad-slot">
                         <ins class="adsbygoogle"
                              style="display:block; text-align:center;"
                              data-ad-layout="in-article"
@@ -678,11 +716,10 @@
                     <div style="text-align:center; font-family:var(--font-head); color:var(--accent-orange); font-size:1.5rem; font-weight:bold; margin-bottom:5px;" id="dtPrizeTotalHead">0 Rs.</div>
                     <div style="text-align:center; color:#888; font-size:0.8rem; margin-bottom:20px;">Total Prize Pool</div>
 
-                    <div id="prizeDistributionArea">
-                        </div>
+                    <div id="prizeDistributionArea"></div>
 
-                    
-<div class="tournyx-ad-slot">
+                    <!-- Native AdSense Integration under Prizes -->
+                    <div class="tournyx-ad-slot">
                         <ins class="adsbygoogle"
                              style="display:block"
                              data-ad-client="ca-pub-2610280925070403"
@@ -715,6 +752,7 @@
             <button class="btn-secondary" onclick="openContributeModal(); triggerHaptic();"><i class="fa-regular fa-heart"></i> Contribute</button>
             <button class="btn-primary" id="masterJoinBtn" onclick="openRegistrationFlow(); triggerHaptic();">Register Now</button>
         </div>
+      </div>
     </div>
 
     <div class="bottom-sheet-overlay" id="hostProfileOverlay">
@@ -797,12 +835,14 @@
         </div>
     </div>
 
+    <!-- eSPORTS SECURE LOADER -->
     <div id="securePaymentLoader">
-        <i class="fa-solid fa-shield-halved fa-beat" style="color:var(--accent-cyan); font-size:5rem; margin-bottom:20px;"></i>
-        <h2 style="color:white; font-family:var(--font-head); text-transform:uppercase; letter-spacing:2px; text-shadow:0 0 15px var(--accent-cyan);">Securing Slot...</h2>
-        <div style="color:var(--accent-green); font-family:var(--font-head); margin-top:10px; font-weight:bold;"><i class="fa-solid fa-lock"></i> 100% SECURE PAYMENT</div>
-        <div class="progress-container" style="width: 200px; margin-top:20px;"><div class="progress-bar" id="secureLoaderBar" style="width: 0%; background:var(--accent-gradient);"></div></div>
-        <p id="loaderTxt" style="color:var(--accent-orange); margin-top:15px; font-size:0.9rem; font-family:var(--font-head);">Establishing secure connection...</p>
+        <div class="cyber-hex">
+            <i class="fa-solid fa-crosshairs" id="cyberIcon" style="color:var(--accent-cyan);"></i>
+        </div>
+        <h2 class="glitch-text" id="loaderTxtHead">AUTHENTICATING</h2>
+        <div class="cyber-bar-container"><div class="cyber-bar-fill" id="secureLoaderBar"></div></div>
+        <p id="loaderTxt" style="color:var(--accent-cyan); font-family:monospace; margin-top:15px; font-size:0.9rem;">Establishing secure connection...</p>
     </div>
 
     <div class="bottom-sheet-overlay" id="regOverlay">
@@ -1485,8 +1525,12 @@
                 if(!isNaN(targetDate) && (now > targetDate + (24 * 60 * 60 * 1000))) return;
 
                 let tIdSafe = String(t.id || t.title).trim();
-                let currentOrg = t.org_username || t.email;
-                if (currentOrg === orgId && tIdSafe !== currentTourneyId) {
+                
+                // PERFECT ORGANIZER FETCH (Case Insensitive Match on Both Email & Username)
+                let currentOrgEmail = String(t.org_email || t.email || t.org_username || "").toLowerCase().trim();
+                let targetOrgId = String(orgId).toLowerCase().trim();
+                
+                if ((currentOrgEmail === targetOrgId || String(t.org_username).toLowerCase().trim() === targetOrgId) && tIdSafe !== currentTourneyId) {
                     found++;
 
                     let rFee = parseInt(t.fee) || 0;
@@ -1619,7 +1663,8 @@
             document.getElementById('dtOrgStats').innerHTML = `<i class="fa-solid fa-star"></i> Hosted: ${hostedCount} Match${hostedCount > 1 ? 'es' : ''}`;
 
             // ADVANCED AVATAR FETCH (Col F Backup)
-            fetch(API_URL + "?action=get_avatar&username=" + encodeURIComponent(orgId) + "&email=" + encodeURIComponent(t.email || t.org_email || orgId))
+            let orgEmail = t.org_email || t.email || orgId;
+            fetch(API_URL + "?action=get_avatar&username=" + encodeURIComponent(orgId) + "&email=" + encodeURIComponent(orgEmail))
             .then(res => res.json())
             .then(data => {
                 if(data.status === 'success') {
@@ -1665,18 +1710,23 @@
             let prizeHTML = '';
             if (prizeData.length > 0) {
                 prizeData.forEach(p => {
-                    prizeHTML += `<div class="prize-card ${p.class}">
+                    let valNum = parseInt(String(p.val).replace(/[^0-9]/g, '')) || 0;
+                    let extraClass = valNum >= 5000 ? 'prize-mega' : (valNum >= 1000 ? 'prize-high' : '');
+                    prizeHTML += `<div class="prize-card ${p.class} ${extraClass}">
                                     <div class="pc-rank"><i class="fa-solid fa-medal" style="color:${p.iconColor}; font-size:1.5rem;"></i> ${p.rank}</div>
                                     <div class="pc-val">${p.val}</div>
                                   </div>`;
                 });
             } else {
                 let textToDisplay = getPrizeText(t.prize, t.prize_pts);
+                let valNum = parseInt(String(textToDisplay).replace(/[^0-9]/g, '')) || 0;
+                let extraClass = valNum >= 5000 ? 'prize-mega' : (valNum >= 1000 ? 'prize-high' : '');
+                
                 prizeHTML = `
-                    <div class="prize-card gold" style="justify-content: center; flex-direction: column; gap: 10px; text-align: center; padding: 25px;">
-                        <i class="fa-solid fa-trophy" style="color:#FFD700; font-size:3.5rem; filter: drop-shadow(0 0 15px rgba(255,215,0,0.5)); margin-bottom: 10px;"></i>
-                        <div style="font-family: var(--font-head); font-size: 1.5rem; font-weight: bold; color: white;">${textToDisplay}</div>
-                        <div style="font-size: 0.85rem; color: #ccc; text-transform: uppercase; letter-spacing: 1px;">Ultimate Reward</div>
+                    <div class="prize-card gold ${extraClass}" style="justify-content: center; flex-direction: column; gap: 10px; text-align: center; padding: 25px;">
+                        <i class="fa-solid fa-trophy" style="color:#FFD700; font-size:3.5rem; filter: drop-shadow(0 0 15px rgba(255,215,0,0.5)); margin-bottom: 10px; z-index:2;"></i>
+                        <div style="font-family: var(--font-head); font-size: 1.5rem; font-weight: bold; color: white; z-index:2;">${textToDisplay}</div>
+                        <div style="font-size: 0.85rem; color: #ccc; text-transform: uppercase; letter-spacing: 1px; z-index:2;">Ultimate Reward</div>
                     </div>`;
             }
             prizeArea.innerHTML = prizeHTML;
@@ -1838,7 +1888,8 @@
             document.getElementById('hpSuccess').innerText = "100%"; 
             document.getElementById('hpRating').innerText = "4.9"; 
 
-            fetch(API_URL + "?action=get_avatar&username=" + encodeURIComponent(orgId) + "&email=" + encodeURIComponent(t.email || t.org_email || orgId))
+            let orgEmail = t.org_email || t.email || orgId;
+            fetch(API_URL + "?action=get_avatar&username=" + encodeURIComponent(orgId) + "&email=" + encodeURIComponent(orgEmail))
             .then(res => res.json())
             .then(data => {
                 if(data.status === 'success') {
@@ -1889,8 +1940,8 @@
                 let clanMap = {};
                 if (clansData.status === 'success' && clansData.data) {
                     clansData.data.forEach(c => {
-                        let cName = c.name || c.Tag || c.tag;
-                        let rawLogo = c.logo || c.Logo || c[4]; 
+                        let cName = c.name || c.Tag || c.tag || c[1];
+                        let rawLogo = c.logo || c.Logo || c[4]; // Accurately points to Col E
                         if (cName && rawLogo) clanMap[String(cName).toLowerCase().trim()] = rawLogo;
                     });
                 }
@@ -1900,7 +1951,7 @@
                 if(data.status === 'success' && data.data.length > 0) {
                     document.getElementById('dtRegistrations').innerText = `${data.data.length}/${activeTournament.slots || 48}`;
                     
-                    data.data.forEach(team => {
+                    data.data.forEach((team, i) => {
                         let currentTeamStr = String(team.clan).toLowerCase().trim();
                         let isMyClan = userClanNames.includes(currentTeamStr) || (team.username === JSON.parse(localStorage.getItem('tournyx_user'))?.username);
                         let highlightClass = isMyClan ? "my-clan" : "";
@@ -1912,14 +1963,24 @@
 
                         if (isSolo) {
                             let playerName = team.username || displayClanName;
-                            let playerAvatar = team.avatar ? formatImageUrl(team.avatar) : `https://ui-avatars.com/api/?name=${encodeURIComponent(playerName)}&background=070311&color=00f2ff&bold=true`;
+                            let safePlayerName = encodeURIComponent(playerName);
+                            let fallbackAvatar = team.avatar ? formatImageUrl(team.avatar) : `https://ui-avatars.com/api/?name=${safePlayerName}&background=070311&color=00f2ff&bold=true`;
+                            
                             container.innerHTML += `
                                 <div class="clan-item ${highlightClass}" style="flex-direction: row; align-items: center;">
-                                    <div class="clan-item-icon" style="overflow: hidden;"><img src="${playerAvatar}"></div>
+                                    <div class="clan-item-icon" style="overflow: hidden;"><img id="solo-avatar-${i}" src="${fallbackAvatar}"></div>
                                     <div class="clan-item-name">${playerName} ${isMyClan ? '(You)' : ''}</div>
                                     <div style="font-size:0.75rem; color:var(--accent-cyan); font-weight: bold; background: rgba(0,242,255,0.1); padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(0,242,255,0.2);">Solo</div>
                                 </div>
                             `;
+
+                            // Fetch real avatar from Users Col F
+                            fetch(API_URL + "?action=get_avatar&username=" + safePlayerName)
+                                .then(r => r.json()).then(d => {
+                                    if(d.status === 'success' && (d.data || d.avatar)) {
+                                        document.getElementById(`solo-avatar-${i}`).src = formatImageUrl(d.data || d.avatar);
+                                    }
+                            }).catch(e => {});
                         } else {
                             let mappedLogo = clanMap[String(displayClanName).toLowerCase().trim()];
                             let clanLogo = mappedLogo ? formatImageUrl(mappedLogo) : (team.logo ? formatImageUrl(team.logo) : (team.clan_logo ? formatImageUrl(team.clan_logo) : `https://ui-avatars.com/api/?name=${encodeURIComponent(displayClanName)}&background=070311&color=00ff7f&bold=true`));
@@ -2121,25 +2182,27 @@
         function triggerSecureLoader(clanName, cost, method) {
             document.getElementById('securePaymentLoader').style.display = 'flex';
             let txt = document.getElementById('loaderTxt');
+            let head = document.getElementById('loaderTxtHead');
             let bar = document.getElementById('secureLoaderBar');
-            let icon = document.querySelector('#securePaymentLoader .fa-shield-halved');
+            let icon = document.getElementById('cyberIcon');
             
             bar.style.width = "0%";
-            bar.style.background = "var(--accent-gradient)";
+            bar.style.background = "var(--accent-cyan)";
+            icon.className = "fa-solid fa-crosshairs";
             icon.style.color = "var(--accent-cyan)";
-            icon.className = "fa-solid fa-shield-halved fa-beat";
+            head.innerText = "AUTHENTICATING";
             txt.innerText = "Establishing secure connection...";
-            txt.style.color = "var(--accent-orange)";
+            txt.style.color = "var(--accent-cyan)";
             
-            setTimeout(() => { txt.innerText = "Encrypting Data..."; bar.style.width = "40%"; }, 500);
-            setTimeout(() => { txt.innerText = "Processing Details..."; bar.style.width = "75%"; }, 1200);
-            setTimeout(() => { txt.innerText = "Securing Slot on Server..."; bar.style.width = "90%"; }, 2000);
+            setTimeout(() => { head.innerText = "ENCRYPTING"; txt.innerText = "Securing transaction protocol..."; bar.style.width = "40%"; }, 600);
+            setTimeout(() => { head.innerText = "VERIFYING"; txt.innerText = "Checking roster eligibility..."; bar.style.width = "75%"; }, 1400);
+            setTimeout(() => { head.innerText = "LOCKING SLOT"; txt.innerText = "Committing to server..."; bar.style.width = "90%"; bar.style.background = "var(--accent-orange)"; icon.style.color = "var(--accent-orange)"; }, 2200);
             setTimeout(() => { 
-                submitFinalRegistration(clanName, cost, method, bar, txt, icon);
-            }, 2800);
+                submitFinalRegistration(clanName, cost, method, bar, txt, head, icon);
+            }, 3000);
         }
 
-        function submitFinalRegistration(clanName, cost, method, bar, txt, icon) {
+        function submitFinalRegistration(clanName, cost, method, bar, txt, head, icon) {
             const t = activeTournament;
             let user = JSON.parse(localStorage.getItem('tournyx_user'));
 
@@ -2176,19 +2239,22 @@
                 
                 userLiveMatches.push({ tournament_title: t.title, match_id: t.id || t.title });
                 
-                // --- GUNSHOT AUDIO & CROSSHAIR ANIMATION ---
+                // --- INTENSE eSPORTS CONFIRMATION SEQUENCE ---
                 playGunshotSound();
                 let animTarget = document.getElementById('crosshairAnim');
                 animTarget.classList.add('active');
                 document.body.classList.add('screen-shake');
+                let flash = document.getElementById('screenFlash');
+                if(flash) { flash.classList.add('active'); setTimeout(()=>flash.classList.remove('active'), 500); }
                 setTimeout(() => document.body.classList.remove('screen-shake'), 400);
                 setTimeout(() => animTarget.classList.remove('active'), 1600);
 
                 bar.style.width = "100%"; 
                 bar.style.background = "#00ff7f";
                 icon.style.color = "#00ff7f";
-                icon.className = "fa-solid fa-check-circle";
-                txt.innerText = "Success! Slot Secured!"; 
+                icon.className = "fa-solid fa-check";
+                head.innerText = "SLOT SECURED"; 
+                txt.innerText = "Registration Confirmed."; 
                 txt.style.color = "#00ff7f";
                 
                 setTimeout(() => {
@@ -2254,12 +2320,14 @@
                             }
                         }
                     });
-                }, 1500);
+                }, 1800);
             }).catch(e => {
                 txt.innerText = "Network Error! Try Again.";
                 txt.style.color = "#ff4d4d";
                 bar.style.background = "#ff4d4d";
-                setTimeout(() => { document.getElementById('securePaymentLoader').style.display = 'none'; }, 2000);
+                icon.className = "fa-solid fa-triangle-exclamation";
+                icon.style.color = "#ff4d4d";
+                setTimeout(() => { document.getElementById('securePaymentLoader').style.display = 'none'; }, 2500);
             });
         }
 
