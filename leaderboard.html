@@ -6,14 +6,9 @@
     
     <title>Global Tournyx Elite - Live eSports Rankings</title>
     <meta name="description" content="Check the live Global Tournyx Elite Leaderboard. See the top Free Fire players, win rates, and total earnings on the Tournyx Esports platform.">
-    <meta name="keywords" content="Tournyx leaderboard, esports rankings, free fire elite, gaming tournaments, Tournyx elite">
-    <meta name="robots" content="index, follow">
-    <meta name="google-site-verification" content="YOUR_VERIFICATION_CODE" />
-    <link rel="canonical" href="https://tournyx.in/leaderboard.html" />
     
-    <meta property="og:title" content="Global Tournyx Elite - Rankings">
-    <meta property="og:description" content="View the top-ranked eSports players on Tournyx.">
-    <meta property="og:image" content="https://tournyx.in/favicon.png">
+    <link rel="icon" href="https://tournyx.in/favicon.ico" sizes="any">
+    <link rel="icon" href="https://tournyx.in/favicon.png" type="image/png" sizes="192x192">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,14 +16,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        /* --- GLOBAL VARIABLES --- */
         :root {
             --primary-bg: #05020c;
-            --card-bg: rgba(20, 10, 35, 0.4);
+            --card-bg: rgba(20, 10, 35, 0.6);
             --card-border: rgba(255, 255, 255, 0.08);
             --accent-cyan: #00f2ff;
             --accent-purple: #bd00ff;
             --accent-gold: #FFD700;
             --accent-green: #00ff7f;
+            --accent-orange: #ff9900;
             --accent-gradient: linear-gradient(135deg, #7b2cbf, #bd00ff, #00f2ff);
             --font-head: 'Orbitron', sans-serif;
             --font-body: 'Rajdhani', sans-serif;
@@ -61,52 +58,47 @@
         .top-header {
             padding: calc(15px + env(safe-area-inset-top)) 15px 15px;
             display: flex; align-items: center; justify-content: space-between;
-            background: rgba(5, 2, 12, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            background: rgba(5, 2, 12, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--card-border);
             position: sticky; top: 0; z-index: 1000; box-shadow: 0 5px 30px rgba(0,0,0,0.5);
-            animation: fadeInDown 0.6s ease backwards;
         }
-        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
         
         .back-btn { font-size: 1.2rem; color: white; cursor: pointer; transition: 0.3s; padding: 5px; text-decoration: none;}
         .back-btn:active { color: var(--accent-cyan); transform: scale(0.9); }
         
         .header-center { text-align: center; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;}
         .lb-title {
-            font-family: var(--font-head); font-size: clamp(1rem, 4vw, 1.3rem); font-weight: 900;
+            font-family: var(--font-head); font-size: clamp(1.1rem, 4vw, 1.4rem); font-weight: 900;
             background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             letter-spacing: 1px; text-transform: uppercase; line-height: 1.1;
             filter: drop-shadow(0 0 8px rgba(189,0,255,0.4));
         }
-        .lb-subtitle { font-size: 0.65rem; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 2px; font-weight: bold; margin-top: 2px; display: flex; align-items: center; gap: 5px;}
+        .lb-subtitle { font-size: 0.7rem; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 2px; font-weight: bold; margin-top: 4px; display: flex; align-items: center; gap: 5px;}
         .live-dot { width: 6px; height: 6px; background: var(--accent-green); border-radius: 50%; box-shadow: 0 0 10px var(--accent-green); animation: pulseLive 1.5s infinite; }
         @keyframes pulseLive { 0% { opacity: 1; transform:scale(1);} 50% { opacity: 0.3; transform:scale(1.5);} 100% { opacity: 1; transform:scale(1);} }
 
         .header-right { display: flex; align-items: center; gap: 15px; }
         .header-profile-img { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--accent-cyan); object-fit: cover; cursor: pointer; transition: 0.3s; box-shadow: 0 0 10px rgba(0,242,255,0.3);}
-        .header-profile-img:active { transform: scale(0.9); }
 
-        /* Desktop Nav embedded in Header */
-        .desktop-nav { display: none; gap: 25px; align-items: center; margin: 0 20px; }
-        .desktop-nav a { color: #aaa; text-decoration: none; font-family: var(--font-head); font-size: 0.85rem; font-weight: bold; text-transform: uppercase; transition: 0.3s; letter-spacing: 1px; }
-        .desktop-nav a:hover, .desktop-nav a.active { color: var(--accent-cyan); text-shadow: 0 0 10px rgba(0,242,255,0.5); }
+        /* --- TIMEFRAME & GAME FILTERS --- */
+        .filter-section { padding: 15px; background: rgba(5,2,12,0.6); border-bottom: 1px solid var(--card-border); backdrop-filter: blur(10px); }
+        
+        .time-toggle { display: flex; background: rgba(255,255,255,0.05); border-radius: 12px; padding: 4px; margin: 0 auto 15px; max-width: 400px; border: 1px solid rgba(255,255,255,0.1); }
+        .time-btn { flex: 1; text-align: center; padding: 10px; font-family: var(--font-head); font-size: 0.85rem; font-weight: bold; color: #888; text-transform: uppercase; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        .time-btn.active { background: var(--accent-gradient); color: white; box-shadow: 0 4px 15px rgba(189,0,255,0.4); }
 
-        @media (min-width: 850px) {
-            .bottom-nav { display: none !important; }
-            .desktop-nav { display: flex; }
-            .header-center { flex: unset; }
-        }
+        .game-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
+        .game-item { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.05); padding: 8px 18px; border-radius: 20px; border: 1px solid transparent; cursor: pointer; transition: 0.3s; opacity: 0.6; flex-shrink: 0; }
+        .game-item.active { opacity: 1; border: 1px solid var(--accent-cyan); background: rgba(0,242,255,0.1); box-shadow: 0 0 15px rgba(0,242,255,0.2); }
+        .game-icon { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; }
+        .game-name { font-size: 0.85rem; font-family: var(--font-head); font-weight: bold; white-space: nowrap; }
+
+        /* Countdown Timer */
+        .refresh-timer { text-align: center; font-size: 0.75rem; color: var(--accent-orange); margin-top: 10px; font-family: var(--font-head); letter-spacing: 1px; font-weight: bold;}
 
         /* --- THE PODIUM (Top 3) --- */
-        .podium-arena {
-            display: flex; justify-content: center; align-items: flex-end;
-            gap: clamp(8px, 2vw, 15px); margin: 30px 15px 40px; height: 210px;
-        }
-
-        .podium-step {
-            display: flex; flex-direction: column; align-items: center; cursor: pointer;
-            position: relative; transition: 0.3s; animation: slideUpGlow 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards;
-        }
+        .podium-arena { display: flex; justify-content: center; align-items: flex-end; gap: clamp(8px, 2vw, 15px); margin: 30px 15px 40px; height: 210px; }
+        .podium-step { display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; transition: 0.3s; animation: slideUpGlow 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards; }
         .podium-step:hover { transform: translateY(-5px); }
         .podium-step:active { transform: scale(0.95); }
         @keyframes slideUpGlow { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
@@ -115,27 +107,17 @@
         .rank-2 { z-index: 2; animation-delay: 0.4s; }
         .rank-3 { z-index: 1; animation-delay: 0.6s; }
 
-        .avatar-ring {
-            border-radius: 50%; padding: 3px; background: var(--card-border);
-            position: relative; z-index: 2; margin-bottom: -20px;
-        }
+        .avatar-ring { border-radius: 50%; padding: 3px; background: var(--card-border); position: relative; z-index: 2; margin-bottom: -20px; }
         .rank-1 .avatar-ring { width: 95px; height: 95px; background: linear-gradient(135deg, #FFD700, #FFA500); box-shadow: 0 0 30px rgba(255, 215, 0, 0.5); }
         .rank-2 .avatar-ring { width: 75px; height: 75px; background: linear-gradient(135deg, #C0C0C0, #E0E0E0); box-shadow: 0 0 20px rgba(192, 192, 192, 0.4); }
         .rank-3 .avatar-ring { width: 65px; height: 65px; background: linear-gradient(135deg, #CD7F32, #8B4513); box-shadow: 0 0 20px rgba(205, 127, 50, 0.4); }
         
         .podium-img { width: 100%; height: 100%; border-radius: 50%; border: 3px solid var(--primary-bg); object-fit: cover; background: #000; }
         
-        .crown {
-            position: absolute; top: -28px; font-size: 2rem; color: var(--accent-gold);
-            filter: drop-shadow(0 0 15px var(--accent-gold)); animation: floatCrown 2s ease-in-out infinite;
-        }
+        .crown { position: absolute; top: -28px; font-size: 2rem; color: var(--accent-gold); filter: drop-shadow(0 0 15px var(--accent-gold)); animation: floatCrown 2s ease-in-out infinite; }
         @keyframes floatCrown { 0%,100% { transform: translateY(0) rotate(-5deg); } 50% { transform: translateY(-10px) rotate(5deg); } }
 
-        .pillar {
-            background: var(--card-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            border: 1px solid var(--card-border); border-bottom: none; width: clamp(80px, 20vw, 100px); border-radius: 15px 15px 0 0;
-            display: flex; flex-direction: column; align-items: center; padding: 25px 5px 10px; transition: 0.3s;
-        }
+        .pillar { background: var(--card-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid var(--card-border); border-bottom: none; width: clamp(80px, 20vw, 100px); border-radius: 15px 15px 0 0; display: flex; flex-direction: column; align-items: center; padding: 25px 5px 10px; transition: 0.3s; }
         .rank-1 .pillar { height: 130px; width: clamp(100px, 25vw, 120px); border-color: rgba(255, 215, 0, 0.4); background: linear-gradient(to top, rgba(255,215,0,0.1), rgba(0,0,0,0.6));}
         .rank-2 .pillar { height: 95px; border-color: rgba(192, 192, 192, 0.2); }
         .rank-3 .pillar { height: 80px; border-color: rgba(205, 127, 50, 0.2); }
@@ -143,7 +125,7 @@
         .p-name { font-family: var(--font-head); font-size: 0.75rem; font-weight: bold; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
         .p-rate { color: var(--accent-cyan); font-size: 0.95rem; font-weight: bold; margin-top: 4px; text-shadow: 0 0 10px rgba(0,242,255,0.4);}
 
-        /* --- LIST AREA (Rank 4-50) --- */
+        /* --- LIST AREA (Rank 4-15) --- */
         .list-container { padding: 0 15px; display: flex; flex-direction: column; gap: 12px; }
         
         .player-row {
@@ -157,8 +139,8 @@
         .player-row:active { transform: scale(0.97); border-color: var(--accent-cyan); box-shadow: 0 0 20px rgba(0,242,255,0.2);}
         @keyframes slideInRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
 
-        .r-num { font-family: var(--font-head); font-size: 1.2rem; font-weight: 900; color: rgba(255,255,255,0.15); width: 40px; text-align: center;}
-        .r-img { width: 48px; height: 48px; border-radius: 50%; border: 2px solid var(--accent-purple); object-fit: cover; margin: 0 15px 0 5px; box-shadow: 0 0 10px rgba(189,0,255,0.3);}
+        .r-num { font-family: var(--font-head); font-size: 1.2rem; font-weight: 900; color: rgba(255,255,255,0.2); width: 35px; text-align: center;}
+        .r-img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--accent-purple); object-fit: cover; margin: 0 15px 0 5px; box-shadow: 0 0 10px rgba(189,0,255,0.3);}
         
         .r-info { flex: 1; min-width: 0; }
         .r-info h4 { font-family: var(--font-head); font-size: 1.05rem; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; }
@@ -166,114 +148,75 @@
         .r-info p { font-size: 0.75rem; color: #bbb; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;}
         
         .r-stats { text-align: right; display: flex; flex-direction: column; align-items: flex-end;}
-        .r-winrate { font-family: var(--font-head); font-size: 1.15rem; color: var(--accent-green); font-weight: bold; text-shadow: 0 0 10px rgba(0,255,127,0.4); display: flex; align-items: center; gap: 4px; }
-        .r-rewards { font-size: 0.7rem; color: var(--accent-gold); background: rgba(255,215,0,0.1); border: 1px solid rgba(255,215,0,0.2); padding: 3px 8px; border-radius: 6px; margin-top: 5px; font-weight: bold; letter-spacing: 0.5px;}
+        .r-winrate { font-family: var(--font-head); font-size: 1.15rem; color: var(--accent-green); font-weight: bold; text-shadow: 0 0 10px rgba(0,255,127,0.4); }
+        .r-rewards { font-size: 0.7rem; color: #888; margin-top: 5px; font-weight: bold; letter-spacing: 0.5px;}
+
+        /* --- SKELETON LOADER --- */
+        .skeleton-wrapper { display: flex; flex-direction: column; gap: 15px; width: 100%; padding: 20px 0;}
+        .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.02) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.02) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite linear; border-radius: 12px; height: 70px; border: 1px solid rgba(255,255,255,0.05);}
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 
         /* --- PLAYER PROFILE POPUP (MODAL) --- */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); z-index: 5000;
-            display: none; align-items: center; justify-content: center;
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            opacity: 0; transition: 0.4s; padding: 20px;
-        }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 5000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); opacity: 0; transition: 0.4s; padding: 20px; }
         .modal-overlay.active { display: flex; opacity: 1; }
-        
-        .modal-card {
-            background: rgba(10, 5, 20, 0.95); width: 100%; max-width: 400px;
-            border-radius: 24px; border: 1px solid var(--accent-cyan);
-            box-shadow: 0 15px 50px rgba(0,0,0,0.8), inset 0 0 30px rgba(0, 242, 255, 0.15);
-            transform: scale(0.85) translateY(20px); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            overflow: hidden; position: relative;
-        }
+        .modal-card { background: rgba(10, 5, 20, 0.95); width: 100%; max-width: 400px; border-radius: 24px; border: 1px solid var(--accent-cyan); box-shadow: 0 15px 50px rgba(0,0,0,0.8), inset 0 0 30px rgba(0, 242, 255, 0.15); transform: scale(0.85) translateY(20px); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); overflow: hidden; position: relative; }
         .modal-overlay.active .modal-card { transform: scale(1) translateY(0); }
-        
-        .modal-close {
-            position: absolute; top: 20px; right: 20px; font-size: 1.6rem;
-            color: #888; cursor: pointer; transition: 0.3s; z-index: 10;
-        }
+        .modal-close { position: absolute; top: 20px; right: 20px; font-size: 1.6rem; color: #888; cursor: pointer; transition: 0.3s; z-index: 10; }
         .modal-close:hover, .modal-close:active { color: var(--accent-cyan); transform: rotate(90deg) scale(1.1); }
         
-        .modal-header {
-            background: linear-gradient(180deg, rgba(0,242,255,0.15) 0%, transparent 100%);
-            padding: 35px 20px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05);
-            position: relative;
-        }
-        .modal-avatar {
-            width: 110px; height: 110px; border-radius: 50%; object-fit: cover;
-            border: 3px solid var(--accent-cyan); box-shadow: 0 0 25px rgba(0,242,255,0.5);
-            margin: 0 auto 15px; background: #000; position: relative; z-index: 2;
-        }
+        .modal-header { background: linear-gradient(180deg, rgba(0,242,255,0.15) 0%, transparent 100%); padding: 35px 20px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); position: relative; }
+        .modal-avatar { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent-cyan); box-shadow: 0 0 25px rgba(0,242,255,0.5); margin: 0 auto 15px; background: #000; position: relative; z-index: 2; }
         .modal-ign { font-family: var(--font-head); font-size: 1.6rem; font-weight: bold; margin-bottom: 5px; color: white; display: flex; justify-content: center; align-items: center; gap: 8px;}
         .modal-name { font-size: 0.85rem; color: #aaa; text-transform: uppercase; letter-spacing: 2px;}
         
         .modal-body { padding: 25px; }
         .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
-        .stat-box {
-            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 16px; padding: 18px 10px; text-align: center; transition: 0.3s;
-        }
-        .stat-box:hover { background: rgba(0,242,255,0.05); border-color: rgba(0,242,255,0.3); transform: translateY(-3px);}
+        .stat-box { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 18px 10px; text-align: center; transition: 0.3s; }
         .stat-box i { font-size: 1.4rem; margin-bottom: 10px; color: var(--accent-cyan); filter: drop-shadow(0 0 8px var(--accent-cyan));}
         .stat-val { font-family: var(--font-head); font-size: 1.4rem; font-weight: bold; color: white; margin-bottom: 4px;}
-        .stat-lbl { font-size: 0.75rem; color: #888; text-transform: uppercase; font-weight: bold; letter-spacing: 1px;}
+        .stat-lbl { font-size: 0.7rem; color: #888; text-transform: uppercase; font-weight: bold; letter-spacing: 1px;}
         
         .info-row { display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px dashed rgba(255,255,255,0.1); font-size: 0.95rem; }
         .info-row:last-child { border-bottom: none; padding-bottom: 0; }
         .info-lbl { color: #888; font-weight: 500; }
         .info-val { font-weight: bold; font-family: var(--font-head); color: white; letter-spacing: 1px;}
-
-        /* --- ERROR / LOADING STATES --- */
-        .status-msg { text-align:center; padding: 60px 20px; animation: fadeInDown 0.5s; }
-        .status-icon { font-size: 2.5rem; margin-bottom: 15px; color: var(--accent-cyan); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
-        .error-icon { color: #ff4d4d; filter: drop-shadow(0 0 10px #ff4d4d); }
-
-        /* --- EXACT MOBILE BOTTOM NAV --- */
-        .bottom-nav { 
-            position: fixed; bottom: 0; left: 0; width: 100%; 
-            height: calc(65px + env(safe-area-inset-bottom)); 
-            background: rgba(7, 3, 17, 0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); 
-            display: flex; justify-content: space-between; align-items: flex-start; 
-            padding: 10px 2px env(safe-area-inset-bottom); 
-            border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); 
-        }
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; color: #666; text-decoration: none; font-size: 0.6rem; font-family: var(--font-head); font-weight: bold; flex: 1; transition: 0.3s; text-align: center;}
-        .nav-item span { margin-top: 4px; letter-spacing: -0.3px;}
-        .nav-item i { font-size: 1.2rem; }
-        .nav-item.active { color: var(--accent-cyan); }
-        .nav-item.active i { transform: translateY(-4px); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
-        .nav-item.active span { transform: translateY(2px); color: white; text-shadow: 0 0 5px rgba(255,255,255,0.5);}
         
-        .fab-slot { flex: 1.2; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
-        .floating-plus { 
-            position: absolute; top: -25px; left: 50%; transform: translateX(-50%); 
-            width: 54px; height: 54px; background: var(--accent-gradient); 
-            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
-            border: 4px solid var(--primary-bg); box-shadow: 0 10px 25px rgba(189,0,255,0.4); 
-            color: #fff; font-size: 1.6rem; cursor: pointer; z-index: 10; transition: 0.3s;
-        }
-        .floating-plus:active { transform: translateX(-50%) scale(0.9); }
+        .tier-badge { background: rgba(189,0,255,0.15); color: var(--accent-purple); border: 1px solid var(--accent-purple); padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; text-transform: uppercase; box-shadow: 0 0 10px rgba(189,0,255,0.3);}
 
+        /* --- PERFECT BOTTOM NAVIGATION (EXPLORE.HTML CLONE) --- */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(5, 2, 12, 0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 2px env(safe-area-inset-bottom); border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); transform: translateZ(0);}
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; color: #666; text-decoration: none; font-size: 0.6rem; font-family: var(--font-head); font-weight: bold; flex: 1; transition: 0.3s; position: relative; padding: 0 2px; text-align: center;}
+        .nav-item span { margin-top: 4px; transition: 0.3s; letter-spacing: -0.3px;}
+        .nav-item i { font-size: 1.2rem; transition: 0.3s; }
+        .nav-item.active { color: var(--accent-cyan); }
+        .nav-item.active i { transform: translateY(-4px); color: var(--accent-cyan); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
+        .nav-item.active span { transform: translateY(2px); color: white; text-shadow: 0 0 5px rgba(255,255,255,0.5);}
+        .fab-slot { flex: 1.2; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
+        .floating-plus { position: absolute; top: -25px; left: 50%; transform: translateX(-50%); width: 54px; height: 54px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 4px solid var(--primary-bg); box-shadow: 0 10px 25px rgba(189,0,255,0.4); color: #fff; font-size: 1.6rem; cursor: pointer; transition: 0.3s; z-index: 10; }
+        .floating-plus:hover { transform: translateX(-50%) scale(1.1) rotate(90deg); box-shadow: 0 15px 35px rgba(0,242,255,0.6); }
+
+        @media (min-width: 850px) { .bottom-nav { display: none !important; } }
     </style>
 </head>
 <body>
+
     <div class="bg-gradient"></div>
     <div class="scanlines"></div>
     <canvas id="particles-canvas"></canvas>
 
     <header class="top-header">
-        <a href="explore.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+        <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
         
         <div class="desktop-nav">
             <a href="index.html">Home</a>
             <a href="explore.html">Explore</a>
             <a href="matches.html">Matches</a>
             <a href="leaderboard.html" class="active">Elite</a>
-            <a href="wallet.html">Wallet</a>
+            <a href="clans.html">Clan</a>
         </div>
 
         <div class="header-center">
-            <div class="lb-title">GLOBAL TOURNYX ELITE</div>
+            <div class="lb-title">TOURNYX ELITE</div>
             <div class="lb-subtitle"><span class="live-dot"></span>LIVE RANKINGS</div>
         </div>
 
@@ -282,41 +225,84 @@
         </div>
     </header>
 
-    <div class="container">
-        <div class="podium-arena" id="podiumArena" style="display:none;">
-            <div class="podium-step rank-2" onclick="openProfile(1)">
-                <div class="avatar-ring"><img src="" id="p2-img" class="podium-img"></div>
-                <div class="pillar">
-                    <div class="p-name" id="p2-name">--</div>
-                    <div class="p-rate" id="p2-rate">--</div>
-                </div>
-            </div>
-            <div class="podium-step rank-1" onclick="openProfile(0)">
-                <i class="fa-solid fa-crown crown"></i>
-                <div class="avatar-ring"><img src="" id="p1-img" class="podium-img"></div>
-                <div class="pillar">
-                    <div class="p-name" id="p1-name" style="font-size: 0.85rem; color: var(--accent-gold);">--</div>
-                    <div class="p-rate" id="p1-rate" style="font-size: 1.1rem; color: white;">--</div>
-                </div>
-            </div>
-            <div class="podium-step rank-3" onclick="openProfile(2)">
-                <div class="avatar-ring"><img src="" id="p3-img" class="podium-img"></div>
-                <div class="pillar">
-                    <div class="p-name" id="p3-name">--</div>
-                    <div class="p-rate" id="p3-rate">--</div>
-                </div>
-            </div>
+    <div class="filter-section">
+        <div class="time-toggle">
+            <div class="time-btn active" onclick="switchTime('Weekly', this)">Weekly</div>
+            <div class="time-btn" onclick="switchTime('Monthly', this)">Monthly</div>
         </div>
 
-        <div class="list-container" id="leaderboardList">
-            <div class="status-msg">
-                <i class="fa-solid fa-circle-notch fa-spin status-icon"></i>
-                <h3 style="font-family:var(--font-head); letter-spacing:1px;">Syncing Live Server...</h3>
-                <p style="color:#888; font-size:0.85rem; margin-top:5px;">Establishing 256-bit secure connection.</p>
+        <div class="game-scroll">
+            <div class="game-item active" onclick="switchGame('All', this)">
+                <img class="game-icon" src="https://cdn-icons-png.flaticon.com/512/8002/8002111.png" alt="All">
+                <span class="game-name">Global</span>
             </div>
+            <div class="game-item" onclick="switchGame('Free Fire', this)">
+                <img class="game-icon" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiJvPTY_y_XU-0Lwbnjwm7961lCDkSlQh2MtCWHunFVX6WS7WCprCtkPyB334BU_-4vGsP0NseDQf4NPBEOIxqjk7VZQqZUHpnLb4Bw-c1UeXQy2M9DzNrNdYt_aL0GEb1AlTPupC5zEjJiP3Ci0Oxk-wdg5TF5cs8_UNSe3uTT1BE884je3iXr8QlMjx8/s240/1000094210.jpg" alt="FF">
+                <span class="game-name">Free Fire</span>
+            </div>
+            <div class="game-item" onclick="switchGame('BGMI', this)">
+                <img class="game-icon" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj3MKUI87mMK4_3DltS3LQgqfrK1sESUIMMqlENdi0dPRtOFkeDbvPsTbSaCRaJOb17QZ5s9OO5dR6kFCYiCkgUCF2zBWwvGFSb3T-9Nz51XuIzMvIiOuqwcLzyzeFmn1orKbiETP4LrlaG-RidnWAAzBwUA3aL5_z62HP4_F7R02lAK_WSYdH0U_Gn7Es/s250/1000094211.jpg" alt="BGMI">
+                <span class="game-name">BGMI</span>
+            </div>
+            <div class="game-item" onclick="switchGame('CODM', this)">
+                <img class="game-icon" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg8vsDFFkLAXTA234WJzc3OqsLbmB3HBlKaXhiJo-JFVcTtYmMUI2DVdk5ljTPvGPKj-vtcejjFAxZO0sapDafr6xqN7VpHLGCcxqYWWY2LIZszXhrnnO1gcXFeJzY2EclP6G1bLoea5bshOtT7Dl3p4F_l0pGDuz1j5KJ78dEnI7cQixwAeDC1vKG89N4/s460/1000094209.jpg" alt="CODM">
+                <span class="game-name">CODM</span>
+            </div>
+        </div>
+        
+        <div class="refresh-timer" id="refreshTimer">NEXT REFRESH IN: --:--:--</div>
+    </div>
+
+    <div class="container">
+        
+        <div id="loadingSkeleton" class="skeleton-wrapper">
+            <div class="skeleton" style="height: 180px; width: 60%; margin: 0 auto; border-radius: 20px;"></div>
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+        </div>
+
+        <div id="leaderboardContent" style="display:none;">
+            <!-- THE PODIUM -->
+            <div class="podium-arena" id="podiumArena">
+                <div class="podium-step rank-2" onclick="openProfile(1)">
+                    <div class="avatar-ring"><img src="" id="p2-img" class="podium-img"></div>
+                    <div class="pillar">
+                        <div class="p-name" id="p2-name">--</div>
+                        <div class="p-rate" id="p2-rate">--</div>
+                    </div>
+                </div>
+                <div class="podium-step rank-1" onclick="openProfile(0)">
+                    <i class="fa-solid fa-crown crown"></i>
+                    <div class="avatar-ring"><img src="" id="p1-img" class="podium-img"></div>
+                    <div class="pillar">
+                        <div class="p-name" id="p1-name" style="font-size: 0.85rem; color: var(--accent-gold);">--</div>
+                        <div class="p-rate" id="p1-rate" style="font-size: 1.1rem; color: white;">--</div>
+                    </div>
+                </div>
+                <div class="podium-step rank-3" onclick="openProfile(2)">
+                    <div class="avatar-ring"><img src="" id="p3-img" class="podium-img"></div>
+                    <div class="pillar">
+                        <div class="p-name" id="p3-name">--</div>
+                        <div class="p-rate" id="p3-rate">--</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- THE LIST (Ranks 4 - 15) -->
+            <div class="list-container" id="leaderboardList"></div>
+        </div>
+        
+        <!-- ERROR STATE -->
+        <div id="errorState" style="display:none; text-align:center; padding: 50px 20px;">
+            <i class="fa-solid fa-satellite-dish" style="font-size:3rem; color:#888; margin-bottom:15px;"></i>
+            <h3 style="font-family:var(--font-head); color:#fff;">No Elites Found</h3>
+            <p style="color:#aaa; font-size:0.9rem; margin-top:5px;">Compete in matches to climb the leaderboard!</p>
         </div>
     </div>
 
+    <!-- PLAYER PROFILE MODAL -->
     <div class="modal-overlay" id="playerModal">
         <div class="modal-card">
             <i class="fa-solid fa-xmark modal-close" onclick="closeProfile()"></i>
@@ -332,51 +318,72 @@
                     <div class="stat-box">
                         <i class="fa-solid fa-crosshairs"></i>
                         <div class="stat-val" id="modalWinRate">0%</div>
-                        <div class="stat-lbl">Success Rate</div>
+                        <div class="stat-lbl">Win Rate</div>
                     </div>
                     <div class="stat-box">
-                        <i class="fa-solid fa-sack-dollar" style="color:var(--accent-gold); filter:drop-shadow(0 0 8px var(--accent-gold));"></i>
-                        <div class="stat-val" id="modalEarnings">₹0</div>
-                        <div class="stat-lbl">Total Winnings</div>
+                        <i class="fa-solid fa-gamepad" style="color:var(--accent-purple); filter:drop-shadow(0 0 8px var(--accent-purple));"></i>
+                        <div class="stat-val" id="modalMatches">0</div>
+                        <div class="stat-lbl">Matches Played</div>
                     </div>
                 </div>
                 
                 <div class="info-row">
-                    <span class="info-lbl">Game Title</span>
-                    <span class="info-val" id="modalGame">Free Fire MAX</span>
+                    <span class="info-lbl">Skill Tier</span>
+                    <span class="info-val tier-badge" id="modalTier">PRO</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-lbl">Main Game</span>
+                    <span class="info-val" id="modalGame">Global</span>
                 </div>
                 <div class="info-row">
                     <span class="info-lbl">Player UID</span>
-                    <span class="info-val" id="modalUID">123456789</span>
+                    <span class="info-val" id="modalUID" style="font-family:monospace; color:#aaa;">123456789</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-lbl">Tournyx Level</span>
-                    <span class="info-val" id="modalLevel" style="color:var(--accent-purple);">LVL 1</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-lbl">Global Rank</span>
-                    <span class="info-val" id="modalRank" style="color:var(--accent-gold);">#--</span>
+                    <span class="info-lbl">Current Rank</span>
+                    <span class="info-val" id="modalRank" style="color:var(--accent-gold); font-size: 1.1rem;">#--</span>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- PERFECT EXPLORE.HTML BOTTOM NAV -->
     <nav class="bottom-nav">
-        <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i><span>Home</span></a>
-        <a class="nav-item" href="explore.html"><i class="fa-solid fa-compass"></i><span>Explore</span></a>
-        <a class="nav-item" href="matches.html"><i class="fa-solid fa-trophy"></i><span>Matches</span></a>
+        <a class="nav-item" href="index.html">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a class="nav-item" href="explore.html">
+            <i class="fa-solid fa-compass"></i>
+            <span>Explore</span>
+        </a>
+        <a class="nav-item" href="matches.html">
+            <i class="fa-solid fa-trophy"></i>
+            <span>Matches</span>
+        </a>
         
         <div class="fab-slot">
-            <div class="floating-plus" onclick="window.location.href='tournament.html'"><i class="fa-solid fa-plus"></i></div>
+            <div class="floating-plus" onclick="window.location.href='tournament.html'">
+                <i class="fa-solid fa-plus"></i>
+            </div>
         </div>
         
-        <a class="nav-item" href="wallet.html"><i class="fa-solid fa-wallet"></i><span>Wallet</span></a>
-        <a class="nav-item active" href="leaderboard.html"><i class="fa-solid fa-ranking-star"></i><span>Elite</span></a>
-        <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+        <a class="nav-item" href="clans.html">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>Clan</span>
+        </a>
+        <a class="nav-item" href="wallet.html">
+            <i class="fa-solid fa-wallet"></i>
+            <span>Wallet</span>
+        </a>
+        <a class="nav-item active" href="leaderboard.html">
+            <i class="fa-solid fa-ranking-star"></i>
+            <span>Elite</span>
+        </a>
     </nav>
 
     <script>
-        // --- NEON PARTICLE ENGINE (Tournyx Theme) ---
+        // --- BACKGROUND PARTICLES ---
         const canvas = document.getElementById('particles-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -400,7 +407,7 @@
                 ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
             }
         }
-        function initParticles() { for (let i = 0; i < 60; i++) particles.push(new Particle()); }
+        function initParticles() { for (let i = 0; i < 50; i++) particles.push(new Particle()); }
         function animateParticles() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             particles.forEach(p => { p.update(); p.draw(); });
@@ -409,83 +416,178 @@
         initParticles(); animateParticles();
 
         // --- GLOBAL VARIABLES ---
-        let globalLeaderboardData = [];
-        
-        // YOUR EXACT BACKEND API URL
         const API_URL = "https://script.google.com/macros/s/AKfycbyqqTpgaflxKJ9xH0jq7mJ_jLzcoNhas3gNo0h5gvoa_6r5Ae9NFxJAJp7ZoYNnMRKl/exec";
+        let rawLeaderboardData = [];
+        let filteredData = [];
+        let currentTimeframe = 'Weekly';
+        let currentGame = 'All';
 
+        // --- COUNTDOWN TIMER ---
+        function startCountdown() {
+            setInterval(() => {
+                let now = new Date();
+                let target;
+                if(currentTimeframe === 'Weekly') {
+                    // Next Sunday Midnight
+                    target = new Date(now);
+                    target.setDate(now.getDate() + (7 - now.getDay()) % 7);
+                    if(target.getDay() === now.getDay()) target.setDate(target.getDate() + 7);
+                    target.setHours(0,0,0,0);
+                } else {
+                    // 1st of Next Month
+                    target = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+                }
+                
+                let diff = target - now;
+                let days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                let hrs = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                let mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                let secs = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                document.getElementById('refreshTimer').innerText = `NEXT REFRESH IN: ${days}d ${hrs}h ${mins}m ${secs}s`;
+            }, 1000);
+        }
+
+        // --- FETCH & RENDER LOGIC ---
         async function fetchLiveLeaderboard() {
             try {
                 let res = await fetch(API_URL + "?action=get_leaderboard");
                 let json = await res.json();
                 
-                if(json.status === 'success' && json.data.length > 0) {
-                    globalLeaderboardData = json.data;
-                    renderLeaderboard(globalLeaderboardData);
-                } else {
-                    throw new Error("No data found or fetch error");
-                }
+                if(json.status === 'success') {
+                    rawLeaderboardData = json.data; // Raw array from backend
+                    applyFilters();
+                } else { throw new Error("API Error"); }
             } catch (err) {
-                // Beautiful Error State (In case Apps Script fails)
-                document.getElementById('leaderboardList').innerHTML = `
-                    <div class="status-msg">
-                        <i class="fa-solid fa-triangle-exclamation status-icon error-icon"></i>
-                        <h3 style="font-family:var(--font-head); color:#ff4d4d; letter-spacing:1px;">Server Sync Failed</h3>
-                        <p style="color:#aaa; font-size:0.9rem; margin-top:5px;">Please check your connection or try again later.</p>
-                        <button onclick="fetchLiveLeaderboard()" style="margin-top:20px; background:var(--accent-gradient); border:none; padding:10px 25px; border-radius:8px; color:white; font-family:var(--font-head); font-weight:bold; cursor:pointer; box-shadow: 0 5px 15px rgba(189,0,255,0.4);">RETRY CONNECTION</button>
-                    </div>`;
+                document.getElementById('loadingSkeleton').style.display = 'none';
+                document.getElementById('errorState').style.display = 'block';
             }
         }
 
-        function renderLeaderboard(data) {
-            document.getElementById('podiumArena').style.display = "flex";
+        function switchTime(time, element) {
+            if(navigator.vibrate) navigator.vibrate(20);
+            document.querySelectorAll('.time-btn').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+            currentTimeframe = time;
+            applyFilters();
+        }
 
-            // Populate Podium (Indexes 0, 1, 2) safely
-            if(data[0]) { document.getElementById('p1-name').innerText = data[0].Username || "Player"; document.getElementById('p1-rate').innerText = data[0].SuccessRate || "0%"; document.getElementById('p1-img').src = data[0].Avatar || "https://tournyx.in/favicon.png"; }
-            if(data[1]) { document.getElementById('p2-name').innerText = data[1].Username || "Player"; document.getElementById('p2-rate').innerText = data[1].SuccessRate || "0%"; document.getElementById('p2-img').src = data[1].Avatar || "https://tournyx.in/favicon.png"; }
-            if(data[2]) { document.getElementById('p3-name').innerText = data[2].Username || "Player"; document.getElementById('p3-rate').innerText = data[2].SuccessRate || "0%"; document.getElementById('p3-img').src = data[2].Avatar || "https://tournyx.in/favicon.png"; }
+        function switchGame(game, element) {
+            if(navigator.vibrate) navigator.vibrate(20);
+            document.querySelectorAll('.game-item').forEach(item => item.classList.remove('active'));
+            element.classList.add('active');
+            currentGame = game;
+            applyFilters();
+        }
 
-            // Populate List (Rank 4 onwards)
+        function applyFilters() {
+            document.getElementById('loadingSkeleton').style.display = 'none';
+            document.getElementById('leaderboardContent').style.display = 'none';
+            document.getElementById('errorState').style.display = 'none';
+
+            // Filter by Timeframe and Game
+            filteredData = rawLeaderboardData.filter(p => {
+                let timeMatch = (p.Timeframe || 'Weekly') === currentTimeframe;
+                let gameMatch = (currentGame === 'All') || (p.Game && p.Game.toLowerCase().includes(currentGame.toLowerCase()));
+                return timeMatch && gameMatch;
+            });
+
+            // Ensure limit is strictly Top 15!
+            filteredData = filteredData.slice(0, 15);
+
+            if(filteredData.length === 0) {
+                document.getElementById('errorState').style.display = 'block';
+                return;
+            }
+
+            document.getElementById('leaderboardContent').style.display = 'block';
+            renderPodium();
+            renderList();
+        }
+
+        function renderPodium() {
+            const getSafe = (idx) => filteredData[idx] || null;
+            
+            const updatePodiumSlot = (num, player) => {
+                const elName = document.getElementById(`p${num}-name`);
+                const elRate = document.getElementById(`p${num}-rate`);
+                const elImg = document.getElementById(`p${num}-img`);
+                const parent = elName.closest('.podium-step');
+                
+                if(player) {
+                    parent.style.visibility = 'visible';
+                    elName.innerText = player.Username || "Player";
+                    elRate.innerText = player.WinRate ? `${player.WinRate}%` : "0%";
+                    elImg.src = player.Avatar || "https://tournyx.in/favicon.png";
+                } else {
+                    parent.style.visibility = 'hidden';
+                }
+            };
+
+            updatePodiumSlot(1, getSafe(0)); // Rank 1
+            updatePodiumSlot(2, getSafe(1)); // Rank 2
+            updatePodiumSlot(3, getSafe(2)); // Rank 3
+        }
+
+        function renderList() {
             const listContainer = document.getElementById('leaderboardList');
             listContainer.innerHTML = ""; 
             
-            data.slice(3).forEach((player, index) => {
-                let actualIndex = index + 3; // To match global array index for onclick
-                let delay = (index + 6) * 0.08; // Smooth staggered load
+            filteredData.slice(3).forEach((player, index) => {
+                let actualRank = index + 4; // Ranks 4 to 15
+                let arrayIndex = index + 3; // To pass to modal
+                let delay = index * 0.08; 
                 let avatarSrc = player.Avatar || "https://tournyx.in/favicon.png";
                 
                 listContainer.innerHTML += `
-                    <div class="player-row" style="animation-delay: ${delay}s" onclick="openProfile(${actualIndex})">
-                        <div class="r-num">#${player.Rank}</div>
+                    <div class="player-row" style="animation-delay: ${delay}s" onclick="openProfile(${arrayIndex})">
+                        <div class="r-num">#${actualRank}</div>
                         <img src="${avatarSrc}" class="r-img">
                         <div class="r-info">
                             <h4>${player.Username} <i class="fa-solid fa-circle-check verified-badge"></i></h4>
-                            <p>LVL ${player.Level || 1}</p>
+                            <p>${player.Game || 'Esports'}</p>
                         </div>
                         <div class="r-stats">
-                            <span class="r-winrate">${player.SuccessRate || "0%"} <i class="fa-solid fa-caret-up" style="font-size:0.8rem;"></i></span>
-                            <span class="r-rewards"><i class="fa-solid fa-coins"></i> ₹${player.Earnings || 0}</span>
+                            <span class="r-winrate">${player.WinRate || "0"}% <i class="fa-solid fa-caret-up" style="font-size:0.8rem;"></i></span>
+                            <span class="r-rewards">Played: ${player.MatchesPlayed || 0}</span>
                         </div>
                     </div>
                 `;
             });
         }
 
-        // --- MODAL LOGIC (Glassmorphism Popup) ---
+        function getSkillTier(winRate) {
+            let wr = parseFloat(winRate) || 0;
+            if(wr >= 80) return { name: "RADIANT", color: "#FFD700", bg: "rgba(255,215,0,0.15)" };
+            if(wr >= 60) return { name: "DIAMOND", color: "#00f2ff", bg: "rgba(0,242,255,0.15)" };
+            if(wr >= 40) return { name: "PLATINUM", color: "#bd00ff", bg: "rgba(189,0,255,0.15)" };
+            return { name: "GOLD", color: "#00ff7f", bg: "rgba(0,255,127,0.15)" };
+        }
+
         function openProfile(index) {
-            if(navigator.vibrate) navigator.vibrate(40); // Haptic feedback on tap
-            const player = globalLeaderboardData[index];
+            if(navigator.vibrate) navigator.vibrate(30); 
+            const player = filteredData[index];
             if(!player) return;
+
+            let tier = getSkillTier(player.WinRate);
 
             document.getElementById('modalAvatar').src = player.Avatar || "https://tournyx.in/favicon.png";
             document.getElementById('modalIGN').innerHTML = `${player.IGN || player.Username} <i class="fa-solid fa-circle-check" style="color:var(--accent-cyan); font-size:1.1rem;"></i>`;
             document.getElementById('modalFullName').innerText = player.FullName || "Classified Elite";
-            document.getElementById('modalWinRate').innerText = player.SuccessRate || "0%";
-            document.getElementById('modalEarnings').innerText = `₹${player.Earnings || 0}`;
-            document.getElementById('modalGame').innerText = player.Game || "Free Fire MAX";
+            
+            document.getElementById('modalWinRate').innerText = `${player.WinRate || 0}%`;
+            document.getElementById('modalMatches').innerText = player.MatchesPlayed || 0;
+            
+            document.getElementById('modalGame').innerText = player.Game || "All Games";
             document.getElementById('modalUID').innerText = player.UID || "HIDDEN";
-            document.getElementById('modalLevel').innerText = `LVL ${player.Level || 1}`;
-            document.getElementById('modalRank').innerText = `#${player.Rank}`;
+            document.getElementById('modalRank').innerText = `#${index + 1}`;
+
+            let tierBadge = document.getElementById('modalTier');
+            tierBadge.innerText = tier.name;
+            tierBadge.style.color = tier.color;
+            tierBadge.style.borderColor = tier.color;
+            tierBadge.style.background = tier.bg;
+            tierBadge.style.boxShadow = `0 0 10px ${tier.bg}`;
 
             document.getElementById('playerModal').classList.add('active');
         }
@@ -495,13 +597,15 @@
             document.getElementById('playerModal').classList.remove('active');
         }
 
-        // Close modal if clicked outside
         document.getElementById('playerModal').addEventListener('click', function(e) {
             if(e.target === this) closeProfile();
         });
 
-        // Initialize App
-        window.onload = fetchLiveLeaderboard;
+        // Initialize
+        window.onload = () => {
+            startCountdown();
+            fetchLiveLeaderboard();
+        };
     </script>
 </body>
 </html>
