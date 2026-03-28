@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
     <title>Global Tournyx Elite - Live eSports Rankings</title>
-    <meta name="description" content="Check the live Global Tournyx Elite Leaderboard. See the top Free Fire players, win rates, and total earnings on the Tournyx Esports platform.">
+    <meta name="description" content="Check the live Global Tournyx Elite Leaderboard. See the top players, win rates, and total earnings on the Tournyx Esports platform.">
     
     <link rel="icon" href="https://tournyx.in/favicon.ico" sizes="any">
     <link rel="icon" href="https://tournyx.in/favicon.png" type="image/png" sizes="192x192">
@@ -61,43 +61,65 @@
             background: rgba(5, 2, 12, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--card-border);
             position: sticky; top: 0; z-index: 1000; box-shadow: 0 5px 30px rgba(0,0,0,0.5);
+            animation: fadeInDown 0.6s ease backwards;
         }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
         
-        .back-btn { font-size: 1.2rem; color: white; cursor: pointer; transition: 0.3s; padding: 5px; text-decoration: none;}
+        .back-btn { font-size: 1.3rem; color: white; cursor: pointer; transition: 0.3s; padding: 5px; text-decoration: none;}
         .back-btn:active { color: var(--accent-cyan); transform: scale(0.9); }
         
-        .header-center { text-align: center; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;}
-        .lb-title {
-            font-family: var(--font-head); font-size: clamp(1.1rem, 4vw, 1.4rem); font-weight: 900;
-            background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            letter-spacing: 1px; text-transform: uppercase; line-height: 1.1;
-            filter: drop-shadow(0 0 8px rgba(189,0,255,0.4));
-        }
-        .lb-subtitle { font-size: 0.7rem; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 2px; font-weight: bold; margin-top: 4px; display: flex; align-items: center; gap: 5px;}
-        .live-dot { width: 6px; height: 6px; background: var(--accent-green); border-radius: 50%; box-shadow: 0 0 10px var(--accent-green); animation: pulseLive 1.5s infinite; }
-        @keyframes pulseLive { 0% { opacity: 1; transform:scale(1);} 50% { opacity: 0.3; transform:scale(1.5);} 100% { opacity: 1; transform:scale(1);} }
-
-        .header-right { display: flex; align-items: center; gap: 15px; }
+        .header-right { display: flex; align-items: center; gap: 15px; margin-left: auto; }
         .header-profile-img { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--accent-cyan); object-fit: cover; cursor: pointer; transition: 0.3s; box-shadow: 0 0 10px rgba(0,242,255,0.3);}
 
+        /* Desktop Nav embedded in Header */
+        .desktop-nav { display: none; gap: 25px; align-items: center; margin: 0 auto; }
+        .desktop-nav a { color: #aaa; text-decoration: none; font-family: var(--font-head); font-size: 0.85rem; font-weight: bold; text-transform: uppercase; transition: 0.3s; letter-spacing: 1px; }
+        .desktop-nav a:hover, .desktop-nav a.active { color: var(--accent-cyan); text-shadow: 0 0 10px rgba(0,242,255,0.5); }
+
+        @media (min-width: 850px) {
+            .bottom-nav { display: none !important; }
+            .desktop-nav { display: flex; }
+        }
+
+        /* --- PAGE TITLE SECTION --- */
+        .page-title-section {
+            text-align: center;
+            padding: 30px 15px 20px;
+            animation: fadeInDown 0.8s ease backwards;
+        }
+        .lb-title {
+            font-family: var(--font-head); font-size: clamp(2rem, 6vw, 2.8rem); font-weight: 900;
+            background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            letter-spacing: 2px; text-transform: uppercase; line-height: 1.1;
+            filter: drop-shadow(0 0 15px rgba(189,0,255,0.5));
+            margin-bottom: 5px;
+        }
+        .lb-subtitle { 
+            font-size: 0.85rem; color: var(--accent-cyan); text-transform: uppercase; 
+            letter-spacing: 3px; font-weight: bold; display: flex; align-items: center; 
+            justify-content: center; gap: 8px;
+        }
+        .live-dot { width: 8px; height: 8px; background: var(--accent-green); border-radius: 50%; box-shadow: 0 0 12px var(--accent-green); animation: pulseLive 1.5s infinite; }
+        @keyframes pulseLive { 0% { opacity: 1; transform:scale(1);} 50% { opacity: 0.3; transform:scale(1.5);} 100% { opacity: 1; transform:scale(1);} }
+
         /* --- TIMEFRAME & GAME FILTERS --- */
-        .filter-section { padding: 15px; background: rgba(5,2,12,0.6); border-bottom: 1px solid var(--card-border); backdrop-filter: blur(10px); }
+        .filter-section { padding: 15px; }
         
-        .time-toggle { display: flex; background: rgba(255,255,255,0.05); border-radius: 12px; padding: 4px; margin: 0 auto 15px; max-width: 400px; border: 1px solid rgba(255,255,255,0.1); }
-        .time-btn { flex: 1; text-align: center; padding: 10px; font-family: var(--font-head); font-size: 0.85rem; font-weight: bold; color: #888; text-transform: uppercase; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        .time-toggle { display: flex; background: rgba(255,255,255,0.05); border-radius: 12px; padding: 5px; margin: 0 auto 20px; max-width: 400px; border: 1px solid rgba(255,255,255,0.1); }
+        .time-btn { flex: 1; text-align: center; padding: 12px; font-family: var(--font-head); font-size: 0.9rem; font-weight: bold; color: #888; text-transform: uppercase; border-radius: 8px; cursor: pointer; transition: 0.3s; }
         .time-btn.active { background: var(--accent-gradient); color: white; box-shadow: 0 4px 15px rgba(189,0,255,0.4); }
 
-        .game-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
-        .game-item { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.05); padding: 8px 18px; border-radius: 20px; border: 1px solid transparent; cursor: pointer; transition: 0.3s; opacity: 0.6; flex-shrink: 0; }
+        .game-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; justify-content: flex-start; max-width: 600px; margin: 0 auto; }
+        .game-item { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.05); padding: 10px 20px; border-radius: 20px; border: 1px solid transparent; cursor: pointer; transition: 0.3s; opacity: 0.6; flex-shrink: 0; }
         .game-item.active { opacity: 1; border: 1px solid var(--accent-cyan); background: rgba(0,242,255,0.1); box-shadow: 0 0 15px rgba(0,242,255,0.2); }
-        .game-icon { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; }
-        .game-name { font-size: 0.85rem; font-family: var(--font-head); font-weight: bold; white-space: nowrap; }
+        .game-icon { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; }
+        .game-name { font-size: 0.9rem; font-family: var(--font-head); font-weight: bold; white-space: nowrap; }
 
         /* Countdown Timer */
-        .refresh-timer { text-align: center; font-size: 0.75rem; color: var(--accent-orange); margin-top: 10px; font-family: var(--font-head); letter-spacing: 1px; font-weight: bold;}
+        .refresh-timer { text-align: center; font-size: 0.8rem; color: var(--accent-orange); margin-top: 20px; font-family: var(--font-head); letter-spacing: 1px; font-weight: bold;}
 
         /* --- THE PODIUM (Top 3) --- */
-        .podium-arena { display: flex; justify-content: center; align-items: flex-end; gap: clamp(8px, 2vw, 15px); margin: 30px 15px 40px; height: 210px; }
+        .podium-arena { display: flex; justify-content: center; align-items: flex-end; gap: clamp(8px, 2vw, 15px); margin: 40px 15px; height: 210px; }
         .podium-step { display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; transition: 0.3s; animation: slideUpGlow 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards; }
         .podium-step:hover { transform: translateY(-5px); }
         .podium-step:active { transform: scale(0.95); }
@@ -108,22 +130,22 @@
         .rank-3 { z-index: 1; animation-delay: 0.6s; }
 
         .avatar-ring { border-radius: 50%; padding: 3px; background: var(--card-border); position: relative; z-index: 2; margin-bottom: -20px; }
-        .rank-1 .avatar-ring { width: 95px; height: 95px; background: linear-gradient(135deg, #FFD700, #FFA500); box-shadow: 0 0 30px rgba(255, 215, 0, 0.5); }
-        .rank-2 .avatar-ring { width: 75px; height: 75px; background: linear-gradient(135deg, #C0C0C0, #E0E0E0); box-shadow: 0 0 20px rgba(192, 192, 192, 0.4); }
-        .rank-3 .avatar-ring { width: 65px; height: 65px; background: linear-gradient(135deg, #CD7F32, #8B4513); box-shadow: 0 0 20px rgba(205, 127, 50, 0.4); }
+        .rank-1 .avatar-ring { width: 100px; height: 100px; background: linear-gradient(135deg, #FFD700, #FFA500); box-shadow: 0 0 30px rgba(255, 215, 0, 0.5); }
+        .rank-2 .avatar-ring { width: 80px; height: 80px; background: linear-gradient(135deg, #C0C0C0, #E0E0E0); box-shadow: 0 0 20px rgba(192, 192, 192, 0.4); }
+        .rank-3 .avatar-ring { width: 70px; height: 70px; background: linear-gradient(135deg, #CD7F32, #8B4513); box-shadow: 0 0 20px rgba(205, 127, 50, 0.4); }
         
         .podium-img { width: 100%; height: 100%; border-radius: 50%; border: 3px solid var(--primary-bg); object-fit: cover; background: #000; }
         
-        .crown { position: absolute; top: -28px; font-size: 2rem; color: var(--accent-gold); filter: drop-shadow(0 0 15px var(--accent-gold)); animation: floatCrown 2s ease-in-out infinite; }
+        .crown { position: absolute; top: -30px; font-size: 2.2rem; color: var(--accent-gold); filter: drop-shadow(0 0 15px var(--accent-gold)); animation: floatCrown 2s ease-in-out infinite; }
         @keyframes floatCrown { 0%,100% { transform: translateY(0) rotate(-5deg); } 50% { transform: translateY(-10px) rotate(5deg); } }
 
-        .pillar { background: var(--card-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid var(--card-border); border-bottom: none; width: clamp(80px, 20vw, 100px); border-radius: 15px 15px 0 0; display: flex; flex-direction: column; align-items: center; padding: 25px 5px 10px; transition: 0.3s; }
-        .rank-1 .pillar { height: 130px; width: clamp(100px, 25vw, 120px); border-color: rgba(255, 215, 0, 0.4); background: linear-gradient(to top, rgba(255,215,0,0.1), rgba(0,0,0,0.6));}
-        .rank-2 .pillar { height: 95px; border-color: rgba(192, 192, 192, 0.2); }
-        .rank-3 .pillar { height: 80px; border-color: rgba(205, 127, 50, 0.2); }
+        .pillar { background: var(--card-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid var(--card-border); border-bottom: none; width: clamp(90px, 25vw, 110px); border-radius: 15px 15px 0 0; display: flex; flex-direction: column; align-items: center; padding: 25px 5px 10px; transition: 0.3s; }
+        .rank-1 .pillar { height: 140px; width: clamp(110px, 28vw, 130px); border-color: rgba(255, 215, 0, 0.4); background: linear-gradient(to top, rgba(255,215,0,0.15), rgba(0,0,0,0.6));}
+        .rank-2 .pillar { height: 100px; border-color: rgba(192, 192, 192, 0.2); }
+        .rank-3 .pillar { height: 85px; border-color: rgba(205, 127, 50, 0.2); }
 
-        .p-name { font-family: var(--font-head); font-size: 0.75rem; font-weight: bold; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
-        .p-rate { color: var(--accent-cyan); font-size: 0.95rem; font-weight: bold; margin-top: 4px; text-shadow: 0 0 10px rgba(0,242,255,0.4);}
+        .p-name { font-family: var(--font-head); font-size: 0.8rem; font-weight: bold; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+        .p-rate { color: var(--accent-cyan); font-size: 1rem; font-weight: bold; margin-top: 4px; text-shadow: 0 0 10px rgba(0,242,255,0.4);}
 
         /* --- LIST AREA (Rank 4-15) --- */
         .list-container { padding: 0 15px; display: flex; flex-direction: column; gap: 12px; }
@@ -131,7 +153,7 @@
         .player-row {
             background: var(--card-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--card-border); border-radius: 16px; cursor: pointer;
-            padding: 12px 15px; display: flex; align-items: center;
+            padding: 15px; display: flex; align-items: center;
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); animation: slideInRight 0.5s ease backwards;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
@@ -139,21 +161,21 @@
         .player-row:active { transform: scale(0.97); border-color: var(--accent-cyan); box-shadow: 0 0 20px rgba(0,242,255,0.2);}
         @keyframes slideInRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
 
-        .r-num { font-family: var(--font-head); font-size: 1.2rem; font-weight: 900; color: rgba(255,255,255,0.2); width: 35px; text-align: center;}
-        .r-img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--accent-purple); object-fit: cover; margin: 0 15px 0 5px; box-shadow: 0 0 10px rgba(189,0,255,0.3);}
+        .r-num { font-family: var(--font-head); font-size: 1.3rem; font-weight: 900; color: rgba(255,255,255,0.2); width: 40px; text-align: center;}
+        .r-img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--accent-purple); object-fit: cover; margin: 0 15px 0 5px; box-shadow: 0 0 10px rgba(189,0,255,0.3);}
         
         .r-info { flex: 1; min-width: 0; }
-        .r-info h4 { font-family: var(--font-head); font-size: 1.05rem; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; }
+        .r-info h4 { font-family: var(--font-head); font-size: 1.1rem; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; }
         .verified-badge { color: var(--accent-cyan); font-size: 0.8rem; filter: drop-shadow(0 0 5px var(--accent-cyan));}
-        .r-info p { font-size: 0.75rem; color: #bbb; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;}
+        .r-info p { font-size: 0.8rem; color: #bbb; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;}
         
         .r-stats { text-align: right; display: flex; flex-direction: column; align-items: flex-end;}
-        .r-winrate { font-family: var(--font-head); font-size: 1.15rem; color: var(--accent-green); font-weight: bold; text-shadow: 0 0 10px rgba(0,255,127,0.4); }
-        .r-rewards { font-size: 0.7rem; color: #888; margin-top: 5px; font-weight: bold; letter-spacing: 0.5px;}
+        .r-winrate { font-family: var(--font-head); font-size: 1.2rem; color: var(--accent-green); font-weight: bold; text-shadow: 0 0 10px rgba(0,255,127,0.4); display: flex; align-items: center; gap: 4px; }
+        .r-rewards { font-size: 0.75rem; color: #888; margin-top: 5px; font-weight: bold; letter-spacing: 0.5px;}
 
         /* --- SKELETON LOADER --- */
-        .skeleton-wrapper { display: flex; flex-direction: column; gap: 15px; width: 100%; padding: 20px 0;}
-        .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.02) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.02) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite linear; border-radius: 12px; height: 70px; border: 1px solid rgba(255,255,255,0.05);}
+        .skeleton-wrapper { display: flex; flex-direction: column; gap: 15px; width: 100%; padding: 20px 15px;}
+        .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.02) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.02) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite linear; border-radius: 12px; height: 75px; border: 1px solid rgba(255,255,255,0.05);}
         @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 
         /* --- PLAYER PROFILE POPUP (MODAL) --- */
@@ -183,7 +205,12 @@
         
         .tier-badge { background: rgba(189,0,255,0.15); color: var(--accent-purple); border: 1px solid var(--accent-purple); padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; text-transform: uppercase; box-shadow: 0 0 10px rgba(189,0,255,0.3);}
 
-        /* --- PERFECT BOTTOM NAVIGATION (EXPLORE.HTML CLONE) --- */
+        /* --- ERROR / LOADING STATES --- */
+        .status-msg { text-align:center; padding: 60px 20px; animation: fadeInDown 0.5s; }
+        .status-icon { font-size: 3rem; margin-bottom: 15px; color: var(--accent-cyan); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
+        .error-icon { color: #ff4d4d; filter: drop-shadow(0 0 10px #ff4d4d); }
+
+        /* --- PERFECT BOTTOM NAVIGATION --- */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(5, 2, 12, 0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 2px env(safe-area-inset-bottom); border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); transform: translateZ(0);}
         .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; color: #666; text-decoration: none; font-size: 0.6rem; font-family: var(--font-head); font-weight: bold; flex: 1; transition: 0.3s; position: relative; padding: 0 2px; text-align: center;}
         .nav-item span { margin-top: 4px; transition: 0.3s; letter-spacing: -0.3px;}
@@ -191,6 +218,7 @@
         .nav-item.active { color: var(--accent-cyan); }
         .nav-item.active i { transform: translateY(-4px); color: var(--accent-cyan); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
         .nav-item.active span { transform: translateY(2px); color: white; text-shadow: 0 0 5px rgba(255,255,255,0.5);}
+        
         .fab-slot { flex: 1.2; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
         .floating-plus { position: absolute; top: -25px; left: 50%; transform: translateX(-50%); width: 54px; height: 54px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 4px solid var(--primary-bg); box-shadow: 0 10px 25px rgba(189,0,255,0.4); color: #fff; font-size: 1.6rem; cursor: pointer; transition: 0.3s; z-index: 10; }
         .floating-plus:hover { transform: translateX(-50%) scale(1.1) rotate(90deg); box-shadow: 0 15px 35px rgba(0,242,255,0.6); }
@@ -205,7 +233,7 @@
     <canvas id="particles-canvas"></canvas>
 
     <header class="top-header">
-        <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+        <a href="profile.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
         
         <div class="desktop-nav">
             <a href="index.html">Home</a>
@@ -215,46 +243,49 @@
             <a href="clans.html">Clan</a>
         </div>
 
-        <div class="header-center">
-            <div class="lb-title">TOURNYX ELITE</div>
-            <div class="lb-subtitle"><span class="live-dot"></span>LIVE RANKINGS</div>
-        </div>
-
         <div class="header-right">
             <img src="https://tournyx.in/favicon.png" class="header-profile-img" onclick="window.location.href='profile.html'">
         </div>
     </header>
 
-    <div class="filter-section">
-        <div class="time-toggle">
-            <div class="time-btn active" onclick="switchTime('Weekly', this)">Weekly</div>
-            <div class="time-btn" onclick="switchTime('Monthly', this)">Monthly</div>
-        </div>
-
-        <div class="game-scroll">
-            <div class="game-item active" onclick="switchGame('All', this)">
-                <img class="game-icon" src="https://cdn-icons-png.flaticon.com/512/8002/8002111.png" alt="All">
-                <span class="game-name">Global</span>
-            </div>
-            <div class="game-item" onclick="switchGame('Free Fire', this)">
-                <img class="game-icon" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiJvPTY_y_XU-0Lwbnjwm7961lCDkSlQh2MtCWHunFVX6WS7WCprCtkPyB334BU_-4vGsP0NseDQf4NPBEOIxqjk7VZQqZUHpnLb4Bw-c1UeXQy2M9DzNrNdYt_aL0GEb1AlTPupC5zEjJiP3Ci0Oxk-wdg5TF5cs8_UNSe3uTT1BE884je3iXr8QlMjx8/s240/1000094210.jpg" alt="FF">
-                <span class="game-name">Free Fire</span>
-            </div>
-            <div class="game-item" onclick="switchGame('BGMI', this)">
-                <img class="game-icon" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj3MKUI87mMK4_3DltS3LQgqfrK1sESUIMMqlENdi0dPRtOFkeDbvPsTbSaCRaJOb17QZ5s9OO5dR6kFCYiCkgUCF2zBWwvGFSb3T-9Nz51XuIzMvIiOuqwcLzyzeFmn1orKbiETP4LrlaG-RidnWAAzBwUA3aL5_z62HP4_F7R02lAK_WSYdH0U_Gn7Es/s250/1000094211.jpg" alt="BGMI">
-                <span class="game-name">BGMI</span>
-            </div>
-            <div class="game-item" onclick="switchGame('CODM', this)">
-                <img class="game-icon" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg8vsDFFkLAXTA234WJzc3OqsLbmB3HBlKaXhiJo-JFVcTtYmMUI2DVdk5ljTPvGPKj-vtcejjFAxZO0sapDafr6xqN7VpHLGCcxqYWWY2LIZszXhrnnO1gcXFeJzY2EclP6G1bLoea5bshOtT7Dl3p4F_l0pGDuz1j5KJ78dEnI7cQixwAeDC1vKG89N4/s460/1000094209.jpg" alt="CODM">
-                <span class="game-name">CODM</span>
-            </div>
-        </div>
-        
-        <div class="refresh-timer" id="refreshTimer">NEXT REFRESH IN: --:--:--</div>
-    </div>
-
     <div class="container">
         
+        <!-- PAGE TITLE MOVED OUT OF HEADER -->
+        <div class="page-title-section">
+            <h1 class="lb-title">TOURNYX ELITE</h1>
+            <div class="lb-subtitle"><span class="live-dot"></span> LIVE RANKINGS</div>
+        </div>
+
+        <!-- FILTERS -->
+        <div class="filter-section">
+            <div class="time-toggle">
+                <div class="time-btn active" onclick="switchTime('Weekly', this)">Weekly</div>
+                <div class="time-btn" onclick="switchTime('Monthly', this)">Monthly</div>
+            </div>
+
+            <div class="game-scroll">
+                <div class="game-item active" onclick="switchGame('All', this)">
+                    <img class="game-icon" src="https://cdn-icons-png.flaticon.com/512/8002/8002111.png" alt="All">
+                    <span class="game-name">Global</span>
+                </div>
+                <div class="game-item" onclick="switchGame('Free Fire', this)">
+                    <img class="game-icon" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiJvPTY_y_XU-0Lwbnjwm7961lCDkSlQh2MtCWHunFVX6WS7WCprCtkPyB334BU_-4vGsP0NseDQf4NPBEOIxqjk7VZQqZUHpnLb4Bw-c1UeXQy2M9DzNrNdYt_aL0GEb1AlTPupC5zEjJiP3Ci0Oxk-wdg5TF5cs8_UNSe3uTT1BE884je3iXr8QlMjx8/s240/1000094210.jpg" alt="FF">
+                    <span class="game-name">Free Fire</span>
+                </div>
+                <div class="game-item" onclick="switchGame('BGMI', this)">
+                    <img class="game-icon" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj3MKUI87mMK4_3DltS3LQgqfrK1sESUIMMqlENdi0dPRtOFkeDbvPsTbSaCRaJOb17QZ5s9OO5dR6kFCYiCkgUCF2zBWwvGFSb3T-9Nz51XuIzMvIiOuqwcLzyzeFmn1orKbiETP4LrlaG-RidnWAAzBwUA3aL5_z62HP4_F7R02lAK_WSYdH0U_Gn7Es/s250/1000094211.jpg" alt="BGMI">
+                    <span class="game-name">BGMI</span>
+                </div>
+                <div class="game-item" onclick="switchGame('CODM', this)">
+                    <img class="game-icon" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg8vsDFFkLAXTA234WJzc3OqsLbmB3HBlKaXhiJo-JFVcTtYmMUI2DVdk5ljTPvGPKj-vtcejjFAxZO0sapDafr6xqN7VpHLGCcxqYWWY2LIZszXhrnnO1gcXFeJzY2EclP6G1bLoea5bshOtT7Dl3p4F_l0pGDuz1j5KJ78dEnI7cQixwAeDC1vKG89N4/s460/1000094209.jpg" alt="CODM">
+                    <span class="game-name">CODM</span>
+                </div>
+            </div>
+            
+            <div class="refresh-timer" id="refreshTimer">NEXT REFRESH IN: --:--:--</div>
+        </div>
+
+        <!-- SKELETON -->
         <div id="loadingSkeleton" class="skeleton-wrapper">
             <div class="skeleton" style="height: 180px; width: 60%; margin: 0 auto; border-radius: 20px;"></div>
             <div class="skeleton"></div>
@@ -296,9 +327,9 @@
         
         <!-- ERROR STATE -->
         <div id="errorState" style="display:none; text-align:center; padding: 50px 20px;">
-            <i class="fa-solid fa-satellite-dish" style="font-size:3rem; color:#888; margin-bottom:15px;"></i>
-            <h3 style="font-family:var(--font-head); color:#fff;">No Elites Found</h3>
-            <p style="color:#aaa; font-size:0.9rem; margin-top:5px;">Compete in matches to climb the leaderboard!</p>
+            <i class="fa-solid fa-satellite-dish status-icon error-icon"></i>
+            <h3 style="font-family:var(--font-head); color:#fff; font-size:1.5rem; letter-spacing:1px;">No Elites Found</h3>
+            <p style="color:#aaa; font-size:1rem; margin-top:10px;">Compete in matches to climb the leaderboard!</p>
         </div>
     </div>
 
@@ -347,7 +378,7 @@
         </div>
     </div>
 
-    <!-- PERFECT EXPLORE.HTML BOTTOM NAV -->
+    <!-- PERFECT EXPLORE.HTML BOTTOM NAV WITH PROFILE AT END -->
     <nav class="bottom-nav">
         <a class="nav-item" href="index.html">
             <i class="fa-solid fa-house"></i>
@@ -376,9 +407,9 @@
             <i class="fa-solid fa-wallet"></i>
             <span>Wallet</span>
         </a>
-        <a class="nav-item active" href="leaderboard.html">
-            <i class="fa-solid fa-ranking-star"></i>
-            <span>Elite</span>
+        <a class="nav-item" href="profile.html">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
         </a>
     </nav>
 
@@ -428,13 +459,11 @@
                 let now = new Date();
                 let target;
                 if(currentTimeframe === 'Weekly') {
-                    // Next Sunday Midnight
                     target = new Date(now);
                     target.setDate(now.getDate() + (7 - now.getDay()) % 7);
                     if(target.getDay() === now.getDay()) target.setDate(target.getDate() + 7);
                     target.setHours(0,0,0,0);
                 } else {
-                    // 1st of Next Month
                     target = new Date(now.getFullYear(), now.getMonth() + 1, 1);
                 }
                 
@@ -455,7 +484,7 @@
                 let json = await res.json();
                 
                 if(json.status === 'success') {
-                    rawLeaderboardData = json.data; // Raw array from backend
+                    rawLeaderboardData = json.data; 
                     applyFilters();
                 } else { throw new Error("API Error"); }
             } catch (err) {
@@ -485,14 +514,12 @@
             document.getElementById('leaderboardContent').style.display = 'none';
             document.getElementById('errorState').style.display = 'none';
 
-            // Filter by Timeframe and Game
             filteredData = rawLeaderboardData.filter(p => {
                 let timeMatch = (p.Timeframe || 'Weekly') === currentTimeframe;
                 let gameMatch = (currentGame === 'All') || (p.Game && p.Game.toLowerCase().includes(currentGame.toLowerCase()));
                 return timeMatch && gameMatch;
             });
 
-            // Ensure limit is strictly Top 15!
             filteredData = filteredData.slice(0, 15);
 
             if(filteredData.length === 0) {
@@ -524,9 +551,9 @@
                 }
             };
 
-            updatePodiumSlot(1, getSafe(0)); // Rank 1
-            updatePodiumSlot(2, getSafe(1)); // Rank 2
-            updatePodiumSlot(3, getSafe(2)); // Rank 3
+            updatePodiumSlot(1, getSafe(0)); 
+            updatePodiumSlot(2, getSafe(1)); 
+            updatePodiumSlot(3, getSafe(2)); 
         }
 
         function renderList() {
@@ -534,8 +561,8 @@
             listContainer.innerHTML = ""; 
             
             filteredData.slice(3).forEach((player, index) => {
-                let actualRank = index + 4; // Ranks 4 to 15
-                let arrayIndex = index + 3; // To pass to modal
+                let actualRank = index + 4; 
+                let arrayIndex = index + 3; 
                 let delay = index * 0.08; 
                 let avatarSrc = player.Avatar || "https://tournyx.in/favicon.png";
                 
@@ -601,7 +628,6 @@
             if(e.target === this) closeProfile();
         });
 
-        // Initialize
         window.onload = () => {
             startCountdown();
             fetchLiveLeaderboard();
