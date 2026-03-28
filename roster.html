@@ -2,164 +2,217 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Organizer Portal | Tournyx TM</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Organizer Portal | Tournyx</title>
+    
+    <link rel="icon" href="https://tournyx.in/favicon.ico" sizes="any">
+    <link rel="icon" href="https://tournyx.in/favicon.png" type="image/png" sizes="192x192">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
     <style>
+        /* --- GLOBAL VARIABLES --- */
         :root {
-            --bg-dark: #0f1016;
-            --card-bg: rgba(26, 28, 35, 0.85);
-            --primary: #8a2be2;
-            --secondary: #00ffcc;
-            --text-main: #ffffff;
-            --text-sub: #aaaaaa;
-            --glass-border: rgba(138, 43, 226, 0.3);
+            --primary-bg: #070311;
+            --card-bg: rgba(20, 10, 35, 0.7);
+            --card-border: rgba(189, 0, 255, 0.3);
+            --accent-cyan: #00f2ff;
+            --accent-purple: #bd00ff;
+            --accent-green: #00ff7f;
+            --accent-gradient: linear-gradient(135deg, #7b2cbf, #bd00ff, #00f2ff);
+            --font-head: 'Orbitron', sans-serif;
+            --font-body: 'Rajdhani', sans-serif;
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            margin: 0; min-height: 100vh;
-            display: flex; justify-content: center; align-items: center;
-            overflow: hidden; /* For background animations */
+            font-family: var(--font-body);
+            background-color: var(--primary-bg);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
         }
 
-        /* 🌌 ANIMATED BACKGROUND (Tournyx Theme) */
-        .bg-grid {
-            position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-            background-size: 40px 40px; transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px);
-            animation: gridMove 20s linear infinite; z-index: -3;
-        }
-        .orb {
-            position: absolute; border-radius: 50%; filter: blur(80px); z-index: -2; opacity: 0.5;
-        }
-        .orb-1 { width: 300px; height: 300px; background: var(--primary); top: 10%; left: 20%; animation: floatOrb 12s ease-in-out infinite alternate; }
-        .orb-2 { width: 250px; height: 250px; background: var(--secondary); bottom: 10%; right: 20%; animation: floatOrb 15s ease-in-out infinite alternate-reverse; }
+        /* --- BACKGROUND PARTICLES --- */
+        #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at 50% 0%, #15062e 0%, #070311 100%); }
 
-        /* 💎 GLASSMORPHISM CONTAINER */
+        /* --- GLASSMORPHISM CONTAINER --- */
         .container {
             background: var(--card-bg);
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            padding: 40px; border-radius: 16px; width: 90%; max-width: 450px;
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5), 0 0 20px rgba(138,43,226,0.1);
-            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 40px 30px; 
+            border-radius: 20px; 
+            width: 90%; 
+            max-width: 450px;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.8), inset 0 0 20px rgba(189, 0, 255, 0.1);
+            animation: slideUpGlow 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             z-index: 10;
+            position: relative;
+        }
+        @keyframes slideUpGlow { 
+            0% { opacity: 0; transform: translateY(40px); } 
+            100% { opacity: 1; transform: translateY(0); } 
         }
 
-        /* LOGO & HEADERS */
-        .logo {
-            font-size: 36px; font-weight: 700; text-align: center; text-transform: uppercase; margin: 0;
-            background: linear-gradient(to right, #b468ff, #00ffcc);
-            -webkit-background-clip: text; color: transparent;
-            text-shadow: 0 0 20px rgba(138,43,226,0.3);
-        }
-        .tagline { text-align: center; color: var(--text-sub); font-size: 11px; letter-spacing: 3px; margin: 0 0 30px 0; text-transform: uppercase; }
+        /* --- LOGO & HEADERS --- */
+        .logo-container { text-align: center; margin-bottom: 25px; }
+        .logo-container img { width: 50px; height: 50px; border-radius: 50%; box-shadow: 0 0 15px var(--accent-purple); border: 1px solid rgba(255,255,255,0.2); margin-bottom: 10px; }
+        .logo-text { font-family: var(--font-head); font-size: 1.8rem; font-weight: 900; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        .tagline { color: #aaa; font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; font-family: var(--font-head); font-weight: bold; }
 
-        /* INPUTS */
-        .input-group { margin-bottom: 20px; }
-        label { display: block; font-size: 12px; color: var(--text-sub); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;}
+        /* --- INPUTS --- */
+        .input-group { margin-bottom: 20px; position: relative; }
+        .input-group i { position: absolute; left: 15px; top: 40px; color: #888; font-size: 1rem; transition: 0.3s; }
+        label { display: block; font-size: 0.85rem; color: #aaa; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; font-family: var(--font-head); font-weight: bold;}
         input {
-            width: 100%; padding: 14px; border-radius: 8px; background: rgba(0,0,0,0.4);
-            border: 1px solid #333; color: white; font-family: 'Poppins'; font-size: 15px; box-sizing: border-box;
-            transition: all 0.3s ease;
+            width: 100%; padding: 14px 15px 14px 45px; border-radius: 12px; background: rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.1); color: white; font-family: var(--font-body); font-size: 1rem; font-weight: bold; box-sizing: border-box;
+            transition: all 0.3s ease; outline: none; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
         }
-        input:focus { border-color: var(--secondary); box-shadow: 0 0 15px rgba(0,255,204,0.2); outline: none; }
+        input:focus { border-color: var(--accent-cyan); box-shadow: 0 0 15px rgba(0,242,255,0.3), inset 0 0 10px rgba(0,0,0,0.5); }
+        input:focus + i, .input-group input:focus ~ i { color: var(--accent-cyan); text-shadow: 0 0 10px rgba(0,242,255,0.5); }
 
-        /* FORMAT SELECTOR */
+        /* --- FORMAT SELECTOR --- */
         .format-grid { display: flex; gap: 10px; margin-bottom: 25px; }
         .format-btn {
-            flex: 1; padding: 10px; background: rgba(0,0,0,0.4); border: 1px solid #333;
-            color: var(--text-sub); border-radius: 8px; cursor: pointer; transition: 0.3s;
-            font-size: 13px; font-weight: 600;
+            flex: 1; padding: 12px 5px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1);
+            color: #888; border-radius: 10px; cursor: pointer; transition: 0.3s;
+            font-size: 0.9rem; font-family: var(--font-head); font-weight: bold; text-transform: uppercase;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
         }
-        .format-btn:hover { background: rgba(255,255,255,0.05); }
+        .format-btn:hover { background: rgba(255,255,255,0.05); color: white; }
         .format-btn.active {
-            background: rgba(138,43,226,0.2); border-color: var(--primary);
-            color: white; box-shadow: 0 0 15px rgba(138,43,226,0.3);
+            background: rgba(0,242,255,0.15); border-color: var(--accent-cyan);
+            color: var(--accent-cyan); box-shadow: 0 0 15px rgba(0,242,255,0.3); transform: scale(1.05);
         }
 
-        /* DOWNLOAD BUTTON */
+        /* --- DOWNLOAD BUTTON --- */
         .download-btn {
-            width: 100%; padding: 16px; border-radius: 8px; border: none;
-            background: linear-gradient(45deg, var(--primary), #6a1b9a);
-            color: white; font-size: 16px; font-weight: bold; font-family: 'Poppins';
+            width: 100%; padding: 16px; border-radius: 12px; border: none;
+            background: var(--accent-gradient); color: white; font-size: 1.1rem; font-weight: bold; font-family: var(--font-head);
             text-transform: uppercase; letter-spacing: 1px; cursor: pointer;
             transition: all 0.3s ease; display: flex; justify-content: center; align-items: center; gap: 10px;
+            box-shadow: 0 5px 20px rgba(189, 0, 255, 0.4);
         }
-        .download-btn:hover { background: linear-gradient(45deg, #a755f7, var(--primary)); box-shadow: 0 5px 20px rgba(138,43,226,0.4); transform: translateY(-2px); }
-        .download-btn:disabled { background: #333; color: #777; cursor: not-allowed; box-shadow: none; transform: none; }
+        .download-btn:active { transform: scale(0.96); box-shadow: 0 2px 10px rgba(189,0,255,0.4); }
+        .download-btn:disabled { background: #333; color: #777; cursor: not-allowed; box-shadow: none; transform: none; border: 1px solid #444;}
 
-        /* LOADER ANIMATION */
-        .spinner { width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.2); border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite; display: none; }
+        /* --- MODERN LOADER --- */
+        .loader-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(7,3,17,0.9); border-radius: 20px; z-index: 20; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .cyber-circle { width: 60px; height: 60px; border: 3px dashed var(--accent-cyan); border-radius: 50%; animation: spin 2s linear infinite; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; }
+        .cyber-inner { width: 30px; height: 30px; background: rgba(0,242,255,0.2); border-radius: 50%; box-shadow: 0 0 20px var(--accent-cyan); animation: pulse 1s infinite alternate; }
+        .loader-text { font-family: var(--font-head); color: var(--accent-cyan); font-weight: bold; letter-spacing: 2px; text-transform: uppercase; text-shadow: 0 0 10px rgba(0,242,255,0.5); }
+        
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes pulse { 0% { transform: scale(0.8); opacity: 0.5; } 100% { transform: scale(1.2); opacity: 1; } }
 
-        /* STATUS MESSAGE */
-        .status { margin-top: 20px; text-align: center; font-size: 13px; padding: 12px; border-radius: 8px; display: none; animation: popIn 0.3s ease; }
-        .status.success { background: rgba(0,255,204,0.1); border: 1px solid var(--secondary); color: var(--secondary); }
-        .status.error { background: rgba(255,76,76,0.1); border: 1px solid #ff4c4c; color: #ff4c4c; }
+        /* --- TOAST STATUS --- */
+        #customToast { visibility: hidden; min-width: 250px; background-color: var(--accent-cyan); color: #000; text-align: center; border-radius: 10px; padding: 14px; position: fixed; z-index: 5000; left: 50%; bottom: -50px; transform: translateX(-50%); font-family: var(--font-head); font-weight: bold; box-shadow: 0 5px 15px rgba(0,242,255,0.5); opacity: 0; transition: opacity 0.4s, bottom 0.4s; }
+        #customToast.show { visibility: visible; opacity: 1; bottom: 30px; }
 
-        /* KEYFRAMES */
-        @keyframes gridMove { from { background-position: 0 0; } to { background-position: 0 40px; } }
-        @keyframes floatOrb { 0% { transform: translate(0, 0); } 100% { transform: translate(30px, -40px); } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes popIn { 0% { opacity: 0; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
-
-        /* HIDDEN TEMPLATES FOR FILE GENERATION */
+        /* --- HIDDEN TEMPLATES FOR FILE GENERATION --- */
         #docTemplate { display: none; }
+        
+        /* PDF STYLING */
+        .pdf-container { background: #ffffff; color: #000000; padding: 30px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; width: 800px; box-sizing: border-box; }
+        .pdf-header { text-align: center; border-bottom: 3px solid #bd00ff; padding-bottom: 20px; margin-bottom: 20px; }
+        .pdf-logo { font-size: 28px; font-weight: 900; color: #070311; text-transform: uppercase; letter-spacing: 2px; margin: 0; }
+        .pdf-title { color: #8a2be2; margin: 10px 0 5px; font-size: 22px; text-transform: uppercase; }
+        .pdf-meta { color: #555; font-size: 14px; margin: 0; }
+        .pdf-team-box { margin-bottom: 25px; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; }
+        .pdf-team-head { background: #f8f9fa; padding: 10px 15px; margin: 0; font-size: 16px; color: #070311; border-bottom: 2px solid #00f2ff; }
+        .pdf-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .pdf-table th { background: #fff; padding: 10px 15px; text-align: left; color: #888; text-transform: uppercase; border-bottom: 1px solid #ddd; }
+        .pdf-table td { padding: 10px 15px; border-bottom: 1px solid #eee; }
+        .pdf-table tr:last-child td { border-bottom: none; }
+        .pdf-footer { text-align: center; color: #aaa; font-size: 10px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 10px; }
     </style>
 </head>
 <body>
 
-    <div class="bg-grid"></div>
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
+    <canvas id="particles-canvas"></canvas>
 
     <div class="container">
-        <h1 class="logo">Tournyx</h1>
-        <p class="tagline">Organizer Roster Portal</p>
+        <div class="loader-overlay" id="mainLoader">
+            <div class="cyber-circle"><div class="cyber-inner"></div></div>
+            <div class="loader-text" id="loaderText">Extracting...</div>
+        </div>
+
+        <div class="logo-container">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_20wCR-WBMpQmw3vxcYUf-vxIO1PYDJoQN_Sid3UDjA9tf0cuX0eH40jbzHoJad4cxbnjhPjqfCw1Z5V1LhgN9zFuIQC0fJjecTy3D9PFu5WjR2H1wHwTD1bUGnXY_NiApWn5gMs6velcQngSzKoP1yHzX0cVsFSUFM8zIefcbiPayY7680Kz0V0ZAAE/s1264/1000093706.png" alt="Tournyx Logo">
+            <h1 class="logo-text">Tournyx</h1>
+            <p class="tagline">Organizer Roster Portal</p>
+        </div>
 
         <div class="input-group">
             <label>Tournament Match ID</label>
             <input type="text" id="matchId" placeholder="e.g., TX-12345" autocomplete="off">
+            <i class="fa-solid fa-hashtag"></i>
         </div>
 
         <div class="input-group">
             <label>Registered Organizer Email</label>
-            <input type="email" id="email" placeholder="email@example.com" autocomplete="off">
+            <input type="email" id="email" placeholder="admin@tournyx.com" autocomplete="off">
+            <i class="fa-solid fa-envelope"></i>
         </div>
 
         <label>Select Download Format</label>
         <div class="format-grid">
-            <button class="format-btn active" onclick="selectFormat(this, 'pdf')">📄 PDF</button>
-            <button class="format-btn" onclick="selectFormat(this, 'word')">📝 Word</button>
-            <button class="format-btn" onclick="selectFormat(this, 'txt')">🗒️ Document</button>
+            <button class="format-btn active" onclick="selectFormat(this, 'pdf'); triggerHaptic();"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+            <button class="format-btn" onclick="selectFormat(this, 'word'); triggerHaptic();"><i class="fa-solid fa-file-word"></i> Word</button>
+            <button class="format-btn" onclick="selectFormat(this, 'txt'); triggerHaptic();"><i class="fa-solid fa-file-lines"></i> TXT</button>
         </div>
 
-        <button class="download-btn" id="downloadBtn" onclick="processDownload()">
-            <div class="spinner" id="loader"></div>
-            <span id="btnText">Verify & Download</span>
+        <button class="download-btn" id="downloadBtn" onclick="processDownload(); triggerHaptic();">
+            <i class="fa-solid fa-cloud-arrow-down"></i> <span id="btnText">Verify & Download</span>
         </button>
-
-        <div id="statusBox" class="status"></div>
     </div>
 
+    <div id="customToast">Notification</div>
+
+    <!-- HIDDEN HTML TEMPLATE FOR PDF/WORD GENERATION -->
     <div id="docTemplate">
-        <div style="font-family: sans-serif; color: #000; padding: 20px;">
-            <h1 style="color: #8a2be2; text-align: center;">TOURNYX ROSTER</h1>
-            <h3 id="docTitle" style="text-align: center; color: #333;"></h3>
-            <p id="docMeta" style="text-align: center; color: #666; font-size: 14px;"></p>
-            <hr style="border: 1px solid #ddd; margin-bottom: 20px;">
+        <div class="pdf-container">
+            <div class="pdf-header">
+                <h1 class="pdf-logo">TOURNYX ESPORTS</h1>
+                <h3 id="docTitle" class="pdf-title"></h3>
+                <p id="docMeta" class="pdf-meta"></p>
+            </div>
             <div id="docContent"></div>
-            <p style="text-align: center; color: #aaa; font-size: 10px; margin-top: 40px;">Generated by Tournyx TM Organizer Portal</p>
+            <div class="pdf-footer">Official Cryptographic Roster generated by Tournyx Organizer Portal</div>
         </div>
     </div>
 
     <script>
-        // 👉 PASTE YOUR LIVE WEB APP URL HERE:
+        // --- BACKGROUND ANIMATION ---
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let pArray = [];
+        class P { constructor(){ this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.s=Math.random()*2; } u(){ this.y-=0.5; if(this.y<0)this.y=canvas.height; } d(){ ctx.fillStyle='rgba(189,0,255,0.2)'; ctx.beginPath(); ctx.arc(this.x,this.y,this.s,0,Math.PI*2); ctx.fill(); } }
+        for(let i=0; i<40; i++) pArray.push(new P());
+        function anim(){ ctx.clearRect(0,0,canvas.width,canvas.height); pArray.forEach(p=>{p.u();p.d()}); requestAnimationFrame(anim); }
+        anim();
+
+        function triggerHaptic() { if(navigator.vibrate) navigator.vibrate(30); }
+
+        function showToast(msg, isError = false) {
+            let t = document.getElementById("customToast");
+            t.innerText = msg;
+            t.style.backgroundColor = isError ? "#ff4d4d" : "var(--accent-cyan)";
+            t.style.color = isError ? "white" : "#000";
+            t.className = "show";
+            setTimeout(() => { t.className = t.className.replace("show", ""); }, 3500);
+        }
+
+        // 👉 KEEP YOUR LIVE WEB APP URL HERE:
         const API_URL = "https://script.google.com/macros/s/AKfycbyqqTpgaflxKJ9xH0jq7mJ_jLzcoNhas3gNo0h5gvoa_6r5Ae9NFxJAJp7ZoYNnMRKl/exec";
 
         let selectedFormat = 'pdf';
@@ -174,20 +227,18 @@
             const matchId = document.getElementById('matchId').value.trim();
             const email = document.getElementById('email').value.trim();
             const btn = document.getElementById('downloadBtn');
-            const loader = document.getElementById('loader');
-            const btnText = document.getElementById('btnText');
-            const statusBox = document.getElementById('statusBox');
+            const loader = document.getElementById('mainLoader');
+            const lText = document.getElementById('loaderText');
 
             if (!matchId || !email) {
-                showStatus('error', '⚠️ Please enter both Match ID and Email.');
+                showToast('⚠️ Please enter both Match ID and Email.', true);
                 return;
             }
 
-            // Animation & UI locking
+            // Lock UI and show Cyber Loader
             btn.disabled = true;
-            loader.style.display = 'block';
-            btnText.innerText = 'Extracting Data...';
-            statusBox.style.display = 'none';
+            loader.style.display = 'flex';
+            lText.innerText = 'EXTRACTING DATA...';
 
             try {
                 const response = await fetch(API_URL, {
@@ -199,61 +250,62 @@
                 const result = await response.json();
 
                 if (result.status === "success") {
-                    btnText.innerText = 'Generating File...';
+                    lText.innerText = 'GENERATING FILE...';
                     
-                    // Route to correct format generator
-                    if (selectedFormat === 'pdf') generatePDF(result.data, matchId);
-                    else if (selectedFormat === 'word') generateWord(result.data, matchId);
-                    else if (selectedFormat === 'txt') generateText(result.data, matchId);
+                    // Allow a tiny delay for visual effect
+                    setTimeout(() => {
+                        if (selectedFormat === 'pdf') generatePDF(result.data, matchId);
+                        else if (selectedFormat === 'word') generateWord(result.data, matchId);
+                        else if (selectedFormat === 'txt') generateText(result.data, matchId);
 
-                    showStatus('success', `✨ Success! Your ${selectedFormat.toUpperCase()} is downloading.`);
+                        showToast(`✨ Success! Your ${selectedFormat.toUpperCase()} is downloading.`);
+                        resetUI(btn, loader);
+                    }, 800);
+                    
                 } else {
-                    showStatus('error', '🛑 Access Denied: ' + result.data);
+                    showToast('🛑 Access Denied: ' + result.data, true);
+                    resetUI(btn, loader);
                 }
 
             } catch (error) {
-                showStatus('error', '❌ Server Error. Please check your connection.');
+                showToast('❌ Server Error. Please check your connection.', true);
+                resetUI(btn, loader);
             }
-
-            // Reset UI
-            setTimeout(() => {
-                btn.disabled = false;
-                loader.style.display = 'none';
-                btnText.innerText = 'Verify & Download';
-            }, 2000);
         }
 
-        function showStatus(type, msg) {
-            const box = document.getElementById('statusBox');
-            box.className = `status ${type}`;
-            box.innerText = msg;
-            box.style.display = 'block';
+        function resetUI(btn, loader) {
+            btn.disabled = false;
+            loader.style.display = 'none';
         }
 
-        // --- GENERATORS ---
+        // --- GENERATORS WITH NEW LOCATION DATA ---
 
         function populateTemplate(data) {
             document.getElementById('docTitle').innerText = data.tournament_title;
-            document.getElementById('docMeta').innerText = `Match ID: ${data.match_id} | Total Teams: ${data.total_teams}`;
+            document.getElementById('docMeta').innerText = `Match ID: ${data.match_id}  |  Total Teams: ${data.total_teams}`;
             
             let html = '';
             data.teams.forEach((team, i) => {
-                html += `<div style="margin-bottom: 20px;">`;
-                html += `<h4 style="background: #f0f0f0; padding: 8px; margin-bottom: 5px;">${i+1}. ${team.clan_name}</h4>`;
-                html += `<table style="width: 100%; border-collapse: collapse; font-size: 13px;">`;
-                html += `<tr style="border-bottom: 2px solid #ddd; text-align: left;"><th>Player</th><th>IGN</th><th>UID</th><th>Phone</th></tr>`;
+                html += `<div class="pdf-team-box">`;
+                html += `<h4 class="pdf-team-head">Slot ${i+1} - ${team.clan_name}</h4>`;
+                html += `<table class="pdf-table">`;
+                html += `<tr><th>Player</th><th>IGN</th><th>UID</th><th>Phone</th><th>Location</th></tr>`;
                 
                 if (team.roster.length > 0) {
                     team.roster.forEach(p => {
-                        html += `<tr style="border-bottom: 1px solid #eee;">
-                                    <td style="padding: 5px;">${p.name} (${p.role})</td>
+                        // Extracting the new state and city variables!
+                        let loc = (p.city && p.state) ? `${p.city}, ${p.state}` : (p.state || p.city || 'N/A');
+                        
+                        html += `<tr>
+                                    <td style="font-weight:bold;">${p.name} <span style="color:#888; font-weight:normal; font-size:10px;">(${p.role})</span></td>
                                     <td>${p.gameName}</td>
                                     <td style="font-family: monospace;">${p.uid}</td>
-                                    <td>${p.phone}</td>
+                                    <td>${p.phone || 'N/A'}</td>
+                                    <td>${loc}</td>
                                  </tr>`;
                     });
                 } else {
-                    html += `<tr><td colspan="4">No player data found.</td></tr>`;
+                    html += `<tr><td colspan="5" style="text-align:center; color:#888;">No player data found.</td></tr>`;
                 }
                 html += `</table></div>`;
             });
@@ -263,16 +315,16 @@
         function generatePDF(data, matchId) {
             populateTemplate(data);
             const element = document.getElementById('docTemplate');
-            element.style.display = 'block'; // Unhide for rendering
+            element.style.display = 'block'; 
             
             html2pdf().from(element).set({
                 margin: 10,
-                filename: `Tournyx_${matchId}.pdf`,
+                filename: `Tournyx_${matchId}_Roster.pdf`,
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
+                html2canvas: { scale: 2, useCORS: true },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             }).save().then(() => {
-                element.style.display = 'none'; // Hide again
+                element.style.display = 'none'; 
             });
         }
 
@@ -280,7 +332,6 @@
             populateTemplate(data);
             const content = document.getElementById('docTemplate').innerHTML;
             
-            // Standard MS Word Blob magic
             const blob = new Blob(['\ufeff', `
                 <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
                 <head><meta charset='utf-8'></head><body>${content}</body></html>
@@ -288,19 +339,22 @@
             
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = `Tournyx_${matchId}.doc`;
+            link.download = `Tournyx_${matchId}_Roster.doc`;
             link.click();
         }
 
         function generateText(data, matchId) {
-            let text = `🏆 TOURNYX ROSTER: ${data.tournament_title}\nMatch ID: ${data.match_id}\nTotal Teams: ${data.total_teams}\n\n`;
+            let text = `=======================================\n`;
+            text = `🏆 TOURNYX ROSTER: ${data.tournament_title}\nMatch ID: ${data.match_id}\nTotal Teams: ${data.total_teams}\n`;
+            text += `=======================================\n\n`;
             
             data.teams.forEach((team, i) => {
-                text += `===================================\n`;
-                text += `${i+1}. ${team.clan_name}\n`;
-                text += `===================================\n`;
+                text += `---------------------------------------\n`;
+                text += `[ SLOT ${i+1} ] - ${team.clan_name}\n`;
+                text += `---------------------------------------\n`;
                 team.roster.forEach(p => {
-                    text += `- ${p.name} (${p.role}) | IGN: ${p.gameName} | UID: ${p.uid} | Ph: ${p.phone}\n`;
+                    let loc = (p.city && p.state) ? `${p.city}, ${p.state}` : (p.state || p.city || 'N/A');
+                    text += `* ${p.name} (${p.role}) | IGN: ${p.gameName} | UID: ${p.uid} | Ph: ${p.phone || 'N/A'} | Loc: ${loc}\n`;
                 });
                 text += `\n`;
             });
@@ -308,7 +362,7 @@
             const blob = new Blob([text], { type: 'text/plain' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = `Tournyx_${matchId}.txt`;
+            link.download = `Tournyx_${matchId}_Roster.txt`;
             link.click();
         }
     </script>
