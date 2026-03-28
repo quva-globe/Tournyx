@@ -45,7 +45,7 @@
             align-items: center;
             overflow-x: hidden;
             background: radial-gradient(circle at 50% 0%, #1a0f00 0%, #030005 100%);
-            padding: 40px 15px; /* Ensures space on mobile */
+            padding: 40px 15px; 
         }
 
         /* --- PRELOADER --- */
@@ -55,7 +55,6 @@
         @keyframes spin { 100% { transform: rotate(360deg); } }
         @keyframes pulse { 0% { transform: scale(0.8); opacity: 0.5; } 100% { transform: scale(1.2); opacity: 1; } }
 
-        /* --- BACKGROUND ANIMATION --- */
         #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
 
         /* --- MAIN CONTAINER --- */
@@ -74,9 +73,14 @@
             margin: auto;
         }
 
-        /* --- LOGO --- */
         .logo-container { text-align: center; margin-bottom: 20px; }
-        .logo-container img { width: 65px; height: 65px; border-radius: 50%; box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); border: 2px solid rgba(255,255,255,0.2); margin-bottom: 12px; }
+        .logo-container img { width: 65px; height: 65px; border-radius: 50%; box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); border: 2px solid rgba(255,255,255,0.2); margin-bottom: 12px; animation: floatLogo 3s ease-in-out infinite;}
+        
+        @keyframes floatLogo {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); box-shadow: 0 0 35px rgba(0, 242, 255, 0.6); border-color: rgba(0, 242, 255, 0.4);}
+        }
+
         .logo-text { font-family: var(--font-head); font-size: 1.8rem; font-weight: 900; background: linear-gradient(135deg, var(--accent-gold), #fff8c0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform: uppercase; letter-spacing: 2px; text-shadow: var(--glow-text); }
 
         /* --- LANDING SLIDER --- */
@@ -104,36 +108,37 @@
         .step-indicator { text-align: center; color: #888; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px; }
 
         .question-wrapper { overflow: hidden; width: 100%; position: relative; }
-        .question-track { display: flex; transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); width: 600%; } /* 6 steps */
+        .question-track { display: flex; transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); width: 600%; } 
         .question-slide { width: 16.666%; padding: 5px; flex-shrink: 0;}
 
         .question-heading { font-family: var(--font-head); font-size: 1.4rem; font-weight: 700; background: linear-gradient(135deg, var(--accent-gold), #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform: uppercase; letter-spacing: 1px; text-shadow: var(--glow-text); margin-bottom: 20px; text-align: center; }
 
-        /* --- FORM FIELDS (PERFECTLY ALIGNED) --- */
-        .form-group { margin-bottom: 20px; }
+        /* --- FORM FIELDS (FIXED OVERFLOW & SELECTORS) --- */
+        .form-group { margin-bottom: 20px; width: 100%;}
         label { display: block; font-size: 0.8rem; color: #ccc; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; font-family: var(--font-head); font-weight: bold;}
         
-        .input-group { position: relative; display: flex; align-items: center; }
+        .input-group { position: relative; display: flex; align-items: center; width: 100%;}
         .input-group i { position: absolute; left: 16px; color: #888; font-size: 1.1rem; pointer-events: none; transition: 0.3s; z-index: 2; top: 50%; transform: translateY(-50%);}
         
-        input[type="text"], input[type="email"], input[type="phone"], select {
+        /* +91 PREFIX LOCK */
+        .prefix-91 { position: absolute; left: 45px; top: 50%; transform: translateY(-50%); color: white; font-weight: bold; font-family: var(--font-body); font-size: 1rem; z-index: 2; border-right: 1px solid rgba(255,255,255,0.2); padding-right: 8px;}
+
+        /* FIXED CSS SELECTOR FOR ALL INPUT TYPES */
+        input[type="text"], input[type="email"], input[type="tel"], input[type="number"], select, textarea {
             width: 100%; padding: 15px 15px 15px 48px; border-radius: 12px; background: rgba(0,0,0,0.5);
             border: 1px solid rgba(255,255,255,0.15); color: white; font-family: var(--font-body); font-size: 1rem; font-weight: bold;
-            transition: all 0.3s ease; outline: none; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); -webkit-appearance: none;
+            transition: all 0.3s ease; outline: none; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); -webkit-appearance: none; box-sizing: border-box;
         }
-        input:focus, select:focus { border-color: var(--accent-gold); box-shadow: 0 0 15px rgba(255,215,0,0.2), inset 0 0 10px rgba(0,0,0,0.5); background: rgba(0,0,0,0.8);}
-        input:focus + i, .input-group input:focus ~ i { color: var(--accent-gold); text-shadow: 0 0 10px rgba(255,215,0,0.5); transform: translateY(-50%) scale(1.1);}
+        
+        select { padding-left: 48px; }
+        textarea { padding: 15px; height: 120px; resize: none; }
+        
+        input:focus, select:focus, textarea:focus { border-color: var(--accent-gold); box-shadow: 0 0 15px rgba(255,215,0,0.2), inset 0 0 10px rgba(0,0,0,0.5); background: rgba(0,0,0,0.8);}
+        input:focus + i, .input-group input:focus ~ i, select:focus ~ i { color: var(--accent-gold); text-shadow: 0 0 10px rgba(255,215,0,0.5); transform: translateY(-50%) scale(1.1);}
 
         .field-help-text { font-size: 0.75rem; color: #888; margin-top: 6px; font-weight: bold;}
         .dynamic-fields { display: none; animation: fadeIn 0.4s; }
 
-        /* TEXTAREA */
-        textarea {
-            width: 100%; height: 120px; padding: 15px; border-radius: 12px; background: rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.15); color: white; font-family: var(--font-body); font-size: 1rem; font-weight: bold;
-            transition: all 0.3s ease; outline: none; resize: none;
-        }
-        textarea:focus { border-color: var(--accent-gold); box-shadow: 0 0 15px rgba(255,215,0,0.2); }
         .char-counter { text-align: right; font-size: 0.75rem; color: #888; margin-top: 5px; font-weight: bold;}
 
         /* --- AADHAR UPLOAD --- */
@@ -267,7 +272,7 @@
                         <div class="question-slide">
                             <h3 class="question-heading">Select Your Role</h3>
                             <div class="form-group">
-                                <label>Primary relationship with Tournyx</label>
+                                <label>Primary relationship with Tournyx *</label>
                                 <div class="input-group">
                                     <i class="fa-solid fa-user-tie"></i>
                                     <select id="mainRole" required onchange="showDynamicFields(this.value)">
@@ -322,20 +327,21 @@
                             </div>
 
                             <div class="dynamic-fields" id="new_organizer_fields">
+                                <p style="color:#ccc; font-size:0.85rem; margin-bottom:15px; text-align:center;">Fill at least <strong style="color:var(--accent-gold);">ONE</strong> of the details below so we know you.</p>
                                 <div class="form-group">
-                                    <label>YouTube Channel Link (Optional)</label>
+                                    <label>YouTube Channel Link</label>
                                     <div class="input-group"><i class="fa-brands fa-youtube"></i><input type="text" id="new_youtube" placeholder="https://youtube.com/c/..."></div>
                                 </div>
                                 <div class="form-group">
-                                    <label>Instagram Username (Optional)</label>
+                                    <label>Instagram Username</label>
                                     <div class="input-group"><i class="fa-brands fa-instagram"></i><input type="text" id="new_insta" placeholder="@username"></div>
                                 </div>
                                 <div class="form-group">
-                                    <label>Tournaments Hosted (Optional)</label>
+                                    <label>Tournaments Hosted (If any)</label>
                                     <div class="input-group"><i class="fa-solid fa-trophy"></i><input type="number" id="new_hosted_count" placeholder="Total hosted (optional)..."></div>
                                 </div>
                                 <div class="form-group">
-                                    <label>Online or Offline? (Optional)</label>
+                                    <label>Online or Offline?</label>
                                     <div class="input-group">
                                         <i class="fa-solid fa-server"></i>
                                         <select id="new_type">
@@ -353,8 +359,8 @@
                         <div class="question-slide">
                             <h3 class="question-heading">Your Standard</h3>
                             <div class="form-group">
-                                <label>Why do you meet our professional standards?</label>
-                                <textarea id="standardResponse" placeholder="Share your experience, vision, and effort..." oninput="updateCharCount(this)"></textarea>
+                                <label>Why do you meet our professional standards? *</label>
+                                <textarea id="standardResponse" placeholder="Share your experience, vision, and effort..." oninput="updateCharCount(this)" required></textarea>
                                 <div class="char-counter" id="charCount">0 / 500</div>
                             </div>
                         </div>
@@ -363,18 +369,19 @@
                         <div class="question-slide">
                             <h3 class="question-heading">Contact Info</h3>
                             <div class="form-group">
-                                <label>Professional Email</label>
+                                <label>Professional Email *</label>
                                 <div class="input-group">
                                     <i class="fa-solid fa-envelope" id="emailIcon"></i>
-                                    <input type="email" id="professionalEmail" placeholder="e.g., mail.tournyx@example.com" oninput="liveEmailCheck(this.value)">
+                                    <input type="email" id="professionalEmail" placeholder="e.g., mail.tournyx@example.com" oninput="liveEmailCheck(this.value)" required>
                                 </div>
                                 <p class="field-help-text" id="emailHelpText">Must contain 'tournyx' to be perfectly logic.</p>
                             </div>
                             <div class="form-group">
-                                <label>WhatsApp Phone</label>
+                                <label>WhatsApp Phone *</label>
                                 <div class="input-group">
                                     <i class="fa-brands fa-whatsapp"></i>
-                                    <input type="tel" id="whatsappPhone" placeholder="Enter 10 digit number" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                    <span class="prefix-91">+91</span>
+                                    <input type="tel" id="whatsappPhone" placeholder="Enter 10 digit number" maxlength="10" minlength="10" style="padding-left: 90px;" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
                                 </div>
                                 <p class="field-help-text">Used for important Tournyx Team updates.</p>
                             </div>
@@ -384,18 +391,22 @@
                         <div class="question-slide">
                             <h3 class="question-heading">Personal Details</h3>
                             <div class="form-group">
-                                <label>State</label>
-                                <div class="input-group"><i class="fa-solid fa-map-location"></i><input type="text" id="userState" placeholder="e.g., Tamil Nadu"></div>
+                                <label>Full Name *</label>
+                                <div class="input-group"><i class="fa-solid fa-user"></i><input type="text" id="fullName" placeholder="Your official name" required></div>
                             </div>
                             <div class="form-group">
-                                <label>City</label>
-                                <div class="input-group"><i class="fa-solid fa-city"></i><input type="text" id="userCity" placeholder="e.g., Chennai"></div>
+                                <label>State *</label>
+                                <div class="input-group"><i class="fa-solid fa-map-location"></i><input type="text" id="userState" placeholder="e.g., Tamil Nadu" required></div>
                             </div>
                             <div class="form-group">
-                                <label>Gender</label>
+                                <label>City *</label>
+                                <div class="input-group"><i class="fa-solid fa-city"></i><input type="text" id="userCity" placeholder="e.g., Chennai" required></div>
+                            </div>
+                            <div class="form-group">
+                                <label>Gender *</label>
                                 <div class="input-group">
                                     <i class="fa-solid fa-venus-mars"></i>
-                                    <select id="userGender">
+                                    <select id="userGender" required>
                                         <option value="" disabled selected>Select Gender</option>
                                         <option value="male">Male</option>
                                         <option value="female">Female</option>
@@ -410,7 +421,7 @@
                             <h3 class="question-heading">Aadhar Verification</h3>
                             <p style="color:#ccc; font-size:0.9rem; margin-bottom:15px; text-align:center;">Upload front and back images. Max 10MB each.</p>
                             
-                            <label class="upload-box" for="aadharFiles">
+                            <label class="upload-box" for="aadharFiles" id="aadharDropZone">
                                 <i class="fa-solid fa-cloud-arrow-up"></i>
                                 <p>Click to Upload Aadhar Front & Back</p>
                                 <p class="file-count" id="aadharFileCount">0 / 2 files selected</p>
@@ -497,7 +508,7 @@
         }
 
         function jumpLandingSlide(index) {
-            clearInterval(autoSlideInterval); // Stop auto if user clicks
+            clearInterval(autoSlideInterval);
             currentLandingIndex = index;
             updateLandingUI();
         }
@@ -509,7 +520,6 @@
                 currentLandingIndex++;
                 updateLandingUI();
             } else {
-                // Hide landing, show form perfectly
                 document.getElementById('landing-slider-container').style.display = 'none';
                 document.getElementById('questions-slider-container').style.display = 'block';
                 showQuestion(1);
@@ -532,7 +542,6 @@
 
         function showDynamicFields(role) {
             document.querySelectorAll('.dynamic-fields').forEach(df => df.style.display = 'none');
-            // Reset required flags
             document.querySelectorAll('.dynamic-fields input, .dynamic-fields select').forEach(i => {
                 i.removeAttribute('required');
                 i.classList.remove('shake-error');
@@ -608,7 +617,7 @@
                     box.id = `preview-${fileId}`;
                     box.innerHTML = `
                         <img src="${e.target.result}">
-                        <button class="del-btn" onclick="removeAadhar('${fileId}')"><i class="fa-solid fa-xmark"></i></button>
+                        <button type="button" class="del-btn" onclick="removeAadhar('${fileId}')"><i class="fa-solid fa-xmark"></i></button>
                     `;
                     previewContainer.appendChild(box);
                     updateAadharCount();
@@ -651,10 +660,8 @@
         }
 
         function showQuestion(step) {
-            // Smooth X-Axis Slide
             questionTrack.style.transform = `translateX(-${(step - 1) * 16.666}%)`;
             
-            // Update UI
             document.getElementById('stepIndicator').innerText = `Step ${step} of ${totalSteps}`;
             document.getElementById('formProgress').style.width = `${(step / totalSteps) * 100}%`;
             
@@ -677,34 +684,56 @@
                 btnN.style.boxShadow = '0 5px 20px rgba(255,215,0,0.4)';
             }
 
-            // Scroll to top of card safely
             document.getElementById('mainContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         function validateCurrentStep() {
             let isValid = true;
-            // Get all visible required inputs inside the current slide
             let currentSlideIndex = currentStep - 1;
             let slideEls = document.querySelectorAll('.question-slide')[currentSlideIndex];
             
+            // Custom Step 1 Check (New Organizer Any One Logic)
+            if (currentStep === 1) {
+                const role = document.getElementById('mainRole').value;
+                if (!role) {
+                    document.getElementById('mainRole').classList.add('shake-error');
+                    setTimeout(() => document.getElementById('mainRole').classList.remove('shake-error'), 400);
+                    showToast("🛑 Please select a role.", true);
+                    return false;
+                }
+
+                if (role === 'new_organizer') {
+                    const yt = document.getElementById('new_youtube').value.trim();
+                    const ig = document.getElementById('new_insta').value.trim();
+                    const hc = document.getElementById('new_hosted_count').value.trim();
+                    
+                    if (!yt && !ig && !hc) {
+                        showToast("🛑 Please provide at least one detail (YouTube, Insta, or Hosted Count).", true);
+                        document.getElementById('new_youtube').classList.add('shake-error');
+                        document.getElementById('new_insta').classList.add('shake-error');
+                        setTimeout(() => {
+                            document.getElementById('new_youtube').classList.remove('shake-error');
+                            document.getElementById('new_insta').classList.remove('shake-error');
+                        }, 400);
+                        return false;
+                    }
+                }
+            }
+
             let inputs = slideEls.querySelectorAll('input[required], select[required], textarea[required]');
-            
             inputs.forEach(el => {
-                // If it's inside a hidden dynamic field, ignore it
                 if(el.closest('.dynamic-fields') && el.closest('.dynamic-fields').style.display === 'none') return;
 
                 if (!el.value.trim()) {
                     el.classList.add('shake-error');
                     setTimeout(() => el.classList.remove('shake-error'), 400);
                     isValid = false;
-                } else {
-                    el.classList.remove('shake-error');
                 }
             });
 
             if(!isValid) { showToast("🛑 Fill all required fields.", true); return false; }
 
-            // Custom Step 3 Check (Email)
+            // Custom Step 3 Check (Email & Phone)
             if (currentStep === 3) {
                 const email = document.getElementById('professionalEmail').value;
                 if (!email.toLowerCase().includes('tournyx')) {
@@ -714,9 +743,9 @@
                 }
                 
                 const phone = document.getElementById('whatsappPhone').value;
-                if (phone.length < 10) {
+                if (phone.length !== 10) {
                     document.getElementById('whatsappPhone').classList.add('shake-error');
-                    showToast("🛑 Enter valid 10-digit WhatsApp number.", true);
+                    showToast("🛑 Enter exactly 10 digits for WhatsApp.", true);
                     return false;
                 }
             }
@@ -747,8 +776,8 @@
                 org_youtube: 'YouTube', org_insta: 'Instagram', org_hosted_count: 'Tournaments Hosted', org_type: 'Format',
                 new_youtube: 'YouTube', new_insta: 'Instagram', new_hosted_count: 'Tournaments Hosted', new_type: 'Format',
                 standardResponse: 'Standard Validation',
-                professionalEmail: 'Pro Email', whatsappPhone: 'WhatsApp',
-                userState: 'State', userCity: 'City', userGender: 'Gender'
+                professionalEmail: 'Pro Email', whatsappPhone: 'WhatsApp (+91)',
+                fullName: 'Full Name', userState: 'State', userCity: 'City', userGender: 'Gender'
             };
 
             for (let [id, value] of Object.entries(data)) {
@@ -767,7 +796,6 @@
                 vContainer.appendChild(div);
             }
             
-            // Add Aadhar File count
             const aDiv = document.createElement('div');
             aDiv.className = 'data-item';
             aDiv.innerHTML = `
@@ -802,6 +830,7 @@
             data.standardResponse = document.getElementById('standardResponse').value;
             data.professionalEmail = document.getElementById('professionalEmail').value;
             data.whatsappPhone = document.getElementById('whatsappPhone').value;
+            data.fullName = document.getElementById('fullName').value;
             data.userState = document.getElementById('userState').value;
             data.userCity = document.getElementById('userCity').value;
             data.userGender = document.getElementById('userGender').value;
@@ -816,7 +845,7 @@
             const stepMap = {
                 mainRole: 1, standardResponse: 2,
                 professionalEmail: 3, whatsappPhone: 3,
-                userState: 4, userCity: 4, userGender: 4,
+                fullName: 4, userState: 4, userCity: 4, userGender: 4,
                 aadharFiles: 5
             };
             
@@ -845,7 +874,6 @@
             const finalBtn = document.getElementById('nextBtn');
             const prevBtn = document.getElementById('prevBtn');
 
-            // Collect data
             const role = document.getElementById('mainRole').value;
             const collectedData = collectFormData();
             
@@ -859,7 +887,6 @@
                 aadhaar_back_name: aadharBase64Files[1] ? aadharBase64Files[1].name : ''
             };
 
-            // Lock UI
             finalBtn.disabled = true;
             prevBtn.disabled = true;
             loader.style.display = 'flex';
@@ -877,11 +904,9 @@
                     document.getElementById('questions-slider-container').style.display = 'none';
                     document.getElementById('submission-confirmed').style.display = 'block';
                     
-                    // Confetti Effect Substitute
                     let icon = document.querySelector('.confirmed-icon');
                     icon.classList.add('fa-beat-fade');
                     
-                    // Scroll up
                     document.getElementById('mainContainer').scrollIntoView({ behavior: 'smooth' });
                     
                 } else {
