@@ -205,18 +205,19 @@
         /* --- FOOTER & NAV --- */
         .app-footer { text-align: center; padding: 20px 20px 100px 20px; color: #555; font-size: 0.75rem; font-family: var(--font-body); letter-spacing: 1px; border-top: 1px solid var(--card-border); margin-top: 10px; }
 
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: rgba(7, 3, 17, 0.95); backdrop-filter: blur(15px); border-top: 1px solid var(--card-border); z-index: 1000; display: flex; align-items: stretch; justify-content: space-between; padding: 0 5px; padding-bottom: env(safe-area-inset-bottom); box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
-        .nav-item { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; color: #666; text-decoration: none; font-size: 0.6rem; font-family: var(--font-head); font-weight: bold; transition: 0.3s; }
-        .nav-item.active { color: var(--accent-cyan); text-shadow: 0 0 10px rgba(0,242,255,0.5); }
+        /* PERFECTLY ALIGNED BOTTOM NAVIGATION (MOBILE OPTIMIZED) */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(65px + env(safe-area-inset-bottom)); background: rgba(5, 2, 12, 0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 2px env(safe-area-inset-bottom); border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); transform: translateZ(0);}
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; color: #666; text-decoration: none; font-size: 0.6rem; font-family: var(--font-head); font-weight: bold; flex: 1; transition: 0.3s; position: relative; padding: 0 2px; text-align: center;}
+        .nav-item span { margin-top: 4px; transition: 0.3s; letter-spacing: -0.3px;}
         .nav-item i { font-size: 1.2rem; transition: 0.3s; }
-        .nav-item:hover { color: white; }
-        .nav-item span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; text-transform: capitalize; }
-        
-        .fab-slot { flex: 1; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
-        .floating-plus { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 48px; height: 48px; background: var(--accent-cyan); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid var(--primary-bg); box-shadow: 0 0 0 2px var(--accent-purple), 0 -3px 10px rgba(0,0,0,0.5); color: #000; font-size: 1.5rem; cursor: pointer; transition: 0.3s; z-index: 10; }
-        .floating-plus:active { transform: translateX(-50%) scale(0.95); box-shadow: 0 0 0 2px var(--accent-purple), 0 -1px 5px rgba(0,0,0,0.5); }
+        .nav-item.active { color: var(--accent-cyan); }
+        .nav-item.active i { transform: translateY(-4px); color: var(--accent-cyan); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
+        .nav-item.active span { transform: translateY(2px); color: white; text-shadow: 0 0 5px rgba(255,255,255,0.5);}
+        .fab-slot { flex: 1.2; display: flex; justify-content: center; position: relative; height: 100%; align-items: center; }
+        .floating-plus { position: absolute; top: -25px; left: 50%; transform: translateX(-50%); width: 54px; height: 54px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 4px solid var(--primary-bg); box-shadow: 0 10px 25px rgba(189,0,255,0.4); color: #fff; font-size: 1.6rem; cursor: pointer; transition: 0.3s; z-index: 10; }
+        .floating-plus:hover { transform: translateX(-50%) scale(1.1) rotate(90deg); box-shadow: 0 15px 35px rgba(0,242,255,0.6); }
 
-        @media (min-width: 850px) { .bottom-nav { display: none; } }
+        @media (min-width: 850px) { .bottom-nav { display: none !important; } }
     </style>
 </head>
 <body>
@@ -330,34 +331,44 @@
 
     <nav class="bottom-nav">
         <a class="nav-item" href="index.html">
-            <i class="fa-solid fa-house"></i><span>Home</span>
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
         </a>
         <a class="nav-item" href="explore.html">
-            <i class="fa-solid fa-compass"></i><span>Explore</span>
+            <i class="fa-solid fa-compass"></i>
+            <span>Explore</span>
         </a>
         <a class="nav-item" href="matches.html">
-            <i class="fa-solid fa-trophy"></i><span>Matches</span>
+            <i class="fa-solid fa-trophy"></i>
+            <span>Matches</span>
         </a>
+        
         <div class="fab-slot">
             <div class="floating-plus" onclick="window.location.href='tournament.html'">
                 <i class="fa-solid fa-plus"></i>
             </div>
         </div>
+        
         <a class="nav-item" href="clans.html">
-            <i class="fa-solid fa-shield-halved"></i><span>Clan</span>
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>Clan</span>
         </a>
         <a class="nav-item" href="wallet.html">
-            <i class="fa-solid fa-wallet"></i><span>Wallet</span>
+            <i class="fa-solid fa-wallet"></i>
+            <span>Wallet</span>
         </a>
         <a class="nav-item" href="profile.html">
-            <i class="fa-solid fa-user"></i><span>Profile</span>
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
         </a>
     </nav>
 
     <script>
         // --- 1. CONFIGURATION & AUTH LOGIC ---
         const API_URL = "https://script.google.com/macros/s/AKfycbyqqTpgaflxKJ9xH0jq7mJ_jLzcoNhas3gNo0h5gvoa_6r5Ae9NFxJAJp7ZoYNnMRKl/exec"; 
-        let currentUser = JSON.parse(localStorage.getItem('tournyx_user'));
+        
+        // We only use localStorage to know WHO the user is, we don't save stats to it.
+        let sessionUser = JSON.parse(localStorage.getItem('tournyx_user'));
 
         // REPLACE THIS WITH YOUR ACTUAL APP DOWNLOAD OR SMART LINK
         const APP_DOWNLOAD_LINK = "https://tournyx.live/app?ref="; 
@@ -367,24 +378,21 @@
         let qrGenerated = false;
 
         document.addEventListener('DOMContentLoaded', () => {
-            if (!currentUser || currentUser.email === "guest@tournyx.com") {
+            if (!sessionUser || sessionUser.email === "guest@tournyx.com") {
                 alert("Please log in to view your Referral Code.");
                 window.location.href = "login.html";
                 return;
             }
-
-            // Immediately render optimistic cached data
-            renderStats(currentUser);
             
-            // Build Dynamic Links
-            let userCode = currentUser.inviteCode || "TRNX-GUEST";
+            // Build Dynamic Links based on the session ID
+            let userCode = sessionUser.inviteCode || "TRNX-GUEST";
             dynamicShareUrl = `${APP_DOWNLOAD_LINK}${userCode}`;
             
             shareMessage = `Hey! Join me on Tournyx to play esports tournaments and win cash.\n\n🏆 Download the app and use my code *${userCode}* to get 50 Bonus Points instantly!\n\n👉 Download App: ${dynamicShareUrl}`;
             
             document.getElementById('inviteCode').innerText = userCode;
 
-            // Fetch accurate, live referral stats securely from cloud
+            // Fetch accurate, live referral stats securely from cloud ONLY
             syncLiveStats();
         });
 
@@ -398,16 +406,19 @@
             setTimeout(() => t.className = "", 3000);
         }
 
-        // --- 3. LIVE CLOUD SYNC ---
+        // --- 3. LIVE CLOUD SYNC (NO LOCAL STORAGE SAVING) ---
         function syncLiveStats() {
-            fetch(API_URL + "?action=sync_user&email=" + encodeURIComponent(currentUser.email))
+            fetch(API_URL + "?action=sync_user&email=" + encodeURIComponent(sessionUser.email))
             .then(res => res.json())
             .then(data => {
                 if(data.status === "success" && data.data) {
-                    localStorage.setItem('tournyx_user', JSON.stringify(data.data));
+                    // We only render from the server payload. Nothing is saved to local storage.
                     renderStats(data.data);
                 }
-            }).catch(e => console.log("Offline mode - using cached stats."));
+            }).catch(e => {
+                console.log("Offline mode - failed to fetch live stats.");
+                showToast("Failed to sync live stats. Check connection.", true);
+            });
         }
 
         function renderStats(userData) {
