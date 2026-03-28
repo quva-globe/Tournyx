@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Organizer Portal | Tournyx</title>
+    
+    <link rel="icon" href="https://tournyx.in/favicon.ico" sizes="any">
+    <link rel="icon" href="https://tournyx.in/favicon.png" type="image/png" sizes="192x192">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- GLOBAL VARIABLES --- */
+        :root {
+            --primary-bg: #030005;
+            --card-bg: rgba(15, 5, 0, 0.7);
+            --card-border: rgba(255, 215, 0, 0.3);
+            --accent-gold: #ffd700;
+            --accent-glowing: #ffec8b;
+            --accent-green: #00ff7f;
+            --font-head: 'Orbitron', sans-serif;
+            --font-body: 'Rajdhani', sans-serif;
+            --glow-text: 0 0 10px rgba(255, 215, 0, 0.6);
+            --glow-border: 0 0 15px rgba(255, 215, 0, 0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--primary-bg);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            overflow-y: auto;
+            padding: 40px 15px; 
+            background: radial-gradient(circle at 50% 0%, #1a0f00 0%, #030005 100%);
+        }
+
+        /* --- PRELOADER (SILKY SMOOTH LOADING) --- */
+        #preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary-bg); z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s; }
+        .cyber-spinner { width: 60px; height: 60px; border: 3px dashed var(--accent-gold); border-radius: 50%; animation: spin 2s linear infinite; display: flex; align-items: center; justify-content: center; box-shadow: var(--glow-border); }
+        .cyber-inner { width: 30px; height: 30px; background: rgba(255, 215, 0, 0.2); border-radius: 50%; box-shadow: 0 0 20px var(--accent-glowing); animation: pulse 1s infinite alternate; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes pulse { 0% { transform: scale(0.8); opacity: 0.5; } 100% { transform: scale(1.2); opacity: 1; } }
+
+        /* --- BACKGROUND ANIMATION --- */
+        #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+
+        /* --- MAIN CONTAINER --- */
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100%; 
+            max-width: 900px;
+            margin: auto;
+            transition: all 0.5s ease;
+        }
+
+        /* --- LOGO --- */
+        .logo-container { text-align: center; margin-bottom: 30px; }
+        .logo-container img { width: 60px; height: 60px; border-radius: 50%; box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); border: 2px solid rgba(255,255,255,0.2); margin-bottom: 12px; }
+        .logo-text { font-family: var(--font-head); font-size: 1.6rem; font-weight: 900; background: linear-gradient(135deg, var(--accent-gold), #fff8c0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform: uppercase; letter-spacing: 2px; text-shadow: var(--glow-text); }
+
+        /* --- LANDING SLIDER (UPTO 4 SLIDES) --- */
+        #landing-slider-container { margin-bottom: 50px; overflow: hidden; }
+        .landing-slider { display: flex; width: 100%; position: relative; }
+        .landing-slide { flex: 0 0 100%; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; transition: transform 0.5s ease; }
+        .active-slide { display: flex; }
+        .hidden-slide { display: none; }
+
+        .slide-heading { font-family: var(--font-head); font-size: 1.8rem; font-weight: 700; color: white; text-transform: uppercase; letter-spacing: 1px; text-shadow: var(--glow-text); margin-bottom: 15px; animation: slideUpGlow 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .slide-text { font-family: var(--font-body); font-size: 1.1rem; color: #ccc; margin-bottom: 25px; animation: fadeIn 1s; max-width: 600px; }
+        
+        .benefits-list { list-style: none; display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 500px; margin-bottom: 30px;}
+        .benefit-item { background: rgba(255, 215, 0, 0.05); padding: 15px 20px; border-radius: 12px; border: 1px solid var(--card-border); text-align: left; transition: 0.3s; animation: fadeInRight 0.5s forwards; opacity: 0;}
+        .benefit-item:hover { background: rgba(255, 215, 0, 0.1); box-shadow: var(--glow-border); transform: translateY(-3px); }
+        .benefit-item i { color: var(--accent-gold); margin-right: 15px; font-size: 1.2rem;}
+
+        .landing-dots { display: flex; justify-content: center; gap: 10px; position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); }
+        .dot { width: 10px; height: 10px; background: rgba(255,255,255,0.3); border-radius: 50%; cursor: pointer; transition: 0.3s; }
+        .dot.active { background: var(--accent-gold); box-shadow: 0 0 10px var(--accent-gold); }
+
+        /* --- QUESTIONS SLIDER --- */
+        #questions-slider-container { display: none; margin-bottom: 30px; position: relative; }
+        
+        /* MODERN LOADER (OVERLAY) */
+        .loader-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(7,3,17,0.9); border-radius: 20px; z-index: 20; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .loader-text { font-family: var(--font-head); color: var(--accent-gold); font-weight: bold; letter-spacing: 2px; text-transform: uppercase; text-shadow: 0 0 10px rgba(255,215,0,0.5); }
+
+        /* GLASSMORPHISM CARD */
+        .question-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            padding: 40px 30px; 
+            border-radius: 20px; 
+            width: 100%; 
+            border: 1px solid var(--card-border);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.8), inset 0 0 20px rgba(255, 215, 0, 0.15);
+            margin: auto;
+            position: relative;
+        }
+        
+        .active-question { animation: fadeIn 0.8s; display: block; }
+        .hidden-question { display: none; }
+
+        .question-heading { font-family: var(--font-head); font-size: 1.5rem; font-weight: 700; background: linear-gradient(135deg, var(--accent-gold), #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform: uppercase; letter-spacing: 1px; text-shadow: var(--glow-text); margin-bottom: 25px; }
+
+        /* --- FORM FIELDS --- */
+        .form-group { margin-bottom: 20px; position: relative; }
+        label { display: block; font-size: 0.8rem; color: #aaa; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; font-family: var(--font-head); font-weight: bold;}
+        
+        .input-group { position: relative; }
+        .input-group i { position: absolute; left: 18px; bottom: 15px; color: #888; font-size: 1.1rem; transition: 0.3s; z-index: 2; pointer-events: none;}
+        
+        input[type="text"], input[type="email"], input[type="phone"], select {
+            width: 100%; padding: 15px 15px 15px 50px; border-radius: 12px; background: rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.1); color: white; font-family: var(--font-body); font-size: 1rem; font-weight: bold; box-sizing: border-box;
+            transition: all 0.3s ease; outline: none; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); position: relative;
+        }
+        select { padding: 15px 15px 15px 20px; -webkit-appearance: none; -moz-appearance: none; appearance: none; }
+        input:focus, select:focus { border-color: var(--accent-gold); box-shadow: 0 0 15px rgba(255,215,0,0.3), inset 0 0 10px rgba(0,0,0,0.5); background: rgba(0,0,0,0.8);}
+        input:focus + i, .input-group input:focus ~ i { color: var(--accent-gold); text-shadow: 0 0 10px rgba(255,215,0,0.5); transform: scale(1.1);}
+
+        /* Helpful field for Email Logic description */
+        .field-help-text { font-size: 0.75rem; color: #999; margin-top: 5px; font-weight: bold;}
+        
+        /* DYNAMIC FIELD SETS */
+        .dynamic-fields { display: none; }
+
+        /* --- AADHAR UPLOAD --- */
+        #uploadAadhar { margin-bottom: 30px; }
+        .upload-section { display: flex; flex-direction: column; gap: 20px;}
+        .upload-box { border: 2px dashed rgba(255,255,255,0.2); border-radius: 12px; padding: 30px; text-align: center; cursor: pointer; transition: 0.3s; position: relative;}
+        .upload-box:hover, .upload-box.dragging { border-color: var(--accent-gold); background: rgba(255,215,0,0.05); }
+        .upload-box i { font-size: 2.5rem; color: #aaa; margin-bottom: 10px;}
+        .upload-box p { color: #888;}
+        .file-count { color: var(--accent-gold); font-size: 0.8rem; margin-top: 5px; font-weight: bold;}
+
+        /* --- VERIFICATION SLIDE --- */
+        #verify-slide { max-height: 400px; overflow-y: auto; padding-right: 15px;}
+        #verify-slide::-webkit-scrollbar { width: 6px; }
+        #verify-slide::-webkit-scrollbar-thumb { background: rgba(255,215,0,0.3); border-radius: 3px; }
+
+        .submitted-data { display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; }
+        .data-item { background: rgba(255,215,0,0.05); padding: 15px; border-radius: 10px; border: 1px solid var(--card-border); position: relative; }
+        .data-label { font-size: 0.8rem; color: #aaa; text-transform: uppercase; font-weight: bold; font-family: var(--font-head); }
+        .data-value { font-size: 1.1rem; color: #fff; font-weight: bold; margin-top: 5px; white-space: pre-wrap; word-break: break-all;}
+        
+        .data-edit-btn { position: absolute; top: 10px; right: 10px; background: none; border: none; color: var(--accent-gold); cursor: pointer; transition: 0.3s; font-size: 1rem;}
+        .data-edit-btn:hover { color: #fff; }
+
+        /* --- TERMS CHECKBOX --- */
+        .terms-box { margin-bottom: 30px; display: flex; align-items: flex-start; gap: 10px; cursor: pointer; color: #ccc;}
+        .terms-box input { margin-top: 4px; border-color: #888;}
+        .terms-box span { font-size: 0.9rem;}
+
+        /* --- BUTTONS --- */
+        .btn-group { display: flex; justify-content: flex-end; gap: 15px; }
+        .base-btn {
+            padding: 16px 25px; border-radius: 12px; border: none;
+            color: black; font-size: 1rem; font-weight: bold; font-family: var(--font-head);
+            text-transform: uppercase; letter-spacing: 1px; cursor: pointer;
+            transition: all 0.3s ease; display: flex; justify-content: center; align-items: center; gap: 10px;
+            white-space: nowrap; 
+        }
+        
+        .primary-btn { background: linear-gradient(135deg, var(--accent-gold), #fff8c0); box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4); }
+        .primary-btn:active { transform: scale(0.96); box-shadow: 0 2px 10px rgba(255,215,0,0.4); }
+        .primary-btn:disabled { background: #333; color: #777; cursor: not-allowed; box-shadow: none; transform: none; border: 1px solid #444;}
+        
+        .secondary-btn { background: rgba(255,255,255,0.05); color: #ccc; border: 1px solid rgba(255,255,255,0.1); padding: 16px;}
+        .secondary-btn:hover { background: rgba(255,255,255,0.1); color: white;}
+
+        /* --- SUBMISSION CONFIRMED --- */
+        #submission-confirmed { display: none; text-align: center; }
+        .confirmed-icon { font-size: 5rem; color: var(--accent-green); margin-bottom: 25px; animation: scaleInGlow 0.8s; text-shadow: 0 0 20px var(--accent-green);}
+        
+        @keyframes scaleInGlow { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+        /* --- TOAST --- */
+        #customToast { visibility: hidden; min-width: 250px; background-color: var(--accent-gold); color: #000; text-align: center; border-radius: 10px; padding: 14px; position: fixed; z-index: 5000; left: 50%; bottom: -50px; transform: translateX(-50%); font-family: var(--font-head); font-weight: bold; box-shadow: 0 5px 15px rgba(255,215,0,0.5); opacity: 0; transition: opacity 0.4s, bottom 0.4s; }
+        #customToast.show { visibility: visible; opacity: 1; bottom: 30px; }
+
+        /* --- KEYFRAMES --- */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideUpGlow { 0% { opacity: 0; transform: translateY(40px) scale(0.95); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+    </style>
+</head>
+<body onload="initPreloader();">
+
+    <div id="preloader"><div class="cyber-spinner"><div class="cyber-inner"></div></div></div>
+    
+    <canvas id="particles-canvas"></canvas>
+
+    <div class="container">
+        <div class="logo-container">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_20wCR-WBMpQmw3vxcYUf-vxIO1PYDJoQN_Sid3UDjA9tf0cuX0eH40jbzHoJad4cxbnjhPjqfCw1Z5V1LhgN9zFuIQC0fJjecTy3D9PFu5WjR2H1wHwTD1bUGnXY_NiApWn5gMs6velcQngSzKoP1yHzX0cVsFSUFM8zIefcbiPayY7680Kz0V0ZAAE/s1264/1000093706.png" alt="Tournyx Logo">
+            <h1 class="logo-text">Tournyx</h1>
+        </div>
+
+        <div id="landing-slider-container">
+            <div class="landing-slider">
+                <div class="landing-slide" data-index="0">
+                    <h2 class="slide-heading">Power Up Your Organizer Journey!</h2>
+                    <p class="slide-text">Unlock exclusive tools and reach thousands of gamers. Join the Tournyx professional network.</p>
+                </div>
+                <div class="landing-slide benefits-slide hidden-slide" data-index="1">
+                    <h2 class="slide-heading">Benefits for You</h2>
+                    <ul class="benefits-list">
+                        <li class="benefit-item"><i class="fa-solid fa-gamepad"></i> <span>Automated Tournament Tools</span></li>
+                        <li class="benefit-item"><i class="fa-solid fa-chart-line"></i> <span>Expand Your Reach & Growth</span></li>
+                        <li class="benefit-item"><i class="fa-solid fa-money-bill-wave"></i> <span>Exciting Monetization Channels</span></li>
+                        <li class="benefit-item"><i class="fa-solid fa-users-gear"></i> <span>Global Professional Network</span></li>
+                    </ul>
+                </div>
+                <div class="landing-slide hidden-slide" data-index="2">
+                    <h2 class="slide-heading">Your Official Esports Identity</h2>
+                    <p class="slide-text">Establish credibility in the gaming community. We recognize your perfect standard and professional effort.</p>
+                </div>
+                <div class="landing-slide hidden-slide" data-index="3">
+                    <h2 class="slide-heading">Ready to Make an Impact?</h2>
+                    <p class="slide-text">Fill in your details below and step into the professional esports arena with Tournyx!</p>
+                </div>
+            </div>
+            
+            <div class="landing-dots">
+                <div class="dot active" data-index="0"></div>
+                <div class="dot" data-index="1"></div>
+                <div class="dot" data-index="2"></div>
+                <div class="dot" data-index="3"></div>
+            </div>
+        </div>
+
+        <div id="questions-slider-container">
+            <div class="loader-overlay" id="mainLoader">
+                <div class="cyber-spinner"><div class="cyber-inner"></div></div>
+                <div class="loader-text" id="loaderText">SUBMITTING...</div>
+            </div>
+
+            <div class="question-card">
+                <form id="organizerForm">
+                    <div class="question-slide active-question" data-step="1" id="role-slide">
+                        <h3 class="question-heading">Select Your Main Role</h3>
+                        <div class="form-group">
+                            <label>What is your primary relationship with Tournyx?</label>
+                            <div class="input-group">
+                                <select id="mainRole" required onchange="showDynamicFields(this.value)">
+                                    <option value="" disabled selected>Choose your professional role</option>
+                                    <option value="content_creator">Content Creator</option>
+                                    <option value="organizer">Tournament Organizer / Conductor</option>
+                                    <option value="new_organizer">Want to Rise with Tournyx / New Organizer</option>
+                                </select>
+                                <i class="fa-solid fa-user-tie"></i>
+                            </div>
+                        </div>
+
+                        <div class="dynamic-fields" id="content_creator_fields">
+                            <div class="form-group">
+                                <label>YouTube Channel Name</label>
+                                <div class="input-group"><input type="text" id="cc_youtube" placeholder="Your Channel Name" required><i class="fa-brands fa-youtube"></i></div>
+                            </div>
+                            <div class="form-group">
+                                <label>Instagram Username</label>
+                                <div class="input-group"><input type="text" id="cc_insta" placeholder="@username" required><i class="fa-brands fa-instagram"></i></div>
+                            </div>
+                            <div class="form-group">
+                                <label>Discord ID</label>
+                                <div class="input-group"><input type="text" id="cc_discord" placeholder="username#0000" required><i class="fa-brands fa-discord"></i></div>
+                            </div>
+                        </div>
+
+                        <div class="dynamic-fields" id="organizer_fields">
+                            <div class="form-group">
+                                <label>YouTube Channel Link (Optional)</label>
+                                <div class="input-group"><input type="text" id="org_youtube" placeholder="https://youtube.com/c/..."><i class="fa-brands fa-youtube"></i></div>
+                            </div>
+                            <div class="form-group">
+                                <label>Instagram Username (Optional)</label>
+                                <div class="input-group"><input type="text" id="org_insta" placeholder="@username"><i class="fa-brands fa-instagram"></i></div>
+                            </div>
+                            <div class="form-group">
+                                <label>How many tournaments have you hosted?</label>
+                                <div class="input-group"><input type="text" id="org_hosted_count" placeholder="Total hosted..." required><i class="fa-solid fa-trophy"></i></div>
+                            </div>
+                            <div class="form-group">
+                                <label>Were they Online or Offline?</label>
+                                <div class="input-group">
+                                    <select id="org_type" required>
+                                        <option value="" disabled selected>Select Host Type</option>
+                                        <option value="online">Online</option>
+                                        <option value="offline">Offline</option>
+                                        <option value="both">Both</option>
+                                    </select>
+                                    <i class="fa-solid fa-server"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dynamic-fields" id="new_organizer_fields">
+                            <div class="form-group">
+                                <label>YouTube Channel Link (Optional)</label>
+                                <div class="input-group"><input type="text" id="new_youtube" placeholder="https://youtube.com/c/..."><i class="fa-brands fa-youtube"></i></div>
+                            </div>
+                            <div class="form-group">
+                                <label>Instagram Username (Optional)</label>
+                                <div class="input-group"><input type="text" id="new_insta" placeholder="@username"><i class="fa-brands fa-instagram"></i></div>
+                            </div>
+                            <div class="form-group">
+                                <label>How many tournaments have you hosted? (Optional)</label>
+                                <div class="input-group"><input type="text" id="new_hosted_count" placeholder="Total hosted (optional)..."><i class="fa-solid fa-trophy"></i></div>
+                            </div>
+                            <div class="form-group">
+                                <label>Were they Online or Offline? (Optional)</label>
+                                <div class="input-group">
+                                    <select id="new_type">
+                                        <option value="" disabled selected>Select Host Type (optional)</option>
+                                        <option value="online">Online</option>
+                                        <option value="offline">Offline</option>
+                                        <option value="both">Both</option>
+                                    </select>
+                                    <i class="fa-solid fa-server"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question-slide hidden-question" data-step="2" id="standards-slide">
+                        <h3 class="question-heading">Your Perfect Standard</h3>
+                        <div class="form-group">
+                            <label>Why do you believe you meet our standards for professionalism and effort?</label>
+                            <textarea id="standardResponse" style="width:100%; height:120px; padding:15px; border-radius:12px; background:rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.1); color:white; font-family:var(--font-body); font-size:1rem; outline:none;" placeholder="Share your experience or vision..." required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="question-slide hidden-question" data-step="3" id="contact-slide">
+                        <h3 class="question-heading">Contact Information</h3>
+                        
+                        <div class="form-group">
+                            <label>Professional Email</label>
+                            <div class="input-group">
+                                <input type="text" id="professionalEmail" placeholder="e.g., mail.tournyx@example.com" required onblur="validateTournyxEmail(this.value);">
+                                <i class="fa-solid fa-envelope"></i>
+                            </div>
+                            <p class="field-help-text">Enter your professional email. It must contain 'tournyx' to be perfectly logic.</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label>WhatsApp Phone Number</label>
+                            <div class="input-group">
+                                <input type="phone" id="whatsappPhone" placeholder="+91 XXXX-XXXXXX" required>
+                                <i class="fa-solid fa-phone"></i>
+                            </div>
+                            <p class="field-help-text">We use these for important updates from the Tournyx Team.</p>
+                        </div>
+                    </div>
+
+                    <div class="question-slide hidden-question" data-step="4" id="personal-slide">
+                        <h3 class="question-heading">Personal Details</h3>
+                        <div class="form-group">
+                            <label>State</label>
+                            <div class="input-group"><input type="text" id="userState" placeholder="e.g., Delhi" required><i class="fa-solid fa-map-location"></i></div>
+                        </div>
+                        <div class="form-group">
+                            <label>City</label>
+                            <div class="input-group"><input type="text" id="userCity" placeholder="e.g., New Delhi" required><i class="fa-solid fa-city"></i></div>
+                        </div>
+                        <div class="form-group">
+                            <label>Gender</label>
+                            <div class="input-group">
+                                <select id="userGender" required>
+                                    <option value="" disabled selected>Select Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+                                <i class="fa-solid fa-venus-mars"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question-slide hidden-question" data-step="5" id="upload-slide">
+                        <h3 class="question-heading">Aadhar Card Verification</h3>
+                        <div class="upload-section" id="aadharUploadContainer">
+                            <p class="slide-text">Upload front and back side images. Supported up to 2 images, 10MB each.</p>
+                            <label class="upload-box" id="aadharDropZone" for="aadharFiles">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <p>Click or Drag to Upload Aadhar Front & Back</p>
+                                <p class="file-count" id="aadharFileCount">0 files selected</p>
+                                <input type="file" id="aadharFiles" accept="image/*" multiple style="display:none;" onchange="handleAadharUpload(this.files)">
+                            </label>
+                            <div id="aadharPreviews" style="display:flex; gap:10px; margin-top:10px;"></div>
+                        </div>
+                    </div>
+
+                    <div class="question-slide hidden-question" data-step="6" id="verify-slide">
+                        <h3 class="question-heading">Verify Your Information</h3>
+                        <p class="slide-text">Correct any details that are incorrect before final submission.</p>
+                        
+                        <div class="submitted-data" id="submittedDataContainer">
+                            </div>
+
+                        <label class="terms-box" for="terms">
+                            <input type="checkbox" id="terms" required>
+                            <span>I agree to the <a href="https://tournyx.in/terms" target="_blank" style="color:var(--accent-gold); font-weight:bold;">Terms and Conditions</a> of Tournyx Organizer Portal.</span>
+                        </label>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="button" class="base-btn secondary-btn hidden-slide" id="prevBtn" onclick="prevStep(); triggerHaptic();">Back</button>
+                        <button type="button" class="base-btn primary-btn" id="nextBtn" onclick="nextStep(); triggerHaptic();">Next</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="submission-confirmed">
+            <i class="fa-solid fa-circle-check confirmed-icon"></i>
+            <h2 class="slide-heading">Application Submitted!</h2>
+            <p class="slide-text">The Tournyx Team will shortly contact you. You will also receive a greeting email from us.</p>
+            <p class="slide-text">We are excited to have you in the professional arena!</p>
+        </div>
+    </div>
+
+    <div id="customToast">Notification</div>
+
+    <script>
+        // --- PRELOADER & PARTICLES ---
+        function initPreloader() { 
+            setTimeout(() => {
+                document.getElementById('preloader').style.opacity = '0';
+                setTimeout(() => document.getElementById('preloader').style.display = 'none', 500);
+            }, 500);
+            startLandingSlider(); 
+        }
+
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let pArray = [];
+        class P { constructor(){ this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.s=Math.random()*2; this.v=Math.random()*0.5 + 0.1;} u(){ this.y-=this.v; if(this.y<0)this.y=canvas.height; } d(){ ctx.fillStyle='rgba(255, 215, 0, 0.2)'; ctx.beginPath(); ctx.arc(this.x,this.y,this.s,0,Math.PI*2); ctx.fill(); } }
+        for(let i=0; i<30; i++) pArray.push(new P());
+        function anim(){ ctx.clearRect(0,0,canvas.width,canvas.height); pArray.forEach(p=>{p.u();p.d()}); requestAnimationFrame(anim); }
+        anim();
+
+        function triggerHaptic() { if(navigator.vibrate) navigator.vibrate(30); }
+
+        function showToast(msg, isError = false) {
+            let t = document.getElementById("customToast");
+            t.innerText = msg;
+            t.style.backgroundColor = isError ? "#ff4d4d" : "var(--accent-gold)";
+            t.style.color = isError ? "white" : "#000";
+            t.className = "show";
+            setTimeout(() => { t.className = t.className.replace("show", ""); }, 3500);
+        }
+
+        // 👉 YOUR LIVE WEB APP URL (Same as before)
+        const API_URL = "https://script.google.com/macros/s/AKfycbyqqTpgaflxKJ9xH0jq7mJ_jLzcoNhas3gNo0h5gvoa_6r5Ae9NFxJAJp7ZoYNnMRKl/exec";
+
+        // --- LANDING SLIDER ---
+        let currentLandingIndex = 0;
+        const landingSlides = document.querySelectorAll('.landing-slide');
+        const landingDots = document.querySelectorAll('.dot');
+        const landingSliderContainer = document.getElementById('landing-slider-container');
+        const questionsSliderContainer = document.getElementById('questions-slider-container');
+
+        function startLandingSlider() {
+            setInterval(() => {
+                showLandingSlide(currentLandingIndex + 1);
+            }, 6000); 
+
+            // Show questions when user clicks on a slide/dot on the last slide
+            landingDots.forEach(dot => dot.addEventListener('click', () => showLandingSlide(parseInt(dot.dataset.index))));
+        }
+
+        function showLandingSlide(index) {
+            landingSlides.forEach(s => s.classList.add('hidden-slide'));
+            landingDots.forEach(d => d.classList.remove('active'));
+            
+            if (index >= landingSlides.length) {
+                // If it was the last slide, hide landing and show questions
+                landingSliderContainer.style.display = 'none';
+                questionsSliderContainer.style.display = 'block';
+                return;
+            }
+
+            currentLandingIndex = index;
+            landingSlides[currentLandingIndex].classList.remove('hidden-slide');
+            landingDots[currentLandingIndex].classList.add('active');
+        }
+
+        // --- QUESTIONS SLIDER & FORM LOGIC ---
+        let currentStep = 1;
+        const totalSteps = 6;
+        const form = document.getElementById('organizerForm');
+        const nextBtn = document.getElementById('nextBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        const submittedDataContainer = document.getElementById('submittedDataContainer');
+
+        function showDynamicFields(role) {
+            // Hide all dynamic fields first
+            document.querySelectorAll('.dynamic-fields').forEach(df => df.style.display = 'none');
+            // Remove 'required' from all dynamic fields first
+            document.querySelectorAll('.dynamic-fields input, .dynamic-fields select').forEach(input => input.removeAttribute('required'));
+
+            if (role) {
+                // Show fields for the selected role
+                const selectedFieldsId = role + '_fields';
+                const fieldsContainer = document.getElementById(selectedFieldsId);
+                fieldsContainer.style.display = 'block';
+
+                // Re-add 'required' only to the non-optional fields of the selected role
+                if (role === 'content_creator') {
+                    document.getElementById('cc_youtube').setAttribute('required', '');
+                    document.getElementById('cc_insta').setAttribute('required', '');
+                    document.getElementById('cc_discord').setAttribute('required', '');
+                } else if (role === 'organizer') {
+                    document.getElementById('org_hosted_count').setAttribute('required', '');
+                    document.getElementById('org_type').setAttribute('required', '');
+                }
+            }
+        }
+
+        function validateTournyxEmail(email) {
+            if (email && !email.toLowerCase().includes('tournyx')) {
+                showToast("🛑 Email must contain 'tournyx' to be perfectly logic.", true);
+                document.getElementById('professionalEmail').style.borderColor = "#ff4d4d";
+                return false;
+            }
+            document.getElementById('professionalEmail').style.borderColor = "rgba(255,255,255,0.1)";
+            return true;
+        }
+
+        // --- AADHAR FILE HANDLING (BASE64) ---
+        let aadharBase64Files = [];
+
+        function handleAadharUpload(files) {
+            if (aadharBase64Files.length + files.length > 2) {
+                showToast("🛑 Supported up to 2 images.", true);
+                return;
+            }
+
+            const maxSizeInBytes = 10 * 1024 * 1024; // 10MB
+            const fileCountEl = document.getElementById('aadharFileCount');
+            const previewContainer = document.getElementById('aadharPreviews');
+
+            Array.from(files).forEach(file => {
+                if (file.size > maxSizeInBytes) {
+                    showToast(`🛑 '${file.name}' is too large. Max 10MB.`, true);
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const base64String = e.target.result.split(',')[1];
+                    const fileObj = { name: file.name, type: file.type, base64: base64String };
+                    aadharBase64Files.push(fileObj);
+                    
+                    // Show preview
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.width = "70px"; img.style.height = "70px"; img.style.borderRadius = "10px"; img.style.objectFit = "cover"; img.style.border = "2px solid rgba(255,215,0,0.2)"; img.style.marginRight = "10px";
+                    previewContainer.appendChild(img);
+
+                    fileCountEl.innerText = `${aadharBase64Files.length} files selected`;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // --- STEP NAVIGATION ---
+        function nextStep() {
+            if (!validateStep()) return;
+
+            if (currentStep < totalSteps) {
+                hideQuestion(currentStep);
+                currentStep++;
+                showQuestion(currentStep);
+                updateButtons();
+                if (currentStep === totalSteps) populateVerificationData();
+            } else {
+                // Final Submission
+                submitForm();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                hideQuestion(currentStep);
+                currentStep--;
+                showQuestion(currentStep);
+                updateButtons();
+            }
+        }
+
+        function showQuestion(step) {
+            const questionSlide = document.querySelector(`.question-slide[data-step="${step}"]`);
+            questionSlide.classList.remove('hidden-question');
+            questionSlide.classList.add('active-question');
+        }
+
+        function hideQuestion(step) {
+            const questionSlide = document.querySelector(`.question-slide[data-step="${step}"]`);
+            questionSlide.classList.add('hidden-question');
+            questionSlide.classList.remove('active-question');
+        }
+
+        function updateButtons() {
+            prevBtn.classList.toggle('hidden-slide', currentStep === 1);
+            nextBtn.innerText = (currentStep === totalSteps) ? 'Verify & Submit' : 'Next';
+        }
+
+        function validateStep() {
+            // Check form standard validations
+            if (!form.reportValidity()) return false;
+
+            // Custom validations
+            if (currentStep === 3) {
+                // Email Tournyx check
+                const email = document.getElementById('professionalEmail').value;
+                if (!validateTournyxEmail(email)) return false;
+            }
+
+            if (currentStep === 5) {
+                // Aadhar check
+                if (aadharBase64Files.length < 2) {
+                    showToast("🛑 Please upload Aadhar Front and Back side images.", true);
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+
+        // --- VERIFICATION SUMMARY ---
+        function populateVerificationData() {
+            submittedDataContainer.innerHTML = '';
+            const allInputs = form.querySelectorAll('input:not([type="file"]), select, textarea');
+            
+            // Collect all key-value pairs
+            const collectedData = collectFormData();
+            
+            // Custom label map for readable summary
+            const labelMap = {
+                mainRole: 'Selected Role',
+                standardResponse: 'Standard Reason',
+                professionalEmail: 'Professional Email',
+                whatsappPhone: 'WhatsApp Number',
+                userState: 'State',
+                userCity: 'City',
+                userGender: 'Gender'
+            };
+
+            for (let [id, value] of Object.entries(collectedData)) {
+                if (!value || value === 'Choose your professional role' || id.endsWith('Files') || id === 'terms') continue;
+                
+                // Get pretty name
+                let labelText = labelMap[id] || (id.charAt(0).toUpperCase() + id.slice(1).replace('_fields_', ' - ')).replace('_Fields', '');
+                
+                // Special formatting
+                if (id === 'mainRole') value = value.replace('_', ' ').toUpperCase();
+                
+                // Create data item
+                const dataItem = document.createElement('div');
+                dataItem.className = 'data-item';
+                dataItem.innerHTML = `<p class="data-label">${labelText}</p>
+                                     <p class="data-value">${value}</p>
+                                     <button type="button" class="data-edit-btn" onclick="editSection('${id}'); triggerHaptic();"><i class="fa-solid fa-pen-to-square"></i></button>`;
+                submittedDataContainer.appendChild(dataItem);
+            }
+        }
+
+        function collectFormData() {
+            const data = {};
+            const role = document.getElementById('mainRole').value;
+            data.mainRole = role;
+
+            if (role === 'content_creator') {
+                data.cc_youtube = document.getElementById('cc_youtube').value;
+                data.cc_insta = document.getElementById('cc_insta').value;
+                data.cc_discord = document.getElementById('cc_discord').value;
+            } else if (role === 'organizer') {
+                data.org_youtube = document.getElementById('org_youtube').value;
+                data.org_insta = document.getElementById('org_insta').value;
+                data.org_hosted_count = document.getElementById('org_hosted_count').value;
+                data.org_type = document.getElementById('org_type').value;
+            } else if (role === 'new_organizer') {
+                data.new_youtube = document.getElementById('new_youtube').value;
+                data.new_insta = document.getElementById('new_insta').value;
+                data.new_hosted_count = document.getElementById('new_hosted_count').value;
+                data.new_type = document.getElementById('new_type').value;
+            }
+
+            data.standardResponse = document.getElementById('standardResponse').value;
+            data.professionalEmail = document.getElementById('professionalEmail').value;
+            data.whatsappPhone = document.getElementById('whatsappPhone').value;
+            data.userState = document.getElementById('userState').value;
+            data.userCity = document.getElementById('userCity').value;
+            data.userGender = document.getElementById('userGender').value;
+            
+            return data;
+        }
+
+        function editSection(inputId) {
+            hideQuestion(currentStep);
+            
+            // Map inputId back to data-step
+            let stepToGoTo = 1;
+            const stepMap = {
+                mainRole: 1,
+                standardResponse: 2,
+                professionalEmail: 3, whatsappPhone: 3,
+                userState: 4, userCity: 4, userGender: 4
+            };
+            
+            // Role based dynamic steps
+            if (inputId.startsWith('cc_') || inputId.startsWith('org_') || inputId.startsWith('new_')) stepToGoTo = 1;
+            else stepToGoTo = stepMap[inputId] || 1;
+
+            currentStep = stepToGoTo;
+            showQuestion(currentStep);
+            updateButtons();
+            
+            // Focus on the input
+            setTimeout(() => document.getElementById(inputId).focus(), 300);
+        }
+
+        // --- SUBMIT FORM ---
+        async function submitForm() {
+            const termsChecked = document.getElementById('terms').checked;
+            if (!termsChecked) {
+                showToast("🛑 Please agree to the Terms and Conditions.", true);
+                return;
+            }
+
+            const loader = document.getElementById('mainLoader');
+            const finalBtn = document.getElementById('nextBtn');
+            const submitConfirmedSection = document.getElementById('submission-confirmed');
+
+            // Collect all data
+            const role = document.getElementById('mainRole').value;
+            const collectedData = collectFormData();
+            
+            // Build final object to send (including images)
+            const submissionObject = {
+                action: 'submit_organizer_application',
+                role_type: role,
+                organizer_data: collectedData,
+                aadhaar_front_base64: aadharBase64Files[0] ? aadharBase64Files[0].base64 : '',
+                aadhaar_front_name: aadharBase64Files[0] ? aadharBase64Files[0].name : '',
+                aadhaar_back_base64: aadharBase64Files[1] ? aadharBase64Files[1].base64 : '',
+                aadhaar_back_name: aadharBase64Files[1] ? aadharBase64Files[1].name : ''
+            };
+
+            // Lock UI
+            finalBtn.disabled = true;
+            loader.style.display = 'flex';
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' }, // IMPORTANT
+                    body: JSON.stringify(submissionObject)
+                });
+
+                const result = await response.json();
+
+                if (result.status === "success") {
+                    showToast('✨ Application submitted successfully!');
+                    questionsSliderContainer.style.display = 'none';
+                    submitConfirmedSection.style.display = 'block';
+                    
+                } else {
+                    showToast('🛑 Submission Error: ' + result.data, true);
+                    resetUI(finalBtn, loader);
+                }
+
+            } catch (error) {
+                showToast('❌ Server Error. Please check your connection.', true);
+                resetUI(finalBtn, loader);
+            }
+        }
+
+        function resetUI(btn, loader) {
+            btn.disabled = false;
+            loader.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
