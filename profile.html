@@ -609,7 +609,7 @@
     <div class="app-footer">
         © 2026 TOURNYX. All rights reserved.<br>
         <div style="margin-top: 5px; font-style: italic; color: #777; font-size: 0.8rem;">made with ⚡ for gamers</div>
-        <div style="margin-top: 15px; font-size: 0.85rem; color: #888; font-family: var(--font-head); letter-spacing: 1px;">
+        <div style="margin-top: 15px; font-size: 0.85rem; color: #888; font-family: var(--font-head); letter-spacing: 2px;">
             Powered by <span style="font-weight: 900; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 2px;">QUVA</span>
         </div>
     </div>
@@ -710,7 +710,7 @@
                 <input type="url" id="editYtLink" class="form-control" placeholder="https://youtube.com/..." style="margin-bottom: 20px;">
             </div>
             
-            <div style="flex-shrink: 0; padding-top: 15px; padding-bottom: calc(15px + env(safe-area-inset-bottom));">
+            <div style="flex-shrink: 0; padding-top: 15px; padding-bottom: calc(15px + env(safe-area-inset-bottom)); border-top: 1px solid rgba(255,255,255,0.05); background: transparent;">
                 <button class="save-btn" id="saveBtn" style="margin-bottom: 0;" onclick="saveProfile(); triggerHaptic();">Save Changes</button>
             </div>
         </div>
@@ -735,7 +735,7 @@
                 <div id="emailStep2" style="display:none; text-align:center;">
                     <p style="color:#aaa; font-size:0.9rem; margin-bottom:15px;">Enter the 4-digit code sent to your old email.</p>
                     <div class="otp-input-group">
-                        <input type="text" class="otp-box" maxlength="1" onkeyup="moveToNext(this, 'oe2')">
+                        <input type="text" class="otp-box" id="oe1" maxlength="1" onkeyup="moveToNext(this, 'oe2')">
                         <input type="text" class="otp-box" id="oe2" maxlength="1" onkeyup="moveToNext(this, 'oe3')">
                         <input type="text" class="otp-box" id="oe3" maxlength="1" onkeyup="moveToNext(this, 'oe4')">
                         <input type="text" class="otp-box" id="oe4" maxlength="1">
@@ -815,7 +815,7 @@
                 <div id="passStep2" style="display:none; text-align:center;">
                     <p style="color:#aaa; font-size:0.9rem; margin-bottom:15px;">Enter the 4-digit code sent to your email.</p>
                     <div class="otp-input-group">
-                        <input type="text" class="otp-box" maxlength="1" onkeyup="moveToNext(this, 'pe2')">
+                        <input type="text" class="otp-box" id="pe1" maxlength="1" onkeyup="moveToNext(this, 'pe2')">
                         <input type="text" class="otp-box" id="pe2" maxlength="1" onkeyup="moveToNext(this, 'pe3')">
                         <input type="text" class="otp-box" id="pe3" maxlength="1" onkeyup="moveToNext(this, 'pe4')">
                         <input type="text" class="otp-box" id="pe4" maxlength="1">
@@ -1131,6 +1131,22 @@
             setTimeout(() => t.className = "", 3000);
         }
 
+        // THE MISSING FUNCTION THAT BROKE EVERYTHING:
+        function formatImageUrl(url) {
+            if (!url) return '';
+            if (url.startsWith('data:image')) return url;
+            if (url.includes('drive.google.com/file/d/')) { 
+                let id = url.split('/d/')[1].split('/')[0]; 
+                return `https://drive.google.com/uc?export=view&id=${id}`; 
+            }
+            return url;
+        }
+
+        function safeParseNum(val, fallback) {
+            let p = parseInt(val);
+            return isNaN(p) ? fallback : p;
+        }
+
         // UI HELPERS (Input box jumping for OTPs)
         function moveToNext(current, nextFieldID) {
             if (current.value.length >= 1) {
@@ -1149,6 +1165,10 @@
                 }
             } catch(e) {
                 localStorage.removeItem('tournyx_user');
+            }
+
+            if (!localUser) {
+                localUser = { username: "Player", ign: "", matches: 0, wins: 0, points: 0, hosted: 0, earnings: 0, claimed_ms: [] };
             }
 
             if (localUser.username === "Loading..." || !localUser.username) localUser.username = "Player";
@@ -1198,7 +1218,7 @@
                     if(!isGuestMode) { localStorage.setItem('tournyx_user', JSON.stringify(userData)); }
                 }
             } catch(e) { 
-                console.log("Sync error, relying on cache."); 
+                console.log("Sync error, relying on cache.", e); 
                 if(isManual) showToast("Network issue. Showing cached profile.", true);
             }
 
@@ -1222,93 +1242,95 @@
                 
                 renderUserInfo(userData, true); 
                 if(isManual) showToast("Profile fully synced!");
+            }).catch(err => {
+                console.error("Match sync failed", err);
+                renderUserInfo(userData, true);
             });
         }
 
-        function safeParseNum(val, fallback) {
-            let p = parseInt(val);
-            return isNaN(p) ? fallback : p;
-        }
-
         function renderUserInfo(data, doAnimate) {
-            document.getElementById('userIgn').innerText = data.ign ? data.ign : "Tap to set IGN";
-            
-            if(data.avatar && data.avatar.length > 5) {
-                document.getElementById('userAvatar').src = formatImageUrl(data.avatar);
-            } else {
-                document.getElementById('userAvatar').src = `https://api.dicebear.com/7.x/bottts/svg?seed=${data.username || 'user'}`;
-            }
-
-            let completeness = 0;
-            if(data.ign && data.ign !== "Unknown" && data.ign !== "Fetching Live Data...") completeness += 25;
-            if(data.main_game && data.main_game !== "N/A") completeness += 25;
-            if(data.uid && data.uid !== "") completeness += 25;
-            if(data.avatar && data.avatar.length > 5) completeness += 25;
-            let offset = 283 - (283 * (completeness / 100));
-            document.getElementById('avatarRing').style.strokeDashoffset = offset;
-
-            let pts = parseInt(data.points) || 0;
-            let mCount = parseInt(data.matches) || 0;
-            let wCount = parseInt(data.wins) || 0;
-            let hostedCount = parseInt(data.hosted) || 0;
-            let earnings = parseInt(data.earnings) || 0; 
-            let successRate = hostedCount > 0 ? Math.min(100, 85 + (hostedCount * 1.5)).toFixed(1) : 0; 
-
-            if(doAnimate) {
-                animateValue('valMatches', 0, mCount, 1000);
-                animateValue('valWins', 0, wCount, 1000);
-                animateValue('valPoints', 0, pts, 1200);
-                animateValue('valHosted', 0, hostedCount, 1000);
-                animateValue('valEarnings', 0, earnings, 1200);
-                animateValue('valSuccessRate', 0, successRate, 1000);
-            } else {
-                document.getElementById('valMatches').innerHTML = mCount;
-                document.getElementById('valWins').innerHTML = wCount;
-                document.getElementById('valPoints').innerHTML = pts.toLocaleString();
-                document.getElementById('valHosted').innerHTML = hostedCount;
-                document.getElementById('valEarnings').innerHTML = earnings.toLocaleString();
-                document.getElementById('valSuccessRate').innerHTML = successRate;
-            }
-            
-            let winRate = mCount > 0 ? ((wCount / mCount) * 100).toFixed(1) : 0;
-            document.getElementById('valWinRate').innerText = winRate;
-
-            let starsHTML = ""; let ratingNum = 0.0;
-            if(hostedCount > 0) {
-                ratingNum = Math.min(5.0, 3.5 + (hostedCount * 0.15)).toFixed(1);
-                let fullStars = Math.floor(ratingNum);
-                let halfStar = (ratingNum - fullStars) >= 0.5 ? 1 : 0;
-                let emptyStars = 5 - fullStars - halfStar;
+            try {
+                document.getElementById('userIgn').innerText = data.ign ? data.ign : "Tap to set IGN";
                 
-                for(let i=0; i<fullStars; i++) starsHTML += '<i class="fa-solid fa-star"></i>';
-                if(halfStar) starsHTML += '<i class="fa-solid fa-star-half-stroke"></i>';
-                for(let i=0; i<emptyStars; i++) starsHTML += '<i class="fa-regular fa-star"></i>';
-            } else {
-                starsHTML = '<i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i>';
-            }
-            document.getElementById('valRating').innerHTML = starsHTML;
-            document.getElementById('valRatingText').innerText = `Rating: ${ratingNum}`;
+                if(data.avatar && data.avatar.length > 5) {
+                    document.getElementById('userAvatar').src = formatImageUrl(data.avatar);
+                } else {
+                    document.getElementById('userAvatar').src = `https://api.dicebear.com/7.x/bottts/svg?seed=${data.username || 'user'}`;
+                }
 
-            let tier = "Bronze"; let pct = 10; let level = 1; let badge = "🥉"; let glow = "rgba(255,153,0,0.2)";
-            if(pts >= 1000 && pts < 5000) { tier = "Silver"; pct = 30; level = 10; badge = "🥈"; glow = "rgba(255,255,255,0.15)";}
-            else if(pts >= 5000 && pts < 15000) { tier = "Gold"; pct = 60; level = 25; badge = "🥇"; glow = "rgba(255,215,0,0.25)";}
-            else if(pts >= 15000) { tier = "Diamond"; pct = 90; level = 50; badge = "💎"; glow = "rgba(0,242,255,0.25)";}
-            
-            document.getElementById('profileHeaderGlow').style.boxShadow = `inset 0 -20px 50px -20px ${glow}`;
-            document.getElementById('userName').innerHTML = `${badge} ${data.username || "Player"}`;
-            document.getElementById('userTier').innerText = tier;
-            document.getElementById('userLevel').innerText = level;
-            setTimeout(() => { document.getElementById('tierProgress').style.width = pct + "%"; }, 100);
+                let completeness = 0;
+                if(data.ign && data.ign !== "Unknown" && data.ign !== "Fetching Live Data...") completeness += 25;
+                if(data.main_game && data.main_game !== "N/A") completeness += 25;
+                if(data.uid && data.uid !== "") completeness += 25;
+                if(data.avatar && data.avatar.length > 5) completeness += 25;
+                let offset = 283 - (283 * (completeness / 100));
+                document.getElementById('avatarRing').style.strokeDashoffset = offset;
 
-            document.getElementById('mainGameTag').innerHTML = `<i class="fa-solid fa-crosshairs"></i> Game: ${data.main_game || 'N/A'}`;
-            document.getElementById('mainGameUid').innerHTML = `<i class="fa-solid fa-id-card"></i> UID: ${data.uid || 'Not Set'}`;
-            let ytHtml = data.yt_link ? `<a href="${data.yt_link}" target="_blank" class="yt-link" title="Visit Channel"><i class="fa-brands fa-youtube"></i></a>` : "";
-            document.getElementById('userExtras').innerHTML = `<span class="game-tag" id="mainGameTag"><i class="fa-solid fa-crosshairs"></i> Game: ${data.main_game || 'N/A'}</span> <span class="game-tag" id="mainGameUid"><i class="fa-solid fa-id-card"></i> UID: ${data.uid || 'Not Set'}</span> ${ytHtml}`;
+                let pts = parseInt(data.points) || 0;
+                let mCount = parseInt(data.matches) || 0;
+                let wCount = parseInt(data.wins) || 0;
+                let hostedCount = parseInt(data.hosted) || 0;
+                let earnings = parseInt(data.earnings) || 0; 
+                let successRate = hostedCount > 0 ? Math.min(100, 85 + (hostedCount * 1.5)).toFixed(1) : 0; 
 
-            updateMilestones(data, doAnimate);
+                if(doAnimate) {
+                    animateValue('valMatches', 0, mCount, 1000);
+                    animateValue('valWins', 0, wCount, 1000);
+                    animateValue('valPoints', 0, pts, 1200);
+                    animateValue('valHosted', 0, hostedCount, 1000);
+                    animateValue('valEarnings', 0, earnings, 1200);
+                    animateValue('valSuccessRate', 0, successRate, 1000);
+                } else {
+                    document.getElementById('valMatches').innerHTML = mCount;
+                    document.getElementById('valWins').innerHTML = wCount;
+                    document.getElementById('valPoints').innerHTML = pts.toLocaleString();
+                    document.getElementById('valHosted').innerHTML = hostedCount;
+                    document.getElementById('valEarnings').innerHTML = earnings.toLocaleString();
+                    document.getElementById('valSuccessRate').innerHTML = successRate;
+                }
+                
+                let winRate = mCount > 0 ? ((wCount / mCount) * 100).toFixed(1) : 0;
+                document.getElementById('valWinRate').innerText = winRate;
 
-            if(data.role === 'organizer' && !document.getElementById('btnOrg').classList.contains('active')) {
-                switchRole('organizer');
+                let starsHTML = ""; let ratingNum = 0.0;
+                if(hostedCount > 0) {
+                    ratingNum = Math.min(5.0, 3.5 + (hostedCount * 0.15)).toFixed(1);
+                    let fullStars = Math.floor(ratingNum);
+                    let halfStar = (ratingNum - fullStars) >= 0.5 ? 1 : 0;
+                    let emptyStars = 5 - fullStars - halfStar;
+                    
+                    for(let i=0; i<fullStars; i++) starsHTML += '<i class="fa-solid fa-star"></i>';
+                    if(halfStar) starsHTML += '<i class="fa-solid fa-star-half-stroke"></i>';
+                    for(let i=0; i<emptyStars; i++) starsHTML += '<i class="fa-regular fa-star"></i>';
+                } else {
+                    starsHTML = '<i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i>';
+                }
+                document.getElementById('valRating').innerHTML = starsHTML;
+                document.getElementById('valRatingText').innerText = `Rating: ${ratingNum}`;
+
+                let tier = "Bronze"; let pct = 10; let level = 1; let badge = "🥉"; let glow = "rgba(255,153,0,0.2)";
+                if(pts >= 1000 && pts < 5000) { tier = "Silver"; pct = 30; level = 10; badge = "🥈"; glow = "rgba(255,255,255,0.15)";}
+                else if(pts >= 5000 && pts < 15000) { tier = "Gold"; pct = 60; level = 25; badge = "🥇"; glow = "rgba(255,215,0,0.25)";}
+                else if(pts >= 15000) { tier = "Diamond"; pct = 90; level = 50; badge = "💎"; glow = "rgba(0,242,255,0.25)";}
+                
+                document.getElementById('profileHeaderGlow').style.boxShadow = `inset 0 -20px 50px -20px ${glow}`;
+                document.getElementById('userName').innerHTML = `${badge} ${data.username || "Player"}`;
+                document.getElementById('userTier').innerText = tier;
+                document.getElementById('userLevel').innerText = level;
+                setTimeout(() => { document.getElementById('tierProgress').style.width = pct + "%"; }, 100);
+
+                document.getElementById('mainGameTag').innerHTML = `<i class="fa-solid fa-crosshairs"></i> Game: ${data.main_game || 'N/A'}`;
+                document.getElementById('mainGameUid').innerHTML = `<i class="fa-solid fa-id-card"></i> UID: ${data.uid || 'Not Set'}`;
+                let ytHtml = data.yt_link ? `<a href="${data.yt_link}" target="_blank" class="yt-link" title="Visit Channel"><i class="fa-brands fa-youtube"></i></a>` : "";
+                document.getElementById('userExtras').innerHTML = `<span class="game-tag" id="mainGameTag"><i class="fa-solid fa-crosshairs"></i> Game: ${data.main_game || 'N/A'}</span> <span class="game-tag" id="mainGameUid"><i class="fa-solid fa-id-card"></i> UID: ${data.uid || 'Not Set'}</span> ${ytHtml}`;
+
+                updateMilestones(data, doAnimate);
+
+                if(data.role === 'organizer' && !document.getElementById('btnOrg').classList.contains('active')) {
+                    switchRole('organizer');
+                }
+            } catch(e) {
+                console.error("Render User Info error:", e);
             }
         }
 
@@ -1336,34 +1358,38 @@
             // Setup Organizer (5 to 60)
             let orgTier = "Rookie"; let orgFee = "15% Comm."; let orgNext = 15; let orgPct = 0;
             let oBadge = document.getElementById('orgFeeBadge');
-            oBadge.classList.remove('elite');
+            if(oBadge) {
+                oBadge.classList.remove('elite');
 
-            if(hosted >= 60) { orgTier = "Legend"; orgFee = "5% Comm."; orgNext = hosted; orgPct = 100; oBadge.classList.add('elite'); }
-            else if(hosted >= 45) { orgTier = "Elite"; orgFee = "8% Comm."; orgNext = 60; orgPct = ((hosted-45)/15)*100; oBadge.classList.add('elite'); }
-            else if(hosted >= 30) { orgTier = "Pro"; orgFee = "10% Comm."; orgNext = 45; orgPct = ((hosted-30)/15)*100; }
-            else if(hosted >= 15) { orgTier = "Amateur"; orgFee = "12% Comm."; orgNext = 30; orgPct = ((hosted-15)/15)*100; }
-            else { orgNext = 15; orgPct = (hosted/15)*100; if(hosted < 5) orgTier = "Unranked"; }
-            
-            oBadge.innerText = orgFee;
-            document.getElementById('orgTierText').innerText = orgTier;
-            document.getElementById('orgNextGoal').innerText = hosted >= 60 ? "Max Tier Reached!" : `${hosted}/${orgNext} to Next Tier`;
-            setTimeout(()=> { document.getElementById('orgProgressFill').style.width = orgPct + '%'; }, 300);
+                if(hosted >= 60) { orgTier = "Legend"; orgFee = "5% Comm."; orgNext = hosted; orgPct = 100; oBadge.classList.add('elite'); }
+                else if(hosted >= 45) { orgTier = "Elite"; orgFee = "8% Comm."; orgNext = 60; orgPct = ((hosted-45)/15)*100; oBadge.classList.add('elite'); }
+                else if(hosted >= 30) { orgTier = "Pro"; orgFee = "10% Comm."; orgNext = 45; orgPct = ((hosted-30)/15)*100; }
+                else if(hosted >= 15) { orgTier = "Amateur"; orgFee = "12% Comm."; orgNext = 30; orgPct = ((hosted-15)/15)*100; }
+                else { orgNext = 15; orgPct = (hosted/15)*100; if(hosted < 5) orgTier = "Unranked"; }
+                
+                oBadge.innerText = orgFee;
+                document.getElementById('orgTierText').innerText = orgTier;
+                document.getElementById('orgNextGoal').innerText = hosted >= 60 ? "Max Tier Reached!" : `${hosted}/${orgNext} to Next Tier`;
+                setTimeout(()=> { document.getElementById('orgProgressFill').style.width = orgPct + '%'; }, 300);
+            }
 
             // Setup Player (5 to 150)
             let pTier = "Scout"; let pBadgeText = "Level 1"; let pNext = 25; let pPct = 0;
             let pBadge = document.getElementById('playerRankBadge');
-            pBadge.classList.remove('elite');
+            if(pBadge) {
+                pBadge.classList.remove('elite');
 
-            if(matches >= 150) { pTier = "Mythic"; pBadgeText = "Max Level"; pNext = matches; pPct = 100; pBadge.classList.add('elite'); }
-            else if(matches >= 100) { pTier = "Champion"; pBadgeText = "Level 4"; pNext = 150; pPct = ((matches-100)/50)*100; pBadge.classList.add('elite');}
-            else if(matches >= 50) { pTier = "Gladiator"; pBadgeText = "Level 3"; pNext = 100; pPct = ((matches-50)/50)*100; }
-            else if(matches >= 25) { pTier = "Veteran"; pBadgeText = "Level 2"; pNext = 50; pPct = ((matches-25)/25)*100; }
-            else { pNext = 25; pPct = (matches/25)*100; if(matches < 5) pTier = "Unranked"; }
-            
-            pBadge.innerText = pTier;
-            document.getElementById('playerTierText').innerText = pBadgeText;
-            document.getElementById('playerNextGoal').innerText = matches >= 150 ? "Legend Reached!" : `${matches}/${pNext} Matches`;
-            setTimeout(()=> { document.getElementById('playerProgressFill').style.width = pPct + '%'; }, 300);
+                if(matches >= 150) { pTier = "Mythic"; pBadgeText = "Max Level"; pNext = matches; pPct = 100; pBadge.classList.add('elite'); }
+                else if(matches >= 100) { pTier = "Champion"; pBadgeText = "Level 4"; pNext = 150; pPct = ((matches-100)/50)*100; pBadge.classList.add('elite');}
+                else if(matches >= 50) { pTier = "Gladiator"; pBadgeText = "Level 3"; pNext = 100; pPct = ((matches-50)/50)*100; }
+                else if(matches >= 25) { pTier = "Veteran"; pBadgeText = "Level 2"; pNext = 50; pPct = ((matches-25)/25)*100; }
+                else { pNext = 25; pPct = (matches/25)*100; if(matches < 5) pTier = "Unranked"; }
+                
+                pBadge.innerText = pTier;
+                document.getElementById('playerTierText').innerText = pBadgeText;
+                document.getElementById('playerNextGoal').innerText = matches >= 150 ? "Legend Reached!" : `${matches}/${pNext} Matches`;
+                setTimeout(()=> { document.getElementById('playerProgressFill').style.width = pPct + '%'; }, 300);
+            }
         }
 
         function openMilestoneModal(type) {
@@ -1806,7 +1832,8 @@
         let currentUploadState = {
             previewId: '',
             base64Id: '',
-            aspectRatio: 16 / 9 
+            aspectRatio: 16 / 9,
+            isCircle: false
         };
 
         // --- AVATAR CROPPER FIX ---
@@ -1868,7 +1895,7 @@
             cancelCrop();
             showToast("Compressing and generating secure link...");
 
-            // If it's an Avatar upload, just save directly using base64 like before
+            // If it's an Avatar upload, just save directly using base64
             if(currentUploadState.isCircle) {
                 fetch(API_URL, {
                     method: 'POST', headers: { 'Content-Type': 'text/plain' },
@@ -2066,7 +2093,7 @@
             });
         }
 
-        // --- NEW EMAIL CHANGE FLOW ---
+        // --- LIVE SECURE EMAIL CHANGE FLOW ---
         let targetNewEmail = "";
         function startEmailChange() {
             document.getElementById('emailChangeModal').classList.add('active');
@@ -2082,14 +2109,19 @@
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
             btn.disabled = true;
             
-            // Simulating API Call to send OTP to old email
-            setTimeout(() => {
-                document.getElementById('emailStep1').style.display = 'none';
-                document.getElementById('emailStep2').style.display = 'block';
-                btn.innerHTML = 'Send OTP';
-                btn.disabled = false;
-                showToast("OTP sent to your old email.");
-            }, 1500);
+            fetch(API_URL, {
+                method: 'POST', headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify({ action: 'send_otp', email: userData.email })
+            }).then(res => res.json()).then(data => {
+                if(data.status === 'success') {
+                    document.getElementById('emailStep1').style.display = 'none';
+                    document.getElementById('emailStep2').style.display = 'block';
+                    showToast("OTP sent to your old email.");
+                } else {
+                    showToast("Failed to send OTP.", true);
+                }
+                btn.innerHTML = 'Send OTP'; btn.disabled = false;
+            }).catch(() => { showToast("Network error.", true); btn.innerHTML = 'Send OTP'; btn.disabled = false; });
         }
 
         function verifyOldOtp() {
@@ -2097,14 +2129,21 @@
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verifying...';
             btn.disabled = true;
             
-            // Simulating API Call to verify OTP
-            setTimeout(() => {
-                document.getElementById('emailStep2').style.display = 'none';
-                document.getElementById('emailStep3').style.display = 'block';
-                btn.innerHTML = 'Verify Account';
-                btn.disabled = false;
-                showToast("Account Verified. Enter new email.");
-            }, 1000);
+            let otpCode = document.getElementById('oe1').value + document.getElementById('oe2').value + document.getElementById('oe3').value + document.getElementById('oe4').value;
+            
+            fetch(API_URL, {
+                method: 'POST', headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify({ action: 'verify_otp', email: userData.email, otp: otpCode })
+            }).then(res => res.json()).then(data => {
+                if(data.status === 'success') {
+                    document.getElementById('emailStep2').style.display = 'none';
+                    document.getElementById('emailStep3').style.display = 'block';
+                    showToast("Account Verified. Enter new email.");
+                } else {
+                    showToast("Invalid OTP code.", true);
+                }
+                btn.innerHTML = 'Verify Account'; btn.disabled = false;
+            }).catch(() => { showToast("Network error.", true); btn.innerHTML = 'Verify Account'; btn.disabled = false; });
         }
 
         function sendNewEmailLink() {
@@ -2113,24 +2152,31 @@
             targetNewEmail = newEmail;
             
             const btn = document.getElementById('btnSendNewLink');
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending Link...';
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
             btn.disabled = true;
 
-            // Simulating API Call to update email request and send link
-            setTimeout(() => {
-                document.getElementById('emailStep3').style.display = 'none';
-                document.getElementById('emailStep4').style.display = 'block';
-                btn.innerHTML = 'Send Verification Link';
-                btn.disabled = false;
-            }, 1500);
+            fetch(API_URL, {
+                method: 'POST', headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify({ action: 'update_account_email', old_email: userData.email, new_email: targetNewEmail })
+            }).then(res => res.json()).then(data => {
+                if(data.status === 'success') {
+                    document.getElementById('emailStep3').style.display = 'none';
+                    document.getElementById('emailStep4').style.display = 'block';
+                    
+                    userData.email = targetNewEmail;
+                    localStorage.setItem('tournyx_user', JSON.stringify(userData));
+                } else {
+                    showToast(data.message || "Email already in use.", true);
+                    btn.innerHTML = 'Update Email'; btn.disabled = false;
+                }
+            }).catch(() => { showToast("Network error.", true); btn.innerHTML = 'Update Email'; btn.disabled = false; });
         }
 
         function simulateExternalLinkReturn() {
-            // When the user clicks the link in their email, it would redirect them here with a param
-            window.location.href = window.location.href.split('?')[0] + '?verify_email=success';
+            window.location.href = 'index.html';
         }
 
-        // --- NEW PASSWORD CHANGE FLOW ---
+        // --- LIVE PASSWORD CHANGE FLOW ---
         function openPassModal() {
             document.getElementById('passModal').classList.add('active');
             document.getElementById('passStep1').style.display = 'block';
@@ -2143,14 +2189,21 @@
         function sendPassOtpEmail() {
             const btn = document.getElementById('btnSendPassOtpEmail');
             btn.style.opacity = '0.5';
+            btn.style.pointerEvents = 'none';
             
-            // Send OTP to email via API
-            setTimeout(() => {
-                document.getElementById('passStep1').style.display = 'none';
-                document.getElementById('passStep2').style.display = 'block';
-                btn.style.opacity = '1';
-                showToast("Security Code sent to your email!");
-            }, 1500);
+            fetch(API_URL, {
+                method: 'POST', headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify({ action: 'send_otp', email: userData.email })
+            }).then(res => res.json()).then(data => {
+                if(data.status === 'success') {
+                    document.getElementById('passStep1').style.display = 'none';
+                    document.getElementById('passStep2').style.display = 'block';
+                    showToast("Security Code sent to your email!");
+                } else {
+                    showToast("Failed to send code.", true);
+                }
+                btn.style.opacity = '1'; btn.style.pointerEvents = 'auto';
+            }).catch(() => { showToast("Network error.", true); btn.style.opacity = '1'; btn.style.pointerEvents = 'auto'; });
         }
 
         function verifyPassOtp() {
@@ -2158,12 +2211,20 @@
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verifying...';
             btn.disabled = true;
             
-            setTimeout(() => {
-                document.getElementById('passStep2').style.display = 'none';
-                document.getElementById('passStep3').style.display = 'block';
-                btn.innerHTML = 'Verify Identity';
-                btn.disabled = false;
-            }, 1000);
+            let otpCode = document.getElementById('pe1').value + document.getElementById('pe2').value + document.getElementById('pe3').value + document.getElementById('pe4').value;
+
+            fetch(API_URL, {
+                method: 'POST', headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify({ action: 'verify_otp', email: userData.email, otp: otpCode })
+            }).then(res => res.json()).then(data => {
+                if(data.status === 'success') {
+                    document.getElementById('passStep2').style.display = 'none';
+                    document.getElementById('passStep3').style.display = 'block';
+                } else {
+                    showToast("Invalid OTP code.", true);
+                }
+                btn.innerHTML = 'Verify Identity'; btn.disabled = false;
+            }).catch(() => { showToast("Network error.", true); btn.innerHTML = 'Verify Identity'; btn.disabled = false; });
         }
 
         function submitFinalPasswordChange() {
@@ -2177,14 +2238,18 @@
             btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Updating..."; 
             btn.disabled = true;
 
-            // In reality, you'd send `p1` to the backend to update without needing the old password because they verified via OTP.
-            // Using a dummy POST to simulate this
-            setTimeout(() => {
-                showToast("Password updated securely!");
-                closePassModal();
-                btn.innerText = "Update Password"; 
-                btn.disabled = false;
-            }, 1500);
+            fetch(API_URL, {
+                method: 'POST', headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify({ action: 'force_change_password', email: userData.email, new_pass: p1 })
+            }).then(res => res.json()).then(data => {
+                if(data.status === 'success') {
+                    showToast("Password updated securely!");
+                    closePassModal();
+                } else {
+                    showToast("Failed to update password.", true);
+                }
+                btn.innerText = "Update Password"; btn.disabled = false;
+            }).catch(() => { showToast("Network error.", true); btn.innerText = "Update Password"; btn.disabled = false; });
         }
 
         function logout() {
