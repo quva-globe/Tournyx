@@ -415,35 +415,13 @@
             <button class="btn-write-review" onclick="openModal('feedback-modal')"><i class="fa-solid fa-pen"></i> Submit Experience</button>
         </div>
         
+        <!-- Grid where live data will be fetched -->
         <div class="feedback-grid" id="live-feedback-grid">
-            <!-- Pinned Review for SEO baseline -->
-            <div class="feedback-card">
-                <i class="fa-solid fa-circle-check google-verified"></i>
-                <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-                <p>"The Tournyx Esports Software Developer Internship gave me raw, hands-on experience scaling databases for thousands of live players. Highly recommended for computer science students seeking real startup exposure."</p>
-                <div class="feedback-author">
-                    <div class="author-avatar">R</div>
-                    <div class="author-info">
-                        <h5>Rajesh K.</h5>
-                        <span>Full-Stack Intern (Placed)</span>
-                    </div>
-                </div>
+            <!-- Loading state placeholder -->
+            <div style="grid-column: 1 / -1; display: flex; justify-content: center; padding: 40px; color: var(--text-muted);">
+                <div class="spinner" style="border-top-color: var(--secondary); width: 30px; height: 30px;"></div>
+                <span style="margin-left: 15px; display: flex; align-items: center; font-weight: 600;">Loading verified reviews...</span>
             </div>
-            
-            <div class="feedback-card">
-                <i class="fa-solid fa-circle-check google-verified"></i>
-                <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></div>
-                <p>"Managing BGMI and Free Fire brackets for a premium audience completely transformed my resume. The 3-month program is intensive but incredibly rewarding. The Letter of Recommendation helped me secure my next job."</p>
-                <div class="feedback-author">
-                    <div class="author-avatar">A</div>
-                    <div class="author-info">
-                        <h5>Ananya S.</h5>
-                        <span>Esports Operations</span>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Dynamic feedback will be appended here by JS -->
         </div>
     </div>
 
@@ -645,6 +623,9 @@
     </div>
 
     <script>
+        // 👉 PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE:
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxhkwiaWjSIbdeApQQ3HJqXagmsM2TmeLQC0lV5Xpy72cnpknKx6OxiC9D9tF347QKF/exec"; 
+
         // ==========================================
         // 0. THEME ENGINE & PAGE LOADER & SCROLL
         // ==========================================
@@ -652,6 +633,9 @@
             const loader = document.getElementById('page-loader');
             loader.style.opacity = '0';
             setTimeout(() => loader.style.visibility = 'hidden', 500);
+            
+            // Execute live database fetch for reviews on load
+            fetchLiveReviews(); 
         });
 
         window.addEventListener('scroll', () => {
@@ -923,7 +907,7 @@
         }
 
         // ==========================================
-        // 7. MODALS & FORM SUBMISSION 
+        // 7. MODALS & LIVE DATABASE INTEGRATION 
         // ==========================================
         function openModal(modalId) { document.getElementById(modalId).style.display = 'flex'; }
         function closeModal(modalId) { 
@@ -933,79 +917,44 @@
             }
         }
 
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxhkwiaWjSIbdeApQQ3HJqXagmsM2TmeLQC0lV5Xpy72cnpknKx6OxiC9D9tF347QKF/exec"; 
-
-        // Internship Application Form
-        const appForm = document.getElementById('tournyx-form');
-        const submitBtn = document.getElementById('submit-btn');
-        const btnText = document.getElementById('btn-text');
-        const btnLoader = document.getElementById('btn-loader');
-        
-        appForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (phoneInput.value.length !== 10) return alert("System Requires a 10-digit mobile number.");
-
-            btnText.style.display = 'none'; btnLoader.style.display = 'block';
-            submitBtn.style.pointerEvents = 'none';
-
-            const formData = new FormData(appForm);
-            formData.set('phone', '+91' + phoneInput.value);
-            formData.set('action', 'submit_internship'); 
-
+        // --- FETCH LIVE REVIEWS FROM DATABASE ---
+        async function fetchLiveReviews() {
+            const grid = document.getElementById('live-feedback-grid');
             try {
-                // await fetch(SCRIPT_URL, { method: 'POST', body: formData });
-            } catch (error) { console.log(error); } 
-            finally {
-                btnText.style.display = 'flex'; btnLoader.style.display = 'none';
-                submitBtn.style.pointerEvents = 'auto';
-                openModal('success-modal');
-                appForm.reset();
-                fireBattlegroundSuccess(); 
-            }
-        });
-
-        // Feedback Review Form
-        const feedbackForm = document.getElementById('feedback-form');
-        const fbSubmitBtn = document.getElementById('submit-feedback-btn');
-        const fbBtnText = document.getElementById('fb-btn-text');
-        const fbBtnLoader = document.getElementById('fb-btn-loader');
-        
-        feedbackForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            fbBtnText.style.display = 'none'; fbBtnLoader.style.display = 'block';
-            fbSubmitBtn.style.pointerEvents = 'none';
-
-            const formData = new FormData(feedbackForm);
-            formData.set('action', 'add_feedback'); 
-
-            try {
-                // await fetch(SCRIPT_URL, { method: 'POST', body: formData });
-            } catch (error) { console.log("Feedback logged."); } 
-            finally {
-                fbBtnText.style.display = 'block'; fbBtnLoader.style.display = 'none';
-                fbSubmitBtn.style.pointerEvents = 'auto';
+                if(!SCRIPT_URL.includes("script.google.com")) throw new Error("Link not set");
                 
-                const starVal = formData.get('rating') || 5;
-                const nameStr = formData.get('reviewer_name');
-                const roleStr = formData.get('reviewer_role');
-                const textStr = formData.get('review_text');
-                appendReviewToGrid(nameStr, roleStr, textStr, starVal, true);
+                const res = await fetch(SCRIPT_URL + "?action=get_reviews");
+                const result = await res.json();
                 
-                closeModal('feedback-modal');
-                feedbackForm.reset();
-                fireBattlegroundSuccess(true); 
+                grid.innerHTML = ''; // Clear loading spinner
+                
+                if (result.status === 'success' && result.data.length > 0) {
+                    result.data.forEach(rev => {
+                        appendReviewToGrid(rev.name, rev.role, rev.text, rev.rating, false);
+                    });
+                } else {
+                    grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color:var(--text-muted);">No reviews yet. Be the first to share your experience!</p>';
+                }
+            } catch (e) {
+                console.log(e);
+                grid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align:center; padding: 20px;">
+                        <p style="color:var(--text-muted); margin-bottom: 10px;">Please configure your Google Apps Script URL to fetch live reviews.</p>
+                        <p style="font-size: 12px; color: var(--primary);">System is ready for live connection.</p>
+                    </div>`;
             }
-        });
+        }
 
         function appendReviewToGrid(name, role, text, stars, isNew=false) {
             const grid = document.getElementById('live-feedback-grid');
+            if(grid.innerHTML.includes("configure your Google") || grid.innerHTML.includes("No reviews yet")) grid.innerHTML = '';
+
             let starHtml = '';
             for(let i=0; i<5; i++){
                 starHtml += i < stars ? '<i class="fa-solid fa-star"></i>' : '<i class="fa-regular fa-star"></i>';
             }
             
-            let initial = name.charAt(0).toUpperCase();
+            let initial = (name && name.length > 0) ? name.charAt(0).toUpperCase() : "T";
             
             const newCard = document.createElement('div');
             newCard.className = 'feedback-card';
@@ -1023,8 +972,80 @@
                     </div>
                 </div>
             `;
-            grid.insertBefore(newCard, grid.children[2] || grid.firstChild);
+            
+            if (isNew) {
+                grid.insertBefore(newCard, grid.firstChild);
+            } else {
+                grid.appendChild(newCard);
+            }
         }
+
+        // --- SUBMIT INTERNSHIP APPLICATION ---
+        const appForm = document.getElementById('tournyx-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const btnText = document.getElementById('btn-text');
+        const btnLoader = document.getElementById('btn-loader');
+        
+        appForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (phoneInput.value.length !== 10) return alert("System Requires a 10-digit mobile number.");
+
+            btnText.style.display = 'none'; btnLoader.style.display = 'block';
+            submitBtn.style.pointerEvents = 'none';
+
+            const formData = new FormData(appForm);
+            formData.set('phone', '+91' + phoneInput.value);
+            formData.set('action', 'submit_internship'); 
+
+            try {
+                // Post Data to Google Sheet
+                await fetch(SCRIPT_URL, { method: 'POST', body: formData });
+            } catch (error) { console.log(error); } 
+            finally {
+                btnText.style.display = 'flex'; btnLoader.style.display = 'none';
+                submitBtn.style.pointerEvents = 'auto';
+                openModal('success-modal');
+                appForm.reset();
+                fireBattlegroundSuccess(); 
+            }
+        });
+
+        // --- SUBMIT FEEDBACK REVIEW ---
+        const feedbackForm = document.getElementById('feedback-form');
+        const fbSubmitBtn = document.getElementById('submit-feedback-btn');
+        const fbBtnText = document.getElementById('fb-btn-text');
+        const fbBtnLoader = document.getElementById('fb-btn-loader');
+        
+        feedbackForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            fbBtnText.style.display = 'none'; fbBtnLoader.style.display = 'block';
+            fbSubmitBtn.style.pointerEvents = 'none';
+
+            const formData = new FormData(feedbackForm);
+            formData.set('action', 'add_feedback'); 
+
+            try {
+                // Post Data to Google Sheet
+                await fetch(SCRIPT_URL, { method: 'POST', body: formData });
+            } catch (error) { console.log("Error logging to sheet."); } 
+            finally {
+                fbBtnText.style.display = 'block'; fbBtnLoader.style.display = 'none';
+                fbSubmitBtn.style.pointerEvents = 'auto';
+                
+                const starVal = formData.get('rating') || 5;
+                const nameStr = formData.get('reviewer_name');
+                const roleStr = formData.get('reviewer_role');
+                const textStr = formData.get('review_text');
+                
+                // Add new review to top of page immediately
+                appendReviewToGrid(nameStr, roleStr, textStr, starVal, true);
+                
+                closeModal('feedback-modal');
+                feedbackForm.reset();
+                fireBattlegroundSuccess(true); 
+            }
+        });
 
         function handleCustomRole() {
             const select = document.getElementById('role-select');
