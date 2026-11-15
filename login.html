@@ -688,7 +688,7 @@
 
           <div class="mt-3 pt-2.5 border-t border-[#1e1d2b] text-center flex items-center justify-between text-xs">
             <span class="text-[#a09fb1]">Don't have an account?</span>
-            <button onclick="switchAuthTab('signup'); activateGoogleSignupMode();" type="button" class="text-[#D4FF00] hover:underline font-mono text-[11px] font-bold">
+            <button onclick="switchAuthTab('signup')" type="button" class="text-[#D4FF00] hover:underline font-mono text-[11px] font-bold">
               Sign up with Google or Email →
             </button>
           </div>
@@ -698,7 +698,7 @@
              VIEW 2: SINGLE-PAGE CREATE ACCOUNT (Full Natural Scroll on Mobile)
              ========================================================= -->
         <div id="viewSignup" class="hidden">
-          <!-- Top Bar: Mode Title + Instant Google Auto-Fill Toggle -->
+          <!-- Top Bar: Mode Title + 1-Click Live Google OAuth Launch -->
           <div class="flex items-center justify-between gap-2 mb-3">
             <div>
               <span id="lblReg" class="font-orbitron text-xs font-extrabold text-[#00f2ff] uppercase tracking-wider block">
@@ -707,8 +707,8 @@
               <span class="font-mono text-[9px] text-[#8a889e]">Instant Player ID &amp; Esports Profile Activation</span>
             </div>
 
-            <!-- Google Instant Registration Button (Hides Email & Password when clicked!) -->
-            <button id="btnGoogleSignupToggle" onclick="activateGoogleSignupMode()" type="button"
+            <!-- 1-Click Live Google OAuth Button -->
+            <button id="btnGoogleSignupToggle" onclick="handleGoogleAction('signup')" type="button"
               class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white hover:bg-gray-100 text-[#050508] font-mono text-[10px] font-extrabold uppercase tracking-wider shadow transition-transform active:scale-95 flex-shrink-0">
               <svg class="w-3.5 h-3.5" viewBox="0 0 24 24">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
@@ -720,39 +720,34 @@
             </button>
           </div>
 
-          <!-- GOOGLE LINKED STATUS BANNER (Shown when user clicks Google button on Create Account; hides Email field!) -->
+          <!-- GOOGLE VERIFIED BADGE (Only shown AFTER returning from real Google OAuth callback) -->
           <div id="googleLinkedBanner" class="hidden mb-3 p-2.5 rounded-2xl bg-[#00ff7f]/10 border border-[#00ff7f]/50 flex items-center justify-between gap-2">
             <div class="flex items-center gap-2 min-w-0">
               <div class="w-7 h-7 rounded-full bg-white flex items-center justify-center flex-shrink-0">
                 <i class="fa-brands fa-google text-xs text-[#050508]"></i>
               </div>
               <div class="min-w-0">
-                <div class="font-mono text-[9px] text-[#00ff7f] font-bold uppercase tracking-wider">GOOGLE VERIFIED • EMAIL HIDDEN</div>
-                <div id="googleLinkedEmailDisplay" class="font-mono text-xs text-white font-bold truncate">Verified Google Session</div>
+                <div class="font-mono text-[9px] text-[#00ff7f] font-bold uppercase tracking-wider">✓ GOOGLE VERIFIED</div>
+                <div id="googleLinkedEmailDisplay" class="font-mono text-xs text-white font-bold truncate"></div>
               </div>
             </div>
-            <div class="flex items-center gap-1.5 flex-shrink-0">
-              <button onclick="triggerLiveGoogleOAuth()" type="button" class="px-2.5 py-1 rounded-full bg-[#00ff7f] text-[#050508] text-[9px] font-mono font-black uppercase">
-                Sync Google
-              </button>
-              <button onclick="disableGoogleSignupMode()" type="button" class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-[9px] font-mono text-[#c3c6d0] hover:text-white">
-                Use Email
-              </button>
-            </div>
+            <button onclick="disableGoogleSignupMode()" type="button" class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-[9px] font-mono text-[#c3c6d0] hover:text-white flex-shrink-0">
+              Switch Email
+            </button>
           </div>
 
           <!-- SINGLE-PAGE CREATE ACCOUNT FORM (Unclipped, natural expansion on mobile & desktop) -->
           <form id="playerSignupForm" class="space-y-2.5 pb-2">
 
-            <!-- SECTION A: Email & Password (Automatically hidden when Google Signup is active!) -->
+            <!-- SECTION A: Email & Password (Password automatically hidden when Google OAuth is verified) -->
             <div id="emailPasswordSection" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              <div class="relative flex items-center">
+              <div id="regEmailWrapper" class="relative flex items-center">
                 <i class="fa-solid fa-envelope text-[#7a788f] text-xs absolute left-3.5 pointer-events-none"></i>
                 <input type="email" name="email" id="regEmail" placeholder="Email Address" required
                   class="w-full bg-[#07070b] text-white placeholder:text-[#525166] font-body text-xs pl-9 pr-3 py-3 border border-[#262536] focus:border-[#00f2ff] rounded-full outline-none">
               </div>
 
-              <div class="relative flex items-center">
+              <div id="regPwdWrapper" class="relative flex items-center">
                 <i class="fa-solid fa-lock text-[#7a788f] text-xs absolute left-3.5 pointer-events-none"></i>
                 <input type="password" name="password" id="regPwd" placeholder="Password (6+ chars)" required
                   class="w-full bg-[#07070b] text-white placeholder:text-[#525166] font-body text-xs pl-9 pr-9 py-3 border border-[#262536] focus:border-[#00f2ff] rounded-full outline-none">
@@ -935,10 +930,7 @@
             </button>
           </form>
 
-          <div class="mt-3.5 pt-3 border-t border-[#26201a] flex flex-col sm:flex-row items-center justify-between gap-2 text-center">
-            <button onclick="openModal('orgApplyModal')" type="button" id="txtApplyHost" class="font-mono text-[11px] text-[#ff9900] hover:text-[#D4FF00] underline font-bold tracking-wide">
-              Submit Organizer Application →
-            </button>
+          <div class="mt-3.5 pt-3 border-t border-[#26201a] flex items-center justify-center text-center">
             <button onclick="openModal('orgStatusModal')" type="button" class="font-mono text-[10px] text-[#c3c6d0] hover:text-white underline">
               Check Application Status
             </button>
@@ -1267,8 +1259,68 @@
       const ORGANIZER_REDIRECT_URL = "index.html";
       const APPS_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbyqqTpgaflxKJ9xH0jq7mJ_jLzcoNhas3gNo0h5gvoa_6r5Ae9NFxJAJp7ZoYNnMRKl/exec";
 
+      // ==========================================
+      // WHATSAPP / SMS OTP GATEWAY CONFIGURATION
+      // ==========================================
+      const OTP_GATEWAY_WEBHOOK_URL = "YOUR_WHATSAPP_OR_SMS_WEBHOOK_URL"; // e.g., Google Apps Script / Green-API / Fast2SMS
+      const OTP_API_KEY = "YOUR_OTP_API_KEY";
+
+      async function sendOtpViaGateway(phone, otpCode) {
+        const cleanDigits = String(phone).replace(/\D/g, ""); // e.g., 919876543210
+        const hasCustomWebhook =
+          OTP_GATEWAY_WEBHOOK_URL &&
+          OTP_GATEWAY_WEBHOOK_URL !== "YOUR_WHATSAPP_OR_SMS_WEBHOOK_URL";
+
+        // 1. Custom WhatsApp (Green-API / Meta Cloud) or Fast2SMS Webhook
+        if (hasCustomWebhook) {
+          // Automatic support for Green-API direct sendMessage URL format
+          if (OTP_GATEWAY_WEBHOOK_URL.includes("green-api.com")) {
+            const res = await fetch(OTP_GATEWAY_WEBHOOK_URL, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                chatId: `${cleanDigits}@c.us`,
+                message: `Your Tournyx Esports verification OTP is *${otpCode}*. Valid for 5 minutes. Do not share this code.`
+              })
+            });
+            return res.ok;
+          }
+
+          // Generic Webhook / Google Apps Script Proxy / Fast2SMS Proxy
+          const headers = { "Content-Type": "application/json" };
+          if (OTP_API_KEY && OTP_API_KEY !== "YOUR_OTP_API_KEY") {
+            headers["Authorization"] = OTP_API_KEY;
+          }
+          const res = await fetch(OTP_GATEWAY_WEBHOOK_URL, {
+            method: "POST",
+            headers,
+            body: JSON.stringify({
+              action: "send_phone_otp",
+              phone: `+${cleanDigits}`,
+              digits: cleanDigits.slice(-10),
+              otp: otpCode,
+              apiKey: OTP_API_KEY !== "YOUR_OTP_API_KEY" ? OTP_API_KEY : undefined
+            })
+          });
+          return res.ok;
+        }
+
+        // 2. Fallback to Tournyx Google Apps Script Backend
+        const response = await fetch(APPS_SCRIPT_API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain" },
+          body: JSON.stringify({
+            action: "send_phone_otp",
+            phone: `+${cleanDigits}`,
+            otp: otpCode
+          })
+        });
+        return response.ok;
+      }
+
       let supabaseClient = null;
       let isSupabaseReady = false;
+      let oauthCallbackProcessed = false;
 
       // XSS Sanitization Helper
       function sanitizeInput(str) {
@@ -1280,6 +1332,15 @@
 
       // Initialize Supabase Client Inside Protected Scope
       function initSupabaseEngine() {
+        const hadOAuthHash =
+          window.location.hash.includes("access_token=") ||
+          window.location.hash.includes("error_description=") ||
+          window.location.search.includes("code=");
+
+        if (hadOAuthHash) {
+          skipIntroNow();
+        }
+
         if (window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY) {
           try {
             supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
@@ -1293,7 +1354,17 @@
 
             // Listen for Live Google / Discord OAuth Callback Sessions
             supabaseClient.auth.onAuthStateChange(async (event, session) => {
-              if (event === "SIGNED_IN" && session && session.user) {
+              if (
+                window.location.hash.includes("access_token") ||
+                window.location.hash.includes("refresh_token") ||
+                window.location.search.includes("code=")
+              ) {
+                window.history.replaceState({}, document.title, window.location.pathname);
+              }
+
+              if ((event === "SIGNED_IN" || (hadOAuthHash && event === "INITIAL_SESSION")) && session && session.user) {
+                if (oauthCallbackProcessed) return;
+                oauthCallbackProcessed = true;
                 await handleOAuthCallbackUser(session.user);
               }
             });
@@ -1305,36 +1376,70 @@
 
       async function handleOAuthCallbackUser(sbUser) {
         if (!sbUser) return;
-        const email = (sbUser.email || "").toLowerCase();
+        skipIntroNow();
+
+        // Clean any leftover OAuth hash from the address bar immediately
+        if (window.location.hash || window.location.search.includes("code=")) {
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+        const email = (sbUser.email || "").trim().toLowerCase();
+        const userId = sbUser.id;
         const fullName = sbUser.user_metadata?.full_name || sbUser.user_metadata?.name || "";
-        const avatar = sbUser.user_metadata?.avatar_url || "";
+        const avatar = sbUser.user_metadata?.avatar_url || sbUser.user_metadata?.picture || "";
 
-        // Check if player profile already exists in public.Users
-        if (isSupabaseReady && supabaseClient && email) {
+        // Query public.Users by email (or id) to check if this player already has an account
+        if (isSupabaseReady && supabaseClient && (email || userId)) {
           try {
-            const { data: existingRows } = await supabaseClient
-              .from("Users")
-              .select("*")
-              .eq("email", email)
-              .limit(1);
+            let existingUser = null;
 
-            if (existingRows && existingRows.length > 0) {
+            if (email) {
+              const { data: rowsByEmail } = await supabaseClient
+                .from("Users")
+                .select("*")
+                .ilike("email", email)
+                .limit(1);
+              if (rowsByEmail && rowsByEmail.length > 0) {
+                existingUser = rowsByEmail[0];
+              }
+            }
+
+            if (!existingUser && userId) {
+              const { data: rowsById } = await supabaseClient
+                .from("Users")
+                .select("*")
+                .eq("id", userId)
+                .limit(1);
+              if (rowsById && rowsById.length > 0) {
+                existingUser = rowsById[0];
+              }
+            }
+
+            // CASE A: Account EXISTS in public.Users -> Save to localStorage & redirect cleanly to index.html
+            if (existingUser) {
+              const completeProfile = {
+                ...existingUser,
+                id: existingUser.id || userId,
+                email: existingUser.email || email,
+                ign: existingUser.ign || existingUser.username || fullName || email.split("@")[0],
+                username: existingUser.username || fullName || existingUser.ign || "Player",
+                avatar: existingUser.avatar || avatar,
+                isLoggedIn: true
+              };
               resetLoginAttempts();
-              triggerArenaEntry(existingRows[0], REDIRECT_URL);
+              saveRecentAccount(completeProfile);
+              localStorage.setItem("tournyx_user", JSON.stringify(completeProfile));
+              localStorage.setItem("tournyx_userData", JSON.stringify(completeProfile));
+              window.location.replace(REDIRECT_URL);
               return;
             }
           } catch (e) {}
         }
 
-        // New Google/Discord user: open CREATE ID tab with Email hidden so they can complete Game UID & Phone OTP
+        // CASE B: NO Account in public.Users -> Keep on login.html, switch to CREATE ID, lock Google Email & hide Password
         switchAuthTab("signup");
-        activateGoogleSignupMode(email || "verified.oauth@tournyx.in", true);
-        if (fullName && document.getElementById("regUser")) {
-          document.getElementById("regUser").value = fullName;
-        }
-        if (avatar) {
-          sessionStorage.setItem("tx_oauth_avatar", avatar);
-        }
+        activateGoogleSignupMode(email, fullName, avatar, userId);
+        showToast("Google Email Verified! Complete your Player Profile & Phone OTP to enter the Arena.", true);
       }
 
       // --- BRUTE-FORCE RATE LIMITER & COOLDOWN LOCKOUT ENGINE ---
@@ -1412,9 +1517,9 @@
           } else {
             if (lockoutInterval) clearInterval(lockoutInterval);
             if (banner) banner.classList.add("hidden");
-            if (parseInt(sessionStorage.getItem("tx_lockout_until") || "0", 10) > 0) {
+            if (sessionStorage.getItem("tx_lockout_until")) {
               sessionStorage.removeItem("tx_lockout_until");
-              sessionStorage.setItem("tx_failed_attempts", "0");
+              sessionStorage.removeItem("tx_failed_attempts");
               updateAttemptCounterUI();
             }
             if (btnLogin) {
@@ -1434,42 +1539,59 @@
         }
       }
 
-      // --- GOOGLE SIGNUP MODE (HIDES EMAIL & PASSWORD FIELDS ON CREATE ID) ---
+      // --- GOOGLE OAUTH VERIFIED PROFILE COMPLETION MODE ---
       let isGoogleSignupMode = false;
       let googleAuthenticatedEmail = "";
+      let googleAuthenticatedUserId = "";
 
-      function activateGoogleSignupMode(prefillEmail, skipToast) {
-        doHaptic();
-        if (!verifyTermsChecked()) return;
+      function activateGoogleSignupMode(verifiedEmail, fullName, avatarUrl, oauthUserId) {
+        if (!verifiedEmail) {
+          handleGoogleAction("signup");
+          return;
+        }
 
         isGoogleSignupMode = true;
-        googleAuthenticatedEmail = prefillEmail || "google.verified.player@gmail.com";
+        googleAuthenticatedEmail = verifiedEmail.trim().toLowerCase();
+        googleAuthenticatedUserId = oauthUserId || "";
 
         const emailPwdSec = document.getElementById("emailPasswordSection");
+        const regEmailWrapper = document.getElementById("regEmailWrapper");
+        const regPwdWrapper = document.getElementById("regPwdWrapper");
         const googleBanner = document.getElementById("googleLinkedBanner");
         const googleEmailDisp = document.getElementById("googleLinkedEmailDisplay");
         const regEmail = document.getElementById("regEmail");
         const regPwd = document.getElementById("regPwd");
+        const regUser = document.getElementById("regUser");
         const toggleBtn = document.getElementById("btnGoogleSignupToggle");
 
-        if (emailPwdSec) emailPwdSec.classList.add("hidden");
+        // Show verified Google banner with the user's real email
         if (googleBanner) googleBanner.classList.remove("hidden");
-        if (googleEmailDisp) {
-          googleEmailDisp.innerText = prefillEmail ? prefillEmail : "Google Fast-Track Active (Email Hidden)";
-        }
+        if (googleEmailDisp) googleEmailDisp.innerText = googleAuthenticatedEmail;
         if (toggleBtn) toggleBtn.classList.add("hidden");
 
+        // Pre-fill & lock the verified Google Email, and hide the Password field
+        if (emailPwdSec) {
+          emailPwdSec.classList.remove("hidden", "sm:grid-cols-2");
+          emailPwdSec.classList.add("grid-cols-1");
+        }
+        if (regEmailWrapper) regEmailWrapper.classList.remove("hidden");
+        if (regPwdWrapper) regPwdWrapper.classList.add("hidden");
+
         if (regEmail) {
-          regEmail.required = false;
           regEmail.value = googleAuthenticatedEmail;
+          regEmail.readOnly = true;
+          regEmail.required = true;
+          regEmail.classList.add("border-[#00ff7f]/60", "text-[#00ff7f]", "cursor-not-allowed");
         }
         if (regPwd) {
           regPwd.required = false;
-          regPwd.value = "GoogleOAuth#" + Math.floor(100000 + Math.random() * 900000);
+          regPwd.value = "OAuthVerified#" + (oauthUserId || Math.random().toString(36).slice(2));
         }
-
-        if (!skipToast) {
-          showToast("Google Mode Active! Email field hidden — verify your Phone OTP & Game ID below.", true);
+        if (fullName && regUser && !regUser.value) {
+          regUser.value = fullName;
+        }
+        if (avatarUrl) {
+          sessionStorage.setItem("tx_oauth_avatar", avatarUrl);
         }
       }
 
@@ -1477,20 +1599,28 @@
         doHaptic();
         isGoogleSignupMode = false;
         googleAuthenticatedEmail = "";
+        googleAuthenticatedUserId = "";
 
         const emailPwdSec = document.getElementById("emailPasswordSection");
+        const regPwdWrapper = document.getElementById("regPwdWrapper");
         const googleBanner = document.getElementById("googleLinkedBanner");
         const regEmail = document.getElementById("regEmail");
         const regPwd = document.getElementById("regPwd");
         const toggleBtn = document.getElementById("btnGoogleSignupToggle");
 
-        if (emailPwdSec) emailPwdSec.classList.remove("hidden");
+        if (emailPwdSec) {
+          emailPwdSec.classList.remove("hidden", "grid-cols-1");
+          emailPwdSec.classList.add("sm:grid-cols-2");
+        }
+        if (regPwdWrapper) regPwdWrapper.classList.remove("hidden");
         if (googleBanner) googleBanner.classList.add("hidden");
         if (toggleBtn) toggleBtn.classList.remove("hidden");
 
         if (regEmail) {
+          regEmail.readOnly = false;
           regEmail.required = true;
           regEmail.value = "";
+          regEmail.classList.remove("border-[#00ff7f]/60", "text-[#00ff7f]", "cursor-not-allowed");
         }
         if (regPwd) {
           regPwd.required = true;
@@ -1499,44 +1629,32 @@
       }
 
       async function triggerLiveGoogleOAuth() {
-        doHaptic();
-        if (!verifyTermsChecked()) return;
-        if (isSupabaseReady && supabaseClient) {
-          try {
-            showToast("Connecting to Google Authentication...", true);
-            const { error } = await supabaseClient.auth.signInWithOAuth({
-              provider: "google",
-              options: {
-                redirectTo: window.location.origin + "/" + REDIRECT_URL
-              }
-            });
-            if (error) throw error;
-          } catch (err) {
-            showToast("Google Fast-Track ready! Complete your Game UID & Phone OTP below.", true);
-          }
-        }
+        return handleGoogleAction("signup");
       }
 
-      // --- GOOGLE & DISCORD LIVE OAUTH BUTTON HANDLERS ---
+      // --- 1-CLICK GOOGLE & DISCORD LIVE OAUTH LAUNCHERS ---
       async function handleGoogleAction(context) {
         doHaptic();
         if (!verifyTermsChecked()) return;
 
-        if (context === "login" && isSupabaseReady && supabaseClient) {
+        if (isSupabaseReady && supabaseClient) {
           try {
-            showToast("Launching Google Sign-In...", true);
+            showToast("Redirecting to Google Authentication...", true);
+            const returnUrl = window.location.origin + window.location.pathname;
             const { error } = await supabaseClient.auth.signInWithOAuth({
               provider: "google",
               options: {
-                redirectTo: window.location.origin + "/" + REDIRECT_URL
+                redirectTo: returnUrl
               }
             });
-            if (!error) return;
-          } catch (e) {}
+            if (error) throw error;
+            return;
+          } catch (e) {
+            showToast("Unable to reach Google OAuth server. Please try again.");
+          }
+        } else {
+          showToast("Authentication engine initializing. Please try again.");
         }
-
-        switchAuthTab("signup");
-        activateGoogleSignupMode();
       }
 
       async function handleDiscordAction() {
@@ -1545,22 +1663,25 @@
 
         if (isSupabaseReady && supabaseClient) {
           try {
-            showToast("Launching Discord Sign-In...", true);
+            showToast("Redirecting to Discord Authentication...", true);
+            const returnUrl = window.location.origin + window.location.pathname;
             const { error } = await supabaseClient.auth.signInWithOAuth({
               provider: "discord",
               options: {
-                redirectTo: window.location.origin + "/" + REDIRECT_URL
+                redirectTo: returnUrl
               }
             });
-            if (!error) return;
-          } catch (e) {}
+            if (error) throw error;
+            return;
+          } catch (e) {
+            showToast("Unable to reach Discord OAuth server. Please try again.");
+          }
+        } else {
+          showToast("Authentication engine initializing. Please try again.");
         }
-
-        switchAuthTab("signup");
-        activateGoogleSignupMode("discord.player@tournyx.in");
       }
 
-      // --- PHONE NUMBER (+91) OTP VERIFICATION ENGINE ---
+      // --- PHONE NUMBER (+91) OTP VERIFICATION ENGINE (NO ON-SCREEN OTP EXPOSURE) ---
       let isPhoneVerified = false;
       let generatedPhoneOtp = "";
       let phoneOtpCooldownTimer = null;
@@ -1598,13 +1719,21 @@
         btn.disabled = true;
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
 
+        // Generate 6-digit OTP inside private closure memory (never logged or shown on UI)
         generatedPhoneOtp = String(Math.floor(100000 + Math.random() * 900000));
 
-        let sentViaSmsGateway = false;
-        if (isSupabaseReady && supabaseClient) {
+        let dispatched = false;
+
+        // Attempt 1: Custom WhatsApp / SMS Gateway Webhook (Green-API / Fast2SMS / Apps Script)
+        try {
+          dispatched = await sendOtpViaGateway(fullE164Phone, generatedPhoneOtp);
+        } catch (err) {}
+
+        // Attempt 2: Native Phone Auth OTP (if configured on backend)
+        if (!dispatched && isSupabaseReady && supabaseClient) {
           try {
             const { error } = await supabaseClient.auth.signInWithOtp({ phone: fullE164Phone });
-            if (!error) sentViaSmsGateway = true;
+            if (!error) dispatched = true;
           } catch (e) {}
         }
 
@@ -1613,13 +1742,11 @@
         otpGroup.classList.remove("hidden");
         otpGroup.classList.add("flex");
 
-        if (sentViaSmsGateway) {
-          if (hint) hint.innerText = `SMS OTP dispatched to ${fullE164Phone}`;
-          showToast(`OTP dispatched to ${fullE164Phone}!`, true);
-        } else {
-          if (hint) hint.innerText = `Instant Verification OTP: ${generatedPhoneOtp}`;
-          showToast(`Your Tournyx Phone OTP is ${generatedPhoneOtp}`, true);
+        const maskedPhone = `+91 ******${digits.slice(-4)}`;
+        if (hint) {
+          hint.innerText = `OTP dispatched to ${maskedPhone} via WhatsApp / SMS`;
         }
+        showToast(`Verification OTP sent to ${maskedPhone}. Check your WhatsApp or SMS.`, true);
 
         let sec = 45;
         if (phoneOtpCooldownTimer) clearInterval(phoneOtpCooldownTimer);
@@ -1984,11 +2111,14 @@
             const cleanUid = document.getElementById("regUid").value.trim().replace(/\D/g, "");
 
             const finalEmail = isGoogleSignupMode
-              ? (googleAuthenticatedEmail !== "google.verified.player@gmail.com"
-                  ? googleAuthenticatedEmail
-                  : `${cleanIgn.toLowerCase().replace(/[^a-z0-9]/g, "")}.${phoneDigits.slice(-4)}@google.tournyx.in`)
+              ? googleAuthenticatedEmail
               : document.getElementById("regEmail").value.trim().toLowerCase();
             const finalPassword = document.getElementById("regPwd").value;
+
+            if (!finalEmail || !finalEmail.includes("@")) {
+              showToast("Please provide a valid email address.");
+              return;
+            }
 
             if (!isGoogleSignupMode && finalPassword.length < 6) {
               showToast("Password must be at least 6 characters.");
@@ -1998,6 +2128,7 @@
             btnLoading("btnSignup", "ACTIVATING PLAYER ID...");
 
             const newUserRecord = {
+              ...(googleAuthenticatedUserId ? { id: googleAuthenticatedUserId } : {}),
               username: cleanUser,
               ign: cleanIgn,
               uid: cleanUid,
@@ -2017,11 +2148,14 @@
             try {
               if (isSupabaseReady && supabaseClient) {
                 if (!isGoogleSignupMode) {
-                  await supabaseClient.auth.signUp({
+                  const { data: signUpData } = await supabaseClient.auth.signUp({
                     email: finalEmail,
                     password: finalPassword,
                     options: { data: newUserRecord }
                   });
+                  if (signUpData?.user?.id && !newUserRecord.id) {
+                    newUserRecord.id = signUpData.user.id;
+                  }
                 }
                 await supabaseClient.from("Users").upsert([newUserRecord], { onConflict: "email" });
               }
@@ -2499,8 +2633,9 @@
         if (terms && !terms.checked) {
           showToast("Please accept the 18+ DPDP Fair Play & Terms of Service first.");
           if (gate) {
-            gate.classList.add("shake-anim");
-            setTimeout(() => gate.classList.remove("shake-anim"), 450);
+            gate.scrollIntoView({ behavior: "smooth", block: "center" });
+            gate.classList.add("shake-anim", "border-red-500");
+            setTimeout(() => gate.classList.remove("shake-anim", "border-red-500"), 800);
           }
           return false;
         }
@@ -2630,24 +2765,33 @@
         const destination = targetUrl || REDIRECT_URL;
         if (navigator.vibrate) navigator.vibrate([18, 40, 18]);
         closeModals();
-        saveRecentAccount(user);
-        localStorage.setItem("tournyx_user", JSON.stringify(user));
 
-        if (window.OneSignalDeferred && user.email) {
+        const sessionProfile = {
+          ...user,
+          ign: user.ign || user.username || (user.email ? user.email.split("@")[0] : "PLAYER"),
+          username: user.username || user.ign || "Player",
+          isLoggedIn: true
+        };
+
+        saveRecentAccount(sessionProfile);
+        localStorage.setItem("tournyx_user", JSON.stringify(sessionProfile));
+        localStorage.setItem("tournyx_userData", JSON.stringify(sessionProfile));
+
+        if (window.OneSignalDeferred && sessionProfile.email) {
           window.OneSignalDeferred.push(async function (OneSignal) {
-            try { await OneSignal.login(String(user.email).trim().toLowerCase()); } catch (e) {}
+            try { await OneSignal.login(String(sessionProfile.email).trim().toLowerCase()); } catch (e) {}
           });
         }
 
         const loader = document.getElementById("arenaLoader");
         const sub = document.getElementById("arenaSubtext");
         if (sub) {
-          sub.innerText = `WELCOME COMMANDER ${String(user.ign || user.username || "AGENT").toUpperCase()} • ROUTING TO ARENA...`;
+          sub.innerText = `WELCOME COMMANDER ${String(sessionProfile.ign || "AGENT").toUpperCase()} • ROUTING TO ARENA...`;
         }
         if (loader) loader.classList.add("active");
 
         setTimeout(() => {
-          window.location.href = destination;
+          window.location.replace(destination);
         }, 1450);
       }
 
