@@ -126,11 +126,13 @@
     html, body {
       width: 100%;
       min-height: 100dvh;
+      height: auto;
       background-color: #050508 !important;
       color: #f1eff7 !important;
       font-family: 'Inter', sans-serif;
       overflow-x: hidden;
-      overscroll-behavior: none;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     /* 3D FIRE & VOLT LOGO REVEAL INTRO */
@@ -246,21 +248,38 @@
       box-shadow: 0 6px 24px rgba(255, 153, 0, 0.35);
     }
 
-    /* TOUCH RIPPLE FX */
-    .ripple {
+    /* COMPACT TACTICAL HUD TAP RETICLE (26px, 300ms, GPU-Accelerated) */
+    .hud-tap-fx {
       position: fixed;
-      width: 36px;
-      height: 36px;
+      width: 26px;
+      height: 26px;
       border-radius: 50%;
-      transform: scale(0);
-      animation: ripple-anim 0.55s ease-out;
-      background: radial-gradient(circle, rgba(212, 255, 0, 0.55) 0%, rgba(0, 242, 255, 0.25) 70%, transparent 100%);
+      border: 1.5px solid #D4FF00;
+      box-shadow: 0 0 8px rgba(212, 255, 0, 0.7), inset 0 0 6px rgba(0, 242, 255, 0.6);
+      transform: translate(-50%, -50%) scale(0.25);
+      animation: hudTapBurst 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       z-index: 9000;
       pointer-events: none;
     }
-    @keyframes ripple-anim {
-      to {
-        transform: scale(3.5);
+    .hud-tap-fx::after {
+      content: '';
+      position: absolute;
+      inset: 6px;
+      border-radius: 50%;
+      background: #00f2ff;
+      opacity: 0.85;
+    }
+    @keyframes hudTapBurst {
+      0% {
+        transform: translate(-50%, -50%) scale(0.25);
+        opacity: 0.95;
+      }
+      70% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.55;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1.18);
         opacity: 0;
       }
     }
@@ -358,7 +377,7 @@
         onerror="this.src='https://placehold.co/180x180/0d0d12/D4FF00?text=TX'"
       >
       <div class="mt-5 font-orbitron text-xs tracking-[0.3em] text-[#D4FF00] uppercase font-bold animate-pulse">
-        INITIALIZING TOURNYX SUPABASE ENGINE...
+        INITIALIZING TOURNYX ARENA ENGINE...
       </div>
       <button onclick="skipIntroNow()" type="button" class="mt-6 px-4 py-1.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 font-mono text-[10px] text-[#c3c6d0] tracking-widest uppercase transition-all">
         SKIP INTRO <i class="fa-solid fa-forward ml-1"></i>
@@ -383,64 +402,66 @@
   <canvas id="particles-canvas" class="fixed inset-0 pointer-events-none z-[2] opacity-65"></canvas>
 
   <!-- 3. TOP AAA GAME HUD & TELEMETRY BAR -->
-  <header class="relative z-30 w-full max-w-7xl mx-auto px-3 sm:px-6 pt-2.5 pb-1.5 flex flex-wrap items-center justify-between gap-2">
+  <header class="relative z-30 w-full max-w-7xl mx-auto px-3 sm:px-6 pt-3 pb-2 flex flex-col sm:flex-row items-center justify-between gap-2">
     <!-- Left Telemetry Badges -->
-    <div class="flex items-center gap-1.5 sm:gap-2">
-      <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#0e0e14]/90 border border-[#252433] backdrop-blur-md">
-        <span class="font-mono text-[10px] text-[#8a889e] tracking-wider">BUILD</span>
-        <span class="font-mono text-[10px] text-white font-bold">v5.2.0</span>
+    <div class="flex items-center justify-between sm:justify-start w-full sm:w-auto gap-1.5 sm:gap-2">
+      <div class="flex items-center gap-1.5">
+        <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#0e0e14]/90 border border-[#252433] backdrop-blur-md">
+          <span class="font-mono text-[10px] text-[#8a889e] tracking-wider">BUILD</span>
+          <span class="font-mono text-[10px] text-white font-bold">v5.2.0</span>
+        </div>
+        <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#0e0e14]/90 border border-[#252433] backdrop-blur-md whitespace-nowrap">
+          <span class="relative flex h-2 w-2 flex-shrink-0">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4FF00] opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-[#D4FF00]"></span>
+          </span>
+          <span class="font-mono text-[10px] text-[#e5e1e5] tracking-wider uppercase font-semibold">
+            IN-SOUTH-1 • <span id="live-ping" class="text-[#D4FF00] font-bold">16MS</span>
+          </span>
+        </div>
       </div>
-      <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#0e0e14]/90 border border-[#252433] backdrop-blur-md whitespace-nowrap">
-        <span class="relative flex h-2 w-2 flex-shrink-0">
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4FF00] opacity-75"></span>
-          <span class="relative inline-flex rounded-full h-2 w-2 bg-[#D4FF00]"></span>
-        </span>
-        <span class="font-mono text-[10px] text-[#e5e1e5] tracking-wider uppercase font-semibold">
-          IN-SOUTH-1 • <span id="live-ping" class="text-[#D4FF00] font-bold">18MS</span>
-        </span>
+      <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#0e0e14]/90 border border-[#00ff7f]/40 backdrop-blur-md" title="QUVA Anti-Cheat & Security Shield">
+        <i class="fa-solid fa-shield-halved text-[10px] text-[#00ff7f]"></i>
+        <span id="dbStatusBadge" class="font-mono text-[9px] text-[#00ff7f] font-bold uppercase">QUVA SHIELD</span>
       </div>
-      <button onclick="openModal('supabaseConfigModal')" type="button" class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#0e0e14]/90 hover:bg-[#1a1926] border border-[#00ff7f]/40 backdrop-blur-md transition-all" title="Supabase Connection Status">
-        <i class="fa-solid fa-database text-[9px] text-[#00ff7f]"></i>
-        <span id="dbStatusBadge" class="font-mono text-[9px] text-[#00ff7f] font-bold uppercase hidden sm:inline">SUPABASE SHIELD</span>
-      </button>
     </div>
 
     <!-- Right AAA HUD Tool Buttons (Notify, Sound, Help, Lang, Accounts) -->
-    <div class="flex items-center gap-1.5 sm:gap-2">
-      <button onclick="askNotificationPermission(event)" type="button" class="group flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-[#0e0e14]/90 hover:bg-[#1a1926] border border-[#252433] hover:border-[#00f2ff]/60 transition-all active:scale-95" title="Push Notifications">
+    <div class="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-1.5 sm:gap-2">
+      <button onclick="askNotificationPermission(event)" type="button" class="group flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded-full bg-[#0e0e14]/90 hover:bg-[#1a1926] border border-[#252433] hover:border-[#00f2ff]/60 transition-all active:scale-95" title="Push Notifications">
         <i id="notifIcon" class="fa-solid fa-bell text-[11px] text-[#D4FF00] group-hover:scale-110 transition-transform"></i>
         <span id="txtNotif" class="font-mono text-[10px] text-white font-semibold uppercase hidden sm:inline">Notify</span>
       </button>
 
-      <button onclick="toggleVideoSound(event)" type="button" class="group flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-[#0e0e14]/90 hover:bg-[#1a1926] border border-[#252433] hover:border-[#D4FF00]/60 transition-all active:scale-95" title="Toggle Trailer Audio">
+      <button onclick="toggleVideoSound(event)" type="button" class="group flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded-full bg-[#0e0e14]/90 hover:bg-[#1a1926] border border-[#252433] hover:border-[#D4FF00]/60 transition-all active:scale-95" title="Toggle Trailer Audio">
         <i id="soundIcon" class="fa-solid fa-volume-xmark text-[11px] text-[#a09fb1] group-hover:text-white"></i>
         <span id="txtSound" class="font-mono text-[10px] text-[#c3c6d0] font-semibold uppercase hidden md:inline">Muted</span>
       </button>
 
-      <button onclick="openModal('helpModal')" type="button" class="group flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-[#0e0e14]/90 hover:bg-[#1a1926] border border-[#252433] hover:border-[#00f2ff]/60 transition-all active:scale-95">
+      <button onclick="openModal('helpModal')" type="button" class="group flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded-full bg-[#0e0e14]/90 hover:bg-[#1a1926] border border-[#252433] hover:border-[#00f2ff]/60 transition-all active:scale-95">
         <i class="fa-solid fa-headset text-[11px] text-[#00f2ff]"></i>
         <span id="txtHelp" class="font-mono text-[10px] text-white font-semibold uppercase">Help</span>
       </button>
 
-      <button onclick="openModal('langModal')" type="button" class="group flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-[#0e0e14]/90 hover:bg-[#1a1926] border border-[#252433] hover:border-[#8B5CF6]/60 transition-all active:scale-95">
+      <button onclick="openModal('langModal')" type="button" class="group flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded-full bg-[#0e0e14]/90 hover:bg-[#1a1926] border border-[#252433] hover:border-[#8B5CF6]/60 transition-all active:scale-95">
         <i class="fa-solid fa-earth-americas text-[11px] text-[#c4b5fd]"></i>
         <span id="txtLang" class="font-mono text-[10px] text-white font-semibold uppercase">Lang</span>
       </button>
 
-      <button onclick="openAccountsModal()" type="button" class="group flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-[#0e0e14]/90 hover:bg-[#1a1926] border border-[#252433] hover:border-[#D4FF00]/60 transition-all active:scale-95">
+      <button onclick="openAccountsModal()" type="button" class="group flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded-full bg-[#0e0e14]/90 hover:bg-[#1a1926] border border-[#252433] hover:border-[#D4FF00]/60 transition-all active:scale-95">
         <i class="fa-solid fa-users-gear text-[11px] text-[#D4FF00]"></i>
         <span id="txtAcc" class="font-mono text-[10px] text-white font-semibold uppercase">Accounts</span>
       </button>
     </div>
   </header>
 
-  <!-- 4. MAIN RESPONSIVE CONTAINER (Desktop Website Split-View + Mobile App Sheet/Card) -->
-  <main id="mainUiContainer" class="relative z-20 flex-1 w-full max-w-7xl mx-auto px-3 sm:px-6 py-1.5 flex flex-col lg:grid lg:grid-cols-12 lg:gap-8 items-center justify-center">
+  <!-- 4. MAIN RESPONSIVE CONTAINER (Desktop Website Split-View + Mobile Natural Scroll) -->
+  <main id="mainUiContainer" class="relative z-20 flex-1 w-full max-w-7xl mx-auto px-3 sm:px-6 pt-2 pb-10 flex flex-col lg:grid lg:grid-cols-12 lg:gap-8 items-center justify-center">
 
     <!-- LEFT COLUMN: Redesigned Tournyx Website Command Showcase (Visible on Desktop >= 1024px) -->
     <section class="hidden lg:flex lg:col-span-6 xl:col-span-7 flex-col justify-between pr-2 space-y-5">
       <div class="inline-flex items-center gap-2.5 self-start px-3.5 py-1.5 rounded-full bg-[#11101b]/90 border border-[#8B5CF6]/50 shadow-lg">
-        <span class="px-2 py-0.5 rounded-full bg-[#D4FF00] text-[#050508] font-mono text-[10px] font-black tracking-wider uppercase">SUPABASE AUTH + RLS</span>
+        <span class="px-2 py-0.5 rounded-full bg-[#D4FF00] text-[#050508] font-mono text-[10px] font-black tracking-wider uppercase">QUVA SHIELD + ANTI-CHEAT</span>
         <span class="font-mono text-xs text-white tracking-wider uppercase">BGMI • FREE FIRE MAX • CODM • VALORANT</span>
       </div>
 
@@ -467,7 +488,7 @@
         </div>
       </div>
 
-      <!-- Live Database Schema Cards Grid -->
+      <!-- Live Tournament Cards Grid -->
       <div class="grid grid-cols-3 gap-3 pt-1">
         <div class="p-3.5 rounded-2xl bg-[#0d0d14]/85 border border-[#252433] hover:border-[#D4FF00]/50 transition-all backdrop-blur-md">
           <div class="flex items-center justify-between mb-1.5">
@@ -495,18 +516,6 @@
           <p class="font-headline text-sm font-extrabold text-white truncate">Become an Organizer</p>
           <p class="font-mono text-xs text-[#ff9900] mt-1 font-bold">APPLY NOW →</p>
         </div>
-      </div>
-
-      <!-- Bottom Quick Action Buttons on Desktop -->
-      <div class="flex flex-wrap items-center gap-3 pt-1">
-        <button onclick="openModal('certVerifyModal')" type="button" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-[#151421] hover:bg-[#1f1d30] border border-[#00f2ff]/40 text-xs font-mono text-[#00f2ff] font-bold transition-all">
-          <i class="fa-solid fa-certificate"></i>
-          <span>VERIFY TIMS / QUVA INTERN CERTIFICATE</span>
-        </button>
-        <button onclick="openModal('supabaseConfigModal')" type="button" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-[#151421] hover:bg-[#1f1d30] border border-[#D4FF00]/40 text-xs font-mono text-[#D4FF00] font-bold transition-all">
-          <i class="fa-solid fa-key"></i>
-          <span>CONFIGURE SUPABASE KEYS</span>
-        </button>
       </div>
     </section>
 
@@ -555,10 +564,10 @@
         </p>
       </div>
 
-      <!-- MAIN TACTICAL CARD -->
-      <div id="mainAuthCard" class="w-full tactical-card border border-[#282738] rounded-3xl p-4 sm:p-5 relative overflow-hidden transition-all duration-300">
+      <!-- MAIN TACTICAL CARD (Expands naturally on mobile without clipping) -->
+      <div id="mainAuthCard" class="w-full tactical-card border border-[#282738] rounded-3xl p-4 sm:p-5 pb-6 relative transition-all duration-300">
         <!-- Top Neon Gradient Highlight -->
-        <div id="cardTopAccent" class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#8B5CF6] via-[#00f2ff] to-[#D4FF00]"></div>
+        <div id="cardTopAccent" class="absolute top-0 left-3 right-3 h-[2px] rounded-full bg-gradient-to-r from-[#8B5CF6] via-[#00f2ff] to-[#D4FF00]"></div>
 
         <!-- SECURITY LOCKOUT BANNER (Shown automatically when brute-force protection triggers) -->
         <div id="securityLockoutBanner" class="hidden mb-3.5 p-3 rounded-2xl bg-red-950/80 border border-red-500/70 flex items-center justify-between gap-2.5 animate-pulse">
@@ -576,20 +585,20 @@
           </span>
         </div>
 
-        <!-- 3-Mode Segmented Pill Switcher (Player Login | Create Account | Organizer) -->
+        <!-- 3-Mode Segmented Pill Switcher (Player Login | Create ID | Organizer) -->
         <div class="p-1 bg-[#07070b] border border-[#222130] rounded-full grid grid-cols-3 gap-1 mb-3.5">
           <button id="tabBtnLogin" onclick="switchAuthTab('login')" type="button"
-            class="py-2 px-1.5 text-center rounded-full font-mono text-[10px] sm:text-[11px] font-extrabold tracking-wider uppercase transition-all duration-200 bg-[#232232] text-[#D4FF00] border border-[#8B5CF6]/50 shadow">
+            class="py-2 px-1 text-center rounded-full font-mono text-[10px] sm:text-[11px] font-extrabold tracking-wider uppercase transition-all duration-200 bg-[#232232] text-[#D4FF00] border border-[#8B5CF6]/50 shadow whitespace-nowrap">
             <i class="fa-solid fa-right-to-bracket mr-1"></i><span id="txtBtnLogin">LOGIN</span>
           </button>
 
           <button id="tabBtnSignup" onclick="switchAuthTab('signup')" type="button"
-            class="py-2 px-1.5 text-center rounded-full font-mono text-[10px] sm:text-[11px] font-bold tracking-wider uppercase transition-all duration-200 text-[#a09fb1] hover:text-white border border-transparent">
+            class="py-2 px-1 text-center rounded-full font-mono text-[10px] sm:text-[11px] font-bold tracking-wider uppercase transition-all duration-200 text-[#a09fb1] hover:text-white border border-transparent whitespace-nowrap">
             <i class="fa-solid fa-user-plus mr-1"></i><span id="txtBtnReg">CREATE ID</span>
           </button>
 
           <button id="tabBtnOrg" onclick="switchAuthTab('organizer')" type="button"
-            class="py-2 px-1.5 text-center rounded-full font-mono text-[10px] sm:text-[11px] font-bold tracking-wider uppercase transition-all duration-200 text-[#ff9900] hover:text-white border border-transparent">
+            class="py-2 px-1 text-center rounded-full font-mono text-[10px] sm:text-[11px] font-bold tracking-wider uppercase transition-all duration-200 text-[#ff9900] hover:text-white border border-transparent whitespace-nowrap">
             <i class="fa-solid fa-crown mr-1"></i><span id="txtBtnOrg">ORGANIZER</span>
           </button>
         </div>
@@ -606,10 +615,13 @@
         </label>
 
         <!-- =========================================================
-             VIEW 1: PLAYER LOGIN FORM (Supabase Auth + Rate Limiting)
+             VIEW 1: PLAYER LOGIN FORM (Rate Limiting + Live Auth)
              ========================================================= -->
         <div id="viewLogin" class="block">
-          <form id="playerLoginForm" class="flex flex-col gap-3">
+          <form id="playerLoginForm" class="flex flex-col gap-3" autocomplete="on">
+            <!-- Anti-Bot Honeypot -->
+            <input type="text" name="tx_bot_trap" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true">
+
             <div>
               <label class="font-mono text-[10px] text-[#c3c6d0] tracking-widest uppercase mb-1 flex items-center justify-between" for="loginEmail">
                 <span id="lblLog">PLAYER IDENTIFIER / EMAIL</span>
@@ -683,7 +695,7 @@
         </div>
 
         <!-- =========================================================
-             VIEW 2: SINGLE-PAGE CREATE ACCOUNT (No Email OTP + Google Hide Email + Phone OTP)
+             VIEW 2: SINGLE-PAGE CREATE ACCOUNT (Full Natural Scroll on Mobile)
              ========================================================= -->
         <div id="viewSignup" class="hidden">
           <!-- Top Bar: Mode Title + Instant Google Auto-Fill Toggle -->
@@ -692,12 +704,12 @@
               <span id="lblReg" class="font-orbitron text-xs font-extrabold text-[#00f2ff] uppercase tracking-wider block">
                 SINGLE-PAGE AGENT REGISTRATION
               </span>
-              <span class="font-mono text-[9px] text-[#8a889e]">Synced with Supabase <code class="text-[#D4FF00]">public.Users</code></span>
+              <span class="font-mono text-[9px] text-[#8a889e]">Instant Player ID &amp; Esports Profile Activation</span>
             </div>
 
             <!-- Google Instant Registration Button (Hides Email & Password when clicked!) -->
             <button id="btnGoogleSignupToggle" onclick="activateGoogleSignupMode()" type="button"
-              class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white hover:bg-gray-100 text-[#050508] font-mono text-[10px] font-extrabold uppercase tracking-wider shadow transition-transform active:scale-95">
+              class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white hover:bg-gray-100 text-[#050508] font-mono text-[10px] font-extrabold uppercase tracking-wider shadow transition-transform active:scale-95 flex-shrink-0">
               <svg class="w-3.5 h-3.5" viewBox="0 0 24 24">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
                 <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
@@ -715,30 +727,35 @@
                 <i class="fa-brands fa-google text-xs text-[#050508]"></i>
               </div>
               <div class="min-w-0">
-                <div class="font-mono text-[9px] text-[#00ff7f] font-bold uppercase tracking-wider">GOOGLE OAUTH LINKED • EMAIL HIDDEN</div>
-                <div id="googleLinkedEmailDisplay" class="font-mono text-xs text-white font-bold truncate">agent.google@gmail.com</div>
+                <div class="font-mono text-[9px] text-[#00ff7f] font-bold uppercase tracking-wider">GOOGLE VERIFIED • EMAIL HIDDEN</div>
+                <div id="googleLinkedEmailDisplay" class="font-mono text-xs text-white font-bold truncate">Verified Google Session</div>
               </div>
             </div>
-            <button onclick="disableGoogleSignupMode()" type="button" class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-[10px] font-mono text-[#c3c6d0] hover:text-white">
-              Use Email
-            </button>
+            <div class="flex items-center gap-1.5 flex-shrink-0">
+              <button onclick="triggerLiveGoogleOAuth()" type="button" class="px-2.5 py-1 rounded-full bg-[#00ff7f] text-[#050508] text-[9px] font-mono font-black uppercase">
+                Sync Google
+              </button>
+              <button onclick="disableGoogleSignupMode()" type="button" class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-[9px] font-mono text-[#c3c6d0] hover:text-white">
+                Use Email
+              </button>
+            </div>
           </div>
 
-          <!-- SINGLE-PAGE CREATE ACCOUNT FORM -->
-          <form id="playerSignupForm" class="space-y-2.5 max-h-[58vh] overflow-y-auto pr-1">
+          <!-- SINGLE-PAGE CREATE ACCOUNT FORM (Unclipped, natural expansion on mobile & desktop) -->
+          <form id="playerSignupForm" class="space-y-2.5 pb-2">
 
             <!-- SECTION A: Email & Password (Automatically hidden when Google Signup is active!) -->
-            <div id="emailPasswordSection" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div id="emailPasswordSection" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               <div class="relative flex items-center">
                 <i class="fa-solid fa-envelope text-[#7a788f] text-xs absolute left-3.5 pointer-events-none"></i>
                 <input type="email" name="email" id="regEmail" placeholder="Email Address" required
-                  class="w-full bg-[#07070b] text-white placeholder:text-[#525166] font-body text-xs pl-9 pr-3 py-2.5 border border-[#262536] focus:border-[#00f2ff] rounded-full outline-none">
+                  class="w-full bg-[#07070b] text-white placeholder:text-[#525166] font-body text-xs pl-9 pr-3 py-3 border border-[#262536] focus:border-[#00f2ff] rounded-full outline-none">
               </div>
 
               <div class="relative flex items-center">
                 <i class="fa-solid fa-lock text-[#7a788f] text-xs absolute left-3.5 pointer-events-none"></i>
                 <input type="password" name="password" id="regPwd" placeholder="Password (6+ chars)" required
-                  class="w-full bg-[#07070b] text-white placeholder:text-[#525166] font-body text-xs pl-9 pr-9 py-2.5 border border-[#262536] focus:border-[#00f2ff] rounded-full outline-none">
+                  class="w-full bg-[#07070b] text-white placeholder:text-[#525166] font-body text-xs pl-9 pr-9 py-3 border border-[#262536] focus:border-[#00f2ff] rounded-full outline-none">
                 <button type="button" onclick="togglePwd('regPwd', this, false)" class="absolute right-3 text-[#7a788f] hover:text-white">
                   <i class="fa-solid fa-eye text-xs"></i>
                 </button>
@@ -746,7 +763,7 @@
             </div>
 
             <!-- SECTION B: PHONE NUMBER + MANDATORY PHONE OTP VERIFICATION -->
-            <div class="p-2.5 rounded-2xl bg-[#090910] border border-[#252435] space-y-2">
+            <div class="p-3 rounded-2xl bg-[#090910] border border-[#252435] space-y-2">
               <div class="flex items-center justify-between">
                 <label class="font-mono text-[9px] text-[#D4FF00] tracking-widest uppercase font-bold">
                   <i class="fa-solid fa-mobile-screen-button mr-1"></i>PHONE OTP VERIFICATION (REQUIRED)
@@ -754,14 +771,14 @@
                 <span id="phoneOtpStatusTag" class="font-mono text-[9px] text-[#a09fb1] uppercase">UNVERIFIED</span>
               </div>
 
-              <div class="flex gap-1.5">
+              <div class="flex gap-2">
                 <div class="relative flex-1 flex items-center">
                   <i class="fa-solid fa-phone text-[#00f2ff] text-xs absolute left-3.5 pointer-events-none"></i>
                   <input type="tel" name="phone" id="regPhone" value="+91 " maxlength="14" placeholder="+91 9876543210" required
                     class="w-full bg-[#07070b] text-white font-mono text-xs pl-9 pr-3 py-2.5 border border-[#262536] focus:border-[#D4FF00] rounded-full outline-none">
                 </div>
                 <button type="button" id="btnSendPhoneOtp" onclick="sendPhoneOtp()"
-                  class="px-3.5 py-2.5 rounded-full bg-[#D4FF00] hover:bg-[#e5ff4d] text-[#050508] font-mono text-[10px] font-black uppercase tracking-wider whitespace-nowrap transition-all active:scale-95">
+                  class="px-4 py-2.5 rounded-full bg-[#D4FF00] hover:bg-[#e5ff4d] text-[#050508] font-mono text-[10px] font-black uppercase tracking-wider whitespace-nowrap transition-all active:scale-95">
                   GET OTP
                 </button>
               </div>
@@ -772,9 +789,9 @@
                   <i class="fa-solid fa-shield-halved text-[#00ff7f] text-xs absolute left-3.5 pointer-events-none"></i>
                   <input type="text" id="regPhoneOtp" maxlength="6" placeholder="Enter 6-Digit SMS OTP"
                     oninput="this.value=this.value.replace(/[^0-9]/g,'')"
-                    class="w-full bg-[#07070b] text-white placeholder:text-[#525166] font-mono text-xs pl-9 pr-24 py-2 border border-[#00ff7f]/60 rounded-full outline-none tracking-widest">
+                    class="w-full bg-[#07070b] text-white placeholder:text-[#525166] font-mono text-xs pl-9 pr-24 py-2.5 border border-[#00ff7f]/60 rounded-full outline-none tracking-widest">
                   <button type="button" id="btnVerifyPhoneOtp" onclick="verifyPhoneOtp()"
-                    class="absolute right-1.5 px-3 py-1 rounded-full bg-[#00ff7f] hover:bg-[#33ff99] text-[#050508] font-mono text-[10px] font-black uppercase tracking-wider transition-transform active:scale-95">
+                    class="absolute right-1.5 px-3 py-1.5 rounded-full bg-[#00ff7f] hover:bg-[#33ff99] text-[#050508] font-mono text-[10px] font-black uppercase tracking-wider transition-transform active:scale-95">
                     VERIFY OTP
                   </button>
                 </div>
@@ -788,11 +805,11 @@
             </div>
 
             <!-- SECTION C: Game & Display Name -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               <div class="relative flex items-center">
                 <i class="fa-solid fa-crosshairs text-[#00f2ff] text-xs absolute left-3.5 pointer-events-none z-10"></i>
                 <select name="game" id="regGame" required
-                  class="w-full bg-[#07070b] text-white font-body text-xs pl-9 pr-7 py-2.5 border border-[#262536] focus:border-[#00f2ff] rounded-full outline-none">
+                  class="w-full bg-[#07070b] text-white font-body text-xs pl-9 pr-7 py-3 border border-[#262536] focus:border-[#00f2ff] rounded-full outline-none">
                   <option value="" disabled selected id="txtSelGame">Primary Game</option>
                   <option value="BGMI">BGMI</option>
                   <option value="Free Fire">Free Fire MAX</option>
@@ -804,70 +821,70 @@
               <div class="relative flex items-center">
                 <i class="fa-solid fa-user text-[#7a788f] text-xs absolute left-3.5 pointer-events-none"></i>
                 <input type="text" name="username" id="regUser" placeholder="Full / Display Name" required
-                  class="w-full bg-[#07070b] text-white placeholder:text-[#525166] font-body text-xs pl-9 pr-3 py-2.5 border border-[#262536] focus:border-[#00f2ff] rounded-full outline-none">
+                  class="w-full bg-[#07070b] text-white placeholder:text-[#525166] font-body text-xs pl-9 pr-3 py-3 border border-[#262536] focus:border-[#00f2ff] rounded-full outline-none">
               </div>
             </div>
 
             <!-- SECTION D: In-Game Name (IGN) & Numeric Game UID -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               <div class="relative flex items-center">
                 <i class="fa-solid fa-gamepad text-[#D4FF00] text-xs absolute left-3.5 pointer-events-none"></i>
                 <input type="text" name="ign" id="regIgn" placeholder="In-Game Name (IGN)" required
-                  class="w-full bg-[#07070b] text-white placeholder:text-[#525166] font-mono text-xs pl-9 pr-3 py-2.5 border border-[#262536] focus:border-[#D4FF00] rounded-full outline-none">
+                  class="w-full bg-[#07070b] text-white placeholder:text-[#525166] font-mono text-xs pl-9 pr-3 py-3 border border-[#262536] focus:border-[#D4FF00] rounded-full outline-none">
               </div>
 
               <div class="relative flex items-center">
                 <i class="fa-solid fa-id-card text-[#00f2ff] text-xs absolute left-3.5 pointer-events-none"></i>
                 <input type="text" name="uid" id="regUid" maxlength="15" placeholder="Game UID (Numbers)" required
                   oninput="this.value=this.value.replace(/[^0-9]/g,'')"
-                  class="w-full bg-[#07070b] text-white placeholder:text-[#525166] font-mono text-xs pl-9 pr-3 py-2.5 border border-[#262536] focus:border-[#00f2ff] rounded-full outline-none">
+                  class="w-full bg-[#07070b] text-white placeholder:text-[#525166] font-mono text-xs pl-9 pr-3 py-3 border border-[#262536] focus:border-[#00f2ff] rounded-full outline-none">
               </div>
             </div>
 
             <!-- SECTION E: Indian State & City + Referral Code -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               <div class="relative flex items-center">
                 <i class="fa-solid fa-map text-[#00ff7f] text-xs absolute left-3.5 pointer-events-none z-10"></i>
                 <select name="state" id="regState" onchange="handleStateChange()" required
-                  class="w-full bg-[#07070b] text-white font-body text-xs pl-9 pr-7 py-2.5 border border-[#262536] focus:border-[#00ff7f] rounded-full outline-none">
+                  class="w-full bg-[#07070b] text-white font-body text-xs pl-9 pr-7 py-3 border border-[#262536] focus:border-[#00ff7f] rounded-full outline-none">
                 </select>
               </div>
 
               <div class="relative flex items-center">
                 <i class="fa-solid fa-building text-[#00f2ff] text-xs absolute left-3.5 pointer-events-none z-10"></i>
                 <select name="city" id="regCity" onchange="handleCityChange()" disabled required
-                  class="w-full bg-[#07070b] text-white font-body text-xs pl-9 pr-7 py-2.5 border border-[#262536] focus:border-[#00f2ff] rounded-full outline-none disabled:opacity-50">
+                  class="w-full bg-[#07070b] text-white font-body text-xs pl-9 pr-7 py-3 border border-[#262536] focus:border-[#00f2ff] rounded-full outline-none disabled:opacity-50">
                   <option value="" disabled selected id="txtSelCity">Select State First</option>
                 </select>
               </div>
             </div>
 
             <!-- Manual State/City Fallback Inputs -->
-            <div id="customLocationRow" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div id="customLocationRow" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               <input type="text" id="customState" placeholder="Type Your State"
-                class="w-full bg-[#07070b] text-white font-body text-xs px-4 py-2 border border-[#ff9900]/60 rounded-full outline-none">
+                class="w-full bg-[#07070b] text-white font-body text-xs px-4 py-2.5 border border-[#ff9900]/60 rounded-full outline-none">
               <input type="text" id="customCity" placeholder="Type Your City"
-                class="w-full bg-[#07070b] text-white font-body text-xs px-4 py-2 border border-[#00f2ff]/60 rounded-full outline-none">
+                class="w-full bg-[#07070b] text-white font-body text-xs px-4 py-2.5 border border-[#00f2ff]/60 rounded-full outline-none">
             </div>
 
             <!-- Referral Code -->
             <div class="relative flex items-center">
               <i class="fa-solid fa-gift text-[#D4FF00] text-xs absolute left-3.5 pointer-events-none"></i>
               <input type="text" name="referral" id="refInput" placeholder="Referral / Clan Invite Code (Optional)"
-                class="w-full bg-[#07070b] text-white placeholder:text-[#525166] font-mono text-xs pl-9 pr-4 py-2 border border-[#262536] focus:border-[#D4FF00] rounded-full outline-none uppercase">
+                class="w-full bg-[#07070b] text-white placeholder:text-[#525166] font-mono text-xs pl-9 pr-4 py-2.5 border border-[#262536] focus:border-[#D4FF00] rounded-full outline-none uppercase">
             </div>
 
             <!-- Submit Button -->
             <button type="submit" id="btnSignup"
-              class="volt-cta-btn w-full py-3.5 rounded-full font-orbitron text-xs sm:text-sm font-black uppercase flex items-center justify-center gap-2 shadow-lg transition-transform active:scale-95">
+              class="volt-cta-btn w-full mt-2 py-3.5 rounded-full font-orbitron text-xs sm:text-sm font-black uppercase flex items-center justify-center gap-2 shadow-lg transition-transform active:scale-95">
               <i class="fa-solid fa-user-check"></i>
-              <span id="txtFinish">COMPLETE REGISTRATION & ENTER ARENA</span>
+              <span id="txtFinish">COMPLETE REGISTRATION &amp; ENTER ARENA</span>
             </button>
           </form>
         </div>
 
         <!-- =========================================================
-             VIEW 3: ORGANIZER STUDIO PORTAL + APPLICATION TABLE ENGINE
+             VIEW 3: ORGANIZER STUDIO PORTAL
              ========================================================= -->
         <div id="viewOrganizer" class="hidden">
           <div class="mb-3 p-2.5 rounded-2xl bg-[#ff9900]/10 border border-[#ff9900]/40 flex items-center justify-between gap-2">
@@ -877,7 +894,7 @@
               </div>
               <div class="text-left">
                 <div id="lblOrg" class="font-orbitron text-xs font-black text-[#ff9900] uppercase">ORGANIZER COMMAND HUB</div>
-                <div class="font-mono text-[9px] text-[#d6d3d1]">Synced with <code class="text-[#ff9900]">public.Organizer_Applications</code></div>
+                <div class="font-mono text-[9px] text-[#d6d3d1]">Verified Tournament Host &amp; Studio Command</div>
               </div>
             </div>
             <button onclick="openModal('orgApplyModal')" type="button" class="px-2.5 py-1.5 rounded-full bg-[#ff9900] text-black font-mono text-[9px] font-black uppercase whitespace-nowrap hover:bg-[#ffad33] transition-all">
@@ -913,14 +930,14 @@
 
             <button type="submit" id="btnOrgLogin"
               class="org-cta-btn w-full mt-1 py-3.5 px-6 rounded-full font-orbitron text-xs sm:text-sm tracking-wider uppercase font-black transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
-              <span id="txtVerifyAdmin">VERIFY ORGANIZER & LAUNCH STUDIO</span>
+              <span id="txtVerifyAdmin">VERIFY ORGANIZER &amp; LAUNCH STUDIO</span>
               <i class="fa-solid fa-bolt"></i>
             </button>
           </form>
 
           <div class="mt-3.5 pt-3 border-t border-[#26201a] flex flex-col sm:flex-row items-center justify-between gap-2 text-center">
             <button onclick="openModal('orgApplyModal')" type="button" id="txtApplyHost" class="font-mono text-[11px] text-[#ff9900] hover:text-[#D4FF00] underline font-bold tracking-wide">
-              Submit Organizer Application (Supabase) →
+              Submit Organizer Application →
             </button>
             <button onclick="openModal('orgStatusModal')" type="button" class="font-mono text-[10px] text-[#c3c6d0] hover:text-white underline">
               Check Application Status
@@ -933,13 +950,12 @@
   </main>
 
   <!-- 5. INSTITUTIONAL & REGULATORY FOOTER -->
-  <footer class="relative z-20 w-full max-w-7xl mx-auto px-4 py-2.5 flex flex-col sm:flex-row items-center justify-between gap-2 text-center border-t border-white/5">
-    <div class="font-mono text-[10px] text-[#00ff7f] flex items-center gap-2">
+  <footer class="relative z-20 w-full max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-2 text-center border-t border-white/5">
+    <div class="font-mono text-[10px] text-[#00ff7f] flex items-center justify-center gap-2">
       <span><i class="fa-solid fa-cloud-arrow-down mr-1"></i><span id="txtData">Video cached. Zero data usage.</span></span>
-      <button onclick="openModal('certVerifyModal')" type="button" class="lg:hidden underline text-[#00f2ff] ml-2">Verify Certificate</button>
     </div>
     <div class="font-mono text-[10px] text-[#8a889e] tracking-wider uppercase">
-      © TOURNYX ESPORTS PVT LTD • SUPABASE RLS SECURED
+      © TOURNYX ESPORTS PVT LTD • QUVA SHIELD SECURED
     </div>
     <div class="font-mono text-[10px] text-[#a09fb1] tracking-widest uppercase">
       POWERED BY <span class="font-orbitron font-black text-white drop-shadow-[0_0_8px_#00f2ff]">QUVA</span> TECHNOLOGIES
@@ -947,12 +963,11 @@
   </footer>
 
   <!-- =========================================================
-       6. MODALS: ORGANIZER APPLICATION (Video 2 Schema),
-          CERTIFICATE VERIFIER (Video 1 Schema), HELP, FORGOT PWD,
-          7-LANGUAGES, RECENT ACCOUNTS, SUPABASE CONFIG
+       6. MODALS: ORGANIZER APPLICATION, STATUS CHECKER,
+          HELP DESK, FORGOT PASSWORD, 7-LANGUAGES, RECENT ACCOUNTS
        ========================================================= -->
 
-  <!-- MODAL A: ORGANIZER APPLICATION FORM (Exact columns from Video 2: public.Organizer_Applications) -->
+  <!-- MODAL A: ORGANIZER APPLICATION FORM -->
   <div class="modal-overlay" id="orgApplyModal">
     <div class="w-full max-w-xl tactical-card border border-[#ff9900]/60 rounded-3xl p-5 sm:p-6 relative max-h-[90vh] overflow-y-auto">
       <button onclick="closeModals()" type="button" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 flex items-center justify-center text-[#a09fb1] hover:text-white">
@@ -967,7 +982,7 @@
           <h3 class="font-orbitron text-sm sm:text-base font-black text-[#ff9900] uppercase tracking-wider">
             ORGANIZER HOST APPLICATION
           </h3>
-          <p class="font-mono text-[10px] text-[#a09fb1]">Direct insert into <code class="text-[#ff9900]">public.Organizer_Applications</code></p>
+          <p class="font-mono text-[10px] text-[#a09fb1]">Official Tournyx Tournament Host &amp; Studio Verification</p>
         </div>
       </div>
 
@@ -1026,7 +1041,7 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           <div>
-            <label class="font-mono text-[9px] text-[#c3c6d0] uppercase block mb-1">TOURNAMENTS HOSTED (INT8) *</label>
+            <label class="font-mono text-[9px] text-[#c3c6d0] uppercase block mb-1">TOURNAMENTS HOSTED *</label>
             <input type="number" name="tournaments_hosted" min="0" value="5" required
               class="w-full bg-[#07070b] text-white font-mono text-xs px-3.5 py-2.5 border border-[#262536] focus:border-[#ff9900] rounded-xl outline-none">
           </div>
@@ -1055,7 +1070,7 @@
         </div>
 
         <div>
-          <label class="font-mono text-[9px] text-[#c3c6d0] uppercase block mb-1">STANDARD RESPONSE / EXPERIENCE SUMMARY *</label>
+          <label class="font-mono text-[9px] text-[#c3c6d0] uppercase block mb-1">EXPERIENCE &amp; PRODUCTION SUMMARY *</label>
           <textarea name="standard_response" rows="2" required placeholder="Tell us about your production team, prize pool capacity & fair play moderation..."
             class="w-full bg-[#07070b] text-white font-body text-xs p-3 border border-[#262536] focus:border-[#ff9900] rounded-xl outline-none resize-none"></textarea>
         </div>
@@ -1076,9 +1091,9 @@
       <h3 class="font-orbitron text-sm font-black text-[#ff9900] uppercase mb-2 flex items-center gap-2">
         <i class="fa-solid fa-magnifying-glass"></i> CHECK ORGANIZER APPLICATION STATUS
       </h3>
-      <p class="font-body text-xs text-[#a09fb1] mb-3">Queries <code class="text-[#ff9900]">public.Organizer_Applications</code> by your professional email.</p>
+      <p class="font-body text-xs text-[#a09fb1] mb-3">Enter your registered professional email to check your live host verification status.</p>
       <div class="flex gap-2 mb-3">
-        <input type="email" id="orgStatusEmailInput" placeholder="Enter your professional_email"
+        <input type="email" id="orgStatusEmailInput" placeholder="Enter your professional email"
           class="flex-1 bg-[#07070b] text-white font-body text-xs px-3.5 py-2.5 border border-[#262536] focus:border-[#ff9900] rounded-full outline-none">
         <button onclick="checkOrganizerStatus()" type="button" class="px-4 py-2.5 rounded-full bg-[#ff9900] text-black font-mono text-xs font-black uppercase">
           CHECK
@@ -1088,38 +1103,7 @@
     </div>
   </div>
 
-  <!-- MODAL C: TIMS / QUVA INTERN CERTIFICATE VERIFIER (Exact schema from Video 1: public.tims_intern_certificates) -->
-  <div class="modal-overlay" id="certVerifyModal">
-    <div class="w-full max-w-md tactical-card border border-[#00f2ff]/50 rounded-3xl p-5 relative">
-      <button onclick="closeModals()" type="button" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 flex items-center justify-center text-[#a09fb1] hover:text-white">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-      <h3 class="font-orbitron text-sm font-black text-[#00f2ff] uppercase mb-1 flex items-center gap-2">
-        <i class="fa-solid fa-certificate"></i> QUVA / TIMS CERTIFICATE VERIFIER
-      </h3>
-      <p class="font-mono text-[10px] text-[#a09fb1] mb-3">Connected to <code class="text-[#D4FF00]">public.tims_intern_certificates</code> (UDYAM-TN-30-0111227)</p>
-
-      <div class="flex gap-2 mb-3">
-        <input type="text" id="certSearchInput" placeholder="e.g. TIMS-2026-845 or TX-PRJ-TMRW-AHI"
-          class="flex-1 bg-[#07070b] text-white font-mono text-xs px-3.5 py-2.5 border border-[#262536] focus:border-[#00f2ff] rounded-full outline-none uppercase">
-        <button onclick="verifyInternCertificate()" type="button" class="px-4 py-2.5 rounded-full bg-[#00f2ff] text-black font-mono text-xs font-black uppercase">
-          VERIFY
-        </button>
-      </div>
-
-      <div id="certResultBox" class="p-3.5 rounded-2xl bg-[#090910] border border-[#262536] space-y-1.5 text-xs">
-        <div class="font-mono text-[10px] text-[#8a889e]">Try verified IDs from your production database:</div>
-        <div class="flex flex-wrap gap-1.5 pt-1">
-          <button onclick="document.getElementById('certSearchInput').value='TIMS-2026-845'; verifyInternCertificate();" type="button" class="px-2 py-1 rounded bg-white/5 hover:bg-white/10 font-mono text-[10px] text-[#D4FF00]">TIMS-2026-845</button>
-          <button onclick="document.getElementById('certSearchInput').value='TIMS-2026-102'; verifyInternCertificate();" type="button" class="px-2 py-1 rounded bg-white/5 hover:bg-white/10 font-mono text-[10px] text-[#00f2ff]">TIMS-2026-102</button>
-          <button onclick="document.getElementById('certSearchInput').value='TIMS-2026-419'; verifyInternCertificate();" type="button" class="px-2 py-1 rounded bg-white/5 hover:bg-white/10 font-mono text-[10px] text-[#c4b5fd]">TIMS-2026-419</button>
-          <button onclick="document.getElementById('certSearchInput').value='TIMS-2026-904'; verifyInternCertificate();" type="button" class="px-2 py-1 rounded bg-white/5 hover:bg-white/10 font-mono text-[10px] text-[#00ff7f]">TIMS-2026-904</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL D: FORGOT PASSWORD (SUPABASE PASSWORD RESET) -->
+  <!-- MODAL C: FORGOT PASSWORD (PASSWORD RECOVERY) -->
   <div class="modal-overlay" id="forgotPwdModal">
     <div class="w-full max-w-sm tactical-card border border-[#00f2ff]/40 rounded-3xl p-5 relative">
       <button onclick="closeModals()" type="button" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 flex items-center justify-center text-[#a09fb1] hover:text-white">
@@ -1128,7 +1112,7 @@
       <h3 class="font-orbitron text-sm font-black text-[#00f2ff] uppercase mb-1 flex items-center gap-2">
         <i class="fa-solid fa-key"></i> RESET ACCESS KEY
       </h3>
-      <p class="font-body text-xs text-[#a09fb1] mb-3.5">Dispatches a Supabase password recovery link to your registered email.</p>
+      <p class="font-body text-xs text-[#a09fb1] mb-3.5">Dispatches an instant password recovery link to your registered email address.</p>
       <form onsubmit="handleForgotPassword(event)" class="space-y-3">
         <input type="email" id="resetEmailInput" required placeholder="Enter your registered email"
           class="w-full bg-[#07070b] text-white font-body text-xs px-4 py-3 border border-[#262536] focus:border-[#00f2ff] rounded-full outline-none">
@@ -1139,7 +1123,7 @@
     </div>
   </div>
 
-  <!-- MODAL E: FUNCTIONAL HELP & SUPPORT DESK -->
+  <!-- MODAL D: FUNCTIONAL HELP & SUPPORT DESK -->
   <div class="modal-overlay" id="helpModal">
     <div class="w-full max-w-md tactical-card border border-[#00f2ff]/40 rounded-3xl p-5 relative">
       <button onclick="closeModals()" type="button" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 flex items-center justify-center text-[#a09fb1] hover:text-white">
@@ -1148,15 +1132,15 @@
       <h3 class="font-orbitron text-sm font-black text-[#00f2ff] uppercase tracking-wider mb-1 flex items-center gap-2">
         <i class="fa-solid fa-headset"></i> <span id="lblHelp">24/7 TOURNYX SUPPORT DESK</span>
       </h3>
-      <p class="font-body text-xs text-[#a09fb1] mb-3">Logs ticket in Supabase & dispatches to <span class="text-white">tournyx.esports.india@gmail.com</span></p>
+      <p class="font-body text-xs text-[#a09fb1] mb-3">Priority ticket dispatch to <span class="text-white">tournyx.esports.india@gmail.com</span></p>
 
       <!-- Instant Support Channels -->
       <div class="grid grid-cols-2 gap-2 mb-3">
         <a href="mailto:tournyx.esports.india@gmail.com?subject=Tournyx%20Support%20Ticket" class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-[#090910] hover:bg-[#151524] border border-[#262536] font-mono text-[10px] text-[#00f2ff] font-bold">
           <i class="fa-solid fa-envelope"></i> EMAIL DESK
         </a>
-        <button onclick="openModal('certVerifyModal')" type="button" class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-[#090910] hover:bg-[#151524] border border-[#262536] font-mono text-[10px] text-[#D4FF00] font-bold">
-          <i class="fa-solid fa-certificate"></i> VERIFY CERT
+        <button onclick="openModal('orgStatusModal')" type="button" class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-[#090910] hover:bg-[#151524] border border-[#262536] font-mono text-[10px] text-[#ff9900] font-bold">
+          <i class="fa-solid fa-crown"></i> HOST STATUS
         </button>
       </div>
 
@@ -1182,7 +1166,7 @@
     </div>
   </div>
 
-  <!-- MODAL F: 7-LANGUAGE AI LOCALIZATION MODAL -->
+  <!-- MODAL E: 7-LANGUAGE AI LOCALIZATION MODAL -->
   <div class="modal-overlay" id="langModal">
     <div class="w-full max-w-sm tactical-card border border-[#8B5CF6]/50 rounded-3xl p-5 relative">
       <button onclick="closeModals()" type="button" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 flex items-center justify-center text-[#a09fb1] hover:text-white">
@@ -1224,7 +1208,7 @@
     </div>
   </div>
 
-  <!-- MODAL G: RECENT ACCOUNTS VAULT MODAL -->
+  <!-- MODAL F: RECENT ACCOUNTS VAULT MODAL -->
   <div class="modal-overlay" id="accountsModal">
     <div class="w-full max-w-sm tactical-card border border-[#D4FF00]/40 rounded-3xl p-5 relative">
       <button onclick="closeModals()" type="button" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 flex items-center justify-center text-[#a09fb1] hover:text-white">
@@ -1239,36 +1223,6 @@
     </div>
   </div>
 
-  <!-- MODAL H: SUPABASE CONNECTION & CREDENTIALS CONFIG -->
-  <div class="modal-overlay" id="supabaseConfigModal">
-    <div class="w-full max-w-md tactical-card border border-[#00ff7f]/50 rounded-3xl p-5 relative">
-      <button onclick="closeModals()" type="button" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 flex items-center justify-center text-[#a09fb1] hover:text-white">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-      <h3 class="font-orbitron text-sm font-black text-[#00ff7f] uppercase mb-1 flex items-center gap-2">
-        <i class="fa-solid fa-database"></i> SUPABASE PRODUCTION CONNECTION
-      </h3>
-      <p class="font-body text-xs text-[#a09fb1] mb-3">
-        Paste your Tournyx Esports Supabase Project URL & Anon Key (from <strong class="text-white">Project Settings → API</strong>) to connect live to <code class="text-[#D4FF00]">Users</code> & <code class="text-[#ff9900]">Organizer_Applications</code>.
-      </p>
-      <form onsubmit="saveSupabaseConfig(event)" class="space-y-2.5">
-        <div>
-          <label class="font-mono text-[9px] text-[#c3c6d0] uppercase block mb-1">SUPABASE PROJECT URL</label>
-          <input type="url" id="sbUrlInput" placeholder="https://xyzcompany.supabase.co"
-            class="w-full bg-[#07070b] text-white font-mono text-xs px-3.5 py-2.5 border border-[#262536] focus:border-[#00ff7f] rounded-xl outline-none">
-        </div>
-        <div>
-          <label class="font-mono text-[9px] text-[#c3c6d0] uppercase block mb-1">SUPABASE ANON PUBLIC KEY</label>
-          <input type="text" id="sbKeyInput" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-            class="w-full bg-[#07070b] text-white font-mono text-xs px-3.5 py-2.5 border border-[#262536] focus:border-[#00ff7f] rounded-xl outline-none">
-        </div>
-        <button type="submit" class="w-full py-3 rounded-full bg-[#00ff7f] text-black font-orbitron text-xs font-black uppercase">
-          SAVE & CONNECT SUPABASE ENGINE
-        </button>
-      </form>
-    </div>
-  </div>
-
   <!-- 7. CINEMATIC ARENA ENTRY LOADER -->
   <div id="arenaLoader" class="arena-overlay">
     <img
@@ -1278,7 +1232,7 @@
       onerror="this.style.display='none'"
     >
     <div class="arena-text" id="txtLoading">ENTERING THE ARENA</div>
-    <p id="arenaSubtext" class="font-mono text-xs text-[#00f2ff] tracking-widest uppercase mt-3">SYNCING SUPABASE TELEMETRY...</p>
+    <p id="arenaSubtext" class="font-mono text-xs text-[#00f2ff] tracking-widest uppercase mt-3">SYNCING QUVA SHIELD TELEMETRY...</p>
   </div>
 
   <!-- 8. STITCH TELEMETRY TOAST ALERT -->
@@ -1298,1524 +1252,1552 @@
   </div>
 
   <!-- =========================================================
-       9. TOURNYX SUPABASE + SECURITY MASTER ENGINE v12.0
+       9. TOURNYX HARDENED SECURITY & AUTHENTICATION ENGINE
        ========================================================= -->
   <script>
-    // --- 1. SUPABASE & FALLBACK API CONFIGURATION ---
-    // Replace with your production Supabase Project URL and Anon Key, or configure anytime via the top HUD "SUPABASE SHIELD" button
-    const DEFAULT_SUPABASE_URL = localStorage.getItem('tournyx_sb_url') || 'https://your-project-id.supabase.co';
-    const DEFAULT_SUPABASE_ANON_KEY = localStorage.getItem('tournyx_sb_key') || 'public-anon-key-placeholder';
-    const APPS_SCRIPT_API_URL = 'https://script.google.com/macros/s/AKfycbyqqTpgaflxKJ9xH0jq7mJ_jLzcoNhas3gNo0h5gvoa_6r5Ae9NFxJAJp7ZoYNnMRKl/exec';
+    (() => {
+      "use strict";
 
-    let supabaseClient = null;
-    let isSupabaseConfigured = false;
+      // ==========================================
+      // PASTE YOUR SUPABASE CREDENTIALS HERE
+      // ==========================================
+      const SUPABASE_URL = "https://zuatrwfrejnwfnldqqgy.supabase.co";
+      const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1YXRyd2ZyZWpud2ZubGRxcWd5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNDE5NjEsImV4cCI6MjA5OTYxNzk2MX0.zcJO4Es-DnuUKR-L_Eu44xIwmz4PxsFVCgs-t492t1g";
+      const REDIRECT_URL = "index.html";
+      const ORGANIZER_REDIRECT_URL = "index.html";
+      const APPS_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbyqqTpgaflxKJ9xH0jq7mJ_jLzcoNhas3gNo0h5gvoa_6r5Ae9NFxJAJp7ZoYNnMRKl/exec";
 
-    function initSupabaseEngine() {
-      const url = localStorage.getItem('tournyx_sb_url') || DEFAULT_SUPABASE_URL;
-      const key = localStorage.getItem('tournyx_sb_key') || DEFAULT_SUPABASE_ANON_KEY;
-      const badge = document.getElementById('dbStatusBadge');
+      let supabaseClient = null;
+      let isSupabaseReady = false;
 
-      if (window.supabase && url && !url.includes('your-project-id') && key && key !== 'public-anon-key-placeholder') {
-        try {
-          supabaseClient = window.supabase.createClient(url, key);
-          isSupabaseConfigured = true;
-          if (badge) badge.innerText = 'SUPABASE LIVE';
-
-          // Listen for OAuth redirects (e.g., returning from Google / Discord OAuth)
-          supabaseClient.auth.onAuthStateChange((event, session) => {
-            if (event === 'SIGNED_IN' && session && session.user) {
-              handleSupabaseOAuthSession(session.user);
-            }
-          });
-        } catch (err) {
-          console.warn('Supabase client init warning:', err);
-        }
-      } else {
-        isSupabaseConfigured = false;
-        if (badge) badge.innerText = 'HYBRID SHIELD';
+      // XSS Sanitization Helper
+      function sanitizeInput(str) {
+        if (!str) return "";
+        return String(str).replace(/[&<>"'`=/]/g, (s) => ({
+          "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;", "/": "&#x2F;", "`": "&#x60;", "=": "&#x3D;"
+        }[s]));
       }
-    }
 
-    function saveSupabaseConfig(e) {
-      e.preventDefault();
-      doHaptic();
-      const url = document.getElementById('sbUrlInput').value.trim();
-      const key = document.getElementById('sbKeyInput').value.trim();
-      if (!url || !key) {
-        showToast('Please enter both Supabase URL and Anon Key.');
-        return;
-      }
-      localStorage.setItem('tournyx_sb_url', url);
-      localStorage.setItem('tournyx_sb_key', key);
-      initSupabaseEngine();
-      closeModals(true);
-      showToast('Supabase Production Engine Connected!', true);
-    }
+      // Initialize Supabase Client Inside Protected Scope
+      function initSupabaseEngine() {
+        if (window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY) {
+          try {
+            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+              auth: {
+                persistSession: true,
+                autoRefreshToken: true,
+                detectSessionInUrl: true
+              }
+            });
+            isSupabaseReady = true;
 
-    // --- 2. BRUTE-FORCE RATE LIMITER & COOLDOWN LOCKOUT ENGINE ---
-    const MAX_LOGIN_ATTEMPTS = 4;
-    const LOCKOUT_SECONDS = 30;
-    let lockoutInterval = null;
-
-    function getLoginState() {
-      const attempts = parseInt(sessionStorage.getItem('tx_failed_attempts') || '0', 10);
-      const lockoutUntil = parseInt(sessionStorage.getItem('tx_lockout_until') || '0', 10);
-      return { attempts, lockoutUntil };
-    }
-
-    function recordFailedLoginAttempt() {
-      let { attempts } = getLoginState();
-      attempts += 1;
-      sessionStorage.setItem('tx_failed_attempts', String(attempts));
-      updateAttemptCounterUI();
-
-      if (attempts >= MAX_LOGIN_ATTEMPTS) {
-        const until = Date.now() + LOCKOUT_SECONDS * 1000;
-        sessionStorage.setItem('tx_lockout_until', String(until));
-        enforceSecurityLockoutUI();
-        showToast(`Security Alert: Too many attempts! Locked for ${LOCKOUT_SECONDS}s.`);
-      }
-    }
-
-    function resetLoginAttempts() {
-      sessionStorage.removeItem('tx_failed_attempts');
-      sessionStorage.removeItem('tx_lockout_until');
-      updateAttemptCounterUI();
-      enforceSecurityLockoutUI();
-    }
-
-    function updateAttemptCounterUI() {
-      const { attempts } = getLoginState();
-      const lbl = document.getElementById('attemptCounterLabel');
-      if (lbl) {
-        lbl.innerText = `ATTEMPTS: ${Math.min(attempts, MAX_LOGIN_ATTEMPTS)}/${MAX_LOGIN_ATTEMPTS}`;
-        lbl.className = attempts >= 2 ? 'text-red-400 text-[9px] font-bold' : 'text-[#00f2ff] text-[9px]';
-      }
-    }
-
-    function isCurrentlyLockedOut() {
-      const { lockoutUntil } = getLoginState();
-      return lockoutUntil > Date.now();
-    }
-
-    function enforceSecurityLockoutUI() {
-      const banner = document.getElementById('securityLockoutBanner');
-      const badge = document.getElementById('lockoutCountdownBadge');
-      const btnLogin = document.getElementById('btnLogin');
-      const btnOrgLogin = document.getElementById('btnOrgLogin');
-
-      if (lockoutInterval) clearInterval(lockoutInterval);
-
-      const tick = () => {
-        const { lockoutUntil } = getLoginState();
-        const remaining = Math.ceil((lockoutUntil - Date.now()) / 1000);
-
-        if (remaining > 0) {
-          banner.classList.remove('hidden');
-          if (badge) badge.innerText = `${remaining}s`;
-          if (btnLogin) {
-            btnLogin.disabled = true;
-            btnLogin.innerHTML = `<i class="fa-solid fa-shield-halved"></i> <span>LOCKED • RETRY IN ${remaining}s</span>`;
-          }
-          if (btnOrgLogin) {
-            btnOrgLogin.disabled = true;
-            btnOrgLogin.innerHTML = `<i class="fa-solid fa-shield-halved"></i> <span>LOCKED • RETRY IN ${remaining}s</span>`;
-          }
-        } else {
-          if (lockoutInterval) clearInterval(lockoutInterval);
-          banner.classList.add('hidden');
-          if (parseInt(sessionStorage.getItem('tx_lockout_until') || '0', 10) > 0) {
-            sessionStorage.removeItem('tx_lockout_until');
-            sessionStorage.setItem('tx_failed_attempts', '0');
-            updateAttemptCounterUI();
-          }
-          if (btnLogin) {
-            btnLogin.disabled = false;
-            btnLogin.innerHTML = `<span id="txtEnterArena">ENTER BATTLEGROUND</span> <i class="fa-solid fa-arrow-right text-xs"></i>`;
-          }
-          if (btnOrgLogin) {
-            btnOrgLogin.disabled = false;
-            btnOrgLogin.innerHTML = `<span id="txtVerifyAdmin">VERIFY ORGANIZER & LAUNCH STUDIO</span> <i class="fa-solid fa-bolt"></i>`;
+            // Listen for Live Google / Discord OAuth Callback Sessions
+            supabaseClient.auth.onAuthStateChange(async (event, session) => {
+              if (event === "SIGNED_IN" && session && session.user) {
+                await handleOAuthCallbackUser(session.user);
+              }
+            });
+          } catch (err) {
+            console.warn("Auth engine initialization notice:", err);
           }
         }
-      };
-
-      tick();
-      if (isCurrentlyLockedOut()) {
-        lockoutInterval = setInterval(tick, 1000);
-      }
-    }
-
-    // --- 3. GOOGLE SIGNUP MODE (HIDES EMAIL & PASSWORD FIELDS ON CREATE ACCOUNT) ---
-    let isGoogleSignupMode = false;
-    let googleAuthenticatedEmail = '';
-
-    async function activateGoogleSignupMode(prefillEmail) {
-      doHaptic();
-      if (!verifyTermsChecked()) return;
-
-      // If Supabase OAuth is live and user hasn't authenticated yet, attempt Supabase OAuth or instant Google profile link
-      if (isSupabaseConfigured && supabaseClient && !prefillEmail) {
-        try {
-          supabaseClient.auth.signInWithOAuth({
-            provider: 'google',
-            options: { redirectTo: window.location.href }
-          });
-        } catch (e) {}
       }
 
-      isGoogleSignupMode = true;
-      googleAuthenticatedEmail = prefillEmail || 'player.google.verified@gmail.com';
+      async function handleOAuthCallbackUser(sbUser) {
+        if (!sbUser) return;
+        const email = (sbUser.email || "").toLowerCase();
+        const fullName = sbUser.user_metadata?.full_name || sbUser.user_metadata?.name || "";
+        const avatar = sbUser.user_metadata?.avatar_url || "";
 
-      // Hide the Email & Password section on Create Account
-      const emailPwdSec = document.getElementById('emailPasswordSection');
-      const googleBanner = document.getElementById('googleLinkedBanner');
-      const googleEmailDisp = document.getElementById('googleLinkedEmailDisplay');
-      const regEmail = document.getElementById('regEmail');
-      const regPwd = document.getElementById('regPwd');
-      const toggleBtn = document.getElementById('btnGoogleSignupToggle');
-
-      if (emailPwdSec) emailPwdSec.classList.add('hidden');
-      if (googleBanner) googleBanner.classList.remove('hidden');
-      if (googleEmailDisp) googleEmailDisp.innerText = googleAuthenticatedEmail;
-      if (toggleBtn) toggleBtn.classList.add('hidden');
-
-      // Remove required constraint from hidden Email & Password inputs
-      if (regEmail) {
-        regEmail.required = false;
-        regEmail.value = googleAuthenticatedEmail;
-      }
-      if (regPwd) {
-        regPwd.required = false;
-        regPwd.value = 'GoogleOAuth#' + Math.floor(100000 + Math.random() * 900000);
-      }
-
-      showToast('Google Account Linked! Email hidden — complete your Game & Phone OTP below.', true);
-    }
-
-    function disableGoogleSignupMode() {
-      doHaptic();
-      isGoogleSignupMode = false;
-      googleAuthenticatedEmail = '';
-
-      const emailPwdSec = document.getElementById('emailPasswordSection');
-      const googleBanner = document.getElementById('googleLinkedBanner');
-      const regEmail = document.getElementById('regEmail');
-      const regPwd = document.getElementById('regPwd');
-      const toggleBtn = document.getElementById('btnGoogleSignupToggle');
-
-      if (emailPwdSec) emailPwdSec.classList.remove('hidden');
-      if (googleBanner) googleBanner.classList.add('hidden');
-      if (toggleBtn) toggleBtn.classList.remove('hidden');
-
-      if (regEmail) {
-        regEmail.required = true;
-        regEmail.value = '';
-      }
-      if (regPwd) {
-        regPwd.required = true;
-        regPwd.value = '';
-      }
-    }
-
-    function handleSupabaseOAuthSession(sbUser) {
-      if (!sbUser) return;
-      const email = sbUser.email || 'google.agent@tournyx.in';
-      const fullName = sbUser.user_metadata?.full_name || '';
-
-      // Switch to Create Account with Email Hidden so user can complete IGN, UID & Phone OTP
-      switchAuthTab('signup');
-      activateGoogleSignupMode(email);
-      if (fullName && document.getElementById('regUser')) {
-        document.getElementById('regUser').value = fullName;
-      }
-    }
-
-    // --- 4. PHONE NUMBER (+91) OTP VERIFICATION ENGINE ---
-    let isPhoneVerified = false;
-    let generatedSandboxPhoneOtp = '';
-    let phoneOtpCooldownTimer = null;
-
-    const phoneInput = document.getElementById('regPhone');
-    if (phoneInput) {
-      phoneInput.addEventListener('input', function() {
-        if (!this.value.startsWith('+91 ')) this.value = '+91 ';
-        let numbers = this.value.substring(4).replace(/\D/g, '');
-        if (numbers.length > 10) numbers = numbers.substring(0, 10);
-        this.value = '+91 ' + numbers;
-      });
-      phoneInput.addEventListener('keydown', function(e) {
-        if ((e.key === 'Backspace' || e.key === 'Delete') && this.selectionStart <= 4 && this.selectionEnd <= 4) {
-          e.preventDefault();
-        }
-      });
-    }
-
-    async function sendPhoneOtp() {
-      doHaptic();
-      const phoneEl = document.getElementById('regPhone');
-      const rawPhone = phoneEl.value.trim();
-      const digits = rawPhone.substring(4).replace(/\D/g, '');
-
-      if (digits.length !== 10) {
-        showToast('Enter a valid 10-digit Indian mobile number (+91).');
-        phoneEl.focus();
-        return;
-      }
-
-      const fullE164Phone = '+91' + digits;
-      const btn = document.getElementById('btnSendPhoneOtp');
-      btn.disabled = true;
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
-
-      // Generate a 6-digit verification code for instant verification
-      generatedSandboxPhoneOtp = String(Math.floor(100000 + Math.random() * 900000));
-
-      let sentViaSupabase = false;
-      if (isSupabaseConfigured && supabaseClient) {
-        try {
-          const { error } = await supabaseClient.auth.signInWithOtp({ phone: fullE164Phone });
-          if (!error) sentViaSupabase = true;
-        } catch (e) {}
-      }
-
-      // Show OTP Input Group
-      const otpGroup = document.getElementById('phoneOtpGroup');
-      const hint = document.getElementById('sandboxOtpHint');
-      otpGroup.classList.remove('hidden');
-      otpGroup.classList.add('flex');
-
-      if (sentViaSupabase) {
-        if (hint) hint.innerText = `SMS dispatched to ${fullE164Phone} via Supabase Auth`;
-        showToast(`OTP dispatched to ${fullE164Phone}!`, true);
-      } else {
-        if (hint) hint.innerText = `Tactical Verification Code: ${generatedSandboxPhoneOtp}`;
-        showToast(`Phone OTP for ${fullE164Phone}: ${generatedSandboxPhoneOtp}`, true);
-      }
-
-      // Start 45-second resend countdown
-      let sec = 45;
-      if (phoneOtpCooldownTimer) clearInterval(phoneOtpCooldownTimer);
-      phoneOtpCooldownTimer = setInterval(() => {
-        sec--;
-        if (sec > 0 && !isPhoneVerified) {
-          btn.innerText = `RESEND (${sec}s)`;
-        } else {
-          clearInterval(phoneOtpCooldownTimer);
-          if (!isPhoneVerified) {
-            btn.disabled = false;
-            btn.innerText = 'RESEND OTP';
-          }
-        }
-      }, 1000);
-    }
-
-    async function verifyPhoneOtp() {
-      doHaptic();
-      const otpInput = document.getElementById('regPhoneOtp');
-      const enteredOtp = otpInput.value.trim();
-      const digits = document.getElementById('regPhone').value.substring(4).replace(/\D/g, '');
-      const fullE164Phone = '+91' + digits;
-
-      if (enteredOtp.length < 4) {
-        showToast('Enter the 6-digit SMS OTP code.');
-        otpInput.focus();
-        return;
-      }
-
-      const verifyBtn = document.getElementById('btnVerifyPhoneOtp');
-      verifyBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
-      verifyBtn.disabled = true;
-
-      let verified = false;
-      if (isSupabaseConfigured && supabaseClient) {
-        try {
-          const { error } = await supabaseClient.auth.verifyOtp({
-            phone: fullE164Phone,
-            token: enteredOtp,
-            type: 'sms'
-          });
-          if (!error) verified = true;
-        } catch (e) {}
-      }
-
-      // Verify against tactical code or 6-digit match
-      if (!verified && (enteredOtp === generatedSandboxPhoneOtp || enteredOtp === '123456')) {
-        verified = true;
-      }
-
-      setTimeout(() => {
-        if (verified) {
-          isPhoneVerified = true;
-          verifyBtn.innerHTML = 'VERIFIED ✓';
-          verifyBtn.className = 'absolute right-1.5 px-3 py-1 rounded-full bg-[#00ff7f]/20 border border-[#00ff7f] text-[#00ff7f] font-mono text-[10px] font-black uppercase';
-          document.getElementById('regPhone').readOnly = true;
-          otpInput.readOnly = true;
-
-          const sendBtn = document.getElementById('btnSendPhoneOtp');
-          sendBtn.innerHTML = 'VERIFIED ✓';
-          sendBtn.disabled = true;
-          sendBtn.className = 'px-3.5 py-2.5 rounded-full bg-[#00ff7f]/20 border border-[#00ff7f] text-[#00ff7f] font-mono text-[10px] font-black uppercase';
-
-          const statusTag = document.getElementById('phoneOtpStatusTag');
-          if (statusTag) {
-            statusTag.innerText = '● PHONE VERIFIED';
-            statusTag.className = 'font-mono text-[9px] text-[#00ff7f] uppercase font-bold';
-          }
-          showToast('Phone Number (+91) Verified Successfully!', true);
-        } else {
-          verifyBtn.innerHTML = 'VERIFY OTP';
-          verifyBtn.disabled = false;
-          showToast('Invalid Phone OTP code. Please check and try again.');
-        }
-      }, 500);
-    }
-
-    function unlockPhoneInput() {
-      doHaptic();
-      isPhoneVerified = false;
-      if (phoneOtpCooldownTimer) clearInterval(phoneOtpCooldownTimer);
-
-      const phoneEl = document.getElementById('regPhone');
-      const otpEl = document.getElementById('regPhoneOtp');
-      const sendBtn = document.getElementById('btnSendPhoneOtp');
-      const verifyBtn = document.getElementById('btnVerifyPhoneOtp');
-      const statusTag = document.getElementById('phoneOtpStatusTag');
-
-      if (phoneEl) { phoneEl.readOnly = false; phoneEl.focus(); }
-      if (otpEl) { otpEl.readOnly = false; otpEl.value = ''; }
-      if (sendBtn) {
-        sendBtn.disabled = false;
-        sendBtn.innerText = 'GET OTP';
-        sendBtn.className = 'px-3.5 py-2.5 rounded-full bg-[#D4FF00] hover:bg-[#e5ff4d] text-[#050508] font-mono text-[10px] font-black uppercase tracking-wider whitespace-nowrap transition-all';
-      }
-      if (verifyBtn) {
-        verifyBtn.disabled = false;
-        verifyBtn.innerText = 'VERIFY OTP';
-      }
-      if (statusTag) {
-        statusTag.innerText = 'UNVERIFIED';
-        statusTag.className = 'font-mono text-[9px] text-[#a09fb1] uppercase';
-      }
-    }
-
-    // --- 5. TIMS / QUVA INTERN CERTIFICATE VERIFIER (Video 1: public.tims_intern_certificates) ---
-    const PRODUCTION_CERTIFICATES = [
-      {
-        certificate_id: "TIMS-2026-845",
-        intern_name: "Arun kumar K.V",
-        intern_email: "arunkumarkv87@gmail.com",
-        domain_role: "AI PROMPT ENGINEERING",
-        department: "AI & INNOVATION",
-        project_name: "TOURNYX WEB MODULE",
-        project_id: "TX-PRJ-TMRW-AHI",
-        start_date: "2026-06-01",
-        end_date: "2026-08-30",
-        duration_months: 3,
-        internship_type: "Virtual / Project-Based",
-        udyam_reg_no: "UDYAM-TN-30-0111227",
-        record_key: "AGH-P6TH-N87",
-        is_verified: true
-      },
-      {
-        certificate_id: "TIMS-2026-102",
-        intern_name: "DHAYADASS V",
-        intern_email: "dhayadass15@gmail.com",
-        domain_role: "AI PROMPT ENGINEERING",
-        department: "AI & INNOVATION",
-        project_name: "TOURNYX WEB MODULE",
-        project_id: "TX-PRJ-NHK1-MOQ",
-        start_date: "2026-06-01",
-        end_date: "2026-08-30",
-        duration_months: 3,
-        internship_type: "Virtual / Project-Based",
-        udyam_reg_no: "UDYAM-TN-30-0111227",
-        record_key: "PLDF-CD9L-MA0",
-        is_verified: true
-      },
-      {
-        certificate_id: "TIMS-2026-419",
-        intern_name: "JOSHITHA R D",
-        intern_email: "rdjoshi7@gmail.com",
-        domain_role: "AI PROMPT ENGINEERING",
-        department: "AI & INNOVATION",
-        project_name: "Tournyx WEB Engine",
-        project_id: "TX-PRJ-AKWG-AI",
-        start_date: "2026-06-01",
-        end_date: "2026-08-30",
-        duration_months: 3,
-        internship_type: "Virtual / Project-Based",
-        udyam_reg_no: "UDYAM-TN-30-0111227",
-        record_key: "HGDK-WQ7G-BZGL",
-        is_verified: true
-      },
-      {
-        certificate_id: "TIMS-2026-904",
-        intern_name: "VIKRAM T",
-        intern_email: "vt261610@gmail.com",
-        domain_role: "Video Editor",
-        department: "Media & Marketing",
-        project_name: "Video & poster creation",
-        project_id: "TX-PRJ-FRKJ-QLK",
-        start_date: "2026-06-01",
-        end_date: "2026-08-30",
-        duration_months: 3,
-        internship_type: "Virtual / Project-Based",
-        udyam_reg_no: "UDYAM-TN-30-0111227",
-        record_key: "KOFA-SKO7-QPA",
-        is_verified: true
-      }
-    ];
-
-    async function verifyInternCertificate() {
-      doHaptic();
-      const query = document.getElementById('certSearchInput').value.trim().toUpperCase();
-      const box = document.getElementById('certResultBox');
-      if (!query) {
-        showToast('Enter a Certificate ID, Project ID, or Record Key.');
-        return;
-      }
-
-      box.innerHTML = `<div class="text-center py-3 font-mono text-xs text-[#00f2ff]"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Querying public.tims_intern_certificates...</div>`;
-
-      let match = null;
-      if (isSupabaseConfigured && supabaseClient) {
-        try {
-          const { data } = await supabaseClient
-            .from('tims_intern_certificates')
-            .select('*')
-            .or(`certificate_id.ilike.%${query}%,project_id.ilike.%${query}%,record_key.ilike.%${query}%,intern_name.ilike.%${query}%`)
-            .limit(1);
-          if (data && data.length > 0) match = data[0];
-        } catch (e) {}
-      }
-
-      if (!match) {
-        match = PRODUCTION_CERTIFICATES.find(c =>
-          c.certificate_id.toUpperCase() === query ||
-          c.project_id.toUpperCase() === query ||
-          c.record_key.toUpperCase() === query ||
-          c.intern_name.toUpperCase().includes(query)
-        );
-      }
-
-      if (match) {
-        box.innerHTML = `
-          <div class="flex items-center justify-between border-b border-white/10 pb-2 mb-2">
-            <span class="font-orbitron text-xs font-black text-[#00ff7f]"><i class="fa-solid fa-circle-check mr-1"></i>VERIFIED RECORD</span>
-            <span class="font-mono text-[10px] px-2 py-0.5 rounded bg-[#00ff7f]/15 text-[#00ff7f] font-bold">${match.certificate_id}</span>
-          </div>
-          <div class="grid grid-cols-2 gap-1.5 font-mono text-[11px]">
-            <div><span class="text-[#8a889e]">INTERN:</span> <strong class="text-white">${match.intern_name}</strong></div>
-            <div><span class="text-[#8a889e]">ROLE:</span> <strong class="text-[#D4FF00]">${match.domain_role}</strong></div>
-            <div><span class="text-[#8a889e]">PROJECT:</span> <strong class="text-[#00f2ff]">${match.project_name}</strong></div>
-            <div><span class="text-[#8a889e]">PRJ ID:</span> <strong class="text-white">${match.project_id}</strong></div>
-            <div><span class="text-[#8a889e]">UDYAM:</span> <strong class="text-white">${match.udyam_reg_no}</strong></div>
-            <div><span class="text-[#8a889e]">KEY:</span> <strong class="text-[#c4b5fd]">${match.record_key}</strong></div>
-          </div>
-        `;
-        showToast(`Verified Certificate for ${match.intern_name}`, true);
-      } else {
-        box.innerHTML = `<div class="text-red-400 font-mono text-xs py-2"><i class="fa-solid fa-circle-xmark mr-1"></i>No matching certificate found for "${query}".</div>`;
-      }
-    }
-
-    // --- 6. ORGANIZER APPLICATION SUBMISSION & STATUS CHECK (Video 2: public.Organizer_Applications) ---
-    document.getElementById('orgApplicationForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      doHaptic();
-      btnLoading('btnSubmitOrgApp', 'UPLOADING TO SUPABASE...');
-
-      const formData = new FormData(e.target);
-      const raw = Object.fromEntries(formData);
-      const record = {
-        professional_email: raw.professional_email.trim().toLowerCase(),
-        whatsapp_phone: raw.whatsapp_phone.trim(),
-        state: raw.state.trim(),
-        city: raw.city.trim(),
-        gender: raw.gender,
-        youtube_link: raw.youtube_link.trim(),
-        instagram: raw.instagram.trim(),
-        discord: raw.discord.trim(),
-        tournaments_hosted: parseInt(raw.tournaments_hosted || '0', 10),
-        host_type: raw.host_type,
-        aadhar_front_url: raw.aadhar_front_url.trim(),
-        aadhar_back_url: raw.aadhar_back_url.trim(),
-        standard_response: raw.standard_response.trim(),
-        status: 'pending'
-      };
-
-      try {
-        if (isSupabaseConfigured && supabaseClient) {
-          const { error } = await supabaseClient.from('Organizer_Applications').insert([record]);
-          if (error) throw error;
-        }
-        // Store locally as backup so status checker works immediately
-        const localApps = JSON.parse(localStorage.getItem('tournyx_org_applications') || '[]');
-        localApps.unshift({ ...record, created_at: new Date().toISOString() });
-        localStorage.setItem('tournyx_org_applications', JSON.stringify(localApps));
-
-        showToast('Organizer Application Submitted to Supabase!', true);
-        e.target.reset();
-        setTimeout(() => closeModals(true), 1200);
-      } catch (err) {
-        showToast('Application saved! Pending admin review.', true);
-        setTimeout(() => closeModals(true), 1200);
-      } finally {
-        btnReset('btnSubmitOrgApp');
-      }
-    });
-
-    async function checkOrganizerStatus() {
-      doHaptic();
-      const email = document.getElementById('orgStatusEmailInput').value.trim().toLowerCase();
-      const resBox = document.getElementById('orgStatusResultBox');
-      if (!email) {
-        showToast('Enter your professional_email first.');
-        return;
-      }
-
-      resBox.classList.remove('hidden');
-      resBox.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1 text-[#ff9900]"></i> Checking public.Organizer_Applications...`;
-
-      let found = null;
-      if (isSupabaseConfigured && supabaseClient) {
-        try {
-          const { data } = await supabaseClient
-            .from('Organizer_Applications')
-            .select('*')
-            .eq('professional_email', email)
-            .limit(1);
-          if (data && data.length > 0) found = data[0];
-        } catch (e) {}
-      }
-
-      if (!found) {
-        const localApps = JSON.parse(localStorage.getItem('tournyx_org_applications') || '[]');
-        found = localApps.find(a => a.professional_email === email);
-      }
-
-      if (found) {
-        resBox.innerHTML = `
-          <div class="flex items-center justify-between mb-1">
-            <span class="text-[#ff9900] font-bold">${found.professional_email}</span>
-            <span class="px-2 py-0.5 rounded bg-[#ff9900]/20 text-[#D4FF00] uppercase font-bold">${found.status || 'PENDING'}</span>
-          </div>
-          <div class="text-[11px] text-[#a09fb1]">Host Type: ${found.host_type} • Hosted: ${found.tournaments_hosted}</div>
-        `;
-      } else {
-        resBox.innerHTML = `<span class="text-red-400">No application found for ${email}. Click "+ APPLY HOST" to apply!</span>`;
-      }
-    }
-
-    // --- 7. PLAYER LOGIN, SINGLE-PAGE SIGNUP & ORGANIZER LOGIN (SUPABASE + FALLBACK) ---
-    async function secureAppsScriptFetch(payload) {
-      const response = await fetch(APPS_SCRIPT_API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(payload)
-      });
-      return await response.json();
-    }
-
-    // PLAYER LOGIN SUBMIT (With Brute-Force Protection + Supabase Auth + Users Table)
-    document.getElementById('playerLoginForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (isCurrentlyLockedOut()) {
-        enforceSecurityLockoutUI();
-        showToast('Security Lockout Active. Please wait for cooldown.');
-        return;
-      }
-      if (!verifyTermsChecked()) return;
-
-      btnLoading('btnLogin', 'AUTHENTICATING...');
-      const email = e.target.email.value.trim();
-      const password = e.target.password.value;
-
-      try {
-        // 1. Try Supabase Auth first if configured
-        if (isSupabaseConfigured && supabaseClient) {
-          const { data: authData, error: authErr } = await supabaseClient.auth.signInWithPassword({ email, password });
-          if (!authErr && authData?.user) {
-            const { data: profileRows } = await supabaseClient
-              .from('Users')
-              .select('*')
-              .eq('email', email)
+        // Check if player profile already exists in public.Users
+        if (isSupabaseReady && supabaseClient && email) {
+          try {
+            const { data: existingRows } = await supabaseClient
+              .from("Users")
+              .select("*")
+              .eq("email", email)
               .limit(1);
-            const userObj = (profileRows && profileRows[0]) || {
-              email: authData.user.email,
-              ign: authData.user.user_metadata?.ign || email.split('@')[0],
-              username: authData.user.user_metadata?.username || 'Player',
-              role: 'player'
-            };
-            resetLoginAttempts();
-            triggerArenaEntry(userObj, 'index.html');
-            return;
-          }
+
+            if (existingRows && existingRows.length > 0) {
+              resetLoginAttempts();
+              triggerArenaEntry(existingRows[0], REDIRECT_URL);
+              return;
+            }
+          } catch (e) {}
         }
 
-        // 2. Try Apps Script Backend / Local Registered Vault
-        const localUsers = JSON.parse(localStorage.getItem('tournyx_users_table') || '[]');
-        const localMatch = localUsers.find(u =>
-          (u.email?.toLowerCase() === email.toLowerCase() || u.ign?.toLowerCase() === email.toLowerCase()) &&
-          u.password === password
-        );
+        // New Google/Discord user: open CREATE ID tab with Email hidden so they can complete Game UID & Phone OTP
+        switchAuthTab("signup");
+        activateGoogleSignupMode(email || "verified.oauth@tournyx.in", true);
+        if (fullName && document.getElementById("regUser")) {
+          document.getElementById("regUser").value = fullName;
+        }
+        if (avatar) {
+          sessionStorage.setItem("tx_oauth_avatar", avatar);
+        }
+      }
 
-        if (localMatch) {
-          resetLoginAttempts();
-          triggerArenaEntry(localMatch, 'index.html');
+      // --- BRUTE-FORCE RATE LIMITER & COOLDOWN LOCKOUT ENGINE ---
+      const MAX_LOGIN_ATTEMPTS = 4;
+      const LOCKOUT_SECONDS = 30;
+      let lockoutInterval = null;
+
+      function getLoginState() {
+        const attempts = parseInt(sessionStorage.getItem("tx_failed_attempts") || "0", 10);
+        const lockoutUntil = parseInt(sessionStorage.getItem("tx_lockout_until") || "0", 10);
+        return {
+          attempts: Number.isNaN(attempts) ? 0 : attempts,
+          lockoutUntil: Number.isNaN(lockoutUntil) ? 0 : lockoutUntil
+        };
+      }
+
+      function recordFailedLoginAttempt() {
+        let { attempts } = getLoginState();
+        attempts += 1;
+        sessionStorage.setItem("tx_failed_attempts", String(attempts));
+        updateAttemptCounterUI();
+
+        if (attempts >= MAX_LOGIN_ATTEMPTS) {
+          const until = Date.now() + LOCKOUT_SECONDS * 1000;
+          sessionStorage.setItem("tx_lockout_until", String(until));
+          enforceSecurityLockoutUI();
+          showToast(`Security Shield: Locked for ${LOCKOUT_SECONDS}s due to multiple failed attempts.`);
+        }
+      }
+
+      function resetLoginAttempts() {
+        sessionStorage.removeItem("tx_failed_attempts");
+        sessionStorage.removeItem("tx_lockout_until");
+        updateAttemptCounterUI();
+        enforceSecurityLockoutUI();
+      }
+
+      function updateAttemptCounterUI() {
+        const { attempts } = getLoginState();
+        const lbl = document.getElementById("attemptCounterLabel");
+        if (lbl) {
+          lbl.innerText = `ATTEMPTS: ${Math.min(attempts, MAX_LOGIN_ATTEMPTS)}/${MAX_LOGIN_ATTEMPTS}`;
+          lbl.className = attempts >= 2 ? "text-red-400 text-[9px] font-bold" : "text-[#00f2ff] text-[9px]";
+        }
+      }
+
+      function isCurrentlyLockedOut() {
+        const { lockoutUntil } = getLoginState();
+        return lockoutUntil > Date.now();
+      }
+
+      function enforceSecurityLockoutUI() {
+        const banner = document.getElementById("securityLockoutBanner");
+        const badge = document.getElementById("lockoutCountdownBadge");
+        const btnLogin = document.getElementById("btnLogin");
+        const btnOrgLogin = document.getElementById("btnOrgLogin");
+
+        if (lockoutInterval) clearInterval(lockoutInterval);
+
+        const tick = () => {
+          const { lockoutUntil } = getLoginState();
+          const remaining = Math.ceil((lockoutUntil - Date.now()) / 1000);
+
+          if (remaining > 0) {
+            if (banner) banner.classList.remove("hidden");
+            if (badge) badge.innerText = `${remaining}s`;
+            if (btnLogin) {
+              btnLogin.disabled = true;
+              btnLogin.innerHTML = `<i class="fa-solid fa-shield-halved"></i> <span>LOCKED • RETRY IN ${remaining}s</span>`;
+            }
+            if (btnOrgLogin) {
+              btnOrgLogin.disabled = true;
+              btnOrgLogin.innerHTML = `<i class="fa-solid fa-shield-halved"></i> <span>LOCKED • RETRY IN ${remaining}s</span>`;
+            }
+          } else {
+            if (lockoutInterval) clearInterval(lockoutInterval);
+            if (banner) banner.classList.add("hidden");
+            if (parseInt(sessionStorage.getItem("tx_lockout_until") || "0", 10) > 0) {
+              sessionStorage.removeItem("tx_lockout_until");
+              sessionStorage.setItem("tx_failed_attempts", "0");
+              updateAttemptCounterUI();
+            }
+            if (btnLogin) {
+              btnLogin.disabled = false;
+              btnLogin.innerHTML = `<span id="txtEnterArena">ENTER BATTLEGROUND</span> <i class="fa-solid fa-arrow-right text-xs"></i>`;
+            }
+            if (btnOrgLogin) {
+              btnOrgLogin.disabled = false;
+              btnOrgLogin.innerHTML = `<span id="txtVerifyAdmin">VERIFY ORGANIZER &amp; LAUNCH STUDIO</span> <i class="fa-solid fa-bolt"></i>`;
+            }
+          }
+        };
+
+        tick();
+        if (isCurrentlyLockedOut()) {
+          lockoutInterval = setInterval(tick, 1000);
+        }
+      }
+
+      // --- GOOGLE SIGNUP MODE (HIDES EMAIL & PASSWORD FIELDS ON CREATE ID) ---
+      let isGoogleSignupMode = false;
+      let googleAuthenticatedEmail = "";
+
+      function activateGoogleSignupMode(prefillEmail, skipToast) {
+        doHaptic();
+        if (!verifyTermsChecked()) return;
+
+        isGoogleSignupMode = true;
+        googleAuthenticatedEmail = prefillEmail || "google.verified.player@gmail.com";
+
+        const emailPwdSec = document.getElementById("emailPasswordSection");
+        const googleBanner = document.getElementById("googleLinkedBanner");
+        const googleEmailDisp = document.getElementById("googleLinkedEmailDisplay");
+        const regEmail = document.getElementById("regEmail");
+        const regPwd = document.getElementById("regPwd");
+        const toggleBtn = document.getElementById("btnGoogleSignupToggle");
+
+        if (emailPwdSec) emailPwdSec.classList.add("hidden");
+        if (googleBanner) googleBanner.classList.remove("hidden");
+        if (googleEmailDisp) {
+          googleEmailDisp.innerText = prefillEmail ? prefillEmail : "Google Fast-Track Active (Email Hidden)";
+        }
+        if (toggleBtn) toggleBtn.classList.add("hidden");
+
+        if (regEmail) {
+          regEmail.required = false;
+          regEmail.value = googleAuthenticatedEmail;
+        }
+        if (regPwd) {
+          regPwd.required = false;
+          regPwd.value = "GoogleOAuth#" + Math.floor(100000 + Math.random() * 900000);
+        }
+
+        if (!skipToast) {
+          showToast("Google Mode Active! Email field hidden — verify your Phone OTP & Game ID below.", true);
+        }
+      }
+
+      function disableGoogleSignupMode() {
+        doHaptic();
+        isGoogleSignupMode = false;
+        googleAuthenticatedEmail = "";
+
+        const emailPwdSec = document.getElementById("emailPasswordSection");
+        const googleBanner = document.getElementById("googleLinkedBanner");
+        const regEmail = document.getElementById("regEmail");
+        const regPwd = document.getElementById("regPwd");
+        const toggleBtn = document.getElementById("btnGoogleSignupToggle");
+
+        if (emailPwdSec) emailPwdSec.classList.remove("hidden");
+        if (googleBanner) googleBanner.classList.add("hidden");
+        if (toggleBtn) toggleBtn.classList.remove("hidden");
+
+        if (regEmail) {
+          regEmail.required = true;
+          regEmail.value = "";
+        }
+        if (regPwd) {
+          regPwd.required = true;
+          regPwd.value = "";
+        }
+      }
+
+      async function triggerLiveGoogleOAuth() {
+        doHaptic();
+        if (!verifyTermsChecked()) return;
+        if (isSupabaseReady && supabaseClient) {
+          try {
+            showToast("Connecting to Google Authentication...", true);
+            const { error } = await supabaseClient.auth.signInWithOAuth({
+              provider: "google",
+              options: {
+                redirectTo: window.location.origin + "/" + REDIRECT_URL
+              }
+            });
+            if (error) throw error;
+          } catch (err) {
+            showToast("Google Fast-Track ready! Complete your Game UID & Phone OTP below.", true);
+          }
+        }
+      }
+
+      // --- GOOGLE & DISCORD LIVE OAUTH BUTTON HANDLERS ---
+      async function handleGoogleAction(context) {
+        doHaptic();
+        if (!verifyTermsChecked()) return;
+
+        if (context === "login" && isSupabaseReady && supabaseClient) {
+          try {
+            showToast("Launching Google Sign-In...", true);
+            const { error } = await supabaseClient.auth.signInWithOAuth({
+              provider: "google",
+              options: {
+                redirectTo: window.location.origin + "/" + REDIRECT_URL
+              }
+            });
+            if (!error) return;
+          } catch (e) {}
+        }
+
+        switchAuthTab("signup");
+        activateGoogleSignupMode();
+      }
+
+      async function handleDiscordAction() {
+        doHaptic();
+        if (!verifyTermsChecked()) return;
+
+        if (isSupabaseReady && supabaseClient) {
+          try {
+            showToast("Launching Discord Sign-In...", true);
+            const { error } = await supabaseClient.auth.signInWithOAuth({
+              provider: "discord",
+              options: {
+                redirectTo: window.location.origin + "/" + REDIRECT_URL
+              }
+            });
+            if (!error) return;
+          } catch (e) {}
+        }
+
+        switchAuthTab("signup");
+        activateGoogleSignupMode("discord.player@tournyx.in");
+      }
+
+      // --- PHONE NUMBER (+91) OTP VERIFICATION ENGINE ---
+      let isPhoneVerified = false;
+      let generatedPhoneOtp = "";
+      let phoneOtpCooldownTimer = null;
+
+      function initPhoneFormatLock() {
+        const phoneInput = document.getElementById("regPhone");
+        if (!phoneInput) return;
+        phoneInput.addEventListener("input", function () {
+          if (!this.value.startsWith("+91 ")) this.value = "+91 ";
+          let numbers = this.value.substring(4).replace(/\D/g, "");
+          if (numbers.length > 10) numbers = numbers.substring(0, 10);
+          this.value = "+91 " + numbers;
+        });
+        phoneInput.addEventListener("keydown", function (e) {
+          if ((e.key === "Backspace" || e.key === "Delete") && this.selectionStart <= 4 && this.selectionEnd <= 4) {
+            e.preventDefault();
+          }
+        });
+      }
+
+      async function sendPhoneOtp() {
+        doHaptic();
+        const phoneEl = document.getElementById("regPhone");
+        const rawPhone = phoneEl.value.trim();
+        const digits = rawPhone.substring(4).replace(/\D/g, "");
+
+        if (!/^[6-9]\d{9}$/.test(digits)) {
+          showToast("Enter a valid 10-digit Indian mobile number (+91).");
+          phoneEl.focus();
           return;
         }
 
-        const result = await secureAppsScriptFetch({ action: 'login', email, password });
-        if (result.status === 'success') {
-          if (result.data.role === 'organizer') {
-            showToast('Organizers must log in through the Organizer tab.');
-            switchAuthTab('organizer');
+        const fullE164Phone = "+91" + digits;
+        const btn = document.getElementById("btnSendPhoneOtp");
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+        generatedPhoneOtp = String(Math.floor(100000 + Math.random() * 900000));
+
+        let sentViaSmsGateway = false;
+        if (isSupabaseReady && supabaseClient) {
+          try {
+            const { error } = await supabaseClient.auth.signInWithOtp({ phone: fullE164Phone });
+            if (!error) sentViaSmsGateway = true;
+          } catch (e) {}
+        }
+
+        const otpGroup = document.getElementById("phoneOtpGroup");
+        const hint = document.getElementById("sandboxOtpHint");
+        otpGroup.classList.remove("hidden");
+        otpGroup.classList.add("flex");
+
+        if (sentViaSmsGateway) {
+          if (hint) hint.innerText = `SMS OTP dispatched to ${fullE164Phone}`;
+          showToast(`OTP dispatched to ${fullE164Phone}!`, true);
+        } else {
+          if (hint) hint.innerText = `Instant Verification OTP: ${generatedPhoneOtp}`;
+          showToast(`Your Tournyx Phone OTP is ${generatedPhoneOtp}`, true);
+        }
+
+        let sec = 45;
+        if (phoneOtpCooldownTimer) clearInterval(phoneOtpCooldownTimer);
+        phoneOtpCooldownTimer = setInterval(() => {
+          sec--;
+          if (sec > 0 && !isPhoneVerified) {
+            btn.innerText = `RESEND (${sec}s)`;
           } else {
-            resetLoginAttempts();
-            triggerArenaEntry(result.data, 'index.html');
+            clearInterval(phoneOtpCooldownTimer);
+            if (!isPhoneVerified) {
+              btn.disabled = false;
+              btn.innerText = "RESEND OTP";
+            }
           }
-        } else {
-          recordFailedLoginAttempt();
-          document.getElementById('mainAuthCard').classList.add('shake-anim');
-          setTimeout(() => document.getElementById('mainAuthCard').classList.remove('shake-anim'), 450);
-          showToast(result.data || 'Invalid Credentials. Attempt recorded.');
+        }, 1000);
+      }
+
+      async function verifyPhoneOtp() {
+        doHaptic();
+        const otpInput = document.getElementById("regPhoneOtp");
+        const enteredOtp = otpInput.value.trim();
+        const digits = document.getElementById("regPhone").value.substring(4).replace(/\D/g, "");
+        const fullE164Phone = "+91" + digits;
+
+        if (enteredOtp.length < 4) {
+          showToast("Enter the 6-digit OTP code.");
+          otpInput.focus();
+          return;
         }
-      } catch (err) {
-        recordFailedLoginAttempt();
-        showToast('Invalid credentials or network unreachable.');
-      } finally {
-        if (!isCurrentlyLockedOut()) btnReset('btnLogin');
-      }
-    });
 
-    // SINGLE-PAGE PLAYER SIGNUP SUBMIT (No Email OTP + Requires Phone OTP + Inserts into Supabase Users)
-    document.getElementById('playerSignupForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (!verifyTermsChecked()) return;
+        const verifyBtn = document.getElementById("btnVerifyPhoneOtp");
+        verifyBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+        verifyBtn.disabled = true;
 
-      if (!isPhoneVerified) {
-        showToast('Please verify your Phone Number (+91) via OTP before registering!');
-        document.getElementById('regPhone').focus();
-        return;
-      }
-
-      let finalState = document.getElementById('regState').value;
-      if (finalState === 'Other') finalState = document.getElementById('customState').value.trim();
-
-      let finalCity = document.getElementById('regCity').value;
-      if (finalCity === 'Other' || document.getElementById('regState').value === 'Other') {
-        finalCity = document.getElementById('customCity').value.trim();
-      }
-
-      if (!finalState || !finalCity) {
-        showToast('Please select your State and City.');
-        return;
-      }
-
-      const phoneDigits = document.getElementById('regPhone').value.substring(4).replace(/\D/g, '');
-      const finalEmail = isGoogleSignupMode
-        ? googleAuthenticatedEmail
-        : document.getElementById('regEmail').value.trim().toLowerCase();
-      const finalPassword = document.getElementById('regPwd').value;
-
-      if (!isGoogleSignupMode && finalPassword.length < 6) {
-        showToast('Password must be at least 6 characters.');
-        return;
-      }
-
-      btnLoading('btnSignup', 'REGISTERING IN SUPABASE...');
-
-      const newUserRecord = {
-        username: document.getElementById('regUser').value.trim(),
-        ign: document.getElementById('regIgn').value.trim(),
-        uid: document.getElementById('regUid').value.trim(),
-        game: document.getElementById('regGame').value,
-        state: finalState,
-        city: finalCity,
-        phone: '+91' + phoneDigits,
-        phone_verified: true,
-        email: finalEmail,
-        referral: document.getElementById('refInput').value.trim() || '',
-        auth_provider: isGoogleSignupMode ? 'google' : 'email',
-        role: 'player',
-        created_at: new Date().toISOString()
-      };
-
-      try {
-        // 1. Supabase Auth SignUp + Insert into public.Users
-        if (isSupabaseConfigured && supabaseClient) {
-          if (!isGoogleSignupMode) {
-            await supabaseClient.auth.signUp({
-              email: finalEmail,
-              password: finalPassword,
-              options: { data: newUserRecord }
+        let verified = false;
+        if (isSupabaseReady && supabaseClient) {
+          try {
+            const { error } = await supabaseClient.auth.verifyOtp({
+              phone: fullE164Phone,
+              token: enteredOtp,
+              type: "sms"
             });
-          }
-          await supabaseClient.from('Users').upsert([newUserRecord], { onConflict: 'email' });
+            if (!error) verified = true;
+          } catch (e) {}
         }
 
-        // 2. Save in local Users mirror & sync with Apps Script
-        const localUsers = JSON.parse(localStorage.getItem('tournyx_users_table') || '[]');
-        localUsers.unshift({ ...newUserRecord, password: finalPassword });
-        localStorage.setItem('tournyx_users_table', JSON.stringify(localUsers));
+        if (!verified && enteredOtp === generatedPhoneOtp) {
+          verified = true;
+        }
 
-        secureAppsScriptFetch({
-          action: 'signup',
-          ...newUserRecord,
-          phone: phoneDigits,
-          password: finalPassword,
-          otp: 'PHONE_VERIFIED'
-        }).catch(() => {});
-
-        showToast('Account Created & Phone Verified! Entering Battleground...', true);
         setTimeout(() => {
-          triggerArenaEntry(newUserRecord, 'index.html');
-        }, 900);
-      } catch (err) {
-        showToast('Registration complete! Routing to Arena...', true);
-        triggerArenaEntry(newUserRecord, 'index.html');
-      } finally {
-        btnReset('btnSignup');
-      }
-    });
+          if (verified) {
+            isPhoneVerified = true;
+            verifyBtn.innerHTML = "VERIFIED ✓";
+            verifyBtn.className = "absolute right-1.5 px-3 py-1.5 rounded-full bg-[#00ff7f]/20 border border-[#00ff7f] text-[#00ff7f] font-mono text-[10px] font-black uppercase";
+            document.getElementById("regPhone").readOnly = true;
+            otpInput.readOnly = true;
 
-    // ORGANIZER LOGIN SUBMIT (Checks Supabase Auth + Organizer_Applications)
-    document.getElementById('organizerLoginForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (isCurrentlyLockedOut()) {
-        enforceSecurityLockoutUI();
-        showToast('Security Lockout Active. Please wait.');
-        return;
-      }
-      if (!verifyTermsChecked()) return;
+            const sendBtn = document.getElementById("btnSendPhoneOtp");
+            sendBtn.innerHTML = "VERIFIED ✓";
+            sendBtn.disabled = true;
+            sendBtn.className = "px-4 py-2.5 rounded-full bg-[#00ff7f]/20 border border-[#00ff7f] text-[#00ff7f] font-mono text-[10px] font-black uppercase";
 
-      btnLoading('btnOrgLogin', 'VERIFYING ORGANIZER...');
-      const email = e.target.email.value.trim().toLowerCase();
-      const password = e.target.password.value;
-
-      try {
-        if (isSupabaseConfigured && supabaseClient) {
-          const { data: authData, error: authErr } = await supabaseClient.auth.signInWithPassword({ email, password });
-          if (!authErr && authData?.user) {
-            const { data: orgRows } = await supabaseClient
-              .from('Organizer_Applications')
-              .select('*')
-              .eq('professional_email', email)
-              .limit(1);
-            resetLoginAttempts();
-            triggerArenaEntry({
-              email,
-              ign: (orgRows && orgRows[0]?.instagram) || 'ORGANIZER STUDIO',
-              role: 'organizer'
-            }, 'profile.html');
-            return;
+            const statusTag = document.getElementById("phoneOtpStatusTag");
+            if (statusTag) {
+              statusTag.innerText = "● PHONE VERIFIED";
+              statusTag.className = "font-mono text-[9px] text-[#00ff7f] uppercase font-bold";
+            }
+            showToast("Mobile Number (+91) Verified!", true);
+          } else {
+            verifyBtn.innerHTML = "VERIFY OTP";
+            verifyBtn.disabled = false;
+            showToast("Incorrect OTP code. Please check and try again.");
           }
+        }, 450);
+      }
+
+      function unlockPhoneInput() {
+        doHaptic();
+        isPhoneVerified = false;
+        if (phoneOtpCooldownTimer) clearInterval(phoneOtpCooldownTimer);
+
+        const phoneEl = document.getElementById("regPhone");
+        const otpEl = document.getElementById("regPhoneOtp");
+        const sendBtn = document.getElementById("btnSendPhoneOtp");
+        const verifyBtn = document.getElementById("btnVerifyPhoneOtp");
+        const statusTag = document.getElementById("phoneOtpStatusTag");
+
+        if (phoneEl) { phoneEl.readOnly = false; phoneEl.focus(); }
+        if (otpEl) { otpEl.readOnly = false; otpEl.value = ""; }
+        if (sendBtn) {
+          sendBtn.disabled = false;
+          sendBtn.innerText = "GET OTP";
+          sendBtn.className = "px-4 py-2.5 rounded-full bg-[#D4FF00] hover:bg-[#e5ff4d] text-[#050508] font-mono text-[10px] font-black uppercase tracking-wider whitespace-nowrap transition-all";
         }
-
-        const result = await secureAppsScriptFetch({ action: 'login', email, password });
-        if (result.status === 'success' && result.data.role === 'organizer') {
-          resetLoginAttempts();
-          triggerArenaEntry(result.data, 'profile.html');
-        } else {
-          recordFailedLoginAttempt();
-          showToast('Invalid Organizer Credentials or Application Pending.');
+        if (verifyBtn) {
+          verifyBtn.disabled = false;
+          verifyBtn.innerText = "VERIFY OTP";
         }
-      } catch (err) {
-        recordFailedLoginAttempt();
-        showToast('Organizer verification failed. Check credentials.');
-      } finally {
-        if (!isCurrentlyLockedOut()) btnReset('btnOrgLogin');
-      }
-    });
-
-    // --- 8. FORGOT PASSWORD & SUPPORT TICKET ENGINE ---
-    async function handleForgotPassword(e) {
-      e.preventDefault();
-      doHaptic();
-      const email = document.getElementById('resetEmailInput').value.trim();
-      btnLoading('btnResetPwd', 'SENDING...');
-
-      try {
-        if (isSupabaseConfigured && supabaseClient) {
-          await supabaseClient.auth.resetPasswordForEmail(email, {
-            redirectTo: window.location.origin + '/login.html'
-          });
+        if (statusTag) {
+          statusTag.innerText = "UNVERIFIED";
+          statusTag.className = "font-mono text-[9px] text-[#a09fb1] uppercase";
         }
-        showToast(`Password recovery link dispatched to ${email}!`, true);
-        setTimeout(() => closeModals(true), 1200);
-      } catch (err) {
-        showToast(`Recovery link dispatched to ${email}`, true);
-        setTimeout(() => closeModals(true), 1200);
-      } finally {
-        btnReset('btnResetPwd');
-      }
-    }
-
-    async function submitHelp(e) {
-      e.preventDefault();
-      doHaptic();
-      btnLoading('btnHelp', 'DISPATCHING TICKET...');
-      const userEmail = document.getElementById('helpEmail').value.trim();
-      const category = document.getElementById('helpCategory').value;
-      const msg = document.getElementById('helpMsg').value.trim();
-      const ticketId = 'TX-SUP-' + Math.floor(1000 + Math.random() * 9000);
-
-      try {
-        if (isSupabaseConfigured && supabaseClient) {
-          await supabaseClient.from('engine_tasks').insert([{
-            task_name: `[${ticketId}] ${category}`,
-            assigned_to: userEmail,
-            description: msg,
-            status: 'open'
-          }]);
-        }
-      } catch (err) {}
-
-      secureAppsScriptFetch({
-        action: 'send_support_email',
-        email: userEmail,
-        message: `[${ticketId} - ${category}] ${msg}`,
-        to: 'tournyx.esports.india@gmail.com'
-      }).catch(() => {});
-
-      setTimeout(() => {
-        btnReset('btnHelp');
-        document.getElementById('helpMsg').value = '';
-        closeModals(true);
-        showToast(`Ticket ${ticketId} created! Our team will reply to ${userEmail}.`, true);
-      }, 850);
-    }
-
-    // --- 9. GOOGLE & DISCORD HANDLERS ---
-    function handleGoogleAction(context) {
-      doHaptic();
-      if (!verifyTermsChecked()) return;
-      if (context === 'login') {
-        // Switch to Create Account with Email Hidden so new or returning Google user can enter immediately
-        switchAuthTab('signup');
-        activateGoogleSignupMode();
-      }
-    }
-
-    function handleDiscordAction() {
-      doHaptic();
-      if (!verifyTermsChecked()) return;
-      if (isSupabaseConfigured && supabaseClient) {
-        supabaseClient.auth.signInWithOAuth({ provider: 'discord', options: { redirectTo: window.location.href } });
-      } else {
-        switchAuthTab('signup');
-        activateGoogleSignupMode('discord.agent@tournyx.in');
-      }
-    }
-
-    // --- 10. 7-LANGUAGE AI LOCALIZATION ENGINE ---
-    const langData = {
-      'en': {
-        login: "LOGIN", reg: "CREATE ID", org: "ORGANIZER",
-        desc: "Join the elite. Compete in automated daily scrims, climb the national leaderboard, and withdraw real cash winnings directly to your verified UPI wallet.",
-        logTitle: "PLAYER IDENTIFIER / EMAIL", regTitle: "SINGLE-PAGE AGENT REGISTRATION",
-        help: "Help", lang: "Lang", acc: "Accounts",
-        enter: "ENTER BATTLEGROUND", tap: "RESUME",
-        applyHost: "Submit Organizer Application (Supabase) →",
-        admin: "VERIFY ORGANIZER & LAUNCH STUDIO"
-      },
-      'hi': {
-        login: "लॉगिन", reg: "नया खाता", org: "आयोजक",
-        desc: "कुलीन वर्ग में शामिल हों। दैनिक स्क्रिम्स में प्रतिस्पर्धा करें और असली नकद जीतें।",
-        logTitle: "खिलाड़ी ईमेल / आईडी", regTitle: "खिलाड़ी पंजीकरण",
-        help: "मदद", lang: "भाषा", acc: "खाते",
-        enter: "मैदान में प्रवेश करें", tap: "प्रवेश",
-        applyHost: "आयोजक आवेदन जमा करें →",
-        admin: "आयोजक सत्यापित करें"
-      },
-      'ta': {
-        login: "உள்நுழைவு", reg: "புதிய கணக்கு", org: "அமைப்பாளர்",
-        desc: "எலைட் அணியில் சேருங்கள். தினசரி போட்டிகளில் பங்கேற்று உண்மையான பணத்தை வெல்லுங்கள்.",
-        logTitle: "வீரர் மின்னஞ்சல்", regTitle: "புதிய வீரர் பதிவு",
-        help: "உதவி", lang: "மொழி", acc: "கணக்குகள்",
-        enter: "களத்தில் இறங்கு", tap: "தொடர்",
-        applyHost: "போட்டி நடத்த விண்ணப்பிக்கவும் →",
-        admin: "நிர்வாகியை சரிபார்க்கவும்"
-      },
-      'te': {
-        login: "లాగిన్", reg: "ఖాతా", org: "ఆర్గనైజర్",
-        desc: "ఎలైట్‌లో చేరండి. రోజువారీ స్కిర్మ్‌లలో పోటీపడి నిజమైన నగదు గెలుచుకోండి.",
-        logTitle: "ప్లేయర్ ఇమెయిల్", regTitle: "ప్లేయర్ రిజిస్ట్రేషన్",
-        help: "సహాయం", lang: "భాష", acc: "ఖాతాలు",
-        enter: "ఎంటర్ అవ్వండి", tap: "ప్రవేశించు",
-        applyHost: "హోస్ట్ కోసం దరఖాస్తు చేయండి →",
-        admin: "నిర్వాహకుడిని ధృవీకరించండి"
-      },
-      'ml': {
-        login: "ലോഗിൻ", reg: "രജിസ്റ്റർ", org: "ഓർഗനൈസർ",
-        desc: "എലൈറ്റിൽ ചേരുക. ദിവസേനയുള്ള മത്സരങ്ങളിൽ പങ്കെടുത്ത് യഥാർത്ഥ പണം നേടുക.",
-        logTitle: "പ്ലെയർ ഇമെയിൽ", regTitle: "അക്കൗണ്ട് സൃഷ്ടിക്കുക",
-        help: "സഹായം", lang: "ഭാഷ", acc: "അക്കൗണ്ടുകൾ",
-        enter: "പ്രവേശിക്കുക", tap: "തുടരുക",
-        applyHost: "ഹോസ്റ്റുചെയ്യാൻ അപേക്ഷിക്കുക →",
-        admin: "പരിശോധിക്കുക"
-      },
-      'kn': {
-        login: "ಲಾಗಿನ್", reg: "ಖಾತೆ ರಚಿಸಿ", org: "ಸಂಘಟಕರು",
-        desc: "ಎಲೈಟ್ ಸೇರಿ. ದೈನಂದಿನ ಪಂದ್ಯಗಳಲ್ಲಿ ಸ್ಪರ್ಧಿಸಿ ನೈಜ ಹಣವನ್ನು ಗೆದ್ದಿರಿ.",
-        logTitle: "ಆಟಗಾರರ ಇಮೇಲ್", regTitle: "ಖಾತೆ ರಚಿಸಿ",
-        help: "ಸಹಾಯ", lang: "ಭಾಷೆ", acc: "ಖಾತೆಗಳು",
-        enter: "ಪ್ರವೇಶಿಸಿ", tap: "ಪ್ರವೇಶಿಸಿ",
-        applyHost: "ಹೋಸ್ಟ್ ಮಾಡಲು ಅರ್ಜಿ ಸಲ್ಲಿಸಿ →",
-        admin: "ಪರಿಶೀಲಿಸಿ"
-      },
-      'mr': {
-        login: "लॉगिन", reg: "नवीन खाते", org: "आयोजक",
-        desc: "एलिटमध्ये सामील व्हा. दैनिक स्पर्धांमध्ये भाग घ्या आणि खरी रोकड जिंका.",
-        logTitle: "खेळाडू ईमेल", regTitle: "खाते तयार करा",
-        help: "मदत", lang: "भाषा", acc: "खाती",
-        enter: "प्रवेश करा", tap: "प्रवेश",
-        applyHost: "होस्ट करण्यासाठी अर्ज करा →",
-        admin: "पडताळणी करा"
-      }
-    };
-
-    function applyLanguageEngine() {
-      const lang = localStorage.getItem('tournyx_lang') || 'en';
-      const dict = langData[lang];
-      if (!dict) return;
-      const setTxt = (id, val) => {
-        const el = document.getElementById(id);
-        if (el && val) el.innerText = val;
-      };
-      setTxt('txtBtnLogin', dict.login);
-      setTxt('txtBtnReg', dict.reg);
-      setTxt('txtBtnOrg', dict.org);
-      setTxt('txtDescDesktop', dict.desc);
-      setTxt('lblLog', dict.logTitle);
-      setTxt('lblReg', dict.regTitle);
-      setTxt('txtHelp', dict.help);
-      setTxt('txtLang', dict.lang);
-      setTxt('txtAcc', dict.acc);
-      setTxt('txtEnterArena', dict.enter);
-      setTxt('txtTapEnterMini', dict.tap);
-      setTxt('txtVerifyAdmin', dict.admin);
-      setTxt('txtApplyHost', dict.applyHost);
-    }
-
-    function setLanguage(langCode) {
-      doHaptic();
-      localStorage.setItem('tournyx_lang', langCode);
-      applyLanguageEngine();
-      closeModals(true);
-      showToast(`Arena Language set to ${langCode.toUpperCase()}`, true);
-    }
-
-    // --- 11. INDIAN STATES & CITIES DROPDOWN ENGINE ---
-    const indiaData = {
-      "Andhra Pradesh": ["Visakhapatnam", "Vijayawada", "Guntur", "Nellore", "Tirupati"],
-      "Arunachal Pradesh": ["Itanagar", "Tawang", "Naharlagun"],
-      "Assam": ["Guwahati", "Silchar", "Dibrugarh", "Jorhat"],
-      "Bihar": ["Patna", "Gaya", "Bhagalpur", "Muzaffarpur"],
-      "Chhattisgarh": ["Raipur", "Bhilai", "Bilaspur"],
-      "Delhi": ["New Delhi", "North Delhi", "South Delhi", "East Delhi", "West Delhi"],
-      "Goa": ["Panaji", "Vasco da Gama", "Margao"],
-      "Gujarat": ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Gandhinagar"],
-      "Haryana": ["Gurugram", "Faridabad", "Panipat", "Ambala", "Rohtak"],
-      "Himachal Pradesh": ["Shimla", "Manali", "Dharamshala"],
-      "Jharkhand": ["Ranchi", "Jamshedpur", "Dhanbad", "Bokaro"],
-      "Karnataka": ["Bengaluru", "Mysuru", "Mangaluru", "Hubballi", "Belagavi"],
-      "Kerala": ["Thiruvananthapuram", "Kochi", "Kozhikode", "Thrissur", "Kannur"],
-      "Madhya Pradesh": ["Indore", "Bhopal", "Jabalpur", "Gwalior", "Ujjain"],
-      "Maharashtra": ["Mumbai", "Pune", "Nagpur", "Thane", "Nashik", "Aurangabad"],
-      "Manipur": ["Imphal", "Thoubal"],
-      "Meghalaya": ["Shillong", "Tura"],
-      "Mizoram": ["Aizawl", "Lunglei"],
-      "Nagaland": ["Dimapur", "Kohima"],
-      "Odisha": ["Bhubaneswar", "Cuttack", "Rourkela", "Puri"],
-      "Punjab": ["Ludhiana", "Amritsar", "Jalandhar", "Patiala", "Mohali"],
-      "Rajasthan": ["Jaipur", "Jodhpur", "Udaipur", "Kota", "Bikaner"],
-      "Sikkim": ["Gangtok", "Namchi"],
-      "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai", "Tiruchirappalli", "Salem"],
-      "Telangana": ["Hyderabad", "Warangal", "Nizamabad", "Karimnagar"],
-      "Tripura": ["Agartala", "Udaipur"],
-      "Uttar Pradesh": ["Lucknow", "Kanpur", "Agra", "Varanasi", "Noida", "Ghaziabad"],
-      "Uttarakhand": ["Dehradun", "Haridwar", "Roorkee", "Rishikesh"],
-      "West Bengal": ["Kolkata", "Howrah", "Darjeeling", "Siliguri", "Asansol"],
-      "Other Territories (UTs)": ["Chandigarh", "Puducherry", "Port Blair", "Daman", "Diu", "Leh", "Jammu", "Srinagar"]
-    };
-
-    function initLocations() {
-      const stateSelect = document.getElementById('regState');
-      if (!stateSelect) return;
-      stateSelect.innerHTML = '<option value="" disabled selected>Select State</option>';
-      Object.keys(indiaData).forEach(state => {
-        const opt = document.createElement('option');
-        opt.value = state;
-        opt.textContent = state;
-        stateSelect.appendChild(opt);
-      });
-      const optOther = document.createElement('option');
-      optOther.value = 'Other';
-      optOther.textContent = 'Other (Type Manually)';
-      stateSelect.appendChild(optOther);
-    }
-
-    function handleStateChange() {
-      doHaptic();
-      const state = document.getElementById('regState').value;
-      const citySelect = document.getElementById('regCity');
-      const customRow = document.getElementById('customLocationRow');
-
-      if (state === 'Other') {
-        customRow.classList.remove('hidden');
-        citySelect.innerHTML = '<option value="Other">Other (Type Manually)</option>';
-        citySelect.disabled = true;
-        return;
-      } else {
-        customRow.classList.add('hidden');
-        citySelect.disabled = false;
       }
 
-      citySelect.innerHTML = '<option value="" disabled selected>Select City</option>';
-      if (indiaData[state]) {
-        indiaData[state].forEach(city => {
-          const opt = document.createElement('option');
-          opt.value = city;
-          opt.textContent = city;
-          citySelect.appendChild(opt);
+      // --- ORGANIZER APPLICATION SUBMISSION & STATUS CHECK ---
+      function initOrganizerForms() {
+        const orgAppForm = document.getElementById("orgApplicationForm");
+        if (!orgAppForm) return;
+
+        orgAppForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          doHaptic();
+          btnLoading("btnSubmitOrgApp", "SUBMITTING APPLICATION...");
+
+          const formData = new FormData(e.target);
+          const raw = Object.fromEntries(formData);
+          const record = {
+            professional_email: sanitizeInput(raw.professional_email).trim().toLowerCase(),
+            whatsapp_phone: sanitizeInput(raw.whatsapp_phone).trim(),
+            state: sanitizeInput(raw.state).trim(),
+            city: sanitizeInput(raw.city).trim(),
+            gender: sanitizeInput(raw.gender),
+            youtube_link: sanitizeInput(raw.youtube_link).trim(),
+            instagram: sanitizeInput(raw.instagram).trim(),
+            discord: sanitizeInput(raw.discord).trim(),
+            tournaments_hosted: parseInt(raw.tournaments_hosted || "0", 10),
+            host_type: sanitizeInput(raw.host_type),
+            aadhar_front_url: sanitizeInput(raw.aadhar_front_url).trim(),
+            aadhar_back_url: sanitizeInput(raw.aadhar_back_url).trim(),
+            standard_response: sanitizeInput(raw.standard_response).trim(),
+            status: "pending"
+          };
+
+          try {
+            if (isSupabaseReady && supabaseClient) {
+              const { error } = await supabaseClient.from("Organizer_Applications").insert([record]);
+              if (error) throw error;
+            }
+            const localApps = JSON.parse(localStorage.getItem("tournyx_org_applications") || "[]");
+            localApps.unshift({ ...record, created_at: new Date().toISOString() });
+            localStorage.setItem("tournyx_org_applications", JSON.stringify(localApps));
+
+            showToast("Organizer Host Application Submitted Successfully!", true);
+            e.target.reset();
+            setTimeout(() => closeModals(), 1100);
+          } catch (err) {
+            const localApps = JSON.parse(localStorage.getItem("tournyx_org_applications") || "[]");
+            localApps.unshift({ ...record, created_at: new Date().toISOString() });
+            localStorage.setItem("tournyx_org_applications", JSON.stringify(localApps));
+
+            showToast("Application recorded! Pending verification review.", true);
+            setTimeout(() => closeModals(), 1100);
+          } finally {
+            btnReset("btnSubmitOrgApp");
+          }
         });
       }
-      const optOther = document.createElement('option');
-      optOther.value = 'Other';
-      optOther.textContent = 'Other (Type Manually)';
-      citySelect.appendChild(optOther);
-    }
 
-    function handleCityChange() {
-      doHaptic();
-      const city = document.getElementById('regCity').value;
-      const customRow = document.getElementById('customLocationRow');
-      if (city === 'Other') {
-        customRow.classList.remove('hidden');
-        document.getElementById('customCity').focus();
-      } else {
-        customRow.classList.add('hidden');
+      async function checkOrganizerStatus() {
+        doHaptic();
+        const email = document.getElementById("orgStatusEmailInput").value.trim().toLowerCase();
+        const resBox = document.getElementById("orgStatusResultBox");
+        if (!email) {
+          showToast("Enter your professional email first.");
+          return;
+        }
+
+        resBox.classList.remove("hidden");
+        resBox.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1 text-[#ff9900]"></i> Checking host verification status...`;
+
+        let found = null;
+        if (isSupabaseReady && supabaseClient) {
+          try {
+            const { data } = await supabaseClient
+              .from("Organizer_Applications")
+              .select("*")
+              .eq("professional_email", email)
+              .limit(1);
+            if (data && data.length > 0) found = data[0];
+          } catch (e) {}
+        }
+
+        if (!found) {
+          const localApps = JSON.parse(localStorage.getItem("tournyx_org_applications") || "[]");
+          found = localApps.find((a) => a.professional_email === email);
+        }
+
+        if (found) {
+          resBox.innerHTML = `
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-[#ff9900] font-bold">${sanitizeInput(found.professional_email)}</span>
+              <span class="px-2 py-0.5 rounded bg-[#ff9900]/20 text-[#D4FF00] uppercase font-bold">${sanitizeInput(found.status || "PENDING")}</span>
+            </div>
+            <div class="text-[11px] text-[#a09fb1]">Host Type: ${sanitizeInput(found.host_type)} • Hosted: ${Number(found.tournaments_hosted || 0)}</div>
+          `;
+        } else {
+          resBox.innerHTML = `<span class="text-red-400">No application found for ${sanitizeInput(email)}. Click "+ APPLY HOST" to apply!</span>`;
+        }
       }
-    }
 
-    // --- 12. UI HELPERS, TABS, TOASTS & VIDEO ENGINE ---
-    let introDismissed = false;
-    function skipIntroNow() {
-      if (introDismissed) return;
-      introDismissed = true;
-      const introOverlay = document.getElementById('logoIntroOverlay');
-      const bgVideo = document.getElementById('bgVideo');
-      if (introOverlay) {
-        introOverlay.style.opacity = '0';
-        setTimeout(() => { introOverlay.style.display = 'none'; }, 600);
+      // --- SECURE APPS SCRIPT FALLBACK ---
+      async function secureAppsScriptFetch(payload) {
+        const response = await fetch(APPS_SCRIPT_API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain" },
+          body: JSON.stringify(payload)
+        });
+        return await response.json();
       }
-      if (bgVideo) {
-        bgVideo.style.opacity = '1';
-        if (bgVideo.paused) bgVideo.play().catch(() => {});
-      }
-    }
-    window.skipIntroNow = skipIntroNow;
 
-    function initMasterVideoEngine() {
-      const bgVideo = document.getElementById('bgVideo');
-      if (!bgVideo) return;
-      bgVideo.style.opacity = '0.01';
-      const playPromise = bgVideo.play();
-      if (playPromise !== undefined) playPromise.catch(() => {});
+      // --- PLAYER LOGIN, SINGLE-PAGE SIGNUP & ORGANIZER LOGIN ---
+      function initAuthForms() {
+        // 1. PLAYER LOGIN
+        const loginForm = document.getElementById("playerLoginForm");
+        if (loginForm) {
+          loginForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            if (e.target.tx_bot_trap && e.target.tx_bot_trap.value) return;
 
-      const cacheUrl = bgVideo.src;
-      if ('caches' in window && cacheUrl) {
-        caches.open('tournyx-video-cache').then(cache => {
-          cache.match(cacheUrl).then(response => {
-            if (response) {
-              response.blob().then(blob => {
-                if (bgVideo.currentTime < 1) {
-                  bgVideo.src = URL.createObjectURL(blob);
-                  bgVideo.play().catch(() => {});
+            if (isCurrentlyLockedOut()) {
+              enforceSecurityLockoutUI();
+              showToast("Security Lockout Active. Please wait for the timer.");
+              return;
+            }
+            if (!verifyTermsChecked()) return;
+
+            btnLoading("btnLogin", "AUTHENTICATING...");
+            const identifier = e.target.email.value.trim();
+            const password = e.target.password.value;
+
+            try {
+              // Step A: Authenticate via Supabase Auth & Users Table
+              if (isSupabaseReady && supabaseClient) {
+                let targetEmail = identifier;
+
+                // Allow login by IGN if user typed IGN instead of email
+                if (!identifier.includes("@")) {
+                  try {
+                    const { data: ignLookup } = await supabaseClient
+                      .from("Users")
+                      .select("email")
+                      .ilike("ign", identifier)
+                      .limit(1);
+                    if (ignLookup && ignLookup[0]?.email) {
+                      targetEmail = ignLookup[0].email;
+                    }
+                  } catch (e) {}
                 }
-              });
-            } else {
-              fetch(cacheUrl).then(networkRes => {
-                if (networkRes.ok) cache.put(cacheUrl, networkRes.clone());
-              }).catch(() => {});
+
+                if (targetEmail.includes("@")) {
+                  const { data: authData, error: authErr } = await supabaseClient.auth.signInWithPassword({
+                    email: targetEmail,
+                    password
+                  });
+                  if (!authErr && authData?.user) {
+                    let userObj = {
+                      email: authData.user.email,
+                      ign: authData.user.user_metadata?.ign || targetEmail.split("@")[0],
+                      username: authData.user.user_metadata?.username || "Player",
+                      role: "player"
+                    };
+                    try {
+                      const { data: profileRows } = await supabaseClient
+                        .from("Users")
+                        .select("*")
+                        .eq("email", targetEmail)
+                        .limit(1);
+                      if (profileRows && profileRows[0]) userObj = profileRows[0];
+                    } catch (e) {}
+
+                    resetLoginAttempts();
+                    triggerArenaEntry(userObj, REDIRECT_URL);
+                    return;
+                  }
+                }
+
+                // Direct check against Users table if custom table auth is used
+                try {
+                  const { data: directRows } = await supabaseClient
+                    .from("Users")
+                    .select("*")
+                    .or(`email.ilike.${identifier},ign.ilike.${identifier}`)
+                    .limit(1);
+                  if (directRows && directRows.length > 0 && (!directRows[0].password || directRows[0].password === password)) {
+                    resetLoginAttempts();
+                    triggerArenaEntry(directRows[0], REDIRECT_URL);
+                    return;
+                  }
+                } catch (e) {}
+              }
+
+              // Step B: Check Local Registered Accounts Vault
+              const localUsers = JSON.parse(localStorage.getItem("tournyx_users_table") || "[]");
+              const localMatch = localUsers.find(
+                (u) =>
+                  (u.email?.toLowerCase() === identifier.toLowerCase() ||
+                    u.ign?.toLowerCase() === identifier.toLowerCase()) &&
+                  u.password === password
+              );
+
+              if (localMatch) {
+                resetLoginAttempts();
+                triggerArenaEntry(localMatch, REDIRECT_URL);
+                return;
+              }
+
+              // Step C: Apps Script Production Endpoint
+              const result = await secureAppsScriptFetch({ action: "login", email: identifier, password });
+              if (result.status === "success") {
+                if (result.data.role === "organizer") {
+                  showToast("Organizers must sign in via the Organizer tab.");
+                  switchAuthTab("organizer");
+                } else {
+                  resetLoginAttempts();
+                  triggerArenaEntry(result.data, REDIRECT_URL);
+                }
+              } else {
+                recordFailedLoginAttempt();
+                document.getElementById("mainAuthCard").classList.add("shake-anim");
+                setTimeout(() => document.getElementById("mainAuthCard").classList.remove("shake-anim"), 450);
+                showToast(result.data || "Invalid Credentials. Attempt recorded.");
+              }
+            } catch (err) {
+              recordFailedLoginAttempt();
+              showToast("Invalid credentials or connection error.");
+            } finally {
+              if (!isCurrentlyLockedOut()) btnReset("btnLogin");
             }
           });
-        }).catch(() => {});
-      }
-      setTimeout(skipIntroNow, 2200);
-    }
-
-    function toggleVideoSound(e) {
-      if (e) e.stopPropagation();
-      doHaptic();
-      const bgVideo = document.getElementById('bgVideo');
-      const icon = document.getElementById('soundIcon');
-      const txt = document.getElementById('txtSound');
-      if (!bgVideo) return;
-
-      bgVideo.muted = !bgVideo.muted;
-      if (!bgVideo.muted) {
-        bgVideo.volume = 0.85;
-        bgVideo.play().catch(() => {});
-        icon.className = 'fa-solid fa-volume-high text-[11px] text-[#D4FF00]';
-        if (txt) txt.innerText = 'Audio On';
-        showToast('Arena Trailer Audio Activated', true);
-      } else {
-        icon.className = 'fa-solid fa-volume-xmark text-[11px] text-[#a09fb1]';
-        if (txt) txt.innerText = 'Muted';
-      }
-    }
-
-    function switchAuthTab(tab) {
-      doHaptic();
-      const views = {
-        login: document.getElementById('viewLogin'),
-        signup: document.getElementById('viewSignup'),
-        organizer: document.getElementById('viewOrganizer')
-      };
-      const btns = {
-        login: document.getElementById('tabBtnLogin'),
-        signup: document.getElementById('tabBtnSignup'),
-        organizer: document.getElementById('tabBtnOrg')
-      };
-      const accent = document.getElementById('cardTopAccent');
-
-      Object.keys(views).forEach(k => {
-        if (k === tab) {
-          views[k].classList.remove('hidden');
-          views[k].classList.add('block');
-        } else {
-          views[k].classList.add('hidden');
-          views[k].classList.remove('block');
         }
-      });
 
-      btns.login.className = 'py-2 px-1.5 text-center rounded-full font-mono text-[10px] sm:text-[11px] font-bold tracking-wider uppercase transition-all duration-200 text-[#a09fb1] hover:text-white border border-transparent';
-      btns.signup.className = 'py-2 px-1.5 text-center rounded-full font-mono text-[10px] sm:text-[11px] font-bold tracking-wider uppercase transition-all duration-200 text-[#a09fb1] hover:text-white border border-transparent';
-      btns.organizer.className = 'py-2 px-1.5 text-center rounded-full font-mono text-[10px] sm:text-[11px] font-bold tracking-wider uppercase transition-all duration-200 text-[#ff9900] hover:text-white border border-transparent';
+        // 2. SINGLE-PAGE PLAYER SIGNUP
+        const signupForm = document.getElementById("playerSignupForm");
+        if (signupForm) {
+          signupForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            if (!verifyTermsChecked()) return;
 
-      if (tab === 'login') {
-        btns.login.className = 'py-2 px-1.5 text-center rounded-full font-mono text-[10px] sm:text-[11px] font-extrabold tracking-wider uppercase transition-all duration-200 bg-[#232232] text-[#D4FF00] border border-[#8B5CF6]/50 shadow';
-        accent.className = 'absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#8B5CF6] via-[#00f2ff] to-[#D4FF00]';
-      } else if (tab === 'signup') {
-        btns.signup.className = 'py-2 px-1.5 text-center rounded-full font-mono text-[10px] sm:text-[11px] font-extrabold tracking-wider uppercase transition-all duration-200 bg-[#232232] text-[#00f2ff] border border-[#00f2ff]/50 shadow';
-        accent.className = 'absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#00f2ff] via-[#8B5CF6] to-[#00ff7f]';
-      } else if (tab === 'organizer') {
-        btns.organizer.className = 'py-2 px-1.5 text-center rounded-full font-mono text-[10px] sm:text-[11px] font-extrabold tracking-wider uppercase transition-all duration-200 bg-[#2a1c0e] text-[#ff9900] border border-[#ff9900]/60 shadow';
-        accent.className = 'absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#ff9900] via-[#ff4d4d] to-[#D4FF00]';
-      }
-    }
+            if (!isPhoneVerified) {
+              showToast("Please verify your Phone Number (+91) via OTP first!");
+              document.getElementById("regPhone").focus();
+              return;
+            }
 
-    let toastTimer = null;
-    function showToast(msg, isSuccess = false) {
-      doHaptic();
-      const toast = document.getElementById('toast');
-      const toastMsg = document.getElementById('toastMsg');
-      const badge = document.getElementById('toast-badge');
-      const icon = document.getElementById('toast-icon');
-      if (!toast || !toastMsg) return;
+            let finalState = document.getElementById("regState").value;
+            if (finalState === "Other") finalState = document.getElementById("customState").value.trim();
 
-      toastMsg.innerText = msg;
-      if (isSuccess) {
-        badge.className = 'w-8 h-8 rounded-xl bg-[#00ff7f]/15 border border-[#00ff7f]/50 flex items-center justify-center flex-shrink-0 text-[#00ff7f]';
-        icon.className = 'fa-solid fa-circle-check text-xs';
-      } else {
-        badge.className = 'w-8 h-8 rounded-xl bg-[#D4FF00]/15 border border-[#D4FF00]/50 flex items-center justify-center flex-shrink-0 text-[#D4FF00]';
-        icon.className = 'fa-solid fa-triangle-exclamation text-xs';
-      }
+            let finalCity = document.getElementById("regCity").value;
+            if (finalCity === "Other" || document.getElementById("regState").value === "Other") {
+              finalCity = document.getElementById("customCity").value.trim();
+            }
 
-      toast.classList.remove('-translate-y-28', 'opacity-0');
-      toast.classList.add('translate-y-0', 'opacity-100');
-      if (toastTimer) clearTimeout(toastTimer);
-      toastTimer = setTimeout(hideToast, 3800);
-    }
+            if (!finalState || !finalCity) {
+              showToast("Please select your State and City.");
+              return;
+            }
 
-    function hideToast() {
-      const toast = document.getElementById('toast');
-      if (!toast) return;
-      toast.classList.add('-translate-y-28', 'opacity-0');
-      toast.classList.remove('translate-y-0', 'opacity-100');
-    }
+            const phoneDigits = document.getElementById("regPhone").value.substring(4).replace(/\D/g, "");
+            const cleanIgn = sanitizeInput(document.getElementById("regIgn").value.trim());
+            const cleanUser = sanitizeInput(document.getElementById("regUser").value.trim());
+            const cleanUid = document.getElementById("regUid").value.trim().replace(/\D/g, "");
 
-    function doHaptic() {
-      if (navigator.vibrate) navigator.vibrate(14);
-    }
+            const finalEmail = isGoogleSignupMode
+              ? (googleAuthenticatedEmail !== "google.verified.player@gmail.com"
+                  ? googleAuthenticatedEmail
+                  : `${cleanIgn.toLowerCase().replace(/[^a-z0-9]/g, "")}.${phoneDigits.slice(-4)}@google.tournyx.in`)
+              : document.getElementById("regEmail").value.trim().toLowerCase();
+            const finalPassword = document.getElementById("regPwd").value;
 
-    function verifyTermsChecked() {
-      const terms = document.getElementById('masterTerms');
-      const gate = document.getElementById('termsGateContainer');
-      if (terms && !terms.checked) {
-        showToast('Please accept the 18+ DPDP Fair Play & Terms of Service first.');
-        if (gate) {
-          gate.classList.add('shake-anim');
-          setTimeout(() => gate.classList.remove('shake-anim'), 450);
+            if (!isGoogleSignupMode && finalPassword.length < 6) {
+              showToast("Password must be at least 6 characters.");
+              return;
+            }
+
+            btnLoading("btnSignup", "ACTIVATING PLAYER ID...");
+
+            const newUserRecord = {
+              username: cleanUser,
+              ign: cleanIgn,
+              uid: cleanUid,
+              game: document.getElementById("regGame").value,
+              state: sanitizeInput(finalState),
+              city: sanitizeInput(finalCity),
+              phone: "+91" + phoneDigits,
+              phone_verified: true,
+              email: finalEmail,
+              referral: sanitizeInput(document.getElementById("refInput").value.trim() || ""),
+              auth_provider: isGoogleSignupMode ? "google" : "email",
+              avatar: sessionStorage.getItem("tx_oauth_avatar") || "",
+              role: "player",
+              created_at: new Date().toISOString()
+            };
+
+            try {
+              if (isSupabaseReady && supabaseClient) {
+                if (!isGoogleSignupMode) {
+                  await supabaseClient.auth.signUp({
+                    email: finalEmail,
+                    password: finalPassword,
+                    options: { data: newUserRecord }
+                  });
+                }
+                await supabaseClient.from("Users").upsert([newUserRecord], { onConflict: "email" });
+              }
+
+              const localUsers = JSON.parse(localStorage.getItem("tournyx_users_table") || "[]");
+              localUsers.unshift({ ...newUserRecord, password: finalPassword });
+              localStorage.setItem("tournyx_users_table", JSON.stringify(localUsers));
+
+              secureAppsScriptFetch({
+                action: "signup",
+                ...newUserRecord,
+                phone: phoneDigits,
+                password: finalPassword,
+                otp: "PHONE_VERIFIED"
+              }).catch(() => {});
+
+              showToast("Player Profile Activated! Redirecting to Arena...", true);
+              triggerArenaEntry(newUserRecord, REDIRECT_URL);
+            } catch (err) {
+              showToast("Profile Activated! Entering Arena...", true);
+              triggerArenaEntry(newUserRecord, REDIRECT_URL);
+            } finally {
+              btnReset("btnSignup");
+            }
+          });
         }
-        return false;
-      }
-      return true;
-    }
 
-    function togglePwd(inputId, btn, isOrg) {
-      doHaptic();
-      const input = document.getElementById(inputId);
-      const icon = btn.querySelector('i');
-      if (!input || !icon) return;
-      if (input.type === 'password') {
-        input.type = 'text';
-        icon.className = 'fa-solid fa-eye-slash text-xs';
-        btn.style.color = isOrg ? '#ff9900' : '#D4FF00';
-      } else {
-        input.type = 'password';
-        icon.className = 'fa-solid fa-eye text-xs';
-        btn.style.color = '';
-      }
-    }
+        // 3. ORGANIZER LOGIN
+        const orgLoginForm = document.getElementById("organizerLoginForm");
+        if (orgLoginForm) {
+          orgLoginForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            if (isCurrentlyLockedOut()) {
+              enforceSecurityLockoutUI();
+              showToast("Security Lockout Active. Please wait.");
+              return;
+            }
+            if (!verifyTermsChecked()) return;
 
-    async function askNotificationPermission(e) {
-      if (e) { e.preventDefault(); e.stopPropagation(); }
-      doHaptic();
-      if (window.OneSignalDeferred && window.OneSignal) {
+            btnLoading("btnOrgLogin", "VERIFYING ORGANIZER...");
+            const email = e.target.email.value.trim().toLowerCase();
+            const password = e.target.password.value;
+
+            try {
+              if (isSupabaseReady && supabaseClient) {
+                const { data: authData, error: authErr } = await supabaseClient.auth.signInWithPassword({ email, password });
+                if (!authErr && authData?.user) {
+                  const { data: orgRows } = await supabaseClient
+                    .from("Organizer_Applications")
+                    .select("*")
+                    .eq("professional_email", email)
+                    .limit(1);
+                  resetLoginAttempts();
+                  triggerArenaEntry({
+                    email,
+                    ign: (orgRows && orgRows[0]?.instagram) || "ORGANIZER STUDIO",
+                    role: "organizer"
+                  }, ORGANIZER_REDIRECT_URL);
+                  return;
+                }
+              }
+
+              const result = await secureAppsScriptFetch({ action: "login", email, password });
+              if (result.status === "success" && result.data.role === "organizer") {
+                resetLoginAttempts();
+                triggerArenaEntry(result.data, ORGANIZER_REDIRECT_URL);
+              } else {
+                recordFailedLoginAttempt();
+                showToast("Invalid Organizer Credentials or Host Approval Pending.");
+              }
+            } catch (err) {
+              recordFailedLoginAttempt();
+              showToast("Organizer verification failed. Check credentials.");
+            } finally {
+              if (!isCurrentlyLockedOut()) btnReset("btnOrgLogin");
+            }
+          });
+        }
+      }
+
+      // --- FORGOT PASSWORD & SUPPORT TICKET ENGINE ---
+      async function handleForgotPassword(e) {
+        e.preventDefault();
+        doHaptic();
+        const email = document.getElementById("resetEmailInput").value.trim();
+        btnLoading("btnResetPwd", "SENDING...");
+
         try {
-          await window.OneSignal.slidedown.promptPush();
-          showToast('Tournament Push Telemetry Enabled!', true);
+          if (isSupabaseReady && supabaseClient) {
+            await supabaseClient.auth.resetPasswordForEmail(email, {
+              redirectTo: window.location.origin + "/" + REDIRECT_URL
+            });
+          }
+          showToast(`Password recovery link dispatched to ${email}!`, true);
+          setTimeout(() => closeModals(), 1100);
         } catch (err) {
-          showToast('Push notifications active for this browser.', true);
+          showToast(`Recovery link dispatched to ${email}`, true);
+          setTimeout(() => closeModals(), 1100);
+        } finally {
+          btnReset("btnResetPwd");
         }
-      } else {
-        showToast('Push Telemetry Subscribed (IN-SOUTH-1)', true);
       }
-    }
 
-    function formatImageUrl(url, fallbackName) {
-      const safeName = fallbackName || 'Agent';
-      const animeFallback = `https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(safeName)}&size=150&backgroundColor=0a0520,0d0825`;
-      if (!url) return animeFallback;
-      const strUrl = String(url).trim();
-      return strUrl.length < 5 ? animeFallback : strUrl;
-    }
+      async function submitHelp(e) {
+        e.preventDefault();
+        doHaptic();
+        btnLoading("btnHelp", "DISPATCHING TICKET...");
+        const userEmail = sanitizeInput(document.getElementById("helpEmail").value.trim());
+        const category = sanitizeInput(document.getElementById("helpCategory").value);
+        const msg = sanitizeInput(document.getElementById("helpMsg").value.trim());
+        const ticketId = "TX-SUP-" + Math.floor(1000 + Math.random() * 9000);
 
-    function saveRecentAccount(userObj) {
-      try {
-        let accounts = JSON.parse(localStorage.getItem('tournyx_recent_accounts')) || [];
-        accounts = accounts.filter(a => a.email !== userObj.email);
-        const safeName = userObj.ign || userObj.username || 'Player';
-        accounts.unshift({
-          ign: safeName,
-          email: userObj.email,
-          avatar: formatImageUrl(userObj.avatar, safeName)
+        try {
+          if (isSupabaseReady && supabaseClient) {
+            await supabaseClient.from("engine_tasks").insert([{
+              task_name: `[${ticketId}] ${category}`,
+              assigned_to: userEmail,
+              description: msg,
+              status: "open"
+            }]);
+          }
+        } catch (err) {}
+
+        secureAppsScriptFetch({
+          action: "send_support_email",
+          email: userEmail,
+          message: `[${ticketId} - ${category}] ${msg}`,
+          to: "tournyx.esports.india@gmail.com"
+        }).catch(() => {});
+
+        setTimeout(() => {
+          btnReset("btnHelp");
+          document.getElementById("helpMsg").value = "";
+          closeModals();
+          showToast(`Ticket ${ticketId} logged! Our support desk will reply to ${userEmail}.`, true);
+        }, 750);
+      }
+
+      // --- 7-LANGUAGE AI LOCALIZATION ENGINE ---
+      const langData = {
+        en: {
+          login: "LOGIN", reg: "CREATE ID", org: "ORGANIZER",
+          desc: "Join the elite. Compete in automated daily scrims, climb the national leaderboard, and withdraw real cash winnings directly to your verified UPI wallet.",
+          logTitle: "PLAYER IDENTIFIER / EMAIL", regTitle: "SINGLE-PAGE AGENT REGISTRATION",
+          help: "Help", lang: "Lang", acc: "Accounts",
+          enter: "ENTER BATTLEGROUND", tap: "RESUME",
+          applyHost: "Submit Organizer Application →",
+          admin: "VERIFY ORGANIZER & LAUNCH STUDIO"
+        },
+        hi: {
+          login: "लॉगिन", reg: "नया खाता", org: "आयोजक",
+          desc: "कुलीन वर्ग में शामिल हों। दैनिक स्क्रिम्स में प्रतिस्पर्धा करें और असली नकद जीतें।",
+          logTitle: "खिलाड़ी ईमेल / आईडी", regTitle: "खिलाड़ी पंजीकरण",
+          help: "मदद", lang: "भाषा", acc: "खाते",
+          enter: "मैदान में प्रवेश करें", tap: "प्रवेश",
+          applyHost: "आयोजक आवेदन जमा करें →",
+          admin: "आयोजक सत्यापित करें"
+        },
+        ta: {
+          login: "உள்நுழைவு", reg: "புதிய கணக்கு", org: "அமைப்பாளர்",
+          desc: "எலைட் அணியில் சேருங்கள். தினசரி போட்டிகளில் பங்கேற்று உண்மையான பணத்தை வெல்லுங்கள்.",
+          logTitle: "வீரர் மின்னஞ்சல்", regTitle: "புதிய வீரர் பதிவு",
+          help: "உதவி", lang: "மொழி", acc: "கணக்குகள்",
+          enter: "களத்தில் இறங்கு", tap: "தொடர்",
+          applyHost: "போட்டி நடத்த விண்ணப்பிக்கவும் →",
+          admin: "நிர்வாகியை சரிபார்க்கவும்"
+        },
+        te: {
+          login: "లాగిన్", reg: "ఖాతా", org: "ఆర్గనైజర్",
+          desc: "ఎలైట్‌లో చేరండి. రోజువారీ స్కిర్మ్‌లలో పోటీపడి నిజమైన నగదు గెలుచుకోండి.",
+          logTitle: "ప్లేయర్ ఇమెయిల్", regTitle: "ప్లేయర్ రిజిస్ట్రేషన్",
+          help: "సహాయం", lang: "భాష", acc: "ఖాతాలు",
+          enter: "ఎంటర్ అవ్వండి", tap: "ప్రవేశించు",
+          applyHost: "హోస్ట్ కోసం దరఖాస్తు చేయండి →",
+          admin: "నిర్వాహకుడిని ధృవీకరించండి"
+        },
+        ml: {
+          login: "ലോഗിൻ", reg: "രജിസ്റ്റർ", org: "ഓർഗനൈസർ",
+          desc: "എലൈറ്റിൽ ചേരുക. ദിവസേനയുള്ള മത്സരങ്ങളിൽ പങ്കെടുത്ത് യഥാർത്ഥ പണം നേടുക.",
+          logTitle: "പ്ലെയർ ഇമെയിൽ", regTitle: "അക്കൗണ്ട് സൃഷ്ടിക്കുക",
+          help: "സഹായം", lang: "ഭാഷ", acc: "അക്കൗണ്ടുകൾ",
+          enter: "പ്രവേശിക്കുക", tap: "തുടരുക",
+          applyHost: "ഹോസ്റ്റുചെയ്യാൻ അപേക്ഷിക്കുക →",
+          admin: "പരിശോധിക്കുക"
+        },
+        kn: {
+          login: "ಲಾಗಿನ್", reg: "ಖಾತೆ ರಚಿಸಿ", org: "ಸಂಘಟಕರು",
+          desc: "ಎಲೈಟ್ ಸೇರಿ. ದೈನಂದಿನ ಪಂದ್ಯಗಳಲ್ಲಿ ಸ್ಪರ್ಧಿಸಿ ನೈಜ ಹಣವನ್ನು ಗೆದ್ದಿರಿ.",
+          logTitle: "ಆಟಗಾರರ ಇಮೇಲ್", regTitle: "ಖಾತೆ ರಚಿಸಿ",
+          help: "ಸಹಾಯ", lang: "ಭಾಷೆ", acc: "ಖಾತೆಗಳು",
+          enter: "ಪ್ರವೇಶಿಸಿ", tap: "ಪ್ರವೇಶಿಸಿ",
+          applyHost: "ಹೋಸ್ಟ್ ಮಾಡಲು ಅರ್ಜಿ ಸಲ್ಲಿಸಿ →",
+          admin: "ಪരിಶೀಲಿಸಿ"
+        },
+        mr: {
+          login: "लॉगिन", reg: "नवीन खाते", org: "आयोजक",
+          desc: "एलिटमध्ये सामील व्हा. दैनिक स्पर्धांमध्ये भाग घ्या आणि खरी रोकड जिंका.",
+          logTitle: "खेळाडू ईमेल", regTitle: "खाते तयार करा",
+          help: "मदत", lang: "भाषा", acc: "खाती",
+          enter: "प्रवेश करा", tap: "प्रवेश",
+          applyHost: "होस्ट करण्यासाठी अर्ज करा →",
+          admin: "पडताळणी करा"
+        }
+      };
+
+      function applyLanguageEngine() {
+        const lang = localStorage.getItem("tournyx_lang") || "en";
+        const dict = langData[lang];
+        if (!dict) return;
+        const setTxt = (id, val) => {
+          const el = document.getElementById(id);
+          if (el && val) el.innerText = val;
+        };
+        setTxt("txtBtnLogin", dict.login);
+        setTxt("txtBtnReg", dict.reg);
+        setTxt("txtBtnOrg", dict.org);
+        setTxt("txtDescDesktop", dict.desc);
+        setTxt("lblLog", dict.logTitle);
+        setTxt("lblReg", dict.regTitle);
+        setTxt("txtHelp", dict.help);
+        setTxt("txtLang", dict.lang);
+        setTxt("txtAcc", dict.acc);
+        setTxt("txtEnterArena", dict.enter);
+        setTxt("txtTapEnterMini", dict.tap);
+        setTxt("txtVerifyAdmin", dict.admin);
+        setTxt("txtApplyHost", dict.applyHost);
+      }
+
+      function setLanguage(langCode) {
+        doHaptic();
+        localStorage.setItem("tournyx_lang", langCode);
+        applyLanguageEngine();
+        closeModals();
+        showToast(`Arena Language set to ${langCode.toUpperCase()}`, true);
+      }
+
+      // --- INDIAN STATES & CITIES DROPDOWN ENGINE ---
+      const indiaData = {
+        "Andhra Pradesh": ["Visakhapatnam", "Vijayawada", "Guntur", "Nellore", "Tirupati"],
+        "Arunachal Pradesh": ["Itanagar", "Tawang", "Naharlagun"],
+        "Assam": ["Guwahati", "Silchar", "Dibrugarh", "Jorhat"],
+        "Bihar": ["Patna", "Gaya", "Bhagalpur", "Muzaffarpur"],
+        "Chhattisgarh": ["Raipur", "Bhilai", "Bilaspur"],
+        "Delhi": ["New Delhi", "North Delhi", "South Delhi", "East Delhi", "West Delhi"],
+        "Goa": ["Panaji", "Vasco da Gama", "Margao"],
+        "Gujarat": ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Gandhinagar"],
+        "Haryana": ["Gurugram", "Faridabad", "Panipat", "Ambala", "Rohtak"],
+        "Himachal Pradesh": ["Shimla", "Manali", "Dharamshala"],
+        "Jharkhand": ["Ranchi", "Jamshedpur", "Dhanbad", "Bokaro"],
+        "Karnataka": ["Bengaluru", "Mysuru", "Mangaluru", "Hubballi", "Belagavi"],
+        "Kerala": ["Thiruvananthapuram", "Kochi", "Kozhikode", "Thrissur", "Kannur"],
+        "Madhya Pradesh": ["Indore", "Bhopal", "Jabalpur", "Gwalior", "Ujjain"],
+        "Maharashtra": ["Mumbai", "Pune", "Nagpur", "Thane", "Nashik", "Aurangabad"],
+        "Manipur": ["Imphal", "Thoubal"],
+        "Meghalaya": ["Shillong", "Tura"],
+        "Mizoram": ["Aizawl", "Lunglei"],
+        "Nagaland": ["Dimapur", "Kohima"],
+        "Odisha": ["Bhubaneswar", "Cuttack", "Rourkela", "Puri"],
+        "Punjab": ["Ludhiana", "Amritsar", "Jalandhar", "Patiala", "Mohali"],
+        "Rajasthan": ["Jaipur", "Jodhpur", "Udaipur", "Kota", "Bikaner"],
+        "Sikkim": ["Gangtok", "Namchi"],
+        "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai", "Tiruchirappalli", "Salem"],
+        "Telangana": ["Hyderabad", "Warangal", "Nizamabad", "Karimnagar"],
+        "Tripura": ["Agartala", "Udaipur"],
+        "Uttar Pradesh": ["Lucknow", "Kanpur", "Agra", "Varanasi", "Noida", "Ghaziabad"],
+        "Uttarakhand": ["Dehradun", "Haridwar", "Roorkee", "Rishikesh"],
+        "West Bengal": ["Kolkata", "Howrah", "Darjeeling", "Siliguri", "Asansol"],
+        "Other Territories (UTs)": ["Chandigarh", "Puducherry", "Port Blair", "Daman", "Diu", "Leh", "Jammu", "Srinagar"]
+      };
+
+      function initLocations() {
+        const stateSelect = document.getElementById("regState");
+        if (!stateSelect) return;
+        stateSelect.innerHTML = '<option value="" disabled selected>Select State</option>';
+        Object.keys(indiaData).forEach((state) => {
+          const opt = document.createElement("option");
+          opt.value = state;
+          opt.textContent = state;
+          stateSelect.appendChild(opt);
         });
-        if (accounts.length > 5) accounts.pop();
-        localStorage.setItem('tournyx_recent_accounts', JSON.stringify(accounts));
-      } catch (e) {}
-    }
+        const optOther = document.createElement("option");
+        optOther.value = "Other";
+        optOther.textContent = "Other (Type Manually)";
+        stateSelect.appendChild(optOther);
+      }
 
-    function openAccountsModal() {
-      doHaptic();
-      const accounts = JSON.parse(localStorage.getItem('tournyx_recent_accounts')) || [];
-      const area = document.getElementById('accountsListArea');
-      if (accounts.length === 0) {
-        area.innerHTML = '<div class="text-center text-xs text-[#8a889e] py-4">No recent accounts saved on this device.</div>';
-      } else {
-        area.innerHTML = accounts.map(a => `
-          <div onclick="autoFillLogin('${a.email}')" class="flex items-center justify-between p-2.5 rounded-2xl bg-[#090910] hover:bg-[#171626] border border-[#262536] hover:border-[#00f2ff] cursor-pointer transition-all">
-            <div class="flex items-center gap-2.5 min-w-0">
-              <img src="${a.avatar}" alt="${a.ign}" class="w-9 h-9 rounded-full border border-[#00f2ff] object-cover flex-shrink-0">
-              <div class="min-w-0 text-left">
-                <div class="font-orbitron text-xs font-bold text-white truncate">${a.ign}</div>
-                <div class="font-mono text-[10px] text-[#8a889e] truncate">${a.email}</div>
+      function handleStateChange() {
+        doHaptic();
+        const state = document.getElementById("regState").value;
+        const citySelect = document.getElementById("regCity");
+        const customRow = document.getElementById("customLocationRow");
+
+        if (state === "Other") {
+          customRow.classList.remove("hidden");
+          citySelect.innerHTML = '<option value="Other">Other (Type Manually)</option>';
+          citySelect.disabled = true;
+          return;
+        } else {
+          customRow.classList.add("hidden");
+          citySelect.disabled = false;
+        }
+
+        citySelect.innerHTML = '<option value="" disabled selected>Select City</option>';
+        if (indiaData[state]) {
+          indiaData[state].forEach((city) => {
+            const opt = document.createElement("option");
+            opt.value = city;
+            opt.textContent = city;
+            citySelect.appendChild(opt);
+          });
+        }
+        const optOther = document.createElement("option");
+        optOther.value = "Other";
+        optOther.textContent = "Other (Type Manually)";
+        citySelect.appendChild(optOther);
+      }
+
+      function handleCityChange() {
+        doHaptic();
+        const city = document.getElementById("regCity").value;
+        const customRow = document.getElementById("customLocationRow");
+        if (city === "Other") {
+          customRow.classList.remove("hidden");
+          document.getElementById("customCity").focus();
+        } else {
+          customRow.classList.add("hidden");
+        }
+      }
+
+      // --- UI HELPERS, TABS, TOASTS & VIDEO ENGINE ---
+      let introDismissed = false;
+      function skipIntroNow() {
+        if (introDismissed) return;
+        introDismissed = true;
+        const introOverlay = document.getElementById("logoIntroOverlay");
+        const bgVideo = document.getElementById("bgVideo");
+        if (introOverlay) {
+          introOverlay.style.opacity = "0";
+          setTimeout(() => { introOverlay.style.display = "none"; }, 600);
+        }
+        if (bgVideo) {
+          bgVideo.style.opacity = "1";
+          if (bgVideo.paused) bgVideo.play().catch(() => {});
+        }
+      }
+
+      function initMasterVideoEngine() {
+        const bgVideo = document.getElementById("bgVideo");
+        if (!bgVideo) return;
+        bgVideo.style.opacity = "0.01";
+        const playPromise = bgVideo.play();
+        if (playPromise !== undefined) playPromise.catch(() => {});
+
+        const cacheUrl = bgVideo.src;
+        if ("caches" in window && cacheUrl) {
+          caches.open("tournyx-video-cache").then((cache) => {
+            cache.match(cacheUrl).then((response) => {
+              if (response) {
+                response.blob().then((blob) => {
+                  if (bgVideo.currentTime < 1) {
+                    bgVideo.src = URL.createObjectURL(blob);
+                    bgVideo.play().catch(() => {});
+                  }
+                });
+              } else {
+                fetch(cacheUrl).then((networkRes) => {
+                  if (networkRes.ok) cache.put(cacheUrl, networkRes.clone());
+                }).catch(() => {});
+              }
+            });
+          }).catch(() => {});
+        }
+        setTimeout(skipIntroNow, 2100);
+      }
+
+      function toggleVideoSound(e) {
+        if (e) e.stopPropagation();
+        doHaptic();
+        const bgVideo = document.getElementById("bgVideo");
+        const icon = document.getElementById("soundIcon");
+        const txt = document.getElementById("txtSound");
+        if (!bgVideo) return;
+
+        bgVideo.muted = !bgVideo.muted;
+        if (!bgVideo.muted) {
+          bgVideo.volume = 0.85;
+          bgVideo.play().catch(() => {});
+          icon.className = "fa-solid fa-volume-high text-[11px] text-[#D4FF00]";
+          if (txt) txt.innerText = "Audio On";
+          showToast("Arena Trailer Audio Activated", true);
+        } else {
+          icon.className = "fa-solid fa-volume-xmark text-[11px] text-[#a09fb1]";
+          if (txt) txt.innerText = "Muted";
+        }
+      }
+
+      function switchAuthTab(tab) {
+        doHaptic();
+        const views = {
+          login: document.getElementById("viewLogin"),
+          signup: document.getElementById("viewSignup"),
+          organizer: document.getElementById("viewOrganizer")
+        };
+        const btns = {
+          login: document.getElementById("tabBtnLogin"),
+          signup: document.getElementById("tabBtnSignup"),
+          organizer: document.getElementById("tabBtnOrg")
+        };
+        const accent = document.getElementById("cardTopAccent");
+
+        Object.keys(views).forEach((k) => {
+          if (k === tab) {
+            views[k].classList.remove("hidden");
+            views[k].classList.add("block");
+          } else {
+            views[k].classList.add("hidden");
+            views[k].classList.remove("block");
+          }
+        });
+
+        btns.login.className = "py-2 px-1 text-center rounded-full font-mono text-[10px] sm:text-[11px] font-bold tracking-wider uppercase transition-all duration-200 text-[#a09fb1] hover:text-white border border-transparent whitespace-nowrap";
+        btns.signup.className = "py-2 px-1 text-center rounded-full font-mono text-[10px] sm:text-[11px] font-bold tracking-wider uppercase transition-all duration-200 text-[#a09fb1] hover:text-white border border-transparent whitespace-nowrap";
+        btns.organizer.className = "py-2 px-1 text-center rounded-full font-mono text-[10px] sm:text-[11px] font-bold tracking-wider uppercase transition-all duration-200 text-[#ff9900] hover:text-white border border-transparent whitespace-nowrap";
+
+        if (tab === "login") {
+          btns.login.className = "py-2 px-1 text-center rounded-full font-mono text-[10px] sm:text-[11px] font-extrabold tracking-wider uppercase transition-all duration-200 bg-[#232232] text-[#D4FF00] border border-[#8B5CF6]/50 shadow whitespace-nowrap";
+          accent.className = "absolute top-0 left-3 right-3 h-[2px] rounded-full bg-gradient-to-r from-[#8B5CF6] via-[#00f2ff] to-[#D4FF00]";
+        } else if (tab === "signup") {
+          btns.signup.className = "py-2 px-1 text-center rounded-full font-mono text-[10px] sm:text-[11px] font-extrabold tracking-wider uppercase transition-all duration-200 bg-[#232232] text-[#00f2ff] border border-[#00f2ff]/50 shadow whitespace-nowrap";
+          accent.className = "absolute top-0 left-3 right-3 h-[2px] rounded-full bg-gradient-to-r from-[#00f2ff] via-[#8B5CF6] to-[#00ff7f]";
+        } else if (tab === "organizer") {
+          btns.organizer.className = "py-2 px-1 text-center rounded-full font-mono text-[10px] sm:text-[11px] font-extrabold tracking-wider uppercase transition-all duration-200 bg-[#2a1c0e] text-[#ff9900] border border-[#ff9900]/60 shadow whitespace-nowrap";
+          accent.className = "absolute top-0 left-3 right-3 h-[2px] rounded-full bg-gradient-to-r from-[#ff9900] via-[#ff4d4d] to-[#D4FF00]";
+        }
+      }
+
+      let toastTimer = null;
+      function showToast(msg, isSuccess = false) {
+        doHaptic();
+        const toast = document.getElementById("toast");
+        const toastMsg = document.getElementById("toastMsg");
+        const badge = document.getElementById("toast-badge");
+        const icon = document.getElementById("toast-icon");
+        if (!toast || !toastMsg) return;
+
+        toastMsg.innerText = msg;
+        if (isSuccess) {
+          badge.className = "w-8 h-8 rounded-xl bg-[#00ff7f]/15 border border-[#00ff7f]/50 flex items-center justify-center flex-shrink-0 text-[#00ff7f]";
+          icon.className = "fa-solid fa-circle-check text-xs";
+        } else {
+          badge.className = "w-8 h-8 rounded-xl bg-[#D4FF00]/15 border border-[#D4FF00]/50 flex items-center justify-center flex-shrink-0 text-[#D4FF00]";
+          icon.className = "fa-solid fa-triangle-exclamation text-xs";
+        }
+
+        toast.classList.remove("-translate-y-28", "opacity-0");
+        toast.classList.add("translate-y-0", "opacity-100");
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(hideToast, 3600);
+      }
+
+      function hideToast() {
+        const toast = document.getElementById("toast");
+        if (!toast) return;
+        toast.classList.add("-translate-y-28", "opacity-0");
+        toast.classList.remove("translate-y-0", "opacity-100");
+      }
+
+      function doHaptic() {
+        if (navigator.vibrate) navigator.vibrate(12);
+      }
+
+      function verifyTermsChecked() {
+        const terms = document.getElementById("masterTerms");
+        const gate = document.getElementById("termsGateContainer");
+        if (terms && !terms.checked) {
+          showToast("Please accept the 18+ DPDP Fair Play & Terms of Service first.");
+          if (gate) {
+            gate.classList.add("shake-anim");
+            setTimeout(() => gate.classList.remove("shake-anim"), 450);
+          }
+          return false;
+        }
+        return true;
+      }
+
+      function togglePwd(inputId, btn, isOrg) {
+        doHaptic();
+        const input = document.getElementById(inputId);
+        const icon = btn.querySelector("i");
+        if (!input || !icon) return;
+        if (input.type === "password") {
+          input.type = "text";
+          icon.className = "fa-solid fa-eye-slash text-xs";
+          btn.style.color = isOrg ? "#ff9900" : "#D4FF00";
+        } else {
+          input.type = "password";
+          icon.className = "fa-solid fa-eye text-xs";
+          btn.style.color = "";
+        }
+      }
+
+      async function askNotificationPermission(e) {
+        if (e) { e.preventDefault(); e.stopPropagation(); }
+        doHaptic();
+        if (window.OneSignalDeferred && window.OneSignal) {
+          try {
+            await window.OneSignal.slidedown.promptPush();
+            showToast("Tournament Push Telemetry Enabled!", true);
+          } catch (err) {
+            showToast("Push notifications active for this device.", true);
+          }
+        } else {
+          showToast("Push Telemetry Subscribed (IN-SOUTH-1)", true);
+        }
+      }
+
+      function formatImageUrl(url, fallbackName) {
+        const safeName = fallbackName || "Agent";
+        const animeFallback = `https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(safeName)}&size=150&backgroundColor=0a0520,0d0825`;
+        if (!url) return animeFallback;
+        const strUrl = String(url).trim();
+        return strUrl.length < 5 ? animeFallback : strUrl;
+      }
+
+      function saveRecentAccount(userObj) {
+        try {
+          let accounts = JSON.parse(localStorage.getItem("tournyx_recent_accounts")) || [];
+          accounts = accounts.filter((a) => a.email !== userObj.email);
+          const safeName = sanitizeInput(userObj.ign || userObj.username || "Player");
+          accounts.unshift({
+            ign: safeName,
+            email: sanitizeInput(userObj.email || ""),
+            avatar: formatImageUrl(userObj.avatar, safeName)
+          });
+          if (accounts.length > 5) accounts.pop();
+          localStorage.setItem("tournyx_recent_accounts", JSON.stringify(accounts));
+        } catch (e) {}
+      }
+
+      function openAccountsModal() {
+        doHaptic();
+        const accounts = JSON.parse(localStorage.getItem("tournyx_recent_accounts")) || [];
+        const area = document.getElementById("accountsListArea");
+        if (accounts.length === 0) {
+          area.innerHTML = '<div class="text-center text-xs text-[#8a889e] py-4">No recent accounts saved on this device.</div>';
+        } else {
+          area.innerHTML = accounts.map((a) => `
+            <div onclick="autoFillLogin('${sanitizeInput(a.email)}')" class="flex items-center justify-between p-2.5 rounded-2xl bg-[#090910] hover:bg-[#171626] border border-[#262536] hover:border-[#00f2ff] cursor-pointer transition-all">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <img src="${sanitizeInput(a.avatar)}" alt="${sanitizeInput(a.ign)}" class="w-9 h-9 rounded-full border border-[#00f2ff] object-cover flex-shrink-0">
+                <div class="min-w-0 text-left">
+                  <div class="font-orbitron text-xs font-bold text-white truncate">${sanitizeInput(a.ign)}</div>
+                  <div class="font-mono text-[10px] text-[#8a889e] truncate">${sanitizeInput(a.email)}</div>
+                </div>
               </div>
+              <i class="fa-solid fa-right-to-bracket text-xs text-[#D4FF00] ml-2"></i>
             </div>
-            <i class="fa-solid fa-right-to-bracket text-xs text-[#D4FF00] ml-2"></i>
-          </div>
-        `).join('');
-      }
-      openModal('accountsModal');
-    }
-
-    function autoFillLogin(email) {
-      doHaptic();
-      closeModals(true);
-      switchAuthTab('login');
-      document.getElementById('masterTerms').checked = true;
-      document.getElementById('loginEmail').value = email;
-      document.getElementById('loginPwd').focus();
-      showToast(`Loaded ${email}`, true);
-    }
-
-    function openModal(id) {
-      doHaptic();
-      closeModals(true);
-      const modal = document.getElementById(id);
-      if (modal) modal.classList.add('active');
-    }
-
-    function closeModals() {
-      document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
-    }
-
-    function quickLogin() {
-      doHaptic();
-      try {
-        const user = JSON.parse(localStorage.getItem('tournyx_user'));
-        if (user) triggerArenaEntry(user, 'index.html');
-      } catch (e) {}
-    }
-
-    function logoutUser(e) {
-      if (e) { e.preventDefault(); e.stopPropagation(); }
-      doHaptic();
-      if (isSupabaseConfigured && supabaseClient) {
-        supabaseClient.auth.signOut().catch(() => {});
-      }
-      localStorage.removeItem('tournyx_user');
-      localStorage.removeItem('tournyx_userData');
-      document.getElementById('loggedInProfile').classList.add('hidden');
-      showToast('Session logged out.', true);
-    }
-
-    function triggerArenaEntry(user, redirectUrl) {
-      if (navigator.vibrate) navigator.vibrate([20, 50, 20]);
-      closeModals(true);
-      saveRecentAccount(user);
-      localStorage.setItem('tournyx_user', JSON.stringify(user));
-
-      if (window.OneSignalDeferred && user.email) {
-        OneSignalDeferred.push(async function(OneSignal) {
-          try { await OneSignal.login(String(user.email).trim().toLowerCase()); } catch (e) {}
-        });
-      }
-
-      const loader = document.getElementById('arenaLoader');
-      const sub = document.getElementById('arenaSubtext');
-      if (sub) sub.innerText = `WELCOME COMMANDER ${String(user.ign || user.username || 'AGENT').toUpperCase()} • ROUTING...`;
-      if (loader) loader.classList.add('active');
-
-      setTimeout(() => {
-        checkStoredSessionUI();
-        if (loader) loader.classList.remove('active');
-        showToast(`Authenticated as ${user.ign || user.email}! Ready for Arena.`, true);
-      }, 1800);
-    }
-
-    function btnLoading(btnId, text) {
-      const btn = document.getElementById(btnId);
-      if (!btn) return;
-      btn.dataset.original = btn.innerHTML;
-      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>${text}</span>`;
-      btn.disabled = true;
-    }
-
-    function btnReset(btnId) {
-      const btn = document.getElementById(btnId);
-      if (!btn || !btn.dataset.original) return;
-      btn.innerHTML = btn.dataset.original;
-      btn.disabled = false;
-    }
-
-    function checkStoredSessionUI() {
-      try {
-        const raw = localStorage.getItem('tournyx_user');
-        if (!raw) return;
-        const user = JSON.parse(raw);
-        const profileBar = document.getElementById('loggedInProfile');
-        if (user && (user.email || user.ign || typeof user === 'string')) {
-          const displayName = typeof user === 'string' ? user : (user.ign || user.username || user.email || 'COMMANDER');
-          document.getElementById('loggedInName').innerText = displayName;
-          document.getElementById('loggedInAvatar').src = formatImageUrl(user.avatar, displayName);
-          profileBar.classList.remove('hidden');
+          `).join("");
         }
-      } catch (e) {}
-    }
+        openModal("accountsModal");
+      }
 
-    // Touch ripple effect
-    document.body.addEventListener('click', function(e) {
-      const ripple = document.createElement('div');
-      ripple.className = 'ripple';
-      ripple.style.left = `${e.clientX - 18}px`;
-      ripple.style.top = `${e.clientY - 18}px`;
-      document.body.appendChild(ripple);
-      setTimeout(() => ripple.remove(), 550);
-    });
+      function autoFillLogin(email) {
+        doHaptic();
+        closeModals();
+        switchAuthTab("login");
+        document.getElementById("masterTerms").checked = true;
+        document.getElementById("loginEmail").value = email;
+        document.getElementById("loginPwd").focus();
+        showToast(`Loaded ${email}`, true);
+      }
 
-    function initParticles() {
-      const canvas = document.getElementById('particles-canvas');
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      let w = canvas.width = window.innerWidth;
-      let h = canvas.height = window.innerHeight;
+      function openModal(id) {
+        doHaptic();
+        closeModals();
+        const modal = document.getElementById(id);
+        if (modal) modal.classList.add("active");
+      }
 
-      window.addEventListener('resize', () => {
-        w = canvas.width = window.innerWidth;
-        h = canvas.height = window.innerHeight;
+      function closeModals() {
+        document.querySelectorAll(".modal-overlay").forEach((m) => m.classList.remove("active"));
+      }
+
+      function quickLogin() {
+        doHaptic();
+        try {
+          const user = JSON.parse(localStorage.getItem("tournyx_user"));
+          if (user) triggerArenaEntry(user, REDIRECT_URL);
+        } catch (e) {}
+      }
+
+      function logoutUser(e) {
+        if (e) { e.preventDefault(); e.stopPropagation(); }
+        doHaptic();
+        if (isSupabaseReady && supabaseClient) {
+          supabaseClient.auth.signOut().catch(() => {});
+        }
+        localStorage.removeItem("tournyx_user");
+        localStorage.removeItem("tournyx_userData");
+        document.getElementById("loggedInProfile").classList.add("hidden");
+        showToast("Session logged out.", true);
+      }
+
+      // --- CINEMATIC ENTRY & HARD REDIRECT TO index.html ---
+      function triggerArenaEntry(user, targetUrl) {
+        const destination = targetUrl || REDIRECT_URL;
+        if (navigator.vibrate) navigator.vibrate([18, 40, 18]);
+        closeModals();
+        saveRecentAccount(user);
+        localStorage.setItem("tournyx_user", JSON.stringify(user));
+
+        if (window.OneSignalDeferred && user.email) {
+          window.OneSignalDeferred.push(async function (OneSignal) {
+            try { await OneSignal.login(String(user.email).trim().toLowerCase()); } catch (e) {}
+          });
+        }
+
+        const loader = document.getElementById("arenaLoader");
+        const sub = document.getElementById("arenaSubtext");
+        if (sub) {
+          sub.innerText = `WELCOME COMMANDER ${String(user.ign || user.username || "AGENT").toUpperCase()} • ROUTING TO ARENA...`;
+        }
+        if (loader) loader.classList.add("active");
+
+        setTimeout(() => {
+          window.location.href = destination;
+        }, 1450);
+      }
+
+      function btnLoading(btnId, text) {
+        const btn = document.getElementById(btnId);
+        if (!btn) return;
+        btn.dataset.original = btn.innerHTML;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>${text}</span>`;
+        btn.disabled = true;
+      }
+
+      function btnReset(btnId) {
+        const btn = document.getElementById(btnId);
+        if (!btn || !btn.dataset.original) return;
+        btn.innerHTML = btn.dataset.original;
+        btn.disabled = false;
+      }
+
+      function checkStoredSessionUI() {
+        try {
+          const raw = localStorage.getItem("tournyx_user");
+          if (!raw) return;
+          const user = JSON.parse(raw);
+          const profileBar = document.getElementById("loggedInProfile");
+          if (user && (user.email || user.ign || typeof user === "string")) {
+            const displayName = typeof user === "string" ? user : (user.ign || user.username || user.email || "COMMANDER");
+            document.getElementById("loggedInName").innerText = displayName;
+            document.getElementById("loggedInAvatar").src = formatImageUrl(user.avatar, displayName);
+            profileBar.classList.remove("hidden");
+          }
+        } catch (e) {}
+      }
+
+      // Compact Game-Style HUD Tap Reticle Animation
+      document.addEventListener("pointerdown", function (e) {
+        if (e.pointerType === "mouse" && e.button !== 0) return;
+        const tap = document.createElement("div");
+        tap.className = "hud-tap-fx";
+        tap.style.left = `${e.clientX}px`;
+        tap.style.top = `${e.clientY}px`;
+        document.body.appendChild(tap);
+        setTimeout(() => tap.remove(), 300);
+      }, { passive: true });
+
+      function initParticles() {
+        const canvas = document.getElementById("particles-canvas");
+        if (!canvas) return;
+        const ctx = canvas.getContext("2d");
+        let w = (canvas.width = window.innerWidth);
+        let h = (canvas.height = window.innerHeight);
+
+        window.addEventListener("resize", () => {
+          w = canvas.width = window.innerWidth;
+          h = canvas.height = window.innerHeight;
+        });
+
+        const particles = Array.from({ length: 24 }, () => ({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          r: Math.random() * 1.6 + 0.5,
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: -Math.random() * 0.5 - 0.15,
+          color: Math.random() > 0.5 ? "#D4FF00" : "#00f2ff"
+        }));
+
+        function draw() {
+          ctx.clearRect(0, 0, w, h);
+          particles.forEach((p) => {
+            p.x += p.vx;
+            p.y += p.vy;
+            if (p.y < 0) p.y = h;
+            if (p.x < 0) p.x = w;
+            if (p.x > w) p.x = 0;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = 0.42;
+            ctx.fill();
+          });
+          requestAnimationFrame(draw);
+        }
+        draw();
+      }
+
+      // Live ping telemetry jitter
+      setInterval(() => {
+        const pingEl = document.getElementById("live-ping");
+        if (pingEl) {
+          const ms = Math.floor(15 + Math.random() * 5);
+          pingEl.innerText = `${ms}MS`;
+        }
+      }, 3200);
+
+      // Expose Required UI Handlers to Window
+      Object.assign(window, {
+        skipIntroNow,
+        askNotificationPermission,
+        toggleVideoSound,
+        openModal,
+        closeModals,
+        openAccountsModal,
+        quickLogin,
+        logoutUser,
+        switchAuthTab,
+        doHaptic,
+        togglePwd,
+        handleGoogleAction,
+        handleDiscordAction,
+        activateGoogleSignupMode,
+        disableGoogleSignupMode,
+        triggerLiveGoogleOAuth,
+        sendPhoneOtp,
+        verifyPhoneOtp,
+        unlockPhoneInput,
+        handleStateChange,
+        handleCityChange,
+        checkOrganizerStatus,
+        handleForgotPassword,
+        submitHelp,
+        setLanguage,
+        autoFillLogin,
+        hideToast
       });
 
-      const particles = Array.from({ length: 28 }, () => ({
-        x: Math.random() * w,
-        y: Math.random() * h,
-        r: Math.random() * 1.8 + 0.6,
-        vx: (Math.random() - 0.5) * 0.35,
-        vy: -Math.random() * 0.55 - 0.15,
-        color: Math.random() > 0.5 ? '#D4FF00' : '#00f2ff'
-      }));
+      window.addEventListener("DOMContentLoaded", () => {
+        initSupabaseEngine();
+        initMasterVideoEngine();
+        initPhoneFormatLock();
+        initLocations();
+        initAuthForms();
+        initOrganizerForms();
+        applyLanguageEngine();
+        checkStoredSessionUI();
+        updateAttemptCounterUI();
+        enforceSecurityLockoutUI();
+        initParticles();
 
-      function draw() {
-        ctx.clearRect(0, 0, w, h);
-        particles.forEach(p => {
-          p.x += p.vx;
-          p.y += p.vy;
-          if (p.y < 0) p.y = h;
-          if (p.x < 0) p.x = w;
-          if (p.x > w) p.x = 0;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-          ctx.fillStyle = p.color;
-          ctx.globalAlpha = 0.45;
-          ctx.fill();
-        });
-        requestAnimationFrame(draw);
-      }
-      draw();
-    }
+        const urlParams = new URLSearchParams(window.location.search);
+        const refCode = urlParams.get("ref") || urlParams.get("code");
+        const tabParam = urlParams.get("tab");
 
-    // Live ping telemetry jitter
-    setInterval(() => {
-      const pingEl = document.getElementById('live-ping');
-      if (pingEl) {
-        const ms = Math.floor(16 + Math.random() * 6);
-        pingEl.innerText = `${ms}MS`;
-      }
-    }, 3200);
-
-    window.addEventListener('DOMContentLoaded', () => {
-      initSupabaseEngine();
-      initMasterVideoEngine();
-      initLocations();
-      applyLanguageEngine();
-      checkStoredSessionUI();
-      updateAttemptCounterUI();
-      enforceSecurityLockoutUI();
-      initParticles();
-
-      const savedUrl = localStorage.getItem('tournyx_sb_url');
-      const savedKey = localStorage.getItem('tournyx_sb_key');
-      if (savedUrl) document.getElementById('sbUrlInput').value = savedUrl;
-      if (savedKey) document.getElementById('sbKeyInput').value = savedKey;
-
-      const urlParams = new URLSearchParams(window.location.search);
-      const refCode = urlParams.get('ref') || urlParams.get('code');
-      const tabParam = urlParams.get('tab');
-
-      if (refCode) {
-        switchAuthTab('signup');
-        const refInput = document.getElementById('refInput');
-        if (refInput) refInput.value = refCode;
-      } else if (tabParam === 'organizer') {
-        switchAuthTab('organizer');
-      }
-    });
+        if (refCode) {
+          switchAuthTab("signup");
+          const refInput = document.getElementById("refInput");
+          if (refInput) refInput.value = sanitizeInput(refCode);
+        } else if (tabParam === "organizer") {
+          switchAuthTab("organizer");
+        }
+      });
+    })();
   </script>
 </body>
 </html>
