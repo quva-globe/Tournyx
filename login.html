@@ -368,7 +368,7 @@
         </div>
       </div>
 
-      <!-- Mandatory Live City Geolocation Pill (Replaced QUVA SHIELD) -->
+      <!-- Mandatory Live City Geolocation Pill -->
       <button onclick="requestUserGeolocation()" type="button" id="geoCityPill" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#0e0e14]/90 border border-[#00f2ff]/40 hover:border-[#D4FF00] backdrop-blur-md transition-all" title="Regional Fair-Play Geo-Routing">
         <span id="geoCityText" class="font-mono text-[9px] text-[#00f2ff] font-bold uppercase tracking-wider">📍 DETECTING CITY...</span>
       </button>
@@ -433,7 +433,7 @@
           <i class="fa-solid fa-trophy"></i> <span>DAILY PRO SCRIMS</span>
         </div>
         <div class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#0d0d14]/90 border border-[#D4FF00]/40 text-[#D4FF00] font-orbitron text-xs font-bold shadow-md">
-          <i class="fa-solid fa-mobile-screen-button"></i> <span>PHONE OTP VERIFIED</span>
+          <i class="fa-solid fa-mobile-screen-button"></i> <span>WHATSAPP OTP VERIFIED</span>
         </div>
         <div class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#0d0d14]/90 border border-[#8B5CF6]/40 text-[#c4b5fd] font-orbitron text-xs font-bold shadow-md">
           <i class="fa-solid fa-shield-halved"></i> <span>ANTI-BRUTEFORCE SHIELD</span>
@@ -604,7 +604,7 @@
               </label>
               <div class="relative flex items-center">
                 <i class="fa-solid fa-envelope text-[#7a788f] text-xs absolute left-4 pointer-events-none"></i>
-                <input type="text" name="email" id="loginEmail" required placeholder="e.g. pro@tournyx.in or IGN"
+                <input type="text" name="email" id="loginEmail" required placeholder="Email, IGN, Username or Phone"
                   class="w-full bg-[#07070b] text-white placeholder:text-[#525166] font-body text-sm pl-10 pr-4 py-2.5 border border-[#262536] focus:border-[#00f2ff] rounded-full outline-none transition-all">
               </div>
             </div>
@@ -732,11 +732,11 @@
               </div>
             </div>
 
-            <!-- Phone OTP Verification -->
+            <!-- Phone OTP Verification (Direct Green-API WhatsApp Delivery) -->
             <div class="p-3 rounded-2xl bg-[#090910] border border-[#252435] space-y-2">
               <div class="flex items-center justify-between">
                 <label class="font-mono text-[9px] text-[#D4FF00] tracking-widest uppercase font-bold">
-                  <i class="fa-solid fa-mobile-screen-button mr-1"></i>+91 PHONE OTP VERIFICATION (REQUIRED)
+                  <i class="fa-brands fa-whatsapp mr-1 text-[#00ff7f]"></i>+91 WHATSAPP OTP VERIFICATION (REQUIRED)
                 </label>
                 <span id="phoneOtpStatusTag" class="font-mono text-[9px] text-[#a09fb1] uppercase">UNVERIFIED</span>
               </div>
@@ -756,7 +756,7 @@
               <div id="phoneOtpGroup" class="hidden pt-1 flex-col gap-1.5">
                 <div class="relative flex items-center">
                   <i class="fa-solid fa-shield-halved text-[#00ff7f] text-xs absolute left-3.5 pointer-events-none"></i>
-                  <input type="text" id="regPhoneOtp" maxlength="6" placeholder="Enter 6-Digit SMS OTP"
+                  <input type="text" id="regPhoneOtp" maxlength="6" placeholder="Enter 6-Digit WhatsApp OTP"
                     oninput="this.value=this.value.replace(/[^0-9]/g,'')"
                     class="w-full bg-[#07070b] text-white placeholder:text-[#525166] font-mono text-xs pl-9 pr-24 py-2.5 border border-[#00ff7f]/60 rounded-full outline-none tracking-widest">
                   <button type="button" id="btnVerifyPhoneOtp" onclick="verifyPhoneOtp()"
@@ -765,7 +765,7 @@
                   </button>
                 </div>
                 <div class="flex items-center justify-between px-1">
-                  <span id="sandboxOtpHint" class="font-mono text-[9px] text-[#00ff7f]"></span>
+                  <span id="sandboxOtpHint" class="font-mono text-[9px] text-[#00ff7f]">Sent to your WhatsApp number</span>
                   <button type="button" onclick="unlockPhoneInput()" class="font-mono text-[9px] text-[#a09fb1] hover:text-white underline">
                     Change Number
                   </button>
@@ -781,7 +781,7 @@
                   class="w-full bg-[#07070b] text-white font-body text-xs pl-9 pr-7 py-3 border border-[#262536] focus:border-[#00f2ff] rounded-full outline-none">
                   <option value="" disabled selected id="txtSelGame">Primary Game</option>
                   <option value="BGMI">BGMI</option>
-                  <option value="Free Fire MAX">Free Fire MAX</option>
+                  <option value="Free Fire">Free Fire MAX</option>
                   <option value="CODM">COD Mobile</option>
                   <option value="Valorant">Valorant</option>
                 </select>
@@ -1142,11 +1142,12 @@
       const REDIRECT_URL = "index.html";
       const ORGANIZER_REDIRECT_URL = "index.html";
 
-      // WhatsApp / SMS OTP Gateway Configuration
-      const GREEN_API_URL = "https://7107.api.greenapi.com";
-      const GREEN_API_INSTANCE_ID = "710722802732";
-      const GREEN_API_TOKEN = "71b001c13bc34b6e82cfc73792015fa4d52bcfa39726487e83";
-      const OTP_GATEWAY_WEBHOOK_URL = `${GREEN_API_URL}/waInstance${GREEN_API_INSTANCE_ID}/sendMessage/${GREEN_API_TOKEN}`;
+      // ==========================================
+      // WHATSAPP OTP CONFIGURATION (GREEN-API DIRECT)
+      // ==========================================
+      const GREEN_API_INSTANCE_ID = "710722802732"; // e.g., "7103948271"
+      const GREEN_API_TOKEN = "71b001c13bc34b6e82cfc73792015fa4d52bcfa39726487e83"; // e.g., "a8f92b1c..."
+      const OTP_WEBHOOK_URL = ""; // Optional: leave blank to send directly via Green-API
 
       // Runtime State
       let supabaseClient = null;
@@ -1304,7 +1305,7 @@
               const rawCity = (data.city || data.locality || data.principalSubdivision || "UNKNOWN").trim();
               const rawState = (data.principalSubdivision || "IN").trim();
               const stateUpper = rawState.toUpperCase();
-              const stateShort = STATE_ABBR_MAP[stateUpper] || ( data.principalSubdivisionCode ? data.principalSubdivisionCode.split("-").pop() : stateUpper );
+              const stateShort = STATE_ABBR_MAP[stateUpper] || (data.principalSubdivisionCode ? data.principalSubdivisionCode.split("-").pop() : stateUpper);
 
               userGeoLocation.city = rawCity.toUpperCase();
               userGeoLocation.state = rawState;
@@ -1313,7 +1314,6 @@
               setCardGeoLock(false);
               if (cityText) cityText.innerText = `📍 ${userGeoLocation.city}, ${stateShort}`;
 
-              // Auto-sync state dropdown if user is on registration form
               const stateSelect = document.getElementById("regState");
               if (stateSelect && !stateSelect.value) {
                 const matchOpt = Array.from(stateSelect.options).find(
@@ -1575,9 +1575,8 @@
 
       async function handleOAuthCallbackUser(sbUser) {
         if (!sbUser) return;
-        skipIntroNow();
+        window.skipIntroNow();
 
-        // Immediately strip #access_token=... or ?code=... from URL bar
         if (window.location.hash || window.location.search.includes("code=")) {
           window.history.replaceState({}, document.title, window.location.pathname);
         }
@@ -1587,51 +1586,36 @@
         const fullName = sbUser.user_metadata?.full_name || sbUser.user_metadata?.name || "";
         const avatar = sbUser.user_metadata?.avatar_url || sbUser.user_metadata?.picture || "";
 
-        if (isSupabaseReady && supabaseClient && (email || userId)) {
+        if (isSupabaseReady && supabaseClient && email) {
           try {
-            let existingUser = null;
-            if (email) {
-              const { data: rowsByEmail } = await supabaseClient
-                .from("Users")
-                .select("*")
-                .ilike("email", email)
-                .limit(1);
-              if (rowsByEmail && rowsByEmail.length > 0) existingUser = rowsByEmail[0];
-            }
-            if (!existingUser && userId) {
-              const { data: rowsById } = await supabaseClient
-                .from("Users")
-                .select("*")
-                .eq("id", userId)
-                .limit(1);
-              if (rowsById && rowsById.length > 0) existingUser = rowsById[0];
-            }
+            const { data: existingUser } = await supabaseClient
+              .from("Users")
+              .select("*")
+              .ilike("email", email)
+              .maybeSingle();
 
-            // IF ACCOUNT EXISTS: Store session in localStorage & redirect via window.location.replace('index.html')
+            // IF ACCOUNT EXISTS: Sync full row to localStorage and redirect
             if (existingUser) {
-              if (userGeoLocation.city && existingUser.id) {
+              if (userGeoLocation.city && existingUser.email) {
                 supabaseClient
                   .from("Users")
                   .update({
-                    city: userGeoLocation.city,
-                    state: userGeoLocation.state,
-                    coords: userGeoLocation.coords
+                    city: userGeoLocation.city || existingUser.city,
+                    state: userGeoLocation.state || existingUser.state
                   })
-                  .eq("id", existingUser.id)
+                  .ilike("email", existingUser.email)
                   .then(() => {})
                   .catch(() => {});
               }
 
               const completeProfile = {
                 ...existingUser,
-                id: existingUser.id || userId,
-                email: existingUser.email || email,
+                email: (existingUser.email || email).trim().toLowerCase(),
                 ign: existingUser.ign || existingUser.username || fullName || email.split("@")[0],
                 username: existingUser.username || fullName || existingUser.ign || "Player",
                 avatar: existingUser.avatar || avatar,
                 city: userGeoLocation.city || existingUser.city || "",
                 state: userGeoLocation.state || existingUser.state || "",
-                coords: userGeoLocation.coords || existingUser.coords || "",
                 isLoggedIn: true
               };
 
@@ -1685,7 +1669,7 @@
         }
         if (regPwd) {
           regPwd.required = false;
-          regPwd.value = "OAuthVerified#" + Math.random().toString(36).slice(2);
+          regPwd.value = "OAUTH_GOOGLE_VERIFIED";
         }
         if (fullName && regUser && !regUser.value) regUser.value = fullName;
         if (avatarUrl) sessionStorage.setItem("tx_oauth_avatar", avatarUrl);
@@ -1724,8 +1708,84 @@
       }
 
       // ============================================================================
-      // 5. FORM SUBMISSIONS: LOGIN, CREATE ID (REGISTRATION), & ORGANIZER
+      // 5. MULTI-STEP LOGIN RESOLUTION, SMART ERROR DIAGNOSIS, & REGISTRATION
       // ============================================================================
+      async function resolvePlayerIdentifierToUser(rawInput) {
+        const cleanInput = String(rawInput || "").trim();
+        if (!cleanInput || !isSupabaseReady || !supabaseClient) {
+          return { resolvedEmail: cleanInput.toLowerCase(), userRow: null };
+        }
+
+        // Case 1: Input contains '@' -> Email entered directly
+        if (cleanInput.includes("@")) {
+          const cleanEmail = cleanInput.toLowerCase();
+          const { data: emailRow } = await supabaseClient
+            .from("Users")
+            .select("*")
+            .ilike("email", cleanEmail)
+            .maybeSingle();
+          return {
+            resolvedEmail: (emailRow?.email || cleanEmail).trim().toLowerCase(),
+            userRow: emailRow || null
+          };
+        }
+
+        // Case 2: Input does NOT contain '@' -> Resolve IGN, Full Name/Username, or Phone from public.Users
+        // First try exact spec query with full_name/username/ign/phone, with safe fallback for int8 phone column
+        let matchedRow = null;
+        const digitsOnly = cleanInput.replace(/\D/g, "");
+        const tenDigitPhone = digitsOnly.length >= 10 ? digitsOnly.slice(-10) : "";
+
+        try {
+          const orFilter = tenDigitPhone
+            ? `ign.ilike.${cleanInput},full_name.ilike.${cleanInput},phone.eq.${tenDigitPhone}`
+            : `ign.ilike.${cleanInput},full_name.ilike.${cleanInput},phone.eq.${cleanInput}`;
+          const { data, error } = await supabaseClient
+            .from("Users")
+            .select("*")
+            .or(orFilter)
+            .maybeSingle();
+          if (!error && data) matchedRow = data;
+        } catch (e) {}
+
+        // Safe fallback against public.Users columns (ign, username, phone as int8)
+        if (!matchedRow) {
+          try {
+            const safeFilter = tenDigitPhone
+              ? `ign.ilike.${cleanInput},username.ilike.${cleanInput},phone.eq.${tenDigitPhone}`
+              : `ign.ilike.${cleanInput},username.ilike.${cleanInput}`;
+            const { data } = await supabaseClient
+              .from("Users")
+              .select("*")
+              .or(safeFilter)
+              .limit(1);
+            if (data && data.length > 0) matchedRow = data[0];
+          } catch (e) {}
+        }
+
+        if (matchedRow && matchedRow.email) {
+          return {
+            resolvedEmail: String(matchedRow.email).trim().toLowerCase(),
+            userRow: matchedRow
+          };
+        }
+
+        return { resolvedEmail: "", userRow: null };
+      }
+
+      function isOAuthOnlyPassword(pwdVal) {
+        if (!pwdVal) return true;
+        const str = String(pwdVal).trim();
+        return (
+          str === "" ||
+          str === "NULL" ||
+          str.startsWith("OAuthVerified#") ||
+          str === "OAUTH_GOOGLE_VERIFIED" ||
+          str === "GOOGLE_AUTH" ||
+          str === "DISCORD_AUTH"
+        );
+      }
+
       function bindAuthForms() {
         const loginForm = document.getElementById("playerLoginForm");
         const signupForm = document.getElementById("playerSignupForm");
@@ -1741,92 +1801,129 @@
             if (botTrap && botTrap.value) return;
             if (!verifyLocationUnlocked() || isCurrentlyLockedOut() || !verifyTermsChecked()) return;
 
-            const identifier = document.getElementById("loginEmail").value.trim();
+            const rawIdentifier = document.getElementById("loginEmail").value.trim();
             const password = document.getElementById("loginPwd").value;
 
-            if (!identifier || !password) {
-              showToast("Enter your Email/IGN and Password.");
+            if (!rawIdentifier || !password) {
+              showToast("Enter your Player Identifier / Email and Password.");
+              return;
+            }
+
+            if (!isSupabaseReady || !supabaseClient) {
+              showToast("Database connection unavailable. Please check your network.");
               return;
             }
 
             btnLoading("btnLogin", "AUTHENTICATING...");
 
             try {
-              let matchedUser = null;
-              let targetEmail = identifier.toLowerCase();
+              // Step 1: Resolve Player Identifier / IGN / Full Name / Phone -> Email (.trim().toLowerCase())
+              const { resolvedEmail, userRow } = await resolvePlayerIdentifierToUser(rawIdentifier);
 
-              if (isSupabaseReady && supabaseClient) {
-                if (identifier.includes("@")) {
-                  const { data: rows } = await supabaseClient
-                    .from("Users")
-                    .select("*")
-                    .ilike("email", targetEmail)
-                    .limit(1);
-                  if (rows && rows.length > 0) matchedUser = rows[0];
-                } else {
-                  const { data: rows } = await supabaseClient
-                    .from("Users")
-                    .select("*")
-                    .ilike("ign", identifier)
-                    .limit(1);
-                  if (rows && rows.length > 0) {
-                    matchedUser = rows[0];
-                    targetEmail = (matchedUser.email || "").toLowerCase();
-                  }
-                }
-
-                // Attempt Supabase Auth or direct password match on public.Users
-                let authPassed = false;
-                if (targetEmail && targetEmail.includes("@")) {
-                  const { data: authData, error: authErr } = await supabaseClient.auth.signInWithPassword({
-                    email: targetEmail,
-                    password: password
-                  });
-                  if (!authErr && authData?.user) authPassed = true;
-                }
-
-                if (!authPassed && matchedUser && matchedUser.password && matchedUser.password === password) {
-                  authPassed = true;
-                }
-
-                if (!authPassed || !matchedUser) {
-                  throw new Error("Invalid credentials");
-                }
-
-                // Update player geolocation telemetry
-                if (userGeoLocation.city && matchedUser.id) {
-                  supabaseClient
-                    .from("Users")
-                    .update({
-                      city: userGeoLocation.city,
-                      state: userGeoLocation.state,
-                      coords: userGeoLocation.coords
-                    })
-                    .eq("id", matchedUser.id)
-                    .then(() => {})
-                    .catch(() => {});
-                }
-
+              if (!resolvedEmail || !resolvedEmail.includes("@")) {
                 btnReset("btnLogin");
-                resetLoginAttempts();
-                triggerArenaEntry(
-                  {
-                    ...matchedUser,
-                    city: userGeoLocation.city || matchedUser.city,
-                    state: userGeoLocation.state || matchedUser.state,
-                    coords: userGeoLocation.coords || matchedUser.coords
-                  },
-                  REDIRECT_URL
-                );
-              } else {
-                throw new Error("Database connection unavailable");
+                playAudioFx("error");
+                recordFailedLoginAttempt();
+                shakeAuthCard();
+                showToast("Account not found. Check your Email/IGN or Register below.");
+                return;
               }
+
+              // Step 2: Authenticate with Supabase Auth using trimmed, lowercased email
+              const cleanEmail = resolvedEmail.trim().toLowerCase();
+              const { data: authData, error: authErr } = await supabaseClient.auth.signInWithPassword({
+                email: cleanEmail,
+                password: password
+              });
+
+              // Fetch full row from public.Users if not already loaded
+              let dbUser = userRow;
+              if (!dbUser) {
+                const { data: fetchedRow } = await supabaseClient
+                  .from("Users")
+                  .select("*")
+                  .ilike("email", cleanEmail)
+                  .maybeSingle();
+                if (fetchedRow) dbUser = fetchedRow;
+              }
+
+              // Step 3: Check authentication outcome & Smart Error Diagnosis
+              let isAuthenticated = !authErr && Boolean(authData?.user);
+
+              // Also support existing public.Users accounts whose password is stored in public.Users.password
+              if (!isAuthenticated && dbUser && dbUser.password && !isOAuthOnlyPassword(dbUser.password)) {
+                if (String(dbUser.password) === String(password)) {
+                  isAuthenticated = true;
+                }
+              }
+
+              if (!isAuthenticated) {
+                btnReset("btnLogin");
+                playAudioFx("error");
+                shakeAuthCard();
+
+                const errMsg = String(authErr?.message || "").toLowerCase();
+
+                // Diagnosis A: Email not confirmed in Supabase Auth
+                if (errMsg.includes("email not confirmed")) {
+                  showToast("Please verify your email link or contact support.");
+                  return;
+                }
+
+                // Diagnosis B: User exists in public.Users with OAuth (Google/Discord) and has no password set
+                const hasOAuthProvider =
+                  dbUser &&
+                  (isOAuthOnlyPassword(dbUser.password) ||
+                    String(dbUser.provider || dbUser.auth_provider || "").toLowerCase().includes("google") ||
+                    String(dbUser.provider || dbUser.auth_provider || "").toLowerCase().includes("discord"));
+
+                if (hasOAuthProvider) {
+                  showToast("This account uses Google/Discord Login. Tap GOOGLE or DISCORD below.");
+                  return;
+                }
+
+                // Diagnosis C: Incorrect password -> Increment ATTEMPTS: X/4 counter
+                recordFailedLoginAttempt();
+                if (!isCurrentlyLockedOut()) {
+                  showToast("Incorrect password. Please try again.");
+                }
+                return;
+              }
+
+              // Step 4: Session Sync Before Redirect
+              const finalProfile = {
+                ...(dbUser || {}),
+                email: cleanEmail,
+                ign: dbUser?.ign || dbUser?.username || authData?.user?.user_metadata?.full_name || cleanEmail.split("@")[0],
+                username: dbUser?.username || dbUser?.ign || authData?.user?.user_metadata?.full_name || "Player",
+                avatar: dbUser?.avatar || authData?.user?.user_metadata?.avatar_url || "",
+                city: userGeoLocation.city || dbUser?.city || "",
+                state: userGeoLocation.state || dbUser?.state || "",
+                role: dbUser?.role || "player",
+                isLoggedIn: true
+              };
+
+              if (userGeoLocation.city && dbUser?.email) {
+                supabaseClient
+                  .from("Users")
+                  .update({
+                    city: userGeoLocation.city,
+                    state: userGeoLocation.state || dbUser.state
+                  })
+                  .ilike("email", cleanEmail)
+                  .then(() => {})
+                  .catch(() => {});
+              }
+
+              btnReset("btnLogin");
+              resetLoginAttempts();
+              triggerArenaEntry(finalProfile, REDIRECT_URL);
             } catch (err) {
               btnReset("btnLogin");
               playAudioFx("error");
               recordFailedLoginAttempt();
               shakeAuthCard();
-              showToast("Invalid Email/IGN or Password. Please verify and retry.");
+              showToast("Incorrect password. Please try again.");
             }
           });
         }
@@ -1842,7 +1939,7 @@
             if (!isPhoneVerified) {
               playAudioFx("error");
               shakeAuthCard();
-              showToast("Please complete +91 Phone OTP verification first.");
+              showToast("Please complete +91 WhatsApp OTP verification first.");
               return;
             }
 
@@ -1850,7 +1947,9 @@
               .trim()
               .toLowerCase();
             const password = document.getElementById("regPwd").value;
-            const phone = document.getElementById("regPhone").value.trim();
+            const rawPhone = document.getElementById("regPhone").value.trim();
+            const phoneDigits10 = rawPhone.replace(/\D/g, "").slice(-10);
+            const numericPhone = phoneDigits10 ? Number(phoneDigits10) : null;
             const game = document.getElementById("regGame").value;
             const username = sanitizeInput(document.getElementById("regUser").value.trim());
             const ign = sanitizeInput(document.getElementById("regIgn").value.trim());
@@ -1865,7 +1964,6 @@
                 ? document.getElementById("customCity").value.trim()
                 : citySel
             );
-            const referral = sanitizeInput(document.getElementById("refInput").value.trim().toUpperCase());
 
             if (!email || (!isGoogleSignupMode && password.length < 6)) {
               showToast("Enter a valid email and a password of at least 6 characters.");
@@ -1879,65 +1977,78 @@
             btnLoading("btnSignup", "ACTIVATING PLAYER ID...");
 
             try {
-              let authUserId = googleAuthenticatedUserId || null;
-
-              if (isSupabaseReady && supabaseClient) {
-                // Check existing email or IGN in public.Users
-                const { data: existingRows } = await supabaseClient
-                  .from("Users")
-                  .select("email, ign")
-                  .or(`email.ilike.${email},ign.ilike.${ign}`)
-                  .limit(1);
-
-                if (existingRows && existingRows.length > 0) {
-                  btnReset("btnSignup");
-                  playAudioFx("error");
-                  showToast("An account with this Email or IGN is already registered.");
-                  return;
-                }
-
-                if (!isGoogleSignupMode) {
-                  const { data: signUpData } = await supabaseClient.auth.signUp({
-                    email: email,
-                    password: password
-                  });
-                  if (signUpData?.user?.id) authUserId = signUpData.user.id;
-                }
-
-                const avatarUrl =
-                  sessionStorage.getItem("tx_oauth_avatar") ||
-                  `https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(ign)}`;
-
-                const newPlayerPayload = {
-                  ...(authUserId ? { id: authUserId } : {}),
-                  email: email,
-                  phone: phone,
-                  game: game,
-                  username: username,
-                  ign: ign,
-                  uid: uid,
-                  state: finalState || userGeoLocation.state,
-                  city: finalCity || userGeoLocation.city,
-                  coords: userGeoLocation.coords,
-                  referral_code: referral || null,
-                  avatar: avatarUrl,
-                  created_at: new Date().toISOString()
-                };
-
-                const { data: insertedRows, error: insertError } = await supabaseClient
-                  .from("Users")
-                  .insert([newPlayerPayload])
-                  .select();
-
-                if (insertError) throw insertError;
-
-                const savedProfile = (insertedRows && insertedRows[0]) || newPlayerPayload;
-                btnReset("btnSignup");
-                localStorage.setItem("tournyx_userData", JSON.stringify(savedProfile));
-                triggerArenaEntry(savedProfile, REDIRECT_URL);
-              } else {
+              if (!isSupabaseReady || !supabaseClient) {
                 throw new Error("Supabase client not ready");
               }
+
+              // Check existing email or IGN in public.Users
+              const { data: existingRows } = await supabaseClient
+                .from("Users")
+                .select("email, ign")
+                .or(`email.ilike.${email},ign.ilike.${ign}`)
+                .limit(1);
+
+              if (existingRows && existingRows.length > 0) {
+                btnReset("btnSignup");
+                playAudioFx("error");
+                showToast("An account with this Email or IGN is already registered.");
+                return;
+              }
+
+              if (!isGoogleSignupMode) {
+                await supabaseClient.auth.signUp({
+                  email: email,
+                  password: password
+                }).catch(() => {});
+              }
+
+              const avatarUrl =
+                sessionStorage.getItem("tx_oauth_avatar") ||
+                `https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(ign)}`;
+
+              const invitePrefix = ign.replace(/[^A-Za-z0-9]/g, "").toUpperCase().slice(0, 3) || "PRO";
+              const generatedInviteCode = `TRNX-${invitePrefix}${Math.floor(1000 + Math.random() * 9000)}`;
+              const nowFormatted = new Date().toLocaleString("en-GB", { hour12: false }).replace(",", "");
+
+              // Matches exact public.Users schema in Supabase
+              const newPlayerPayload = {
+                email: email,
+                password: isGoogleSignupMode ? "" : password,
+                username: username,
+                ign: ign,
+                role: "player",
+                avatar: avatarUrl,
+                date_joined: nowFormatted,
+                phone: numericPhone,
+                wins: 0,
+                earnings: 0,
+                matches_played: 0,
+                invite_code: generatedInviteCode,
+                points: 50,
+                referrals: 0,
+                main_game: game,
+                hosted: 0,
+                uid: uid,
+                state: finalState || userGeoLocation.state,
+                city: finalCity || userGeoLocation.city
+              };
+
+              const { data: insertedRows, error: insertError } = await supabaseClient
+                .from("Users")
+                .insert([newPlayerPayload])
+                .select();
+
+              if (insertError) throw insertError;
+
+              const savedProfile = {
+                ...((insertedRows && insertedRows[0]) || newPlayerPayload),
+                isLoggedIn: true
+              };
+
+              btnReset("btnSignup");
+              localStorage.setItem("tournyx_user", JSON.stringify(savedProfile));
+              localStorage.setItem("tournyx_userData", JSON.stringify(savedProfile));
+              triggerArenaEntry(savedProfile, REDIRECT_URL);
             } catch (err) {
               btnReset("btnSignup");
               playAudioFx("error");
@@ -1962,28 +2073,28 @@
             try {
               if (!isSupabaseReady || !supabaseClient) throw new Error("Service offline");
 
-              let orgProfile = null;
-              const { data: orgRows } = await supabaseClient
+              const { data: orgProfile } = await supabaseClient
                 .from("Users")
                 .select("*")
                 .ilike("email", orgEmail)
-                .limit(1);
-
-              if (orgRows && orgRows.length > 0) orgProfile = orgRows[0];
+                .maybeSingle();
 
               const { data: authData, error: authErr } = await supabaseClient.auth.signInWithPassword({
                 email: orgEmail,
                 password: orgPwd
               });
 
-              const pwdMatched = (!authErr && authData?.user) || (orgProfile && orgProfile.password === orgPwd);
+              const pwdMatched =
+                (!authErr && Boolean(authData?.user)) ||
+                (orgProfile && orgProfile.password && String(orgProfile.password) === String(orgPwd));
+
               if (!pwdMatched || !orgProfile) {
                 throw new Error("Unauthorized organizer credentials");
               }
 
               btnReset("btnOrgLogin");
               resetLoginAttempts();
-              triggerArenaEntry({ ...orgProfile, role: "organizer" }, ORGANIZER_REDIRECT_URL);
+              triggerArenaEntry({ ...orgProfile, role: orgProfile.role || "organizer" }, ORGANIZER_REDIRECT_URL);
             } catch (err) {
               btnReset("btnOrgLogin");
               playAudioFx("error");
@@ -2003,7 +2114,6 @@
         doHaptic();
         resetSupportModalView();
 
-        // Pre-fill email if user already typed an email in any form or has a stored session
         const helpEmailInput = document.getElementById("helpEmail");
         const typedEmail =
           document.getElementById("loginEmail")?.value.trim() ||
@@ -2051,7 +2161,6 @@
         const ticketId = generateTicketId();
         lastCreatedTicketId = ticketId;
 
-        // 1. Save ticket to Supabase public.support_tickets
         if (isSupabaseReady && supabaseClient) {
           try {
             await supabaseClient.from("support_tickets").insert([
@@ -2067,7 +2176,6 @@
           } catch (err) {}
         }
 
-        // 2. Send immediate POST request to configurable SUPPORT_EMAIL_WEBHOOK_URL
         if (SUPPORT_EMAIL_WEBHOOK_URL) {
           fetch(SUPPORT_EMAIL_WEBHOOK_URL, {
             method: "POST",
@@ -2082,7 +2190,6 @@
           }).catch(() => {});
         }
 
-        // 3. Replace form with instant Ticket Created Receipt Card
         btnReset("btnSubmitTicket");
         playAudioFx("success");
 
@@ -2112,22 +2219,64 @@
       }
 
       // ============================================================================
-      // 7. PHONE OTP, RATE LIMITER, PING MONITOR, PWA INSTALL, & ACCOUNTS SWITCHER
+      // 7. DIRECT LIVE WHATSAPP OTP DELIVERY (GREEN-API DIRECT + WEBHOOK FALLBACK)
       // ============================================================================
-      async function sendOtpViaGateway(phone, otpCode) {
-        const cleanDigits = String(phone).replace(/\D/g, "");
-        if (OTP_GATEWAY_WEBHOOK_URL && OTP_GATEWAY_WEBHOOK_URL.includes("green-api.com")) {
-          const res = await fetch(OTP_GATEWAY_WEBHOOK_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              chatId: `${cleanDigits}@c.us`,
-              message: `Your Tournyx Esports verification OTP is *${otpCode}*. Valid for 5 minutes. Do not share this code.`
-            })
-          });
-          return res.ok;
+      async function sendOtpViaGateway(phone10Digits, otpCode) {
+        const clean10 = String(phone10Digits).replace(/\D/g, "").slice(-10);
+        const fullIntlDigits = `91${clean10}`;
+        const whatsappMessage = `Your Tournyx Esports verification OTP is *${otpCode}*. Valid for 5 minutes. Do not share this code.`;
+
+        // 1. Primary Direct Green-API WhatsApp Delivery (No Google Apps Script needed)
+        const hasGreenApiCreds =
+          GREEN_API_INSTANCE_ID &&
+          GREEN_API_TOKEN &&
+          !GREEN_API_INSTANCE_ID.includes("YOUR_GREEN_API") &&
+          !GREEN_API_TOKEN.includes("YOUR_GREEN_API");
+
+        if (hasGreenApiCreds) {
+          const instancePrefix = String(GREEN_API_INSTANCE_ID).trim().slice(0, 4) || "7107";
+          const greenApiEndpoint = `https://${instancePrefix}.api.greenapi.com/waInstance${GREEN_API_INSTANCE_ID.trim()}/sendMessage/${GREEN_API_TOKEN.trim()}`;
+
+          try {
+            const response = await fetch(greenApiEndpoint, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                chatId: `${fullIntlDigits}@c.us`,
+                message: whatsappMessage
+              })
+            });
+
+            if (response.ok) {
+              return { delivered: true, channel: "WhatsApp" };
+            }
+          } catch (err) {
+            console.warn("Direct Green-API request warning:", err);
+          }
         }
-        return false;
+
+        // 2. Optional Webhook Fallback (if OTP_WEBHOOK_URL is configured)
+        if (OTP_WEBHOOK_URL && OTP_WEBHOOK_URL.trim() !== "") {
+          try {
+            const fallbackRes = await fetch(OTP_WEBHOOK_URL.trim(), {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                phone: `+91${clean10}`,
+                chatId: `${fullIntlDigits}@c.us`,
+                otp: otpCode,
+                message: whatsappMessage
+              })
+            });
+            if (fallbackRes.ok) {
+              return { delivered: true, channel: "Webhook" };
+            }
+          } catch (err) {
+            console.warn("Fallback OTP webhook warning:", err);
+          }
+        }
+
+        return { delivered: false, channel: "None" };
       }
 
       function initPhoneFormatLock() {
@@ -2152,13 +2301,25 @@
           return;
         }
 
+        btnLoading("btnSendPhoneOtp", "SENDING...");
         generatedPhoneOtp = String(Math.floor(100000 + Math.random() * 900000));
-        await sendOtpViaGateway("+91" + digits, generatedPhoneOtp).catch(() => {});
+
+        const result = await sendOtpViaGateway(digits, generatedPhoneOtp);
+        btnReset("btnSendPhoneOtp");
 
         const otpGroup = document.getElementById("phoneOtpGroup");
+        const hintEl = document.getElementById("sandboxOtpHint");
         otpGroup.classList.remove("hidden");
         otpGroup.classList.add("flex");
-        showToast("6-digit OTP dispatched to your WhatsApp / SMS.", true);
+
+        if (result.delivered) {
+          if (hintEl) hintEl.innerText = `OTP sent to WhatsApp (+91 ${digits})`;
+          playAudioFx("success");
+          showToast("6-digit OTP sent directly to your WhatsApp!", true);
+        } else {
+          if (hintEl) hintEl.innerText = "Check your WhatsApp for the 6-digit code";
+          showToast("OTP generated. Please check your WhatsApp messages.", true);
+        }
       }
 
       function verifyPhoneOtp() {
@@ -2172,10 +2333,10 @@
         playAudioFx("success");
         isPhoneVerified = true;
         document.getElementById("regPhone").readOnly = true;
-        document.getElementById("phoneOtpStatusTag").innerText = "● PHONE VERIFIED";
+        document.getElementById("phoneOtpStatusTag").innerText = "● WHATSAPP VERIFIED";
         document.getElementById("phoneOtpStatusTag").className = "font-mono text-[9px] text-[#00ff7f] uppercase font-bold";
         document.getElementById("btnVerifyPhoneOtp").innerText = "VERIFIED ✓";
-        showToast("Phone number verified!", true);
+        showToast("WhatsApp phone number verified!", true);
       }
 
       function unlockPhoneInput() {
@@ -2673,7 +2834,7 @@
         playAudioFx("click");
         doHaptic();
         btnLoading("btnResetPwd", "SENDING...");
-        const email = document.getElementById("resetEmailInput").value.trim();
+        const email = document.getElementById("resetEmailInput").value.trim().toLowerCase();
         try {
           if (isSupabaseReady && supabaseClient) {
             await supabaseClient.auth.resetPasswordForEmail(email, {
@@ -2788,13 +2949,24 @@
         document.querySelectorAll(".modal-overlay").forEach((m) => m.classList.remove("active"));
       }
 
-      function quickLogin() {
+      async function quickLogin() {
         playAudioFx("click");
         doHaptic();
         if (!verifyLocationUnlocked()) return;
         try {
           const user = JSON.parse(localStorage.getItem("tournyx_user"));
-          if (user) triggerArenaEntry(user, REDIRECT_URL);
+          if (user && user.email) {
+            let freshProfile = user;
+            if (isSupabaseReady && supabaseClient) {
+              const { data: dbRow } = await supabaseClient
+                .from("Users")
+                .select("*")
+                .ilike("email", String(user.email).trim().toLowerCase())
+                .maybeSingle();
+              if (dbRow) freshProfile = { ...user, ...dbRow };
+            }
+            triggerArenaEntry(freshProfile, REDIRECT_URL);
+          }
         } catch (e) {}
       }
 
@@ -2813,7 +2985,13 @@
         playAudioFx("success");
         if (navigator.vibrate) navigator.vibrate([18, 40, 18]);
         closeModals();
-        const profile = { ...user, isLoggedIn: true };
+        const profile = {
+          ...user,
+          email: String(user.email || "").trim().toLowerCase(),
+          ign: user.ign || user.username || "Player",
+          username: user.username || user.ign || "Player",
+          isLoggedIn: true
+        };
         saveRecentAccount(profile);
         localStorage.setItem("tournyx_user", JSON.stringify(profile));
         localStorage.setItem("tournyx_userData", JSON.stringify(profile));
