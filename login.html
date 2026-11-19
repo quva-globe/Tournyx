@@ -732,7 +732,7 @@
               </div>
             </div>
 
-            <!-- Phone OTP Verification (Direct Green-API WhatsApp Delivery) -->
+            <!-- Phone OTP Verification (Supabase Edge Function WhatsApp Delivery) -->
             <div class="p-3 rounded-2xl bg-[#090910] border border-[#252435] space-y-2">
               <div class="flex items-center justify-between">
                 <label class="font-mono text-[9px] text-[#D4FF00] tracking-widest uppercase font-bold">
@@ -1132,16 +1132,14 @@
       "use strict";
 
       // ============================================================================
-      // 🚨 PASTE YOUR PRODUCTION KEYS & WEBHOOK URLS HERE
+      // 🚨 PUBLIC CLIENT CONFIGURATION (SECRET KEYS LIVE IN SUPABASE EDGE FUNCTION)
       // ============================================================================
       const SUPABASE_URL = "https://zuatrwfrejnwfnldqqgy.supabase.co";
       const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1YXRyd2ZyZWpud2ZubGRxcWd5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNDE5NjEsImV4cCI6MjA5OTYxNzk2MX0.zcJO4Es-DnuUKR-L_Eu44xIwmz4PxsFVCgs-t492t1g";
       const GOOGLE_CLIENT_ID = "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com";
-      const SUPPORT_EMAIL_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbyqqTpgaflxKJ9xH0jq7mJ_jLzcoNhas3gNo0h5gvoa_6r5Ae9NFxJAJp7ZoYNnMRKl/exec";
 
       const REDIRECT_URL = "index.html";
       const ORGANIZER_REDIRECT_URL = "index.html";
-
 
       // Runtime State
       let supabaseClient = null;
@@ -1154,7 +1152,6 @@
       let googleAuthenticatedEmail = "";
       let googleAuthenticatedUserId = "";
       let isPhoneVerified = false;
-      let generatedPhoneOtp = "";
       let lastCreatedTicketId = "";
       let isAudioUnmuted = false;
 
@@ -2170,20 +2167,12 @@
               }
             ]);
           } catch (err) {}
-        }
 
-        if (SUPPORT_EMAIL_WEBHOOK_URL) {
-          fetch(SUPPORT_EMAIL_WEBHOOK_URL, {
-            method: "POST",
-            mode: "no-cors",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              ticket_id: ticketId,
-              email: email,
-              category: category,
-              message: message
+          supabaseClient.functions
+            .invoke("tournyx-auth-gateway", {
+              body: { action: "support_email", ticket_id: ticketId, email, category, message }
             })
-          }).catch(() => {});
+            .catch(() => {});
         }
 
         btnReset("btnSubmitTicket");
@@ -2213,64 +2202,8 @@
       }
 
       // ============================================================================
-      // 7. DIRECT LIVE WHATSAPP OTP DELIVERY (GREEN-API DIRECT + WEBHOOK FALLBACK)
+      // 7. SUPABASE EDGE FUNCTION WHATSAPP OTP DELIVERY
       // ============================================================================
-      async function sendOtpViaGateway(phone10Digits, otpCode) {
-        const clean10 = String(phone10Digits).replace(/\D/g, "").slice(-10);
-        const fullIntlDigits = `91${clean10}`;
-        const whatsappMessage = `Your Tournyx Esports verification OTP is *${otpCode}*. Valid for 5 minutes. Do not share this code.`;
-
-        const hasGreenApiCreds =
-          GREEN_API_INSTANCE_ID &&
-          GREEN_API_TOKEN &&
-          !GREEN_API_INSTANCE_ID.includes("YOUR_GREEN_API") &&
-          !GREEN_API_TOKEN.includes("YOUR_GREEN_API");
-
-        if (hasGreenApiCreds) {
-          const instancePrefix = String(GREEN_API_INSTANCE_ID).trim().slice(0, 4) || "7107";
-          const greenApiEndpoint = `https://${instancePrefix}.api.greenapi.com/waInstance${GREEN_API_INSTANCE_ID.trim()}/sendMessage/${GREEN_API_TOKEN.trim()}`;
-
-          try {
-            const response = await fetch(greenApiEndpoint, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                chatId: `${fullIntlDigits}@c.us`,
-                message: whatsappMessage
-              })
-            });
-
-            if (response.ok) {
-              return { delivered: true, channel: "WhatsApp" };
-            }
-          } catch (err) {
-            console.warn("Direct Green-API request warning:", err);
-          }
-        }
-
-        if (OTP_WEBHOOK_URL && OTP_WEBHOOK_URL.trim() !== "") {
-          try {
-            const fallbackRes = await fetch(OTP_WEBHOOK_URL.trim(), {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                phone: `+91${clean10}`,
-                chatId: `${fullIntlDigits}@c.us`,
-                otp: otpCode,
-                message: whatsappMessage
-              })
-            });
-            if (fallbackRes.ok) {
-              return { delivered: true, channel: "Webhook" };
-            }
-          } catch (err) {
-            console.warn("Fallback OTP webhook warning:", err);
-          }
-        }
-
-        return { delivered: false, channel: "None" };
-      }
-
       function initPhoneFormatLock() {
         const phoneInput = document.getElementById("regPhone");
         if (!phoneInput) return;
@@ -2283,63 +2216,78 @@
       }
 
       async function sendPhoneOtp() {
-  doHaptic();
-  const phoneEl = document.getElementById("regPhone");
-  const digits = phoneEl.value.substring(4).replace(/\D/g, "");
-  if (!/^[6-9]\d{9}$/.test(digits)) {
-    showToast("Enter a valid 10-digit Indian mobile number (+91).");
-    return;
-  }
+        doHaptic();
+        const phoneEl = document.getElementById("regPhone");
+        const digits = phoneEl.value.substring(4).replace(/\D/g, "");
+        if (!/^[6-9]\d{9}$/.test(digits)) {
+          showToast("Enter a valid 10-digit Indian mobile number (+91).");
+          return;
+        }
 
-  btnLoading("btnSendPhoneOtp", "SENDING...");
-  const { data, error } = await supabaseClient.functions.invoke("tournyx-auth-gateway", {
-    body: { action: "send_otp", phone: "91" + digits }
-  });
-  btnReset("btnSendPhoneOtp");
+        if (!isSupabaseReady || !supabaseClient) {
+          showToast("Authentication service initializing. Please try again.");
+          return;
+        }
 
-  if (error || !data?.ok) {
-    showToast("Failed to send WhatsApp OTP. Please retry.");
-    return;
-  }
+        btnLoading("btnSendPhoneOtp", "SENDING...");
+        try {
+          const { data, error } = await supabaseClient.functions.invoke("tournyx-auth-gateway", {
+            body: { action: "send_otp", phone: "91" + digits }
+          });
+          btnReset("btnSendPhoneOtp");
 
-  const otpGroup = document.getElementById("phoneOtpGroup");
-  otpGroup.classList.remove("hidden");
-  otpGroup.classList.add("flex");
-  showToast("6-digit OTP sent to your WhatsApp!", true);
-}
+          if (error || !data?.ok) {
+            showToast("Failed to send WhatsApp OTP. Please retry.");
+            return;
+          }
 
-async function verifyPhoneOtp() {
-  doHaptic();
-  const digits = document.getElementById("regPhone").value.substring(4).replace(/\D/g, "");
-  const entered = document.getElementById("regPhoneOtp").value.trim();
-  if (entered.length !== 6) {
-    showToast("Enter the 6-digit OTP code.");
-    return;
-  }
+          const otpGroup = document.getElementById("phoneOtpGroup");
+          otpGroup.classList.remove("hidden");
+          otpGroup.classList.add("flex");
+          showToast("6-digit OTP sent to your WhatsApp!", true);
+        } catch (err) {
+          btnReset("btnSendPhoneOtp");
+          showToast("Failed to send WhatsApp OTP. Please retry.");
+        }
+      }
 
-  btnLoading("btnVerifyPhoneOtp", "CHECKING...");
-  const { data, error } = await supabaseClient.functions.invoke("tournyx-auth-gateway", {
-    body: { action: "verify_otp", phone: "91" + digits, otp: entered }
-  });
-  btnReset("btnVerifyPhoneOtp");
+      async function verifyPhoneOtp() {
+        doHaptic();
+        const digits = document.getElementById("regPhone").value.substring(4).replace(/\D/g, "");
+        const entered = document.getElementById("regPhoneOtp").value.trim();
+        if (entered.length !== 6) {
+          showToast("Enter the 6-digit OTP code.");
+          return;
+        }
 
-  if (error || !data?.ok) {
-    showToast("Invalid or expired OTP code.");
-    return;
-  }
+        if (!isSupabaseReady || !supabaseClient) {
+          showToast("Authentication service initializing. Please try again.");
+          return;
+        }
 
-  isPhoneVerified = true;
-  document.getElementById("regPhone").readOnly = true;
-  document.getElementById("phoneOtpStatusTag").innerText = "● PHONE VERIFIED";
-  document.getElementById("phoneOtpStatusTag").className = "font-mono text-[9px] text-[#00ff7f] uppercase font-bold";
-  document.getElementById("btnVerifyPhoneOtp").innerText = "VERIFIED ✓";
-  showToast("Phone number verified!", true);
-}
+        btnLoading("btnVerifyPhoneOtp", "CHECKING...");
+        try {
+          const { data, error } = await supabaseClient.functions.invoke("tournyx-auth-gateway", {
+            body: { action: "verify_otp", phone: "91" + digits, otp: entered }
+          });
+          btnReset("btnVerifyPhoneOtp");
 
-// Inside submitSupportTicket() — replace the direct fetch(SUPPORT_EMAIL_WEBHOOK_URL, ...) with:
-supabaseClient.functions.invoke("tournyx-auth-gateway", {
-  body: { action: "support_email", ticket_id: ticketId, email, category, message }
-}).catch(() => {});
+          if (error || !data?.ok) {
+            showToast("Invalid or expired OTP code.");
+            return;
+          }
+
+          isPhoneVerified = true;
+          document.getElementById("regPhone").readOnly = true;
+          document.getElementById("phoneOtpStatusTag").innerText = "● PHONE VERIFIED";
+          document.getElementById("phoneOtpStatusTag").className = "font-mono text-[9px] text-[#00ff7f] uppercase font-bold";
+          document.getElementById("btnVerifyPhoneOtp").innerText = "VERIFIED ✓";
+          showToast("Phone number verified!", true);
+        } catch (err) {
+          btnReset("btnVerifyPhoneOtp");
+          showToast("Invalid or expired OTP code.");
+        }
+      }
 
       function unlockPhoneInput() {
         isPhoneVerified = false;
@@ -2349,7 +2297,11 @@ supabaseClient.functions.invoke("tournyx-auth-gateway", {
         document.getElementById("phoneOtpStatusTag").className = "font-mono text-[9px] text-[#a09fb1] uppercase";
         document.getElementById("phoneOtpGroup").classList.remove("flex");
         document.getElementById("phoneOtpGroup").classList.add("hidden");
-        document.getElementById("btnVerifyPhoneOtp").innerText = "VERIFY OTP";
+        const verifyBtn = document.getElementById("btnVerifyPhoneOtp");
+        if (verifyBtn) {
+          verifyBtn.disabled = false;
+          verifyBtn.innerText = "VERIFY OTP";
+        }
       }
 
       // 4-Attempt Anti-Bruteforce Lockout Timer
