@@ -1451,13 +1451,18 @@
         }
 
         try {
+          sessionStorage.setItem("tx_oauth_pending", "1");
           showToast("Launching Google Authentication...", true);
           const { error } = await supabaseClient.auth.signInWithOAuth({
             provider: "google",
-            options: { redirectTo: window.location.origin + window.location.pathname }
+            options: {
+              redirectTo: window.location.origin + window.location.pathname,
+              queryParams: { prompt: "select_account" }
+            }
           });
           if (error) throw error;
         } catch (err) {
+          sessionStorage.removeItem("tx_oauth_pending");
           showToast("Google OAuth failed to initialize.");
         }
       }
@@ -1472,6 +1477,7 @@
         }
 
         try {
+          sessionStorage.setItem("tx_oauth_pending", "1");
           showToast("Launching Discord Authentication...", true);
           const { error } = await supabaseClient.auth.signInWithOAuth({
             provider: "discord",
@@ -1479,6 +1485,7 @@
           });
           if (error) throw error;
         } catch (err) {
+          sessionStorage.removeItem("tx_oauth_pending");
           showToast("Discord OAuth failed to initialize.");
         }
       }
@@ -1508,6 +1515,7 @@
       async function handleOAuthCallbackUser(sbUser) {
         if (!sbUser) return;
         window.skipIntroNow();
+        sessionStorage.removeItem("tx_oauth_pending");
 
         if (window.location.hash || window.location.search.includes("code=")) {
           window.history.replaceState({}, document.title, window.location.pathname);
@@ -1952,37 +1960,37 @@
               }
 
               // 1. Check existing email or IGN in public.Users
-const { data: existingRows } = await supabaseClient
-  .from("Users")
-  .select("email, ign")
-  .or(`email.ilike.${email},ign.ilike.${ign}`)
-  .limit(1);
+              const { data: existingRows } = await supabaseClient
+                .from("Users")
+                .select("email, ign")
+                .or(`email.ilike.${email},ign.ilike.${ign}`)
+                .limit(1);
 
-if (existingRows && existingRows.length > 0 && !isGoogleSignupMode) {
-  btnReset("btnSignup");
-  showToast("An account with this Email or IGN is already registered.");
-  return;
-}
+              if (existingRows && existingRows.length > 0 && !isGoogleSignupMode) {
+                btnReset("btnSignup");
+                showToast("An account with this Email or IGN is already registered.");
+                return;
+              }
 
-// 1B. GATE 2: Strictly block duplicate mobile number on final submit
-if (numericPhone) {
-  const { data: existingPhoneRows } = await supabaseClient
-    .from("Users")
-    .select("email, phone")
-    .in("phone", [numericPhone, Number("91" + phoneDigits10)])
-    .limit(1);
+              // 1B. GATE 2: Strictly block duplicate mobile number on final submit
+              if (numericPhone) {
+                const { data: existingPhoneRows } = await supabaseClient
+                  .from("Users")
+                  .select("email, phone")
+                  .in("phone", [numericPhone, Number("91" + phoneDigits10)])
+                  .limit(1);
 
-  if (
-    existingPhoneRows &&
-    existingPhoneRows.length > 0 &&
-    String(existingPhoneRows[0].email || "").trim().toLowerCase() !== email
-  ) {
-    btnReset("btnSignup");
-    shakeAuthCard();
-    showToast("Mobile number already exists! Each number can only belong to one account.");
-    return;
-  }
-}
+                if (
+                  existingPhoneRows &&
+                  existingPhoneRows.length > 0 &&
+                  String(existingPhoneRows[0].email || "").trim().toLowerCase() !== email
+                ) {
+                  btnReset("btnSignup");
+                  shakeAuthCard();
+                  showToast("Mobile number already exists! Each number can only belong to one account.");
+                  return;
+                }
+              }
 
               // 2. Establish Supabase Auth session first so RLS authenticated policies pass
               if (!isGoogleSignupMode) {
@@ -2037,16 +2045,18 @@ if (numericPhone) {
               localStorage.setItem("tournyx_user", JSON.stringify(savedProfile));
               localStorage.setItem("tournyx_userData", JSON.stringify(savedProfile));
               triggerArenaEntry(savedProfile, REDIRECT_URL);
-           } catch (err) {
-  btnReset("btnSignup");
-  const errMsg = String(err?.message || "").toLowerCase();
-  if (err?.code === "23505" || errMsg.includes("users_unique_phone")) {
-    shakeAuthCard();
-    showToast("Mobile number already exists! Please use a different number.");
-  } else {
-    showToast(err.message || "Registration could not be completed. Please try again.");
-  }
-}
+            } catch (err) {
+              btnReset("btnSignup");
+              const errMsg = String(err?.message || "").toLowerCase();
+              if (err?.code === "23505" || errMsg.includes("users_unique_phone")) {
+                shakeAuthCard();
+                showToast("Mobile number already exists! Please use a different number.");
+              } else {
+                showToast(err.message || "Registration could not be completed. Please try again.");
+              }
+            }
+          });
+        }
 
         if (orgForm) {
           orgForm.addEventListener("submit", async (e) => {
@@ -2226,7 +2236,7 @@ if (numericPhone) {
       }
 
       // ============================================================================
-      // 7. SUPABASE EDGE FUNCTION WHATSAPP OTP DELIVERY
+      // 7. SUPABASE EDGE FUNCTION WHATSAPP OTP DELIVERY + UNIQUE MOBILE GATE
       // ============================================================================
       function initPhoneFormatLock() {
         const phoneInput = document.getElementById("regPhone");
@@ -2239,57 +2249,57 @@ if (numericPhone) {
         });
       }
 
-     async function sendPhoneOtp() {
-  doHaptic();
-  const phoneEl = document.getElementById("regPhone");
-  const digits = phoneEl.value.substring(4).replace(/\D/g, "");
-  if (!/^[6-9]\d{9}$/.test(digits)) {
-    showToast("Enter a valid 10-digit Indian mobile number (+91).");
-    return;
-  }
+      async function sendPhoneOtp() {
+        doHaptic();
+        const phoneEl = document.getElementById("regPhone");
+        const digits = phoneEl.value.substring(4).replace(/\D/g, "");
+        if (!/^[6-9]\d{9}$/.test(digits)) {
+          showToast("Enter a valid 10-digit Indian mobile number (+91).");
+          return;
+        }
 
-  if (!isSupabaseReady || !supabaseClient) {
-    showToast("Authentication service initializing. Please try again.");
-    return;
-  }
+        if (!isSupabaseReady || !supabaseClient) {
+          showToast("Authentication service initializing. Please try again.");
+          return;
+        }
 
-  btnLoading("btnSendPhoneOtp", "CHECKING...");
-  try {
-    // GATE 1: Verify mobile number is not already linked to another user
-    const { data: existingPhone, error: phoneErr } = await supabaseClient
-      .from("Users")
-      .select("email, phone")
-      .in("phone", [Number(digits), Number("91" + digits)])
-      .limit(1);
+        btnLoading("btnSendPhoneOtp", "CHECKING...");
+        try {
+          // GATE 1: Verify mobile number is not already linked to another user
+          const { data: existingPhone, error: phoneErr } = await supabaseClient
+            .from("Users")
+            .select("email, phone")
+            .in("phone", [Number(digits), Number("91" + digits)])
+            .limit(1);
 
-    if (!phoneErr && existingPhone && existingPhone.length > 0) {
-      btnReset("btnSendPhoneOtp");
-      shakeAuthCard();
-      showToast("Mobile number already exists! Please use another number or login.");
-      return;
-    }
+          if (!phoneErr && existingPhone && existingPhone.length > 0) {
+            btnReset("btnSendPhoneOtp");
+            shakeAuthCard();
+            showToast("Mobile number already exists! Please use another number or login.");
+            return;
+          }
 
-    // Number is unique -> dispatch WhatsApp OTP
-    document.getElementById("btnSendPhoneOtp").innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>SENDING...</span>`;
-    const { data, error } = await supabaseClient.functions.invoke("tournyx-auth-gateway", {
-      body: { action: "send_otp", phone: "91" + digits }
-    });
-    btnReset("btnSendPhoneOtp");
+          // Number is unique -> dispatch WhatsApp OTP
+          document.getElementById("btnSendPhoneOtp").innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>SENDING...</span>`;
+          const { data, error } = await supabaseClient.functions.invoke("tournyx-auth-gateway", {
+            body: { action: "send_otp", phone: "91" + digits }
+          });
+          btnReset("btnSendPhoneOtp");
 
-    if (error || !data?.ok) {
-      showToast("Failed to send WhatsApp OTP. Please retry.");
-      return;
-    }
+          if (error || !data?.ok) {
+            showToast("Failed to send WhatsApp OTP. Please retry.");
+            return;
+          }
 
-    const otpGroup = document.getElementById("phoneOtpGroup");
-    otpGroup.classList.remove("hidden");
-    otpGroup.classList.add("flex");
-    showToast("6-digit OTP sent to your WhatsApp!", true);
-  } catch (err) {
-    btnReset("btnSendPhoneOtp");
-    showToast("Failed to send WhatsApp OTP. Please retry.");
-  }
-}
+          const otpGroup = document.getElementById("phoneOtpGroup");
+          otpGroup.classList.remove("hidden");
+          otpGroup.classList.add("flex");
+          showToast("6-digit OTP sent to your WhatsApp!", true);
+        } catch (err) {
+          btnReset("btnSendPhoneOtp");
+          showToast("Failed to send WhatsApp OTP. Please retry.");
+        }
+      }
 
       async function verifyPhoneOtp() {
         doHaptic();
@@ -2477,7 +2487,7 @@ if (numericPhone) {
           accounts.unshift({
             ign: userObj.ign || userObj.username || "Player",
             email: userObj.email,
-            avatar: formatImageUrl(userObj.avatar, userObj.ign)
+            avatar: formatImageUrl(userObj.avatar, userObj.ign || userObj.username)
           });
           if (accounts.length > 5) accounts.pop();
           localStorage.setItem("tournyx_recent_accounts", JSON.stringify(accounts));
@@ -2585,6 +2595,8 @@ if (numericPhone) {
           window.location.hash.includes("access_token=") ||
           window.location.hash.includes("error_description=") ||
           window.location.search.includes("code=");
+        const pendingOAuth = sessionStorage.getItem("tx_oauth_pending") === "1";
+        const isOAuthReturn = hadOAuthHash || pendingOAuth;
 
         if (hadOAuthHash) window.skipIntroNow();
 
@@ -2597,6 +2609,29 @@ if (numericPhone) {
 
             fetchLiveTournaments();
 
+            // Prevent stale cached OAuth session from forcefully auto-logging in after logout.
+            // Instead, save the profile to the ACCOUNTS tab and clear the cached auth token locally.
+            if (!isOAuthReturn) {
+              supabaseClient.auth
+                .getSession()
+                .then(({ data }) => {
+                  const staleUser = data?.session?.user;
+                  if (staleUser && staleUser.email) {
+                    saveRecentAccount({
+                      email: staleUser.email.trim().toLowerCase(),
+                      ign: staleUser.user_metadata?.ign || staleUser.user_metadata?.full_name || staleUser.email.split("@")[0],
+                      username: staleUser.user_metadata?.full_name || staleUser.user_metadata?.name || "Player",
+                      avatar: staleUser.user_metadata?.avatar_url || staleUser.user_metadata?.picture || ""
+                    });
+                    const hasActiveLocalUser = Boolean(localStorage.getItem("tournyx_user"));
+                    if (!hasActiveLocalUser) {
+                      supabaseClient.auth.signOut({ scope: "local" }).catch(() => {});
+                    }
+                  }
+                })
+                .catch(() => {});
+            }
+
             supabaseClient.auth.onAuthStateChange(async (event, session) => {
               if (
                 window.location.hash.includes("access_token") ||
@@ -2606,7 +2641,13 @@ if (numericPhone) {
                 window.history.replaceState({}, document.title, window.location.pathname);
               }
 
-              if ((event === "SIGNED_IN" || (hadOAuthHash && event === "INITIAL_SESSION")) && session && session.user) {
+              // ONLY run OAuth callback redirect when user explicitly initiated OAuth
+              if (
+                isOAuthReturn &&
+                (event === "SIGNED_IN" || event === "INITIAL_SESSION") &&
+                session &&
+                session.user
+              ) {
                 if (oauthCallbackProcessed) return;
                 oauthCallbackProcessed = true;
                 await handleOAuthCallbackUser(session.user);
@@ -2952,7 +2993,19 @@ if (numericPhone) {
       function logoutUser(e) {
         if (e) { e.preventDefault(); e.stopPropagation(); }
         doHaptic();
-        if (isSupabaseReady && supabaseClient) supabaseClient.auth.signOut().catch(() => {});
+        sessionStorage.removeItem("tx_oauth_pending");
+        try {
+          const current = JSON.parse(localStorage.getItem("tournyx_user"));
+          if (current && current.email) saveRecentAccount(current);
+        } catch (err) {}
+        if (isSupabaseReady && supabaseClient) {
+          supabaseClient.auth.signOut({ scope: "local" }).catch(() => {});
+        }
+        try {
+          if (window.google?.accounts?.id?.disableAutoSelect) {
+            window.google.accounts.id.disableAutoSelect();
+          }
+        } catch (err) {}
         localStorage.removeItem("tournyx_user");
         localStorage.removeItem("tournyx_userData");
         document.getElementById("loggedInProfile").classList.add("hidden");
@@ -2999,6 +3052,7 @@ if (numericPhone) {
         try {
           const user = JSON.parse(localStorage.getItem("tournyx_user"));
           if (user && user.email) {
+            saveRecentAccount(user);
             document.getElementById("loggedInName").innerText = user.ign || user.username || "COMMANDER";
             document.getElementById("loggedInAvatar").src = formatImageUrl(user.avatar, user.ign);
             document.getElementById("loggedInProfile").classList.remove("hidden");
