@@ -1952,17 +1952,37 @@
               }
 
               // 1. Check existing email or IGN in public.Users
-              const { data: existingRows } = await supabaseClient
-                .from("Users")
-                .select("email, ign")
-                .or(`email.ilike.${email},ign.ilike.${ign}`)
-                .limit(1);
+const { data: existingRows } = await supabaseClient
+  .from("Users")
+  .select("email, ign")
+  .or(`email.ilike.${email},ign.ilike.${ign}`)
+  .limit(1);
 
-              if (existingRows && existingRows.length > 0 && !isGoogleSignupMode) {
-                btnReset("btnSignup");
-                showToast("An account with this Email or IGN is already registered.");
-                return;
-              }
+if (existingRows && existingRows.length > 0 && !isGoogleSignupMode) {
+  btnReset("btnSignup");
+  showToast("An account with this Email or IGN is already registered.");
+  return;
+}
+
+// 1B. GATE 2: Strictly block duplicate mobile number on final submit
+if (numericPhone) {
+  const { data: existingPhoneRows } = await supabaseClient
+    .from("Users")
+    .select("email, phone")
+    .in("phone", [numericPhone, Number("91" + phoneDigits10)])
+    .limit(1);
+
+  if (
+    existingPhoneRows &&
+    existingPhoneRows.length > 0 &&
+    String(existingPhoneRows[0].email || "").trim().toLowerCase() !== email
+  ) {
+    btnReset("btnSignup");
+    shakeAuthCard();
+    showToast("Mobile number already exists! Each number can only belong to one account.");
+    return;
+  }
+}
 
               // 2. Establish Supabase Auth session first so RLS authenticated policies pass
               if (!isGoogleSignupMode) {
@@ -2017,12 +2037,16 @@
               localStorage.setItem("tournyx_user", JSON.stringify(savedProfile));
               localStorage.setItem("tournyx_userData", JSON.stringify(savedProfile));
               triggerArenaEntry(savedProfile, REDIRECT_URL);
-            } catch (err) {
-              btnReset("btnSignup");
-              showToast(err.message || "Registration could not be completed. Please try again.");
-            }
-          });
-        }
+           } catch (err) {
+  btnReset("btnSignup");
+  const errMsg = String(err?.message || "").toLowerCase();
+  if (err?.code === "23505" || errMsg.includes("users_unique_phone")) {
+    shakeAuthCard();
+    showToast("Mobile number already exists! Please use a different number.");
+  } else {
+    showToast(err.message || "Registration could not be completed. Please try again.");
+  }
+}
 
         if (orgForm) {
           orgForm.addEventListener("submit", async (e) => {
@@ -2215,41 +2239,57 @@
         });
       }
 
-      async function sendPhoneOtp() {
-        doHaptic();
-        const phoneEl = document.getElementById("regPhone");
-        const digits = phoneEl.value.substring(4).replace(/\D/g, "");
-        if (!/^[6-9]\d{9}$/.test(digits)) {
-          showToast("Enter a valid 10-digit Indian mobile number (+91).");
-          return;
-        }
+     async function sendPhoneOtp() {
+  doHaptic();
+  const phoneEl = document.getElementById("regPhone");
+  const digits = phoneEl.value.substring(4).replace(/\D/g, "");
+  if (!/^[6-9]\d{9}$/.test(digits)) {
+    showToast("Enter a valid 10-digit Indian mobile number (+91).");
+    return;
+  }
 
-        if (!isSupabaseReady || !supabaseClient) {
-          showToast("Authentication service initializing. Please try again.");
-          return;
-        }
+  if (!isSupabaseReady || !supabaseClient) {
+    showToast("Authentication service initializing. Please try again.");
+    return;
+  }
 
-        btnLoading("btnSendPhoneOtp", "SENDING...");
-        try {
-          const { data, error } = await supabaseClient.functions.invoke("tournyx-auth-gateway", {
-            body: { action: "send_otp", phone: "91" + digits }
-          });
-          btnReset("btnSendPhoneOtp");
+  btnLoading("btnSendPhoneOtp", "CHECKING...");
+  try {
+    // GATE 1: Verify mobile number is not already linked to another user
+    const { data: existingPhone, error: phoneErr } = await supabaseClient
+      .from("Users")
+      .select("email, phone")
+      .in("phone", [Number(digits), Number("91" + digits)])
+      .limit(1);
 
-          if (error || !data?.ok) {
-            showToast("Failed to send WhatsApp OTP. Please retry.");
-            return;
-          }
+    if (!phoneErr && existingPhone && existingPhone.length > 0) {
+      btnReset("btnSendPhoneOtp");
+      shakeAuthCard();
+      showToast("Mobile number already exists! Please use another number or login.");
+      return;
+    }
 
-          const otpGroup = document.getElementById("phoneOtpGroup");
-          otpGroup.classList.remove("hidden");
-          otpGroup.classList.add("flex");
-          showToast("6-digit OTP sent to your WhatsApp!", true);
-        } catch (err) {
-          btnReset("btnSendPhoneOtp");
-          showToast("Failed to send WhatsApp OTP. Please retry.");
-        }
-      }
+    // Number is unique -> dispatch WhatsApp OTP
+    document.getElementById("btnSendPhoneOtp").innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>SENDING...</span>`;
+    const { data, error } = await supabaseClient.functions.invoke("tournyx-auth-gateway", {
+      body: { action: "send_otp", phone: "91" + digits }
+    });
+    btnReset("btnSendPhoneOtp");
+
+    if (error || !data?.ok) {
+      showToast("Failed to send WhatsApp OTP. Please retry.");
+      return;
+    }
+
+    const otpGroup = document.getElementById("phoneOtpGroup");
+    otpGroup.classList.remove("hidden");
+    otpGroup.classList.add("flex");
+    showToast("6-digit OTP sent to your WhatsApp!", true);
+  } catch (err) {
+    btnReset("btnSendPhoneOtp");
+    showToast("Failed to send WhatsApp OTP. Please retry.");
+  }
+}
 
       async function verifyPhoneOtp() {
         doHaptic();
