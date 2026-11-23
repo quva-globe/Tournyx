@@ -21,6 +21,12 @@
 
   <!-- Supabase JS SDK v2 -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- Certified Esports Dossier PDF Engine -->
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  
+<!-- Official Google OAuth2 Client (For Legal YouTube Channel Verification) -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -344,11 +350,200 @@
 
     .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
     .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
+    /* =========================================================
+   UPGRADED TYPOGRAPHY, THEME VARIABLES & ANIMATIONS
+   ========================================================= */
+:root {
+  --bg-canvas: #050508;
+  --bg-card: rgba(13, 13, 18, 0.90);
+  --border-card: #242330;
+  --accent-volt: #D4FF00;
+  --accent-cyan: #00f2ff;
+  --accent-purple: #8B5CF6;
+  --accent-orange: #ff9900;
+  --accent-green: #00ff7f;
+  --text-primary: #F8FAFC;
+  --text-muted: #94A3B8;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--text-primary) !important;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+.font-headline {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: -0.02em;
+}
+.font-orbitron {
+  font-family: 'Orbitron', sans-serif;
+  letter-spacing: 0.04em;
+}
+.font-mono, .stat-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Global Theme Sync Overrides for Buttons & Accents */
+.volt-btn {
+  background: linear-gradient(135deg, var(--accent-volt) 0%, var(--accent-cyan) 140%) !important;
+  color: #050508 !important;
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--accent-volt) 28%, transparent);
+}
+.tactical-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  position: relative;
+}
+.tactical-card:hover {
+  border-color: color-mix(in srgb, var(--accent-cyan) 45%, var(--border-card));
+}
+
+/* Smooth Gaming Entrance & Sheen Animations */
+@keyframes cardReveal {
+  from { opacity: 0; transform: translate3d(0, 14px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+.animate-card {
+  animation: cardReveal 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.animate-card-d1 { animation-delay: 0.05s; }
+.animate-card-d2 { animation-delay: 0.10s; }
+.animate-card-d3 { animation-delay: 0.15s; }
+
+@keyframes holoSheen {
+  0% { transform: translateX(-120%) skewX(-20deg); }
+  100% { transform: translateX(220%) skewX(-20deg); }
+}
+.holo-btn { position: relative; overflow: hidden; }
+.holo-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 45%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+  transform: translateX(-120%) skewX(-20deg);
+  transition: none;
+}
+.holo-btn:hover::after {
+  animation: holoSheen 0.85s ease forwards;
+}
+
+/* Gamer Background Particles Canvas */
+#gamerParticlesCanvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.65;
+}
+
+/* Strict OLED Black Power Saving Mode */
+body.power-save,
+body.power-save .tactical-bg {
+  background: #000000 !important;
+  background-image: none !important;
+}
+body.power-save #gamerParticlesCanvas {
+  display: none !important;
+}
+body.power-save .tactical-card,
+body.power-save .floating-pill-nav {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background: #0a0a0d !important;
+  box-shadow: none !important;
+}
+body.power-save .animate-card {
+  animation: none !important;
+}
+
+/* =========================================================
+   FLOATING PILL-SHAPED MOBILE BOTTOM NAVIGATION
+   ========================================================= */
+.floating-nav-wrap {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+@media (min-width: 768px) {
+  .floating-nav-wrap { display: none !important; }
+}
+.floating-pill-nav {
+  pointer-events: auto;
+  width: 100%;
+  max-width: 430px;
+  height: 62px;
+  padding: 6px 10px;
+  border-radius: 9999px;
+  background: rgba(11, 11, 17, 0.90);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow: 0 14px 38px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2px;
+}
+.pill-nav-link {
+  flex: 1;
+  height: 48px;
+  border-radius: 9999px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  color: #8b89a1;
+  text-decoration: none;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pill-nav-link .nav-ico { font-size: 16px; transition: transform 0.2s ease; }
+.pill-nav-link .nav-lbl {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.pill-nav-link.active {
+  background: color-mix(in srgb, var(--accent-volt) 15%, transparent);
+  color: var(--accent-volt);
+  border: 1px solid color-mix(in srgb, var(--accent-volt) 35%, transparent);
+}
+.pill-nav-link.active .nav-ico { transform: translateY(-1px); }
+.pill-fab-btn {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, var(--accent-volt), var(--accent-cyan));
+  color: #050508;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 900;
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--accent-volt) 40%, transparent);
+  transition: transform 0.2s ease;
+  margin: 0 2px;
+}
+.pill-fab-btn:active { transform: scale(0.92); }
   </style>
 </head>
 
 <body class="selection:bg-[#D4FF00] selection:text-[#050508]">
   <div class="tactical-bg" aria-hidden="true"></div>
+  <canvas id="gamerParticlesCanvas"></canvas>
 
   <!-- =========================================================
        1. DEDICATED DESKTOP COMMAND HEADER + MOBILE APP BAR
@@ -425,6 +620,18 @@
     </div>
   </header>
 
+  <!-- PUBLIC READ-ONLY SCOUTING BANNER -->
+<div id="publicDossierBanner" class="hidden mb-4 px-4 py-3 rounded-2xl bg-[#00f2ff]/10 border border-[#00f2ff]/40 flex flex-wrap items-center justify-between gap-2">
+  <div class="flex items-center gap-2.5">
+    <span class="w-2.5 h-2.5 rounded-full bg-[#00ff7f] animate-pulse"></span>
+    <div>
+      <div class="font-orbitron text-xs font-black text-white uppercase tracking-wider">PUBLIC VERIFIED SCOUTING DOSSIER</div>
+      <div class="font-mono text-[10px] text-[#00f2ff]">Read-Only Official Tournyx Player Record • Viewers Cannot Edit</div>
+    </div>
+  </div>
+  <div id="publicBannerAction"></div>
+</div>
+  
   <!-- =========================================================
        2. MAIN CONTAINER (Full 1280px Desktop + Fluid Mobile)
        ========================================================= -->
@@ -740,14 +947,25 @@
       <!-- LEFT COLUMN (5 Cols on Desktop): UIDs, Prize Vault, Milestone, Settings -->
       <div class="lg:col-span-5 space-y-5">
 
-        <!-- Card 1: Verified UIDs & Connected Accounts -->
-        <section class="tactical-card rounded-2xl p-5 space-y-3.5">
-          <div class="flex items-center justify-between">
-            <h2 class="font-headline text-sm font-extrabold text-white flex items-center gap-2">
-              <i class="fa-solid fa-gamepad text-[#D4FF00]"></i> Verified In-Game Handles
-            </h2>
-            <span class="px-2 py-0.5 rounded bg-[#00FF7F]/12 text-[#00FF7F] font-mono text-[9px] font-bold uppercase">API SYNCED</span>
-          </div>
+        <!-- VERIFIED MULTI-GAME HANDLES (Supports Multiple Accounts Per Game) -->
+<section class="tactical-card animate-card animate-card-d1 rounded-3xl p-4 sm:p-5 space-y-3">
+  <div class="flex items-center justify-between gap-2">
+    <div class="flex items-center gap-2">
+      <i class="fa-solid fa-gamepad text-[#00f2ff]"></i>
+      <h2 class="font-headline text-sm font-extrabold text-white">Verified Game Handles</h2>
+    </div>
+    <button id="btnOpenGameHandles" onclick="openGameHandlesModal()" type="button"
+      class="px-3 py-1 rounded-full bg-[#D4FF00]/15 hover:bg-[#D4FF00]/25 border border-[#D4FF00]/40 text-[#D4FF00] font-mono text-[10px] font-bold uppercase transition-all">
+      + Manage IDs
+    </button>
+  </div>
+
+  <!-- Dynamically rendered list of all BGMI / Free Fire / CODM / Valorant accounts -->
+  <div id="multiGameHandlesList" class="space-y-2"></div>
+
+  <!-- Connected Social Channels (Including Official Verified YouTube Badge) -->
+  <div id="socialLinksBar" class="flex items-center flex-wrap gap-2 pt-1"></div>
+</section>
 
           <!-- Primary Game UID Tile -->
           <div class="p-3.5 rounded-xl bg-[#08080F] border border-white/[0.06] flex items-center justify-between gap-3">
@@ -834,6 +1052,55 @@
             <span id="msCardRight">0/25 Matches</span>
           </div>
         </section>
+
+        <!-- ORGANIZER COMMAND DESK (Auto-shown directly ABOVE Account Settings for Organizers) -->
+<section id="organizerPriorityDesk" class="hidden tactical-card animate-card rounded-3xl p-4 sm:p-5 space-y-3.5 border border-[#ff9900]/40">
+  <div class="flex items-center justify-between">
+    <div class="flex items-center gap-2.5">
+      <div class="w-9 h-9 rounded-xl bg-[#ff9900]/15 border border-[#ff9900]/40 flex items-center justify-center text-[#ff9900]">
+        <i class="fa-solid fa-crown text-sm"></i>
+      </div>
+      <div>
+        <h2 class="font-orbitron text-xs sm:text-sm font-black text-[#ff9900] uppercase">Organizer Command Desk</h2>
+        <p class="font-mono text-[10px] text-[#9c9ab0]">Host Tools, Match Resolution &amp; Brackets</p>
+      </div>
+    </div>
+    <span id="orgDeskCommissionChip" class="px-2.5 py-1 rounded-full bg-[#ff9900]/15 border border-[#ff9900]/35 font-mono text-[10px] font-bold text-[#ff9900] uppercase">15% Comm.</span>
+  </div>
+
+  <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+    <a href="tournament.html" onclick="doHaptic();" class="p-3 rounded-2xl bg-[#08080e] border border-white/[0.07] hover:border-[#D4FF00]/60 transition-all flex flex-col gap-1.5">
+      <i class="fa-solid fa-plus text-[#D4FF00] text-sm"></i>
+      <span class="font-orbitron text-[11px] font-bold text-white uppercase">Create Event</span>
+      <span class="font-mono text-[9px] text-[#8a889e]">Launch Bracket</span>
+    </a>
+    <a href="resolve.html" onclick="doHaptic();" class="p-3 rounded-2xl bg-[#08080e] border border-white/[0.07] hover:border-[#FFD700]/60 transition-all flex flex-col gap-1.5">
+      <i class="fa-solid fa-trophy text-[#FFD700] text-sm"></i>
+      <span class="font-orbitron text-[11px] font-bold text-white uppercase">Resolve Match</span>
+      <span class="font-mono text-[9px] text-[#8a889e]">Payout Winners</span>
+    </a>
+    <button onclick="openAllTourneysModal()" type="button" class="p-3 rounded-2xl bg-[#08080e] border border-white/[0.07] hover:border-[#00ff7f]/60 transition-all flex flex-col gap-1.5 text-left">
+      <i class="fa-solid fa-list-check text-[#00ff7f] text-sm"></i>
+      <span class="font-orbitron text-[11px] font-bold text-white uppercase">Manager</span>
+      <span class="font-mono text-[9px] text-[#8a889e]">Edit / Boost / Clone</span>
+    </button>
+    <a href="roster.html" onclick="doHaptic();" class="p-3 rounded-2xl bg-[#08080e] border border-white/[0.07] hover:border-[#ff9900]/60 transition-all flex flex-col gap-1.5">
+      <i class="fa-solid fa-users-viewfinder text-[#ff9900] text-sm"></i>
+      <span class="font-orbitron text-[11px] font-bold text-white uppercase">Team Rosters</span>
+      <span class="font-mono text-[9px] text-[#8a889e]">Verify Squads</span>
+    </a>
+    <a href="clans.html" onclick="doHaptic();" class="p-3 rounded-2xl bg-[#08080e] border border-white/[0.07] hover:border-[#8B5CF6]/60 transition-all flex flex-col gap-1.5">
+      <i class="fa-solid fa-shield-halved text-[#c4b5fd] text-sm"></i>
+      <span class="font-orbitron text-[11px] font-bold text-white uppercase">Clan Hub</span>
+      <span class="font-mono text-[9px] text-[#8a889e]">Lineup Admin</span>
+    </a>
+    <button onclick="shareOrgProfile()" type="button" class="p-3 rounded-2xl bg-[#08080e] border border-white/[0.07] hover:border-[#00f2ff]/60 transition-all flex flex-col gap-1.5 text-left">
+      <i class="fa-solid fa-share-nodes text-[#00f2ff] text-sm"></i>
+      <span class="font-orbitron text-[11px] font-bold text-white uppercase">Share Host</span>
+      <span class="font-mono text-[9px] text-[#8a889e]">Copy Invite Link</span>
+    </button>
+  </div>
+</section>
 
         <!-- Card 4: Account & System Controls -->
         <section id="settingsContainer" class="tactical-card rounded-2xl overflow-hidden divide-y divide-white/[0.06]">
@@ -1135,49 +1402,38 @@
     </div>
   </div>
 
-  <!-- =========================================================
-       6. MOBILE BOTTOM NAVIGATION BAR (Hidden on Desktop >= 1024px)
-       ========================================================= -->
-  <nav id="bottomNavBar" class="lg:hidden fixed bottom-0 left-0 right-0 z-40 pb-safe bg-[#07070C]/95 backdrop-blur-xl border-t border-white/[0.08]">
-    <div class="h-16 px-1 flex items-center justify-between">
-      <a href="index.html" class="flex-1 flex flex-col items-center justify-center gap-1 text-[#7A788F] hover:text-white">
-        <i class="fa-solid fa-house text-base"></i>
-        <span class="font-mono text-[9px] uppercase font-semibold">Home</span>
-      </a>
-      <a href="explore.html" class="flex-1 flex flex-col items-center justify-center gap-1 text-[#7A788F] hover:text-white">
-        <i class="fa-solid fa-compass text-base"></i>
-        <span class="font-mono text-[9px] uppercase font-semibold">Explore</span>
-      </a>
-      <a href="matches.html" class="flex-1 flex flex-col items-center justify-center gap-1 text-[#7A788F] hover:text-white">
-        <i class="fa-solid fa-trophy text-base"></i>
-        <span class="font-mono text-[9px] uppercase font-semibold">Matches</span>
-      </a>
-
-      <!-- Center Floating + FAB -->
-      <div class="flex-1 flex items-center justify-center relative h-full">
-        <a href="tournament.html" onclick="doHaptic();"
-          class="absolute -top-5 w-12 h-12 rounded-2xl bg-gradient-to-br from-[#D4FF00] to-[#00F2FF] text-[#050508] border-4 border-[#050508] shadow-[0_8px_22px_rgba(212,255,0,0.35)] flex items-center justify-center text-lg active:scale-95 transition-transform">
-          <i class="fa-solid fa-plus font-black"></i>
-        </a>
-      </div>
-
-      <a href="clans.html" class="flex-1 flex flex-col items-center justify-center gap-1 text-[#7A788F] hover:text-white">
-        <i class="fa-solid fa-shield-halved text-base"></i>
-        <span class="font-mono text-[9px] uppercase font-semibold">Clan</span>
-      </a>
-      <a href="tickets.html" class="flex-1 flex flex-col items-center justify-center gap-1 text-[#7A788F] hover:text-white">
-        <div class="tx-ticket-composite">
-          <i class="fa-solid fa-ticket text-base"></i>
-          <b class="tx-text">TX</b>
-        </div>
-        <span class="font-mono text-[9px] uppercase font-semibold">Tickets</span>
-      </a>
-      <a href="profile.html" class="flex-1 flex flex-col items-center justify-center gap-1 text-[#D4FF00]">
-        <i class="fa-solid fa-user text-base"></i>
-        <span class="font-mono text-[9px] uppercase font-bold">Profile</span>
-      </a>
-    </div>
+  <!-- FLOATING PILL-SHAPED MOBILE NAVIGATION -->
+<div id="bottomNavBar" class="floating-nav-wrap">
+  <nav class="floating-pill-nav" aria-label="Mobile Navigation">
+    <a href="index.html" class="pill-nav-link">
+      <i class="fa-solid fa-house nav-ico"></i>
+      <span class="nav-lbl">Home</span>
+    </a>
+    <a href="explore.html" class="pill-nav-link">
+      <i class="fa-solid fa-compass nav-ico"></i>
+      <span class="nav-lbl">Explore</span>
+    </a>
+    <a href="matches.html" class="pill-nav-link">
+      <i class="fa-solid fa-trophy nav-ico"></i>
+      <span class="nav-lbl">Matches</span>
+    </a>
+    <a href="tournament.html" onclick="doHaptic();" class="pill-fab-btn" title="Create Tournament">
+      <i class="fa-solid fa-plus"></i>
+    </a>
+    <a href="clans.html" class="pill-nav-link">
+      <i class="fa-solid fa-shield-halved nav-ico"></i>
+      <span class="nav-lbl">Clans</span>
+    </a>
+    <a href="tickets.html" class="pill-nav-link">
+      <i class="fa-solid fa-ticket nav-ico"></i>
+      <span class="nav-lbl">Tickets</span>
+    </a>
+    <a href="profile.html" class="pill-nav-link active" aria-current="page">
+      <i class="fa-solid fa-user nav-ico"></i>
+      <span class="nav-lbl">Profile</span>
+    </a>
   </nav>
+</div>
 
   <!-- =========================================================
        7. MODALS & SLIDE-UP SHEETS (Zero alert()/confirm())
@@ -1349,7 +1605,22 @@
 
         <div class="pt-2 border-t border-white/[0.06] space-y-2.5">
           <span class="font-mono text-[10px] text-[#8E8CA6] uppercase block">Social Channels (Optional • https://)</span>
-          <input type="url" id="editYtLink" class="tx-input" placeholder="YouTube URL (https://youtube.com/...)">
+          <!-- OFFICIAL LEGAL YOUTUBE CHANNEL LINKING (Google OAuth youtube.readonly) -->
+<div class="p-3 rounded-2xl bg-[#08080e] border border-red-500/30 space-y-2">
+  <div class="flex items-center justify-between gap-2">
+    <div class="flex items-center gap-2 min-w-0">
+      <i class="fa-brands fa-youtube text-red-500 text-base"></i>
+      <div class="min-w-0">
+        <div class="font-mono text-[10px] font-bold text-white uppercase">Official YouTube Verification</div>
+        <div id="ytLinkStatusText" class="font-mono text-[10px] text-[#9c9ab0] truncate">Not Connected • Verified via Google OAuth</div>
+      </div>
+    </div>
+    <button id="btnLinkYoutubeOAuth" onclick="connectYouTubeOfficial()" type="button"
+      class="px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-mono text-[10px] font-bold uppercase flex-shrink-0 transition-colors">
+      Connect YT
+    </button>
+  </div>
+</div>
           <input type="url" id="editInstaLink" class="tx-input" placeholder="Instagram URL (https://instagram.com/...)">
           <input type="url" id="editDiscordLink" class="tx-input" placeholder="Discord Invite URL (https://discord.gg/...)">
         </div>
@@ -1587,6 +1858,96 @@
     </div>
   </div>
 
+  <!-- NEW MODAL A: MULTI-GAME HANDLES MANAGER -->
+<div id="gameHandlesModal" class="sheet-overlay">
+  <div class="sheet-card max-w-lg">
+    <div class="p-4 sm:p-5 border-b border-white/[0.06] flex items-center justify-between">
+      <h3 class="font-orbitron text-sm font-black text-[#00f2ff] uppercase flex items-center gap-2">
+        <i class="fa-solid fa-gamepad"></i> Manage Multi-Game Accounts
+      </h3>
+      <button onclick="closeModal('gameHandlesModal')" type="button" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 flex items-center justify-center text-[#9c9ab0] hover:text-white">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="p-4 sm:p-5 overflow-y-auto space-y-3" style="flex:1 1 auto; min-height:0;">
+      <p class="font-body text-xs text-[#9c9ab0]">
+        Add multiple accounts per game (e.g., BGMI Main + Alt, Free Fire MAX 1 &amp; 2). Account #1 is synced as your primary tournament ID.
+      </p>
+      <div id="editHandlesRows" class="space-y-2.5"></div>
+      <button onclick="addGameHandleRow()" type="button"
+        class="w-full py-2.5 rounded-xl border border-dashed border-[#00f2ff]/50 text-[#00f2ff] font-mono text-xs font-bold uppercase hover:bg-[#00f2ff]/10 transition-colors">
+        + Add Another Game Account
+      </button>
+    </div>
+
+    <div class="p-4 sm:p-5 pb-safe border-t border-white/[0.06] bg-[#09090f]">
+      <button id="btnSaveHandles" onclick="saveGameHandles()" type="button" class="volt-btn w-full py-3.5 rounded-2xl font-orbitron text-xs font-black uppercase">
+        Save All Game Accounts
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- NEW MODAL B: 5 ESPORTS THEME PALETTES + ₹10 CUSTOM PALETTE UPLOAD STUDIO -->
+<div id="themeStudioModal" class="sheet-overlay">
+  <div class="sheet-card max-w-lg">
+    <div class="p-4 sm:p-5 border-b border-white/[0.06] flex items-center justify-between">
+      <h3 class="font-orbitron text-sm font-black text-[#D4FF00] uppercase flex items-center gap-2">
+        <i class="fa-solid fa-palette"></i> Tournyx Theme Studio
+      </h3>
+      <button onclick="closeModal('themeStudioModal')" type="button" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 flex items-center justify-center text-[#9c9ab0] hover:text-white">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="p-4 sm:p-5 overflow-y-auto space-y-4" style="flex:1 1 auto; min-height:0;">
+      <!-- 5 Built-in Esports Palettes -->
+      <div>
+        <span class="font-mono text-[10px] text-[#9c9ab0] uppercase tracking-wider block mb-2">5 Built-In Gamer Palettes (Free • Site-Wide)</span>
+        <div id="builtInThemesGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5"></div>
+      </div>
+
+      <!-- 6th Option: Paid Custom Palette Upload (₹10) -->
+      <div class="p-4 rounded-2xl bg-[#08080e] border border-[#D4FF00]/35 space-y-3">
+        <div class="flex items-center justify-between gap-2">
+          <div>
+            <span class="font-orbitron text-xs font-black text-[#D4FF00] uppercase block">6. Custom Palette Upload</span>
+            <span class="font-mono text-[10px] text-[#9c9ab0]">Import JSON from Coolors, Figma, or VS Code</span>
+          </div>
+          <span id="customPalettePriceTag" class="px-2.5 py-1 rounded-full bg-[#D4FF00] text-[#050508] font-mono text-[10px] font-black uppercase">₹10 ONE-TIME</span>
+        </div>
+
+        <input type="file" id="customPaletteFileInp" accept=".json,application/json" class="hidden" onchange="handleCustomPaletteUpload(event)">
+
+        <div class="flex flex-wrap gap-2">
+          <button onclick="document.getElementById('customPaletteFileInp').click(); doHaptic();" type="button"
+            class="volt-btn flex-1 py-2.5 px-4 rounded-xl font-orbitron text-[11px] font-black uppercase">
+            <i class="fa-solid fa-upload mr-1"></i> Upload Palette (.JSON)
+          </button>
+          <button onclick="downloadPaletteTemplate()" type="button"
+            class="px-3.5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 font-mono text-[10px] text-white uppercase font-bold">
+            <i class="fa-solid fa-file-code mr-1"></i> Starter JSON
+          </button>
+        </div>
+
+        <!-- Step-by-Step Creation Guide -->
+        <details class="rounded-xl bg-[#0d0d15] border border-white/[0.06] p-3">
+          <summary class="font-mono text-[10px] text-[#00f2ff] font-bold uppercase cursor-pointer select-none">
+            <i class="fa-solid fa-circle-info mr-1"></i> Guide: How to Create &amp; Upload Your Own Palette
+          </summary>
+          <ol class="mt-2.5 space-y-1.5 font-body text-[11px] text-[#c3c6d0] list-decimal list-inside leading-relaxed">
+            <li>Pick your colors in <b>Coolors.co</b>, <b>Figma</b>, or <b>Adobe Color</b> (6-digit Hex codes like <code>#D4FF00</code>).</li>
+            <li>Click <b>Starter JSON</b> above to download <code>tournyx-theme-template.json</code>.</li>
+            <li>Open the file in Notepad/VS Code and replace the 6 hex colors (<code>volt</code>, <code>cyan</code>, <code>purple</code>, <code>bgCanvas</code>, <code>bgCard</code>, <code>borderCard</code>).</li>
+            <li>Click <b>Upload Palette (.JSON)</b>. If not yet unlocked, ₹10 is securely deducted from your Tournyx Wallet via server-side verification, unlocking unlimited custom palette uploads permanently across all pages.</li>
+          </ol>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
   <!-- =========================================================
        8. TELEMETRY TOAST ALERT
        ========================================================= -->
@@ -1631,11 +1992,60 @@
       let editPrizeCount = 0;
       let pendingConfirmCallback = null;
 
-      const ACCENT_THEMES = [
-        { name: "Cyber Volt (Default)", volt: "#D4FF00", cyan: "#00F2FF", purple: "#8B5CF6" },
-        { name: "Emerald Pulse", volt: "#00FF7F", cyan: "#00F2FF", purple: "#10B981" },
-        { name: "Blaze Inferno", volt: "#FF9900", cyan: "#FF5E3A", purple: "#FF2A5F" }
-      ];
+      const GOOGLE_YT_CLIENT_ID = "YOUR_GOOGLE_OAUTH_CLIENT_ID.apps.googleusercontent.com"; // Same Google Cloud Project with YouTube Data API v3 enabled
+
+const ESPORTS_THEMES = [
+  {
+    id: "cyber_volt",
+    name: "Cyber Volt (Tournyx)",
+    volt: "#D4FF00",
+    cyan: "#00f2ff",
+    purple: "#8B5CF6",
+    bgCanvas: "#050508",
+    bgCard: "rgba(13, 13, 18, 0.90)",
+    borderCard: "#242330"
+  },
+  {
+    id: "crimson_fury",
+    name: "Crimson Fury FPS",
+    volt: "#FF2A5F",
+    cyan: "#FF8A00",
+    purple: "#9D174D",
+    bgCanvas: "#080406",
+    bgCard: "rgba(18, 10, 14, 0.92)",
+    borderCard: "#331A22"
+  },
+  {
+    id: "emerald_venom",
+    name: "Emerald Venom Pro",
+    volt: "#00FF7F",
+    cyan: "#00E5FF",
+    purple: "#059669",
+    bgCanvas: "#040806",
+    bgCard: "rgba(10, 18, 14, 0.92)",
+    borderCard: "#1A3327"
+  },
+  {
+    id: "hyper_nebula",
+    name: "Hyper Nebula Drift",
+    volt: "#C084FC",
+    cyan: "#38BDF8",
+    purple: "#F472B6",
+    bgCanvas: "#07050C",
+    bgCard: "rgba(16, 12, 26, 0.92)",
+    borderCard: "#2D2245"
+  },
+  {
+    id: "obsidian_gold",
+    name: "Obsidian Pro Circuit",
+    volt: "#FFB020",
+    cyan: "#4EDEA3",
+    purple: "#F59E0B",
+    bgCanvas: "#070709",
+    bgCard: "rgba(18, 17, 21, 0.92)",
+    borderCard: "#362E20"
+  }
+];
 
       const INDIAN_STATES = [
         "Andaman and Nicobar Islands", "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar",
@@ -1684,6 +2094,149 @@
           "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;", "/": "&#x2F;", "`": "&#x60;", "=": "&#x3D;"
         }[s]));
       }
+      function exportCertifiedDossierPDF() {
+  doHaptic();
+  if (!window.jspdf || !window.jspdf.jsPDF) {
+    showToast("PDF Engine loading... try again in a second.", true);
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+  const W = 210, H = 297;
+
+  // Obsidian Background + Neon Border Frame
+  doc.setFillColor(7, 7, 12);
+  doc.rect(0, 0, W, H, "F");
+  doc.setDrawColor(212, 255, 0);
+  doc.setLineWidth(0.9);
+  doc.rect(8, 8, W - 16, H - 16);
+  doc.setDrawColor(0, 242, 255);
+  doc.setLineWidth(0.3);
+  doc.rect(10.5, 10.5, W - 21, H - 21);
+
+  // Header Banner
+  doc.setFillColor(18, 18, 28);
+  doc.rect(12, 12, W - 24, 34, "F");
+  doc.setTextColor(212, 255, 0);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(20);
+  doc.text("TOURNYX ESPORTS", 18, 25);
+
+  doc.setTextColor(0, 242, 255);
+  doc.setFontSize(9);
+  doc.text("OFFICIAL CERTIFIED ESPORTS PLAYER RESUME & SCOUTING CERTIFICATE", 18, 32);
+
+  const certId = `TX-CERT-${String(userData.invite_code || userData.ign || "PRO").replace(/[^A-Z0-9]/gi, "").toUpperCase().slice(0, 8)}-${new Date().getFullYear()}`;
+  doc.setTextColor(180, 180, 200);
+  doc.setFontSize(8);
+  doc.text(`CERTIFICATE ID: ${certId}`, 18, 39);
+  doc.text(`ISSUED: ${new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}`, W - 18, 39, { align: "right" });
+
+  // Athlete Identity Block
+  const name = String(userData.username || "Player");
+  const ign = String(userData.ign || "N/A");
+  const role = String(userData.player_role || "Flex");
+  const loc = [userData.city, userData.state].filter(Boolean).join(", ") || "India";
+  const tier = document.getElementById("userTier")?.innerText || "Bronze";
+  const level = document.getElementById("userLevel")?.innerText || "1";
+
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(22);
+  doc.text(`${name}  (${ign})`, 18, 60);
+
+  doc.setFontSize(10);
+  doc.setTextColor(0, 255, 127);
+  doc.text(`VERIFIED COMPETITOR  •  LEVEL ${level} (${tier.toUpperCase()})  •  ROLE: ${role.toUpperCase()}`, 18, 68);
+  doc.setTextColor(165, 165, 185);
+  doc.text(`Region: ${loc}  |  Bio: ${String(userData.bio || "Competitive Esports Athlete").slice(0, 75)}`, 18, 75);
+
+  // Verified Performance Metrics Grid (4 Boxes)
+  const matches = safeNum(userData.matches_played ?? userData.matches, 0);
+  const wins = safeNum(userData.wins, 0);
+  const winRate = matches > 0 ? ((wins / matches) * 100).toFixed(1) : "0.0";
+  const pts = safeNum(userData.points, 0);
+  const earnings = Math.max(safeNum(userData.earnings, 0), safeNum(userData.winnings, 0));
+
+  const stats = [
+    { label: "MATCHES PLAYED", val: String(matches) },
+    { label: "TOURNAMENT WINS", val: String(wins) },
+    { label: "WIN RATE %", val: `${winRate}%` },
+    { label: "CAREER EARNINGS", val: `INR ${earnings.toLocaleString()}` }
+  ];
+
+  stats.forEach((s, i) => {
+    const x = 18 + i * 44;
+    doc.setFillColor(20, 20, 30);
+    doc.setDrawColor(45, 45, 65);
+    doc.roundedRect(x, 84, 41, 24, 3, 3, "FD");
+    doc.setTextColor(150, 150, 175);
+    doc.setFontSize(7.5);
+    doc.text(s.label, x + 4, 92);
+    doc.setTextColor(212, 255, 0);
+    doc.setFontSize(13);
+    doc.text(s.val, x + 4, 102);
+  });
+
+  // Leaderboard Points & Scouting Readiness
+  doc.setFillColor(16, 16, 26);
+  doc.roundedRect(18, 114, W - 36, 16, 3, 3, "FD");
+  doc.setTextColor(0, 242, 255);
+  doc.setFontSize(9);
+  doc.text(`LEADERBOARD POINTS: ${pts.toLocaleString()} PTS   |   STREAK: ${document.getElementById("streakCount")?.innerText || "1"} DAYS   |   STATUS: RLS AUDITED`, 24, 124);
+
+  // Verified Multi-Game UIDs Table
+  let y = 144;
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(12);
+  doc.text("VERIFIED IN-GAME HANDLES & UIDS", 18, y);
+  y += 6;
+
+  const handles = getNormalizedGameHandles(userData);
+  handles.slice(0, 6).forEach((h) => {
+    doc.setFillColor(18, 18, 28);
+    doc.roundedRect(18, y, W - 36, 11, 2, 2, "F");
+    doc.setTextColor(212, 255, 0);
+    doc.setFontSize(9);
+    doc.text(String(h.game || "Game").toUpperCase(), 22, y + 7);
+    doc.setTextColor(255, 255, 255);
+    doc.text(`IGN: ${h.ign || "N/A"}`, 68, y + 7);
+    doc.setTextColor(0, 242, 255);
+    doc.text(`UID: ${h.uid || "N/A"}`, 125, y + 7);
+    doc.setTextColor(160, 160, 180);
+    doc.text(String(h.role || "Flex"), W - 22, y + 7, { align: "right" });
+    y += 13;
+  });
+
+  // Verified Clan Affiliations
+  y += 6;
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(12);
+  doc.text("VERIFIED CLAN AFFILIATIONS", 18, y);
+  y += 7;
+  const clans = parseClanBadges(userData.clan_name);
+  doc.setFontSize(9.5);
+  doc.setTextColor(0, 255, 127);
+  doc.text(clans.length ? clans.slice(0, 5).map((c) => `${c.name} (${c.role || "Member"})`).join("  •  ") : "Free Agent — Available for Pro Recruitment", 18, y);
+
+  // Official Verification Footer & Public URL
+  const encodedEmail = btoa(String(userData.email || "").trim().toLowerCase());
+  const verifyUrl = `https://tournyx.in/profile.html?user=${encodedEmail}`;
+
+  doc.setDrawColor(60, 60, 85);
+  doc.line(18, H - 46, W - 18, H - 46);
+  doc.setTextColor(212, 255, 0);
+  doc.setFontSize(10);
+  doc.text("DIGITALLY CERTIFIED BY TOURNYX ESPORTS • QUVA TECHNOLOGIES", 18, H - 36);
+  doc.setTextColor(170, 170, 195);
+  doc.setFontSize(8);
+  doc.text("Teams & recruiters can verify live anti-cheat stats online at:", 18, H - 29);
+  doc.setTextColor(0, 242, 255);
+  doc.text(verifyUrl, 18, H - 23);
+
+  doc.save(`Tournyx_Certified_Dossier_${ign.replace(/[^a-zA-Z0-9]/g, "_")}.pdf`);
+  showToast("Certified Esports Dossier PDF downloaded!");
+}
 
       /** Allow only http:// or https:// URLs to prevent javascript: XSS links */
       function safeExternalUrl(rawUrl) {
@@ -1693,6 +2246,64 @@
         return "";
       }
 
+      function connectYouTubeOfficial() {
+  doHaptic();
+  if (!GOOGLE_YT_CLIENT_ID || GOOGLE_YT_CLIENT_ID.includes("YOUR_GOOGLE_OAUTH")) {
+    showToast("Configure GOOGLE_YT_CLIENT_ID with YouTube Data API v3 enabled in Google Cloud.", true);
+    return;
+  }
+  if (!window.google?.accounts?.oauth2) {
+    showToast("Google OAuth SDK is still loading. Try again.", true);
+    return;
+  }
+
+  const tokenClient = window.google.accounts.oauth2.initTokenClient({
+    client_id: GOOGLE_YT_CLIENT_ID,
+    scope: "https://www.googleapis.com/auth/youtube.readonly",
+    callback: async (tokenResponse) => {
+      if (!tokenResponse || !tokenResponse.access_token) {
+        showToast("YouTube authorization was cancelled.", true);
+        return;
+      }
+      showToast("Verifying YouTube channel ownership...");
+      try {
+        const res = await fetch(
+          "https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&mine=true",
+          { headers: { Authorization: `Bearer ${tokenResponse.access_token}` } }
+        );
+        const ytData = await res.json();
+        const ch = ytData?.items?.[0];
+        if (!ch) {
+          showToast("No YouTube channel found on that Google account.", true);
+          return;
+        }
+
+        const updates = {
+          yt_channel_id: ch.id,
+          yt_channel_title: ch.snippet?.title || "YouTube Creator",
+          yt_subs: Number(ch.statistics?.subscriberCount || 0),
+          yt_link: `https://www.youtube.com/channel/${ch.id}`,
+          yt_verified: true
+        };
+
+        const { error } = await smartUpdateUsers(userData.email, updates);
+        if (error) throw error;
+
+        userData = { ...userData, ...updates };
+        localStorage.setItem("tournyx_user", JSON.stringify(userData));
+        renderUserInfo(userData);
+        const statusEl = document.getElementById("ytLinkStatusText");
+        if (statusEl) statusEl.innerText = `✓ Verified: ${updates.yt_channel_title} (${updates.yt_subs.toLocaleString()} subs)`;
+        showToast(`YouTube Channel "${updates.yt_channel_title}" Verified!`);
+      } catch (err) {
+        showToast("Could not verify YouTube channel.", true);
+      }
+    }
+  });
+
+  tokenClient.requestAccessToken({ prompt: "consent" });
+}
+      
       function safeNum(val, fallback = 0) {
         const n = Number(val);
         return Number.isFinite(n) ? n : fallback;
@@ -1846,46 +2457,176 @@
         openModal("confirmModal");
       }
 
-      function applyGlobalTheme() {
-        const premium = isUserPremium(userData);
-        const lbl = document.getElementById("accentThemeLabel");
+      const HEX_REGEX = /^#[0-9A-Fa-f]{6}$/;
 
-        if (premium) {
-          document.body.classList.add("theme-vip");
-          if (lbl) lbl.innerText = "VIP Gold Theme (Active)";
-        } else {
-          document.body.classList.remove("theme-vip");
-          const idx = parseInt(localStorage.getItem("tournyx_theme_index") || "0", 10) % ACCENT_THEMES.length;
-          const theme = ACCENT_THEMES[idx];
-          document.documentElement.style.setProperty("--accent-volt", theme.volt);
-          document.documentElement.style.setProperty("--accent-cyan", theme.cyan);
-          document.documentElement.style.setProperty("--accent-purple", theme.purple);
-          document.documentElement.style.setProperty("--accent-gradient", `linear-gradient(135deg, ${theme.purple}, ${theme.cyan})`);
-          if (lbl) lbl.innerText = theme.name;
-        }
+function applyThemeObject(t) {
+  if (!t) return;
+  const r = document.documentElement.style;
+  if (HEX_REGEX.test(t.volt || "")) r.setProperty("--accent-volt", t.volt);
+  if (HEX_REGEX.test(t.cyan || "")) r.setProperty("--accent-cyan", t.cyan);
+  if (HEX_REGEX.test(t.purple || "")) r.setProperty("--accent-purple", t.purple);
+  if (HEX_REGEX.test(t.bgCanvas || "")) r.setProperty("--bg-canvas", t.bgCanvas);
+  if (t.bgCard) r.setProperty("--bg-card", t.bgCard);
+  if (HEX_REGEX.test(t.borderCard || "")) r.setProperty("--border-card", t.borderCard);
+}
 
-        const psmOn = localStorage.getItem("tournyx_psm") === "true";
-        document.body.classList.toggle("power-save", psmOn);
-        const psmToggle = document.getElementById("psmToggle");
-        const psmStatus = document.getElementById("psmStatus");
-        if (psmToggle && psmStatus) {
-          psmToggle.className = psmOn ? "fa-solid fa-toggle-on text-xl text-[#00FF7F]" : "fa-solid fa-toggle-off text-xl text-[#5E5C75]";
-          psmStatus.innerText = psmOn ? "On • Lightweight Battery Saver" : "Off • Full Tactical Canvas";
-        }
+function applyGlobalTheme() {
+  const isPremium = String(userData.is_premium).toLowerCase() === "true";
+  const lbl = document.getElementById("accentThemeLabel");
+
+  // Load persisted theme from user record or localStorage
+  let savedTheme = null;
+  try {
+    savedTheme = userData.theme_config
+      ? (typeof userData.theme_config === "string" ? JSON.parse(userData.theme_config) : userData.theme_config)
+      : JSON.parse(localStorage.getItem("tournyx_theme_config") || "null");
+  } catch (e) {}
+
+  if (savedTheme && savedTheme.volt) {
+    document.body.classList.remove("theme-vip");
+    applyThemeObject(savedTheme);
+    localStorage.setItem("tournyx_theme_config", JSON.stringify(savedTheme));
+    if (lbl) lbl.innerText = savedTheme.name || "Custom Palette";
+  } else if (isPremium) {
+    document.body.classList.add("theme-vip");
+    if (lbl) lbl.innerText = "VIP Gold Theme";
+  } else {
+    document.body.classList.remove("theme-vip");
+    applyThemeObject(ESPORTS_THEMES[0]);
+    if (lbl) lbl.innerText = ESPORTS_THEMES[0].name;
+  }
+
+  // Power Saving Mode sync
+  const psmOn = localStorage.getItem("tournyx_psm") === "true";
+  document.body.classList.toggle("power-save", psmOn);
+  const psmToggle = document.getElementById("psmToggle");
+  const psmStatus = document.getElementById("psmStatus");
+  if (psmToggle && psmStatus) {
+    psmToggle.className = psmOn ? "fa-solid fa-toggle-on text-xl text-[#00ff7f]" : "fa-solid fa-toggle-off text-xl text-[#66647a]";
+    psmStatus.innerText = psmOn ? "On • Pure Black OLED (Site-Wide)" : "Off • Gamer Particles & Glass Blur";
+  }
+}
+
+function openThemeStudioModal() {
+  doHaptic();
+  if (isGuestMode || isPublicView) return;
+  const grid = document.getElementById("builtInThemesGrid");
+  const unlocked = String(userData.custom_theme_unlocked).toLowerCase() === "true";
+  const priceTag = document.getElementById("customPalettePriceTag");
+  if (priceTag) {
+    priceTag.innerText = unlocked ? "UNLOCKED ✓" : "₹10 ONE-TIME";
+    priceTag.className = unlocked
+      ? "px-2.5 py-1 rounded-full bg-[#00ff7f]/20 border border-[#00ff7f] text-[#00ff7f] font-mono text-[10px] font-black uppercase"
+      : "px-2.5 py-1 rounded-full bg-[#D4FF00] text-[#050508] font-mono text-[10px] font-black uppercase";
+  }
+
+  grid.innerHTML = ESPORTS_THEMES.map((t) => `
+    <button onclick="selectBuiltInTheme('${t.id}')" type="button"
+      class="p-3 rounded-2xl bg-[#08080e] border border-white/10 hover:border-white/35 text-left transition-all flex items-center justify-between gap-2">
+      <div>
+        <div class="font-headline text-xs font-bold text-white">${t.name}</div>
+        <div class="flex items-center gap-1.5 mt-1.5">
+          <span class="w-4 h-4 rounded-full border border-white/20" style="background:${t.volt}"></span>
+          <span class="w-4 h-4 rounded-full border border-white/20" style="background:${t.cyan}"></span>
+          <span class="w-4 h-4 rounded-full border border-white/20" style="background:${t.purple}"></span>
+        </div>
+      </div>
+      <i class="fa-solid fa-wand-magic-sparkles text-xs" style="color:${t.volt}"></i>
+    </button>
+  `).join("");
+
+  openModal("themeStudioModal");
+}
+
+async function selectBuiltInTheme(themeId) {
+  doHaptic();
+  const theme = ESPORTS_THEMES.find((x) => x.id === themeId);
+  if (!theme) return;
+  localStorage.setItem("tournyx_theme_config", JSON.stringify(theme));
+  userData.theme_config = theme;
+  localStorage.setItem("tournyx_user", JSON.stringify(userData));
+  applyGlobalTheme();
+  await smartUpdateUsers(userData.email, { theme_config: theme });
+  showToast(`Applied ${theme.name} across Tournyx!`);
+}
+
+function downloadPaletteTemplate() {
+  const sample = {
+    name: "My Custom Esports Theme",
+    volt: "#00FFA3",
+    cyan: "#38BDF8",
+    purple: "#A855F7",
+    bgCanvas: "#05060A",
+    bgCard: "rgba(13, 15, 22, 0.92)",
+    borderCard: "#24293D"
+  };
+  const blob = new Blob([JSON.stringify(sample, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "tournyx-theme-template.json";
+  a.click();
+  showToast("Starter palette template downloaded!");
+}
+
+async function handleCustomPaletteUpload(event) {
+  const file = event.target.files?.[0];
+  event.target.value = "";
+  if (!file) return;
+  if (file.size > 20 * 1024) { showToast("Palette JSON must be under 20KB.", true); return; }
+
+  try {
+    const rawText = await file.text();
+    const json = JSON.parse(rawText);
+
+    // Strict Security Validation (Prevents CSS Injection / XSS)
+    const validated = {
+      id: "custom_uploaded",
+      name: sanitizeInput(String(json.name || "Custom Palette").slice(0, 28)),
+      volt: HEX_REGEX.test(json.volt) ? json.volt : null,
+      cyan: HEX_REGEX.test(json.cyan) ? json.cyan : null,
+      purple: HEX_REGEX.test(json.purple) ? json.purple : null,
+      bgCanvas: HEX_REGEX.test(json.bgCanvas) ? json.bgCanvas : "#050508",
+      bgCard: HEX_REGEX.test(json.bgCard) ? json.bgCard : "rgba(13, 13, 18, 0.92)",
+      borderCard: HEX_REGEX.test(json.borderCard) ? json.borderCard : "#242330"
+    };
+
+    if (!validated.volt || !validated.cyan || !validated.purple) {
+      showToast("Invalid JSON: volt, cyan, and purple must be 6-digit hex codes (e.g. #D4FF00).", true);
+      return;
+    }
+
+    const alreadyUnlocked = String(userData.custom_theme_unlocked).toLowerCase() === "true";
+
+    if (!alreadyUnlocked) {
+      // Server-side Atomic ₹10 Deduction via Supabase RPC (Cannot be spoofed in DevTools)
+      const { data: rpcRes, error: rpcErr } = await supabaseClient.rpc("purchase_custom_theme_palette", {
+        p_email: String(userData.email).trim().toLowerCase(),
+        p_theme_json: validated
+      });
+
+      if (rpcErr || !rpcRes?.ok) {
+        const msg = rpcRes?.error || rpcErr?.message || "Insufficient wallet balance (₹10 required).";
+        showToast(msg, true);
+        return;
       }
 
-      function cycleThemeColor() {
-        doHaptic();
-        if (isUserPremium(userData)) {
-          showToast("VIP Golden Theme is unlocked for your account!");
-          return;
-        }
-        let idx = parseInt(localStorage.getItem("tournyx_theme_index") || "0", 10);
-        idx = (idx + 1) % ACCENT_THEMES.length;
-        localStorage.setItem("tournyx_theme_index", String(idx));
-        applyGlobalTheme();
-        showToast(`Accent theme switched to ${ACCENT_THEMES[idx].name}`);
-      }
+      userData.custom_theme_unlocked = true;
+      userData.earnings = rpcRes.new_balance ?? Math.max(0, safeNum(userData.earnings, 0) - 10);
+      showToast("₹10 Paid! Custom Theme Unlocked & Applied!");
+    } else {
+      await smartUpdateUsers(userData.email, { theme_config: validated });
+      showToast(`Custom palette "${validated.name}" applied!`);
+    }
+
+    userData.theme_config = validated;
+    localStorage.setItem("tournyx_theme_config", JSON.stringify(validated));
+    localStorage.setItem("tournyx_user", JSON.stringify(userData));
+    renderUserInfo(userData);
+    closeModal("themeStudioModal");
+  } catch (err) {
+    showToast("Invalid JSON palette file. Download the Starter JSON to check format.", true);
+  }
+}
 
       function togglePowerSave() {
         doHaptic();
@@ -2335,7 +3076,37 @@
           missingFields.length === 0
             ? "100% Verified Pro Scouting Profile — visible to tournament organizers and Tier-1 clans."
             : `Missing fields: ${missingFields.join(", ")}. Complete them to boost clan scouting visibility.`;
+        const urlParams = new URLSearchParams(window.location.search);
+const sharedUserParam = urlParams.get("user");
+let storedUser = null;
+try {
+  const raw = localStorage.getItem("tournyx_user");
+  if (raw && raw !== "undefined") storedUser = JSON.parse(raw);
+} catch (e) {}
 
+if (sharedUserParam) {
+  let targetEmail = "";
+  try { targetEmail = atob(decodeURIComponent(sharedUserParam)).trim().toLowerCase(); } catch (e) {}
+  const viewerEmail = String(storedUser?.email || "").trim().toLowerCase();
+
+  // If viewing another player's shared link/QR -> Lock into Strict Public Read-Only Mode
+  if (targetEmail && targetEmail !== viewerEmail) {
+    isPublicView = true;
+    isGuestMode = !viewerEmail;
+    enterPublicReadOnlyMode(Boolean(viewerEmail));
+
+    const { data: pubRow } = await supabaseClient
+      .from("Users")
+      .select("email, username, ign, role, avatar, wins, earnings, winnings, matches_played, points, main_game, game_handles, clan_name, hosted, uid, state, city, bio, player_role, yt_link, yt_channel_title, yt_subs, yt_verified, insta_link, discord_link, is_premium")
+      .ilike("email", targetEmail)
+      .maybeSingle();
+
+    userData = pubRow || { email: targetEmail, username: "Player Not Found", ign: "N/A", points: 0, wins: 0, matches_played: 0 };
+    renderUserInfo(userData);
+    await Promise.allSettled([fetchRecentMatchesAndHighlights(targetEmail)]);
+    return;
+  }
+}
         // Numeric Stats
         const pts = safeNum(data.points, 0);
         const mCount = safeNum(data.matches_played ?? data.matches, 0);
@@ -2399,7 +3170,207 @@
 
         updateMilestoneCard(mCount, hostedCount, premium);
       }
+      function parseClanBadges(rawClan) {
+  if (!rawClan) return [];
+  let parsed = rawClan;
+  if (typeof rawClan === "string") {
+    const trimmed = rawClan.trim();
+    if (!trimmed || trimmed.toLowerCase() === "none" || trimmed.toLowerCase() === "null") return [];
+    if (trimmed.startsWith("[") || trimmed.startsWith("{")) {
+      try { parsed = JSON.parse(trimmed); } catch (e) { return [{ name: trimmed, game: "", role: "" }]; }
+    } else {
+      return [{ name: trimmed, game: "", role: "" }];
+    }
+  }
+  const arr = Array.isArray(parsed) ? parsed : [parsed];
+  const seen = new Set();
+  const clean = [];
+  for (const item of arr) {
+    if (!item) continue;
+    const name = String(item.name || item.NAME || item.clan_name || item.CLAN_NAME || "").trim();
+    const game = String(item.game || item.GAME || "").trim();
+    const role = String(item.role || item.ROLE || "").trim();
+    if (!name) continue;
+    const key = `${name.toUpperCase()}_${game.toUpperCase()}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    clean.push({ name, game, role });
+  }
+  return clean;
+}
 
+      function enterPublicReadOnlyMode(viewerIsLoggedIn) {
+  document.getElementById("publicDossierBanner")?.classList.remove("hidden");
+  const actionBox = document.getElementById("publicBannerAction");
+  if (actionBox) {
+    actionBox.innerHTML = viewerIsLoggedIn
+      ? `<a href="profile.html" class="px-3 py-1.5 rounded-xl bg-[#D4FF00] text-[#050508] font-mono text-[10px] font-black uppercase">← My Profile</a>`
+      : `<a href="login.html" class="px-3 py-1.5 rounded-xl bg-[#D4FF00] text-[#050508] font-mono text-[10px] font-black uppercase">Join Tournyx</a>`;
+  }
+  // Hide every editable/private control from public viewers
+  ["settingsContainer", "heroAuthActions", "editAvatarBtn", "btnOpenGameHandles", "organizerPriorityDesk"].forEach((id) => {
+    document.getElementById(id)?.classList.add("hidden");
+  });
+}
+      
+function renderClanBadges(rawClan) {
+  const wrap = document.getElementById("clanBadgesWrap");
+  if (!wrap) return;
+  const clans = parseClanBadges(rawClan);
+  if (!clans.length) {
+    wrap.innerHTML = `<span class="px-2.5 py-1 rounded-lg bg-white/[0.04] border border-white/10 font-mono text-[10px] text-[#9c9ab0] uppercase">FREE AGENT • NO CLAN</span>`;
+    return;
+  }
+
+  const visible = clans.slice(0, 3);
+  const extraCount = clans.length - visible.length;
+  wrap.innerHTML = visible.map((c) => `
+    <span class="px-2.5 py-1 rounded-lg bg-[#00f2ff]/10 border border-[#00f2ff]/35 font-mono text-[10px] font-bold text-[#00f2ff] inline-flex items-center gap-1.5">
+      <i class="fa-solid fa-shield-halved text-[9px] text-[#D4FF00]"></i>
+      <span>${sanitizeInput(c.name)}</span>
+      ${c.role ? `<span class="px-1.5 py-0.2 rounded bg-white/10 text-white text-[8px] uppercase">${sanitizeInput(c.role)}</span>` : ""}
+    </span>
+  `).join("") + (extraCount > 0 ? `<span class="px-2 py-1 rounded-lg bg-[#8B5CF6]/20 border border-[#8B5CF6]/40 font-mono text-[10px] font-bold text-[#c4b5fd]">+${extraCount} MORE</span>` : "");
+}
+
+      function getNormalizedGameHandles(data) {
+  let list = [];
+  try {
+    const raw = data.game_handles;
+    if (Array.isArray(raw)) list = raw;
+    else if (typeof raw === "string" && raw.trim().startsWith("[")) list = JSON.parse(raw);
+  } catch (e) {}
+
+  // Legacy fallback: auto-seed primary handle from main_game / ign / uid
+  if (!list.length && (data.main_game || data.ign || data.uid)) {
+    list = [{
+      game: data.main_game || "BGMI",
+      label: "Main Account",
+      ign: data.ign || "",
+      uid: data.uid || "",
+      role: data.player_role || "Flex"
+    }];
+  }
+  return list;
+}
+
+function renderMultiGameHandles(data) {
+  const container = document.getElementById("multiGameHandlesList");
+  if (!container) return;
+  const handles = getNormalizedGameHandles(data);
+
+  if (!handles.length) {
+    container.innerHTML = `<div class="p-3 rounded-2xl bg-[#08080e] border border-dashed border-white/10 text-center font-mono text-[11px] text-[#8a889e]">No game accounts linked yet. Tap "+ Manage IDs" to add BGMI, Free Fire MAX, or CODM accounts.</div>`;
+    return;
+  }
+
+  container.innerHTML = handles.map((h, i) => {
+    const g = sanitizeInput(h.game || "BGMI");
+    const shortTag = g.toUpperCase().includes("FREE") ? "FF" : g.toUpperCase().includes("BGMI") ? "BG" : g.toUpperCase().includes("COD") ? "CD" : g.toUpperCase().includes("VAL") ? "VL" : "GM";
+    return `
+      <div class="p-3 rounded-2xl bg-[#08080e] border border-white/[0.06] hover:border-[#00f2ff]/40 transition-all flex items-center justify-between gap-2.5">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="w-10 h-10 rounded-xl bg-[#D4FF00]/10 border border-[#D4FF00]/35 flex items-center justify-center font-orbitron text-xs font-black text-[#D4FF00] flex-shrink-0">
+            ${shortTag}
+          </div>
+          <div class="min-w-0">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="font-headline text-xs font-bold text-white truncate">${sanitizeInput(h.ign || "Unnamed")}</span>
+              <span class="px-1.5 py-0.5 rounded bg-white/[0.06] font-mono text-[9px] text-[#00f2ff] uppercase">${g}</span>
+              <span class="px-1.5 py-0.5 rounded bg-[#8B5CF6]/20 font-mono text-[9px] text-[#c4b5fd] uppercase">${sanitizeInput(h.label || (i === 0 ? "Primary" : `Alt #${i + 1}`))}</span>
+            </div>
+            <p class="font-mono text-[11px] text-[#9c9ab0] mt-0.5">UID: <span class="text-white font-semibold">${sanitizeInput(h.uid || "N/A")}</span> • ${sanitizeInput(h.role || "Flex")}</p>
+          </div>
+        </div>
+        <button onclick="copyText('${sanitizeInput(h.uid || "")}', '${g} UID')" type="button"
+          class="px-2.5 py-1.5 rounded-xl bg-[#161522] hover:bg-[#D4FF00] hover:text-[#050508] border border-white/10 font-mono text-[10px] font-bold uppercase text-white flex-shrink-0 transition-colors">
+          <i class="fa-regular fa-copy"></i> Copy
+        </button>
+      </div>
+    `;
+  }).join("");
+}
+
+function openGameHandlesModal() {
+  doHaptic();
+  if (isGuestMode || isPublicView) return;
+  const wrap = document.getElementById("editHandlesRows");
+  wrap.innerHTML = "";
+  const handles = getNormalizedGameHandles(userData);
+  if (handles.length) handles.forEach((h) => addGameHandleRow(h));
+  else addGameHandleRow();
+  openModal("gameHandlesModal");
+}
+
+function addGameHandleRow(h = {}) {
+  const wrap = document.getElementById("editHandlesRows");
+  if (wrap.children.length >= 10) { showToast("Maximum 10 game accounts allowed.", true); return; }
+  const rid = `gh_${Date.now()}_${Math.floor(Math.random() * 999)}`;
+  const gVal = h.game || "BGMI";
+  const rVal = h.role || "Flex";
+  wrap.insertAdjacentHTML("beforeend", `
+    <div id="${rid}" class="gh-row p-3 rounded-2xl bg-[#08080e] border border-white/10 space-y-2 relative">
+      <button onclick="document.getElementById('${rid}').remove()" type="button" class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500 text-white text-[10px] flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+      <div class="grid grid-cols-2 gap-2">
+        <select class="tx-input gh-game text-xs">
+          <option value="BGMI" ${gVal === "BGMI" ? "selected" : ""}>BGMI</option>
+          <option value="Free Fire MAX" ${gVal.includes("Free Fire") ? "selected" : ""}>Free Fire MAX</option>
+          <option value="CODM" ${gVal === "CODM" ? "selected" : ""}>COD Mobile</option>
+          <option value="Valorant" ${gVal === "Valorant" ? "selected" : ""}>Valorant</option>
+        </select>
+        <input type="text" class="tx-input gh-label text-xs" placeholder="Label (Main / Alt 2)" value="${sanitizeInput(h.label || "")}">
+      </div>
+      <div class="grid grid-cols-3 gap-2">
+        <input type="text" class="tx-input gh-ign text-xs" placeholder="In-Game Name *" value="${sanitizeInput(h.ign || "")}">
+        <input type="text" class="tx-input gh-uid font-mono text-xs" placeholder="Game UID *" oninput="this.value=this.value.replace(/[^0-9]/g,'')" value="${sanitizeInput(h.uid || "")}">
+        <select class="tx-input gh-role text-xs">
+          <option value="Flex" ${rVal === "Flex" ? "selected" : ""}>Flex</option>
+          <option value="Assaulter" ${rVal === "Assaulter" ? "selected" : ""}>Assaulter</option>
+          <option value="IGL" ${rVal === "IGL" ? "selected" : ""}>IGL</option>
+          <option value="Sniper" ${rVal === "Sniper" ? "selected" : ""}>Sniper</option>
+          <option value="Support" ${rVal === "Support" ? "selected" : ""}>Support</option>
+        </select>
+      </div>
+    </div>
+  `);
+}
+
+async function saveGameHandles() {
+  doHaptic();
+  const btn = document.getElementById("btnSaveHandles");
+  const list = [];
+  document.querySelectorAll("#editHandlesRows .gh-row").forEach((row, idx) => {
+    const game = row.querySelector(".gh-game").value;
+    const label = row.querySelector(".gh-label").value.trim() || (idx === 0 ? "Main" : `Account ${idx + 1}`);
+    const ign = row.querySelector(".gh-ign").value.trim();
+    const uid = row.querySelector(".gh-uid").value.trim();
+    const role = row.querySelector(".gh-role").value;
+    if (ign && uid) list.push({ game, label, ign, uid, role });
+  });
+
+  if (!list.length) { showToast("Add at least one IGN and UID.", true); return; }
+  btn.disabled = true; btn.innerText = "Saving...";
+
+  // Sync account #1 back to legacy columns so explore/matches pages remain 100% compatible
+  const primary = list[0];
+  const updates = {
+    game_handles: list,
+    main_game: primary.game,
+    ign: primary.ign,
+    uid: primary.uid,
+    player_role: primary.role
+  };
+
+  const { error } = await smartUpdateUsers(userData.email, updates);
+  btn.disabled = false; btn.innerText = "Save All Game Accounts";
+
+  if (error) { showToast("Could not save game accounts.", true); return; }
+  userData = { ...userData, ...updates };
+  localStorage.setItem("tournyx_user", JSON.stringify(userData));
+  renderUserInfo(userData);
+  closeModal("gameHandlesModal");
+  showToast(`${list.length} Game Account(s) saved to Supabase!`);
+}
       function updateMilestoneCard(matches, hosted, premium) {
         let pTier = "Scout", pLevel = "Level 1", pNext = 25, pPct = Math.min(100, (matches / 25) * 100);
         if (matches >= 150) { pTier = "Mythic"; pLevel = "Max Level"; pNext = matches; pPct = 100; }
@@ -3360,7 +4331,56 @@
       // Boot Sequence
       window.addEventListener("DOMContentLoaded", () => {
         initSupabase();
+        let particleRafId = null;
+function initGamerParticles() {
+  const canvas = document.getElementById("gamerParticlesCanvas");
+  if (!canvas) return;
+  if (particleRafId) { cancelAnimationFrame(particleRafId); particleRafId = null; }
 
+  const psmOn = localStorage.getItem("tournyx_psm") === "true";
+  if (psmOn) {
+    canvas.style.display = "none";
+    return;
+  }
+
+  canvas.style.display = "block";
+  const ctx = canvas.getContext("2d");
+  const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+  resize();
+  window.addEventListener("resize", resize);
+
+  const count = window.innerWidth < 768 ? 22 : 42;
+  const pts = Array.from({ length: count }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    r: Math.random() * 1.8 + 0.6,
+    vx: (Math.random() - 0.5) * 0.45,
+    vy: -Math.random() * 0.45 - 0.12
+  }));
+
+  function frame() {
+    if (localStorage.getItem("tournyx_psm") === "true") return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const volt = getComputedStyle(document.documentElement).getPropertyValue("--accent-volt").trim() || "#D4FF00";
+    const cyan = getComputedStyle(document.documentElement).getPropertyValue("--accent-cyan").trim() || "#00f2ff";
+
+    for (let i = 0; i < pts.length; i++) {
+      const p = pts[i];
+      p.x += p.vx; p.y += p.vy;
+      if (p.y < -10) { p.y = canvas.height + 10; p.x = Math.random() * canvas.width; }
+      if (p.x < 0) p.x = canvas.width;
+      if (p.x > canvas.width) p.x = 0;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = i % 2 === 0 ? volt : cyan;
+      ctx.globalAlpha = 0.55;
+      ctx.fill();
+    }
+    particleRafId = requestAnimationFrame(frame);
+  }
+  frame();
+}
         // Populate Indian States Dropdown
         const stateSel = document.getElementById("editState");
         if (stateSel) {
@@ -3390,6 +4410,14 @@
         setInterval(measureRealPing, 30000);
       });
     })();
+    renderClanBadges(data.clan_name);
+renderMultiGameHandles(data);
+
+// Show Organizer Command Desk directly ABOVE Account Settings if user is an organizer
+const orgDesk = document.getElementById("organizerPriorityDesk");
+if (orgDesk) {
+  orgDesk.classList.toggle("hidden", !isOrg || isPublicView || isGuestMode);
+}
   </script>
 </body>
 </html>
