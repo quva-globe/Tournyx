@@ -1770,8 +1770,8 @@
           clanId: String(clanId),
           name: String(row.clan_name || row.name || base.name || "Unnamed Clan"),
           tag: String(row.Tag || row.tag || base.tag || "TX").toUpperCase().slice(0, 5),
+          motto: String(row.motto || row.bio || base.motto || "We play to win"),
           game: String(row.game || base.game || "BGMI"),
-          motto: String(row.motto || base.motto || "We play to win"),
           status: String(row.status || base.status || "OPEN").toUpperCase(),
           autoAccept: Boolean(row.auto_accept ?? base.autoAccept ?? false),
           logo: String(row.logo || base.logo || ""),
@@ -1840,10 +1840,11 @@
         const lvlInfo = getClanLevelInfo(clan.seasonalXp);
         return {
           clan_id: clan.clanId,
-          name: clan.name,
-          tag: clan.tag,
-          game: clan.game,
+          clan_name: clan.name,
+          Tag: clan.tag,
           bio: clan.motto,
+          game: clan.game,
+          motto: clan.motto,
           status: clan.status,
           auto_accept: clan.autoAccept,
           logo: clan.logo,
@@ -1873,16 +1874,18 @@
           season_history: clan.seasonHistory,
           socials: clan.socials,
           next_scrim: clan.nextScrim,
-          team_json: clan
+          team_json: JSON.stringify(clan)
         };
       }
 
-      /** Self-healing DB upsert for public.Clans */
       async function persistClanToDb(clan) {
-        if (!isDbReady || !dbClient || !clan) return { error: new Error("Offline") };
+        if (!isDbReady || !dbClient || !clan) return { error: new Error("Tournyx Database offline") };
         const payload = serializeClanPayload(clan);
         let lastErr = null;
-        for (let attempt = 0; attempt < 15; attempt++) {
+        const maxAttempts = Object.keys(payload).length + 2;
+
+        for (let attempt = 0; attempt < maxAttempts; attempt++) {
+          if (Object.keys(payload).length === 0) break;
           const { error } = await dbClient.from("Clans").upsert([payload], { onConflict: "clan_id" });
           if (!error) return { error: null };
           lastErr = error;
@@ -1890,6 +1893,7 @@
           if (m && m[1]) { delete payload[m[1]]; continue; }
           break;
         }
+        console.error("Tournyx Clan Save Error:", lastErr);
         return { error: lastErr };
       }
 
