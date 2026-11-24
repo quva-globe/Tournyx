@@ -1749,7 +1749,11 @@
         if (!row) return null;
         let base = {};
         if (row.team_json) {
-          try { base = typeof row.team_json === "string" ? JSON.parse(row.team_json) : row.team_json; } catch (e) {}
+          try {
+            let parsed = row.team_json;
+            while (typeof parsed === "string") { parsed = JSON.parse(parsed); }
+            if (parsed && typeof parsed === "object") base = parsed;
+          } catch (e) {}
         }
         const clanId = row.clan_id || base.clanId || row.id;
         if (!clanId) return null;
