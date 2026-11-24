@@ -1768,8 +1768,8 @@
 
         return {
           clanId: String(clanId),
-          name: String(row.name || base.name || "Unnamed Clan"),
-          tag: String(row.tag || base.tag || "TX").toUpperCase().slice(0, 5),
+          name: String(row.clan_name || row.name || base.name || "Unnamed Clan"),
+          tag: String(row.Tag || row.tag || base.tag || "TX").toUpperCase().slice(0, 5),
           game: String(row.game || base.game || "BGMI"),
           motto: String(row.motto || base.motto || "We play to win"),
           status: String(row.status || base.status || "OPEN").toUpperCase(),
@@ -1843,7 +1843,7 @@
           name: clan.name,
           tag: clan.tag,
           game: clan.game,
-          motto: clan.motto,
+          bio: clan.motto,
           status: clan.status,
           auto_accept: clan.autoAccept,
           logo: clan.logo,
