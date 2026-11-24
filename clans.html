@@ -1744,66 +1744,153 @@
         }
       }
 
-      /** Unifies structured DB columns and legacy team_json into one clean Clan object */
+      /** Unwraps single/double/triple stringified JSON, array-wrapped records, and nested team_json */
+      function deepUnwrapJson(rawVal) {
+        if (!rawVal) return null;
+        let cur = rawVal;
+        for (let i = 0; i < 6; i++) {
+          if (typeof cur === "string") {
+            const t = cur.trim();
+            if (!t) return null;
+            try { cur = JSON.parse(t); continue; } catch (e) { return null; }
+          }
+          break;
+        }
+        if (Array.isArray(cur)) {
+          if (cur.length === 0) return null;
+          if (cur[0] && typeof cur[0] === "object" && (cur[0].clan_id || cur[0].clanId || cur[0].roster || cur[0].team_json)) {
+            cur = cur[0];
+          }
+        }
+        if (cur && typeof cur === "object" && !Array.isArray(cur) && cur.team_json) {
+          const inner = deepUnwrapJson(cur.team_json);
+          if (inner && typeof inner === "object" && !Array.isArray(inner)) {
+            const outerClean = { ...cur };
+            delete outerClean.team_json;
+            cur = { ...inner, ...outerClean };
+          }
+        }
+        return cur;
+      }
+
+      /** Always returns the first NON-EMPTY array, safely parsing stringified JSON arrays too */
+      function pickNonEmptyArray(...candidates) {
+        for (const cand of candidates) {
+          const unwrapped = typeof cand === "string" ? deepUnwrapJson(cand) : cand;
+          if (Array.isArray(unwrapped) && unwrapped.length > 0) return unwrapped;
+        }
+        return [];
+      }
+
+      function stripLegacyHtml(text) {
+        return String(text || "").replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+      }
+
+      /** Unifies structured DB columns & any legacy team_json shape into one clean Clan object */
       function normalizeClanRecord(row) {
         if (!row) return null;
-        let base = {};
-        if (row.team_json) {
-          try {
-            let parsed = row.team_json;
-            while (typeof parsed === "string") { parsed = JSON.parse(parsed); }
-            if (parsed && typeof parsed === "object") base = parsed;
-          } catch (e) {}
-        }
-        const clanId = row.clan_id || base.clanId || row.id;
+        const base = deepUnwrapJson(row.team_json) || {};
+        const clanId = String(row.clan_id || base.clanId || base.clan_id || row.id || "").trim();
         if (!clanId) return null;
 
-        const roster = Array.isArray(row.roster) ? row.roster : (Array.isArray(base.roster) ? base.roster : []);
-        const socials = (row.socials && typeof row.socials === "object") ? row.socials : {
-          discord: base.discordLink || "",
-          whatsapp: base.whatsappLink || "",
-          instagram: base.instagramLink || "",
-          youtube: base.youtubeLink || ""
+        const rawRoster = pickNonEmptyArray(row.roster, base.roster);
+        const roster = rawRoster.map((m) => ({
+          name: String(m?.name || m?.username || "Player").trim(),
+          email: String(m?.email || "").trim().toLowerCase(),
+          role: String(m?.role || "Player").trim(),
+          pos: String(m?.pos || m?.position || "Flex").trim(),
+          phone: m?.phone ? String(m.phone).trim() : "",
+          gameName: String(m?.gameName || m?.ign || m?.name || "").trim(),
+          uid: m?.uid ? String(m.uid).trim() : "",
+          state: String(m?.state || "").trim(),
+          city: String(m?.city || "").trim(),
+          avatar: String(m?.avatar || m?.logo || "").trim(),
+          kd: safeNum(m?.kd, 0),
+          adr: safeNum(m?.adr, 0)
+        }));
+
+        // Prefer real primary_game / base.game over accidental "BGMI" column default
+        const baseGame = String(base.game || base.primary_game || "").trim();
+        const primGame = String(row.primary_game || "").trim();
+        const colGame = String(row.game || "").trim();
+        const resolvedGame = primGame || baseGame || colGame || "BGMI";
+
+        const rawSocials = (typeof row.socials === "string" ? deepUnwrapJson(row.socials) : row.socials) || {};
+        const baseSocials = (typeof base.socials === "string" ? deepUnwrapJson(base.socials) : base.socials) || {};
+        const socials = {
+          discord: rawSocials.discord || baseSocials.discord || base.discordLink || "",
+          whatsapp: rawSocials.whatsapp || baseSocials.whatsapp || base.whatsappLink || "",
+          instagram: rawSocials.instagram || baseSocials.instagram || base.instagramLink || "",
+          youtube: rawSocials.youtube || baseSocials.youtube || base.youtubeLink || ""
         };
 
         const curSeason = getCurrentSeasonInfo();
-        const seasonalXp = safeNum(row.seasonal_xp ?? base.seasonal_xp ?? base.clan_xp, 0);
+        const seasonalXp = Math.max(safeNum(row.seasonal_xp, 0), safeNum(base.seasonal_xp ?? base.clan_xp, 0));
         const allTimeXp = Math.max(seasonalXp, safeNum(row.all_time_xp ?? base.all_time_xp ?? base.clan_xp, 0));
 
+        const ownerFromRoster = roster.find((r) => r.role.toLowerCase() === "owner") || roster[0];
+        const ownerUsername = String(
+          row.owner_username || row.captain_username || base.captain || base.owner_username || ownerFromRoster?.name || ""
+        ).trim();
+        const ownerEmail = String(row.owner_email || base.owner_email || ownerFromRoster?.email || "").trim().toLowerCase();
+
+        // Combine VIP flag cleanly (never let default false wipe out legacy true)
+        const isPremiumClan =
+          String(row.is_premium_clan).toLowerCase() === "true" ||
+          String(row.claimed_premium).toLowerCase() === "true" ||
+          String(base.isPremiumClan).toLowerCase() === "true" ||
+          String(base.is_premium_clan).toLowerCase() === "true";
+
+        const rawNotifs = pickNonEmptyArray(row.notifications, base.notifications);
+        const notifications = rawNotifs.map((n) => ({
+          msg: stripLegacyHtml(n?.msg || ""),
+          timestamp: safeNum(n?.timestamp, Date.now())
+        })).filter((n) => n.msg);
+
+        // Detect if DB row needs silent auto-healing
+        const rowRosterArr = typeof row.roster === "string" ? deepUnwrapJson(row.roster) : row.roster;
+        const needsAutoHeal =
+          (!Array.isArray(rowRosterArr) || rowRosterArr.length === 0) && roster.length > 0 ||
+          (typeof row.team_json === "string" && (row.team_json.trim().startsWith('"') || row.team_json.trim().startsWith('['))) ||
+          (colGame === "BGMI" && resolvedGame !== "BGMI") ||
+          (!row.owner_username && Boolean(ownerUsername)) ||
+          (isPremiumClan && String(row.is_premium_clan).toLowerCase() !== "true");
+
         return {
-          clanId: String(clanId),
-          name: String(row.clan_name || row.name || base.name || "Unnamed Clan"),
-          tag: String(row.Tag || row.tag || base.tag || "TX").toUpperCase().slice(0, 5),
-          motto: String(row.motto || row.bio || base.motto || "We play to win"),
-          game: String(row.game || base.game || "BGMI"),
-          status: String(row.status || base.status || "OPEN").toUpperCase(),
+          clanId,
+          name: String(row.clan_name || row.name || base.name || "Unnamed Clan").trim(),
+          tag: String(row.Tag || row.tag || base.tag || base.Tag || "TX").trim().toUpperCase().slice(0, 5),
+          game: resolvedGame,
+          motto: String(row.motto || base.motto || row.bio || base.bio || "We play to win").trim(),
+          status: String(row.status || base.status || "OPEN").trim().toUpperCase(),
           autoAccept: Boolean(row.auto_accept ?? base.autoAccept ?? false),
-          logo: String(row.logo || base.logo || ""),
-          banner: String(row.banner || base.banner || ""),
-          state: String(row.state || base.state || ""),
-          city: String(row.city || base.city || ""),
-          ownerUsername: String(row.owner_username || base.captain || roster.find((r) => r.role === "Owner")?.name || ""),
-          ownerEmail: String(row.owner_email || base.owner_email || ""),
-          isPremiumClan: String(row.is_premium_clan ?? row.claimed_premium ?? base.isPremiumClan ?? false).toLowerCase() === "true",
+          logo: String(row.logo || base.logo || base.externalLogo || "").trim(),
+          banner: String(row.banner || base.banner || base.externalBanner || "").trim(),
+          state: String(row.state || base.state || ownerFromRoster?.state || "").trim(),
+          city: String(row.city || base.city || ownerFromRoster?.city || "").trim(),
+          ownerUsername,
+          ownerEmail,
+          isPremiumClan,
           seasonCode: String(row.season_code || base.season_code || curSeason.code),
           seasonalXp,
           allTimeXp,
-          statsPlayed: safeNum(row.stats_played ?? base.stats_played, 0),
-          statsWon: safeNum(row.stats_won ?? base.stats_won, 0),
-          totalKills: safeNum(row.total_kills ?? base.total_kills, 0),
-          noShows: safeNum(row.no_shows ?? base.no_shows, 0),
+          statsPlayed: Math.max(safeNum(row.stats_played, 0), safeNum(base.stats_played, 0)),
+          statsWon: Math.max(safeNum(row.stats_won, 0), safeNum(base.stats_won, 0)),
+          totalKills: Math.max(safeNum(row.total_kills, 0), safeNum(base.total_kills, 0)),
+          noShows: Math.max(safeNum(row.no_shows, 0), safeNum(base.no_shows, 0)),
           vaultBalance: safeNum(row.vault_balance ?? base.vault_balance, 0),
           careerEarnings: safeNum(row.career_earnings ?? base.career_earnings, 0),
           roster,
-          requests: Array.isArray(row.requests) ? row.requests : (Array.isArray(base.requests) ? base.requests : []),
-          directInvites: Array.isArray(row.direct_invites) ? row.direct_invites : (Array.isArray(base.directInvites) ? base.directInvites : []),
-          rejectedList: Array.isArray(row.rejected_list) ? row.rejected_list : (Array.isArray(base.rejectedList) ? base.rejectedList : []),
-          notifications: Array.isArray(row.notifications) ? row.notifications : (Array.isArray(base.notifications) ? base.notifications : []),
-          messages: Array.isArray(row.messages) ? row.messages : (Array.isArray(base.messages) ? base.messages : []),
-          achievements: Array.isArray(row.achievements) ? row.achievements : (Array.isArray(base.achievements) ? base.achievements : []),
-          seasonHistory: Array.isArray(row.season_history) ? row.season_history : (Array.isArray(base.season_history) ? base.season_history : []),
+          requests: pickNonEmptyArray(row.requests, base.requests),
+          directInvites: pickNonEmptyArray(row.direct_invites, base.directInvites, base.direct_invites),
+          rejectedList: pickNonEmptyArray(row.rejected_list, base.rejectedList, base.rejected_list),
+          notifications,
+          messages: pickNonEmptyArray(row.messages, base.messages),
+          achievements: pickNonEmptyArray(row.achievements, base.achievements),
+          seasonHistory: pickNonEmptyArray(row.season_history, base.season_history),
           socials,
-          nextScrim: (row.next_scrim && typeof row.next_scrim === "object") ? row.next_scrim : null
+          nextScrim: (typeof row.next_scrim === "string" ? deepUnwrapJson(row.next_scrim) : row.next_scrim) || null,
+          _needsAutoHeal: needsAutoHeal
         };
       }
 
@@ -1842,11 +1929,28 @@
 
       function serializeClanPayload(clan) {
         const lvlInfo = getClanLevelInfo(clan.seasonalXp);
+        const cleanSnapshot = {
+          clanId: clan.clanId,
+          name: clan.name,
+          tag: clan.tag,
+          game: clan.game,
+          motto: clan.motto,
+          status: clan.status,
+          autoAccept: clan.autoAccept,
+          state: clan.state,
+          city: clan.city,
+          captain: clan.ownerUsername,
+          isPremiumClan: clan.isPremiumClan,
+          season_code: clan.seasonCode,
+          seasonal_xp: clan.seasonalXp,
+          roster: clan.roster
+        };
         return {
           clan_id: clan.clanId,
           clan_name: clan.name,
           Tag: clan.tag,
           bio: clan.motto,
+          primary_game: clan.game,
           game: clan.game,
           motto: clan.motto,
           status: clan.status,
@@ -1855,6 +1959,7 @@
           banner: clan.banner,
           state: clan.state,
           city: clan.city,
+          captain_username: clan.ownerUsername,
           owner_username: clan.ownerUsername,
           owner_email: clan.ownerEmail,
           is_premium_clan: clan.isPremiumClan,
@@ -1878,7 +1983,7 @@
           season_history: clan.seasonHistory,
           socials: clan.socials,
           next_scrim: clan.nextScrim,
-          team_json: JSON.stringify(clan)
+          team_json: cleanSnapshot
         };
       }
 
@@ -1933,25 +2038,46 @@
       }
 
       function isUserInClan(clan) {
-        if (isGuestMode || !clan?.roster) return false;
+        if (isGuestMode || !clan) return false;
         const myName = String(user.username || "").trim().toLowerCase();
+        const myIgn = String(user.ign || "").trim().toLowerCase();
         const myEmail = String(user.email || "").trim().toLowerCase();
-        return clan.roster.some((r) =>
-          (myEmail && String(r.email || "").trim().toLowerCase() === myEmail) ||
-          (myName && String(r.name || "").trim().toLowerCase() === myName)
-        );
+        const myUid = String(user.uid || "").trim();
+
+        if (myEmail && String(clan.ownerEmail || "").trim().toLowerCase() === myEmail) return true;
+        if (myName && String(clan.ownerUsername || "").trim().toLowerCase() === myName) return true;
+
+        return (clan.roster || []).some((r) => {
+          const rEmail = String(r.email || "").trim().toLowerCase();
+          const rName = String(r.name || "").trim().toLowerCase();
+          const rIgn = String(r.gameName || "").trim().toLowerCase();
+          const rUid = String(r.uid || "").trim();
+          return (
+            (myEmail && rEmail === myEmail) ||
+            (myName && rName === myName) ||
+            (myIgn && (rIgn === myIgn || rName === myIgn)) ||
+            (myUid && myUid.length >= 6 && rUid === myUid)
+          );
+        });
       }
 
       function getMyRosterEntry(clan) {
-        if (!clan?.roster) return null;
+        if (!clan) return null;
         const myName = String(user.username || "").trim().toLowerCase();
+        const myIgn = String(user.ign || "").trim().toLowerCase();
         const myEmail = String(user.email || "").trim().toLowerCase();
-        return clan.roster.find((r) =>
-          (myEmail && String(r.email || "").trim().toLowerCase() === myEmail) ||
-          (myName && String(r.name || "").trim().toLowerCase() === myName)
-        ) || null;
+        const found = (clan.roster || []).find((r) => {
+          const rEmail = String(r.email || "").trim().toLowerCase();
+          const rName = String(r.name || "").trim().toLowerCase();
+          const rIgn = String(r.gameName || "").trim().toLowerCase();
+          return (myEmail && rEmail === myEmail) || (myName && rName === myName) || (myIgn && rIgn === myIgn);
+        });
+        if (found) return found;
+        if (myName && String(clan.ownerUsername || "").trim().toLowerCase() === myName) {
+          return { name: user.username, email: myEmail, role: "Owner", pos: "IGL" };
+        }
+        return null;
       }
-
       // ============================================================================
       // 3. DATA SYNC & NAVIGATION TABS
       // ============================================================================
@@ -2002,28 +2128,29 @@
 
           // Lazy 3-month seasonal rollover check + Auto-heal current player profile on their clans
           for (const c of normalized) {
-            let dirty = evaluateSeasonRollover(c);
+            let dirty = Boolean(c._needsAutoHeal) || evaluateSeasonRollover(c);
             if (!isGuestMode) {
               const me = getMyRosterEntry(c);
               if (me) {
-                const pIgn = user.ign || user.username || "";
-                const pUid = user.uid || "";
-                const pAvatar = user.avatar || "";
-                const pEmail = String(user.email || "").toLowerCase();
-                if (me.gameName !== pIgn || me.uid !== pUid || me.avatar !== pAvatar || me.email !== pEmail) {
+                const pIgn = String(user.ign || user.username || "").trim();
+                const pUid = String(user.uid || "").trim();
+                const pAvatar = String(user.avatar || "").trim();
+                const pEmail = String(user.email || "").trim().toLowerCase();
+                if (me.gameName !== pIgn || me.uid !== pUid || me.avatar !== pAvatar || (pEmail && me.email !== pEmail)) {
                   me.gameName = pIgn; me.uid = pUid; me.avatar = pAvatar; me.email = pEmail;
                   dirty = true;
                 }
-                // Check owner VIP status synchronization
-                if (me.role === "Owner" && c.isPremiumClan && String(user.is_premium).toLowerCase() !== "true") {
-                  c.isPremiumClan = false;
+                if (me.role === "Owner" && !c.ownerEmail && pEmail) {
+                  c.ownerEmail = pEmail;
                   dirty = true;
                 }
               }
             }
-            if (dirty) persistClanToDb(c).catch(() => {});
+            if (dirty) {
+              delete c._needsAutoHeal;
+              persistClanToDb(c).catch(() => {});
+            }
           }
-
           globalClans = normalized;
           userLiveClans = isGuestMode ? [] : globalClans.filter(isUserInClan);
           if (!isGuestMode) {
@@ -3059,16 +3186,19 @@
         const sortBy = document.getElementById("clanSortSelect")?.value || "VIP_LEVEL";
 
         let list = globalClans.filter((c) => {
-          const maxCap = c.isPremiumClan ? 8 : 6;
-          if (c.status === "CLOSED") return false;
-          if (c.roster.length >= maxCap) return false;
-          if (!isGuestMode && isUserInClan(c)) return false;
+          const isMine = !isGuestMode && isUserInClan(c);
+          // When searching by name/tag, show ALL matching clans (even yours or full ones)
+          if (!q && c.status === "CLOSED") return false;
+          if (!q && isMine) return false;
           if (activeFilterGame !== "All" && !c.game.toLowerCase().includes(activeFilterGame.toLowerCase())) return false;
-          if (q && !(c.name.toLowerCase().includes(q) || c.tag.toLowerCase().includes(q) || c.city.toLowerCase().includes(q) || c.state.toLowerCase().includes(q))) return false;
+          if (q && !(c.name.toLowerCase().includes(q) || c.tag.toLowerCase().includes(q) || c.clanId.toLowerCase().includes(q) || c.city.toLowerCase().includes(q) || c.state.toLowerCase().includes(q))) return false;
           return true;
         });
 
         list.sort((a, b) => {
+          const aFull = a.roster.length >= (a.isPremiumClan ? 8 : 6) ? 1 : 0;
+          const bFull = b.roster.length >= (b.isPremiumClan ? 8 : 6) ? 1 : 0;
+          if (aFull !== bFull) return aFull - bFull; // Open-slot clans always rank above full ones
           if (sortBy === "WINRATE") {
             const wrA = a.statsPlayed > 0 ? a.statsWon / a.statsPlayed : 0;
             const wrB = b.statsPlayed > 0 ? b.statsWon / b.statsPlayed : 0;
@@ -3078,23 +3208,37 @@
           return (b.isPremiumClan ? 1 : 0) - (a.isPremiumClan ? 1 : 0) || b.seasonalXp - a.seasonalXp;
         });
 
-        document.getElementById("openClansCountPill").innerText = `${list.length} Open`;
+        document.getElementById("openClansCountPill").innerText = `${list.length} Found`;
         document.getElementById("activeSquadsCount").innerText = `${globalClans.length} teams`;
 
         const container = document.getElementById("globalClansList");
         if (!list.length) {
-          container.innerHTML = `<div class="col-span-full glass-card rounded-2xl p-8 text-center font-mono text-xs text-[#8E8CA6]">No recruiting squads match this filter. Found your own clan to lead the leaderboard!</div>`;
+          container.innerHTML = `<div class="col-span-full glass-card rounded-2xl p-8 text-center font-mono text-xs text-[#8E8CA6]">No clans match this filter. Try switching to "All Games" or founding your own squad!</div>`;
           return;
         }
 
         container.innerHTML = list.map((c) => {
           const maxCap = c.isPremiumClan ? 8 : 6;
+          const isFull = c.roster.length >= maxCap;
+          const isMine = !isGuestMode && isUserInClan(c);
           const lvl = getClanLevelInfo(c.seasonalXp);
           const loc = [c.city, c.state].filter(Boolean).join(", ") || "India";
           const hasIGL = c.roster.some((r) => String(r.pos || "").toLowerCase().includes("igl"));
           const hasSniper = c.roster.some((r) => String(r.pos || "").toLowerCase().includes("sniper"));
-          const wanted = !hasIGL && !hasSniper ? "IGL & Sniper" : !hasIGL ? "IGL Needed" : !hasSniper ? "Sniper Needed" : "All Roles";
-          const isRequested = localRequestedClans.has(c.clanId) || (c.requests || []).some((r) => String(r.name).toLowerCase() === String(user.username || "").toLowerCase());
+          const wanted = isFull ? "Roster Full" : (!hasIGL && !hasSniper ? "IGL & Sniper" : !hasIGL ? "IGL Needed" : !hasSniper ? "Sniper Needed" : "All Roles");
+          const isRequested = localRequestedClans.has(c.clanId) || (c.requests || []).some((r) => String(r.name).trim().toLowerCase() === String(user.username || "").trim().toLowerCase());
+
+          let actionBtn = "";
+          if (isMine) {
+            const myIdx = userLiveClans.findIndex((x) => x.clanId === c.clanId);
+            actionBtn = `<button onclick="event.stopPropagation(); switchTab('myClanTab', document.getElementById('tabBtnMyClans')); openClanDashboard(${myIdx});" type="button" class="px-3.5 py-2 rounded-xl bg-[#00F2FF]/15 border border-[#00F2FF]/40 font-display text-xs font-bold text-[#00F2FF]">Open Clan →</button>`;
+          } else if (isFull) {
+            actionBtn = `<button type="button" disabled class="px-3.5 py-2 rounded-xl bg-white/[0.04] border border-white/10 font-mono text-[10.5px] font-bold text-[#8E8CA6] uppercase cursor-not-allowed">Full (${c.roster.length}/${maxCap})</button>`;
+          } else if (isRequested) {
+            actionBtn = `<button onclick="cancelJoinRequest('${escapeHtml(c.clanId)}', event)" type="button" class="px-3.5 py-2 rounded-xl bg-[#FF9900]/15 border border-[#FF9900]/40 font-display text-xs font-bold text-[#FF9900]">Requested ✓</button>`;
+          } else {
+            actionBtn = `<button onclick="event.stopPropagation(); triggerJoinFlow('${escapeHtml(c.clanId)}')" type="button" class="px-4 py-2 rounded-xl bg-white/[0.08] hover:bg-[#D4FF00] hover:text-[#050508] font-display text-xs font-bold text-white transition-colors">Join Squad →</button>`;
+          }
 
           return `
             <div onclick="openPublicClanModal('${escapeHtml(c.clanId)}')" class="glass-card glass-interactive ${c.isPremiumClan ? "vip-clan-card" : ""} rounded-2xl p-4 space-y-3.5 cursor-pointer flex flex-col justify-between">
@@ -3116,17 +3260,15 @@
                 </div>
 
                 <div class="grid grid-cols-3 gap-1.5 p-2.5 rounded-xl bg-[#08080F] border border-white/[0.06] text-center font-mono">
-                  <div><span class="text-[8.5px] text-[#8E8CA6] uppercase block">Roster</span><strong class="text-[11px] text-[#00FF7F]">${c.roster.length}/${maxCap}</strong></div>
-                  <div><span class="text-[8.5px] text-[#8E8CA6] uppercase block">Wanted</span><strong class="text-[10.5px] text-[#D4FF00] truncate block">${wanted}</strong></div>
+                  <div><span class="text-[8.5px] text-[#8E8CA6] uppercase block">Roster</span><strong class="text-[11px] ${isFull ? "text-[#FF9900]" : "text-[#00FF7F]"}">${c.roster.length}/${maxCap}</strong></div>
+                  <div><span class="text-[8.5px] text-[#8E8CA6] uppercase block">Status</span><strong class="text-[10.5px] text-[#D4FF00] truncate block">${wanted}</strong></div>
                   <div><span class="text-[8.5px] text-[#8E8CA6] uppercase block">Base</span><strong class="text-[10.5px] text-white truncate block">${escapeHtml(loc)}</strong></div>
                 </div>
               </div>
 
               <div class="flex items-center justify-between gap-2 pt-1">
                 <span class="font-mono text-[10px] text-[#FF9900] font-bold uppercase"><i class="fa-solid fa-gamepad mr-1"></i>${escapeHtml(c.game)}</span>
-                ${isRequested
-                  ? `<button onclick="cancelJoinRequest('${escapeHtml(c.clanId)}', event)" type="button" class="px-3.5 py-2 rounded-xl bg-[#FF9900]/15 border border-[#FF9900]/40 font-display text-xs font-bold text-[#FF9900]">Requested ✓</button>`
-                  : `<button onclick="event.stopPropagation(); triggerJoinFlow('${escapeHtml(c.clanId)}')" type="button" class="px-4 py-2 rounded-xl bg-white/[0.08] hover:bg-[#D4FF00] hover:text-[#050508] font-display text-xs font-bold text-white transition-colors">Join Squad →</button>`}
+                ${actionBtn}
               </div>
             </div>
           `;
