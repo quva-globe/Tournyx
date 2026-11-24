@@ -10,15 +10,15 @@
   <meta name="theme-color" content="#050508">
   <meta name="color-scheme" content="dark only">
   <title>Tickets &amp; Wallet - Tournyx Esports</title>
-  <meta name="description" content="Buy verified Tournyx Esports passes, unlock bulk partner brand vouchers, apply game coupon codes, and track your real-time INR &amp; ticket ledger.">
+  <meta name="description" content="Buy verified Tournyx Esports passes, download printable arena tickets, unlock bulk partner rewards, and manage your real-time INR &amp; ticket ledger.">
 
-  <!-- Fonts: Plus Jakarta Sans, Orbitron, JetBrains Mono, Inter -->
+  <!-- Typography: Space Grotesk, Plus Jakarta Sans, Orbitron, JetBrains Mono, Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Orbitron:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Orbitron:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <!-- Supabase JS v2, jsPDF, Razorpay Checkout & Tailwind CSS -->
+  <!-- Backend Client, PDF Engine, Payment SDK & Tailwind -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
@@ -42,6 +42,7 @@
             "crimson": "#FF4655"
           },
           fontFamily: {
+            "display": ["Space Grotesk", "Plus Jakarta Sans", "sans-serif"],
             "headline": ["Plus Jakarta Sans", "sans-serif"],
             "orbitron": ["Orbitron", "sans-serif"],
             "mono": ["JetBrains Mono", "monospace"],
@@ -71,7 +72,7 @@
       color-scheme: dark only;
       forced-color-adjust: none;
       --bg-canvas: #050508;
-      --bg-card: rgba(13, 13, 20, 0.78);
+      --bg-card: rgba(13, 13, 21, 0.80);
       --border-card: rgba(255, 255, 255, 0.09);
       --accent-volt: #D4FF00;
       --accent-cyan: #00F2FF;
@@ -100,6 +101,7 @@
       padding: 0;
       background-color: var(--bg-canvas);
       scroll-behavior: smooth;
+      font-size: clamp(14px, 1vw + 10px, 16px);
     }
 
     body {
@@ -110,13 +112,15 @@
       background-color: var(--bg-canvas);
       color: var(--text-primary);
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-feature-settings: "cv02", "cv03", "cv04", "cv11";
       overflow-x: clip;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
     }
     body.modal-open { overflow: hidden !important; }
 
-    .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; letter-spacing: -0.02em; }
+    .font-display { font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif; letter-spacing: -0.025em; }
+    .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; letter-spacing: -0.015em; }
     .font-orbitron { font-family: 'Orbitron', sans-serif; letter-spacing: 0.04em; }
     .font-mono, .stat-num { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
 
@@ -155,7 +159,7 @@
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--border-card);
-      box-shadow: 0 14px 36px -8px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+      box-shadow: 0 14px 36px -8px rgba(0, 0, 0, 0.72), inset 0 1px 0 rgba(255, 255, 255, 0.07);
       transition: border-color 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
     }
     .glass-interactive:hover {
@@ -169,37 +173,98 @@
       font-weight: 800;
       box-shadow: 0 6px 22px color-mix(in srgb, var(--accent-volt) 28%, transparent);
       transition: transform 0.15s ease, filter 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+      overflow: hidden;
     }
     .volt-btn:hover:not(:disabled) { filter: brightness(1.06); }
     .volt-btn:active:not(:disabled) { transform: scale(0.98); }
     .volt-btn:disabled { opacity: 0.5; cursor: not-allowed; }
     body.theme-vip .volt-btn { background: linear-gradient(135deg, #FFE87C 0%, #D4AF37 100%); }
 
-    /* Ticket Pass Physical Cutout Styling */
-    .pass-stub {
+    /* Cinema / Esports Movie Ticket Stub Styling */
+    .cinema-ticket {
       position: relative;
       overflow: hidden;
-      background: linear-gradient(135deg, rgba(20, 20, 32, 0.92), rgba(10, 10, 16, 0.96));
-      border: 1px solid rgba(255, 255, 255, 0.09);
-      transition: transform 0.2s ease, border-color 0.2s ease;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(20, 21, 34, 0.96) 0%, rgba(10, 10, 18, 0.98) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55);
+      transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.22s ease, box-shadow 0.22s ease;
     }
-    .pass-stub:hover {
+    .cinema-ticket:hover {
       transform: translateY(-2px);
-      border-color: color-mix(in srgb, var(--accent-volt) 55%, transparent);
+      border-color: color-mix(in srgb, var(--tkt-accent, var(--accent-volt)) 60%, transparent);
+      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.7), 0 0 18px color-mix(in srgb, var(--tkt-accent, var(--accent-volt)) 16%, transparent);
     }
-    .pass-stub::before, .pass-stub::after {
+    .cinema-ticket::before, .cinema-ticket::after {
       content: "";
       position: absolute;
       top: 50%;
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
       border-radius: 9999px;
       background: var(--bg-canvas);
       transform: translateY(-50%);
-      border: 1px solid rgba(255, 255, 255, 0.09);
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      z-index: 3;
     }
-    .pass-stub::before { left: -9px; }
-    .pass-stub::after { right: -9px; }
+    .cinema-ticket::before { left: -10px; }
+    .cinema-ticket::after { right: -10px; }
+
+    .cinema-tear-divider {
+      border-left: 1.5px dashed rgba(255, 255, 255, 0.14);
+      position: relative;
+    }
+
+    @keyframes holoGlide {
+      0% { transform: translateX(-140%) skewX(-24deg); }
+      100% { transform: translateX(240%) skewX(-24deg); }
+    }
+    .cinema-ticket-holo::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      width: 38%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+      transform: translateX(-140%) skewX(-24deg);
+      animation: holoGlide 5.2s infinite ease-in-out;
+      pointer-events: none;
+    }
+
+    /* Full Printable Esports Arena Pass Preview Card */
+    .arena-pass-card {
+      position: relative;
+      border-radius: 22px;
+      background: linear-gradient(145deg, #111220 0%, #07070D 60%, #121022 100%);
+      border: 1px solid color-mix(in srgb, var(--accent-volt) 45%, rgba(255, 255, 255, 0.12));
+      box-shadow: 0 22px 54px rgba(0, 0, 0, 0.85), 0 0 32px color-mix(in srgb, var(--accent-cyan) 14%, transparent);
+      overflow: hidden;
+      transform-style: preserve-3d;
+      transition: transform 0.25s ease;
+    }
+    .arena-pass-notch-row {
+      position: relative;
+      border-top: 1.5px dashed rgba(255, 255, 255, 0.16);
+    }
+    .arena-pass-notch-row::before, .arena-pass-notch-row::after {
+      content: "";
+      position: absolute;
+      top: -11px;
+      width: 20px;
+      height: 20px;
+      border-radius: 9999px;
+      background: #0D0D15;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .arena-pass-notch-row::before { left: -11px; }
+    .arena-pass-notch-row::after { right: -11px; }
+
+    /* Payment Stepper Ring Pulse */
+    @keyframes orbitPulse {
+      0%, 100% { transform: scale(0.95); opacity: 0.7; }
+      50% { transform: scale(1.08); opacity: 1; }
+    }
+    .pay-pulse-ring { animation: orbitPulse 1.6s ease-in-out infinite; }
 
     .blur-balance { filter: blur(9px); user-select: none; opacity: 0.75; transition: filter 0.25s ease; }
 
@@ -208,15 +273,16 @@
     body.power-save #gamerParticlesCanvas, body.power-save .meniscus-glow { display: none !important; }
     body.power-save .glass-card { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: #0A0A0E !important; box-shadow: none !important; }
     body.power-save .meniscus-dock { filter: none !important; }
+    body.power-save .cinema-ticket-holo::after { animation: none !important; display: none; }
 
     /* Slide-Up Modals */
     .sheet-overlay {
       position: fixed;
       inset: 0;
       z-index: 6000;
-      background: rgba(3, 3, 7, 0.84);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: rgba(3, 3, 7, 0.86);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       display: none;
       align-items: flex-end;
       justify-content: center;
@@ -224,26 +290,26 @@
       transition: opacity 0.2s ease;
     }
     @media (min-width: 768px) {
-      .sheet-overlay { align-items: center; padding: 24px; }
+      .sheet-overlay { align-items: center; padding: 20px; }
     }
     .sheet-overlay.active { display: flex; opacity: 1; }
     .sheet-card {
       width: 100%;
-      max-width: 560px;
+      max-width: 540px;
       max-height: 92dvh;
       background: #0D0D15;
-      border: 1px solid var(--border-card);
+      border: 1px solid rgba(255, 255, 255, 0.11);
       border-radius: 26px 26px 0 0;
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.88);
-      animation: sheetPopIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      box-shadow: 0 26px 68px rgba(0, 0, 0, 0.9);
+      animation: sheetPopIn 0.26s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
-    @media (min-width: 768px) { .sheet-card { border-radius: 26px; } }
+    @media (min-width: 768px) { .sheet-card { border-radius: 24px; } }
     @keyframes sheetPopIn {
-      from { transform: translateY(26px); opacity: 0.4; }
-      to { transform: translateY(0); opacity: 1; }
+      from { transform: translateY(28px) scale(0.98); opacity: 0.4; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
     }
     .sheet-scroll-body {
       flex: 1 1 auto;
@@ -259,8 +325,9 @@
       border: 1px solid #262538;
       color: #F9FAFB;
       border-radius: 12px;
-      padding: 11px 14px;
+      padding: 10px 13px;
       font-size: 13px;
+      line-height: 1.4;
       outline: none;
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
@@ -275,9 +342,12 @@
       border: 1.5px solid rgba(255, 255, 255, 0.08);
       transition: all 0.2s ease;
     }
+    .game-tile:hover {
+      border-color: rgba(255, 255, 255, 0.22);
+    }
     .game-tile.active {
       border-color: var(--accent-volt);
-      background: color-mix(in srgb, var(--accent-volt) 10%, #08080F);
+      background: color-mix(in srgb, var(--accent-volt) 11%, #08080F);
       box-shadow: 0 0 18px color-mix(in srgb, var(--accent-volt) 18%, transparent);
     }
 
@@ -364,12 +434,12 @@
         </a>
 
         <nav class="hidden lg:flex items-center gap-1" aria-label="Primary Navigation">
-          <a href="index.html" class="px-3.5 py-2 rounded-xl font-headline text-xs font-semibold text-[#A3A1B8] hover:text-white hover:bg-[#14141F] transition-colors">Home</a>
-          <a href="explore.html" class="px-3.5 py-2 rounded-xl font-headline text-xs font-semibold text-[#A3A1B8] hover:text-white hover:bg-[#14141F] transition-colors">Explore</a>
-          <a href="matches.html" class="px-3.5 py-2 rounded-xl font-headline text-xs font-semibold text-[#A3A1B8] hover:text-white hover:bg-[#14141F] transition-colors">Matches</a>
-          <a href="clans.html" class="px-3.5 py-2 rounded-xl font-headline text-xs font-semibold text-[#A3A1B8] hover:text-white hover:bg-[#14141F] transition-colors">Clans</a>
-          <a href="tickets.html" aria-current="page" class="px-3.5 py-2 rounded-xl font-headline text-xs font-extrabold shadow-sm" style="background: var(--accent-volt); color: #050508;">Tickets &amp; Wallet</a>
-          <a href="profile.html" class="px-3.5 py-2 rounded-xl font-headline text-xs font-semibold text-[#A3A1B8] hover:text-white hover:bg-[#14141F] transition-colors">Profile</a>
+          <a href="index.html" class="px-3.5 py-2 rounded-xl font-display text-xs font-semibold text-[#A3A1B8] hover:text-white hover:bg-[#14141F] transition-colors">Home</a>
+          <a href="explore.html" class="px-3.5 py-2 rounded-xl font-display text-xs font-semibold text-[#A3A1B8] hover:text-white hover:bg-[#14141F] transition-colors">Explore</a>
+          <a href="matches.html" class="px-3.5 py-2 rounded-xl font-display text-xs font-semibold text-[#A3A1B8] hover:text-white hover:bg-[#14141F] transition-colors">Matches</a>
+          <a href="clans.html" class="px-3.5 py-2 rounded-xl font-display text-xs font-semibold text-[#A3A1B8] hover:text-white hover:bg-[#14141F] transition-colors">Clans</a>
+          <a href="tickets.html" aria-current="page" class="px-3.5 py-2 rounded-xl font-display text-xs font-extrabold shadow-sm" style="background: var(--accent-volt); color: #050508;">Tickets &amp; Wallet</a>
+          <a href="profile.html" class="px-3.5 py-2 rounded-xl font-display text-xs font-semibold text-[#A3A1B8] hover:text-white hover:bg-[#14141F] transition-colors">Profile</a>
         </nav>
       </div>
 
@@ -401,7 +471,7 @@
        ========================================================= -->
   <main class="relative z-10 w-full max-w-[1280px] mx-auto px-4 lg:px-8 pt-5 pb-28 lg:pb-12 space-y-5">
 
-    <!-- Top Greeting & Quick Glance Row -->
+    <!-- Top Greeting & Live Daily Cap / Perks Status Pill (Replaces Redundant Mobile Buy Button) -->
     <section class="flex flex-wrap items-center justify-between gap-3">
       <div class="flex items-center gap-3 min-w-0">
         <div class="relative w-11 h-11 rounded-2xl bg-[#0D0D14] border border-white/10 overflow-hidden flex-shrink-0">
@@ -409,18 +479,28 @@
           <span id="greetingStatusDot" class="absolute bottom-0.5 right-0.5 w-2.5 h-2.5 rounded-full bg-[#FF9900] ring-2 ring-[#050508]"></span>
         </div>
         <div class="min-w-0">
-          <h1 id="dynamicGreeting" class="font-headline text-base sm:text-lg font-extrabold text-white truncate leading-tight">Good Afternoon, Guest</h1>
+          <h1 id="dynamicGreeting" class="font-display text-base sm:text-lg font-bold text-white truncate leading-tight">Good Afternoon, Guest</h1>
           <div class="flex items-center gap-2 mt-0.5 flex-wrap">
             <span id="roleStatusPill" class="px-2 py-0.5 rounded-md bg-[#FF9900]/15 border border-[#FF9900]/30 text-[#FF9900] font-mono text-[9.5px] font-bold uppercase">Guest Account</span>
             <span class="w-1 h-1 rounded-full bg-[#4B4963]"></span>
-            <span id="tierSubtitle" class="font-mono text-[11px] text-[#8E8CA6]">Tier 0 • Standard</span>
+            <span id="tierSubtitle" class="font-mono text-[10.5px] text-[#8E8CA6]">Tier 0 • Standard</span>
           </div>
         </div>
       </div>
 
+      <!-- Useful Interactive Daily Wallet Limit + Total Savings Telemetry Pill -->
       <div class="flex items-center gap-2">
+        <button id="dailyCapPill" onclick="openModal('dailyLimitInfoModal')" type="button"
+          class="px-3 py-1.5 rounded-xl bg-[#0D0D16]/90 border border-white/10 hover:border-[#00F2FF]/50 flex items-center gap-2 transition-colors active:scale-95">
+          <span class="w-2 h-2 rounded-full bg-[#00F2FF] animate-pulse"></span>
+          <div class="text-left leading-tight">
+            <span class="font-mono text-[8.5px] text-[#8E8CA6] uppercase block">24h Wallet Cap</span>
+            <span id="dailyCapRemainText" class="font-mono text-[10.5px] font-bold text-white">₹20,000 Left</span>
+          </div>
+        </button>
+
         <button onclick="openBuyPassModal()" type="button"
-          class="volt-btn px-4 py-2.5 rounded-xl font-orbitron text-[11px] uppercase tracking-wider inline-flex items-center gap-1.5">
+          class="hidden lg:inline-flex volt-btn px-4 py-2.5 rounded-xl font-orbitron text-[11px] uppercase tracking-wider items-center gap-1.5">
           <i class="fa-solid fa-ticket"></i> <span>Buy Passes</span>
         </button>
       </div>
@@ -432,20 +512,25 @@
       <!-- LEFT COLUMN (5 Cols on Desktop): Membership Pass Card, Actions, Withdraw, Brand Perks -->
       <div class="lg:col-span-5 space-y-5">
 
-        <!-- 1. TX MEMBERSHIP PASS & BALANCE CARD (Glassmorphic Hero) -->
+        <!-- 1. TX MEMBERSHIP PASS & BALANCE CARD -->
         <section class="glass-card rounded-2xl p-5 relative overflow-hidden space-y-4">
           <div class="absolute top-0 left-0 right-0 h-[2px]" style="background: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan), var(--accent-volt));"></div>
           <div class="absolute -right-10 -top-10 w-44 h-44 rounded-full blur-3xl pointer-events-none" style="background: color-mix(in srgb, var(--accent-volt) 16%, transparent);"></div>
           <i class="fa-solid fa-ticket absolute right-4 top-10 text-7xl opacity-[0.05] pointer-events-none" style="color: var(--accent-cyan);"></i>
 
-          <div class="flex items-center justify-between relative z-10">
+          <div class="flex items-center justify-between relative z-10 gap-2">
             <span id="vipBadge" class="px-2.5 py-1 rounded-full bg-white/[0.06] border border-white/10 font-mono text-[10px] font-bold uppercase inline-flex items-center gap-1.5 text-white">
               <i class="fa-solid fa-award text-[#00FF7F]"></i> TX Standard Pass
             </span>
-            <button onclick="togglePrivacy()" type="button" title="Toggle Balance Privacy"
-              class="w-8 h-8 rounded-lg bg-[#08080F]/80 border border-white/10 hover:border-[#00F2FF]/50 flex items-center justify-center text-[#9C9AB0] hover:text-white transition-colors">
-              <i id="eyeIcon" class="fa-solid fa-eye text-xs"></i>
-            </button>
+            <div class="flex items-center gap-1.5">
+              <span id="totalSavingsChip" class="hidden px-2 py-0.5 rounded-full bg-[#00FF7F]/12 border border-[#00FF7F]/35 font-mono text-[9.5px] font-bold text-[#00FF7F]">
+                Saved ₹<span id="totalSavingsVal">0</span>
+              </span>
+              <button onclick="togglePrivacy()" type="button" title="Toggle Balance Privacy"
+                class="w-8 h-8 rounded-lg bg-[#08080F]/80 border border-white/10 hover:border-[#00F2FF]/50 flex items-center justify-center text-[#9C9AB0] hover:text-white transition-colors">
+                <i id="eyeIcon" class="fa-solid fa-eye text-xs"></i>
+              </button>
+            </div>
           </div>
 
           <div class="relative z-10">
@@ -468,7 +553,7 @@
             </div>
             <div class="flex justify-between font-mono text-[9.5px] text-[#7A788F] uppercase">
               <span id="tierCurrentLabel">LVL 1 (ROOKIE)</span>
-              <span id="tierTargetLabel">100 PASSES TO PRO</span>
+              <span id="tierTargetLabel">15 PASSES TO PRO</span>
             </div>
           </div>
         </section>
@@ -478,8 +563,8 @@
           <button onclick="openBuyPassModal()" type="button"
             class="glass-card glass-interactive rounded-2xl p-4 text-left relative overflow-hidden active:scale-[0.98] group">
             <div class="w-10 h-10 rounded-xl bg-[#D4FF00]/15 border border-[#D4FF00]/35 flex items-center justify-center font-orbitron text-xs font-black text-[#D4FF00] mb-3">TX</div>
-            <div class="font-headline text-sm font-bold text-white">Buy Pass</div>
-            <div class="font-mono text-[10px] text-[#8E8CA6] mt-0.5">Coupons &amp; Bulk Perks</div>
+            <div class="font-display text-sm font-bold text-white">Buy Pass</div>
+            <div class="font-mono text-[10px] text-[#8E8CA6] mt-0.5">Arena Passes &amp; Perks</div>
             <i class="fa-solid fa-arrow-right absolute bottom-4 right-4 text-xs text-[#67657E] group-hover:text-[#D4FF00] group-hover:translate-x-0.5 transition-all"></i>
           </button>
 
@@ -488,7 +573,7 @@
             <div class="w-10 h-10 rounded-xl bg-[#00F2FF]/15 border border-[#00F2FF]/35 flex items-center justify-center text-[#00F2FF] mb-3">
               <i class="fa-solid fa-gift text-sm"></i>
             </div>
-            <div class="font-headline text-sm font-bold text-white">Redeem</div>
+            <div class="font-display text-sm font-bold text-white">Redeem</div>
             <div class="font-mono text-[10px] text-[#8E8CA6] mt-0.5">PTS Crates &amp; Codes</div>
             <i class="fa-solid fa-arrow-right absolute bottom-4 right-4 text-xs text-[#67657E] group-hover:text-[#00F2FF] group-hover:translate-x-0.5 transition-all"></i>
           </a>
@@ -501,15 +586,15 @@
                 <i class="fa-solid fa-crown text-sm"></i>
               </div>
               <div>
-                <div class="font-headline text-sm font-bold text-[#FF9900]">Add Organizer Credits</div>
-                <div class="font-mono text-[10px] text-[#9C9AB0]">Fund prize pools securely • Up to ₹20,000 / 24h</div>
+                <div class="font-display text-sm font-bold text-[#FF9900]">Add Organizer Funds</div>
+                <div class="font-mono text-[10px] text-[#9C9AB0]">Fund prize pools securely • ₹20,000/day online</div>
               </div>
             </div>
             <i class="fa-solid fa-arrow-right text-xs text-[#FF9900]"></i>
           </button>
         </section>
 
-        <!-- 3. WITHDRAW WALLET MODULE (Direct UPI Focus) -->
+        <!-- 3. WITHDRAW WALLET MODULE -->
         <section class="glass-card rounded-2xl p-5 space-y-3">
           <div class="flex items-start justify-between gap-3">
             <div class="flex items-center gap-3">
@@ -517,7 +602,7 @@
                 <i class="fa-solid fa-wallet"></i>
               </div>
               <div>
-                <h3 class="font-headline text-sm font-extrabold text-white leading-tight">Withdraw Wallet</h3>
+                <h3 class="font-display text-sm font-bold text-white leading-tight">Withdraw Wallet</h3>
                 <div class="flex items-center gap-1.5 mt-0.5">
                   <span class="w-1.5 h-1.5 rounded-full bg-[#00FF7F] animate-pulse"></span>
                   <span class="font-mono text-[9.5px] font-bold text-[#00FF7F] uppercase">Instant UPI Payouts Active</span>
@@ -545,12 +630,12 @@
           </div>
         </section>
 
-        <!-- 4. EXCLUSIVE BRAND & PARTNER VOUCHERS (Bulk Purchase Rewards) -->
+        <!-- 4. EXCLUSIVE BRAND & PARTNER VOUCHERS -->
         <section class="glass-card rounded-2xl p-5 space-y-3">
           <div class="flex items-center justify-between gap-2">
             <div class="flex items-center gap-2">
               <i class="fa-solid fa-crown text-[#FFD700]"></i>
-              <h2 class="font-headline text-sm font-extrabold text-white">Unlocked Partner Perks</h2>
+              <h2 class="font-display text-sm font-bold text-white">Unlocked Partner Perks</h2>
             </div>
             <span class="px-2 py-0.5 rounded-full bg-[#FFD700]/15 border border-[#FFD700]/35 font-mono text-[9px] font-bold text-[#FFD700] uppercase">10+ Bulk Reward</span>
           </div>
@@ -564,8 +649,8 @@
               <i class="fa-solid fa-lock"></i>
             </div>
             <div>
-              <h4 class="font-headline text-sm font-bold text-white">Guest Mode Restriction</h4>
-              <p class="font-body text-xs text-[#9C9AB0] mt-0.5">Login or register to purchase verified game passes, claim brand partner coupons, and withdraw UPI winnings.</p>
+              <h4 class="font-display text-sm font-bold text-white">Guest Mode Restriction</h4>
+              <p class="font-body text-xs text-[#9C9AB0] mt-0.5">Login or register to purchase verified arena passes, claim brand partner coupons, and withdraw UPI winnings.</p>
             </div>
           </div>
           <a href="login.html" class="w-full py-3 rounded-xl bg-[#FF9900] hover:bg-[#FFAD33] text-[#050508] font-orbitron text-xs font-black uppercase flex items-center justify-center gap-2">
@@ -574,14 +659,14 @@
         </section>
       </div>
 
-      <!-- RIGHT COLUMN (7 Cols on Desktop): 4-Tile Ledger Summary, Unique Ticket Vault, Transaction History -->
+      <!-- RIGHT COLUMN (7 Cols on Desktop): Ledger Summary, Cinema Ticket Vault, Transaction History -->
       <div class="lg:col-span-7 space-y-5">
 
-        <!-- 1. LEDGER OVERVIEW METRICS (2x2 Mobile / 4-Col Desktop) -->
+        <!-- 1. LEDGER OVERVIEW METRICS -->
         <section class="space-y-2.5">
           <div class="flex items-center justify-between px-0.5">
             <span class="font-mono text-[10px] uppercase tracking-widest text-[#8E8CA6] font-bold">Ledger Overview</span>
-            <span class="font-mono text-[10px] text-[#00F2FF]">Real-Time Supabase Sync</span>
+            <span class="font-mono text-[10px] text-[#00F2FF]"><i class="fa-solid fa-circle-dot text-[8px] mr-1 text-[#00FF7F]"></i>Tournyx Live Sync</span>
           </div>
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div class="glass-card rounded-2xl p-3.5 space-y-1">
@@ -618,39 +703,72 @@
           </div>
         </section>
 
-        <!-- 2. MY TICKET VAULT (UNIQUE CRYPTOGRAPHIC TICKET CODES PER GAME) -->
+        <!-- 2. MY UNIQUE MOVIE-TICKET VAULT (With Search, Status Filter, Game Logos & Squad Copy-All) -->
         <section class="glass-card rounded-2xl p-5 space-y-3.5">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div>
-              <h2 class="font-headline text-sm font-extrabold text-white flex items-center gap-2">
+              <h2 class="font-display text-sm font-bold text-white flex items-center gap-2">
                 <i class="fa-solid fa-ticket text-[#D4FF00]"></i> My Unique Ticket Vault
               </h2>
-              <p class="font-mono text-[10px] text-[#8E8CA6] mt-0.5">Every pass carries a verified, anti-tamper tournament code</p>
+              <p class="font-mono text-[10px] text-[#8E8CA6] mt-0.5">Tap any pass to view holographic arena ticket &amp; download printable PDF</p>
             </div>
-            <span id="activeVaultCountPill" class="px-2.5 py-1 rounded-full bg-[#D4FF00]/15 border border-[#D4FF00]/35 font-mono text-[10px] font-bold text-[#D4FF00] uppercase">0 Active</span>
+            <div class="flex items-center gap-1.5">
+              <button onclick="copyAllActiveCodes()" type="button" title="Copy All Active Codes for Squad Check-in"
+                class="px-2.5 py-1 rounded-full bg-white/[0.06] hover:bg-[#00F2FF]/20 border border-white/10 font-mono text-[9.5px] font-bold text-[#00F2FF] uppercase transition-colors">
+                <i class="fa-regular fa-copy mr-1"></i>Squad Copy
+              </button>
+              <span id="activeVaultCountPill" class="px-2.5 py-1 rounded-full bg-[#D4FF00]/15 border border-[#D4FF00]/35 font-mono text-[10px] font-bold text-[#D4FF00] uppercase">0 Active</span>
+            </div>
           </div>
 
-          <!-- Per-Game Filter Pills -->
+          <!-- Vault Search & Active/Used Filter -->
+          <div class="flex flex-col sm:flex-row gap-2">
+            <div class="relative flex-1">
+              <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-[11px] text-[#67657E]"></i>
+              <input type="text" id="vaultSearchInput" oninput="renderVaultList()" placeholder="Search pass code (TX-BGMI-...)"
+                class="tx-input pl-9 py-2 text-xs font-mono uppercase">
+            </div>
+            <select id="vaultStatusFilter" onchange="renderVaultList()"
+              class="bg-[#07070C] border border-[#262538] rounded-xl px-3 py-2 font-mono text-[11px] text-[#C4C2D6] outline-none">
+              <option value="ALL">All Status</option>
+              <option value="ACTIVE">Active Only</option>
+              <option value="USED">Used Only</option>
+            </select>
+          </div>
+
+          <!-- Per-Game Filter Pills with Brand Logos -->
           <div id="vaultFilterBar" class="flex items-center gap-1.5 overflow-x-auto pb-1">
-            <button onclick="setVaultFilter('ALL')" type="button" data-filter="ALL" class="vault-filter-btn px-3 py-1.5 rounded-full font-mono text-[10px] font-bold uppercase bg-[#D4FF00] text-[#050508] flex-shrink-0">All</button>
-            <button onclick="setVaultFilter('Universal')" type="button" data-filter="Universal" class="vault-filter-btn px-3 py-1.5 rounded-full font-mono text-[10px] font-bold uppercase bg-white/[0.05] text-[#C4C2D6] border border-white/10 flex-shrink-0">Universal</button>
-            <button onclick="setVaultFilter('BGMI')" type="button" data-filter="BGMI" class="vault-filter-btn px-3 py-1.5 rounded-full font-mono text-[10px] font-bold uppercase bg-white/[0.05] text-[#C4C2D6] border border-white/10 flex-shrink-0">BGMI</button>
-            <button onclick="setVaultFilter('Free Fire MAX')" type="button" data-filter="Free Fire MAX" class="vault-filter-btn px-3 py-1.5 rounded-full font-mono text-[10px] font-bold uppercase bg-white/[0.05] text-[#C4C2D6] border border-white/10 flex-shrink-0">Free Fire MAX</button>
-            <button onclick="setVaultFilter('CODM')" type="button" data-filter="CODM" class="vault-filter-btn px-3 py-1.5 rounded-full font-mono text-[10px] font-bold uppercase bg-white/[0.05] text-[#C4C2D6] border border-white/10 flex-shrink-0">CODM</button>
-            <button onclick="setVaultFilter('Valorant')" type="button" data-filter="Valorant" class="vault-filter-btn px-3 py-1.5 rounded-full font-mono text-[10px] font-bold uppercase bg-white/[0.05] text-[#C4C2D6] border border-white/10 flex-shrink-0">Valorant</button>
+            <button onclick="setVaultFilter('ALL')" type="button" data-filter="ALL" class="vault-filter-btn px-3 py-1.5 rounded-full font-mono text-[10px] font-bold uppercase bg-[#D4FF00] text-[#050508] inline-flex items-center gap-1.5 flex-shrink-0">
+              <i class="fa-solid fa-layer-group text-[10px]"></i> All
+            </button>
+            <button onclick="setVaultFilter('Universal')" type="button" data-filter="Universal" class="vault-filter-btn px-3 py-1.5 rounded-full font-mono text-[10px] font-bold uppercase bg-white/[0.05] text-[#C4C2D6] border border-white/10 inline-flex items-center gap-1.5 flex-shrink-0">
+              <img src="https://tournyx.in/favicon.png" alt="" class="w-3.5 h-3.5 rounded-full object-cover"> Universal
+            </button>
+            <button onclick="setVaultFilter('BGMI')" type="button" data-filter="BGMI" class="vault-filter-btn px-3 py-1.5 rounded-full font-mono text-[10px] font-bold uppercase bg-white/[0.05] text-[#C4C2D6] border border-white/10 inline-flex items-center gap-1.5 flex-shrink-0">
+              <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj3MKUI87mMK4_3DltS3LQgqfrK1sESUIMMqlENdi0dPRtOFkeDbvPsTbSaCRaJOb17QZ5s9OO5dR6kFCYiCkgUCF2zBWwvGFSb3T-9Nz51XuIzMvIiOuqwcLzyzeFmn1orKbiETP4LrlaG-RidnWAAzBwUA3aL5_z62HP4_F7R02lAK_WSYdH0U_Gn7Es/s250/1000094211.jpg" alt="" class="w-3.5 h-3.5 rounded object-cover"> BGMI
+            </button>
+            <button onclick="setVaultFilter('Free Fire MAX')" type="button" data-filter="Free Fire MAX" class="vault-filter-btn px-3 py-1.5 rounded-full font-mono text-[10px] font-bold uppercase bg-white/[0.05] text-[#C4C2D6] border border-white/10 inline-flex items-center gap-1.5 flex-shrink-0">
+              <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiJvPTY_y_XU-0Lwbnjwm7961lCDkSlQh2MtCWHunFVX6WS7WCprCtkPyB334BU_-4vGsP0NseDQf4NPBEOIxqjk7VZQqZUHpnLb4Bw-c1UeXQy2M9DzNrNdYt_aL0GEb1AlTPupC5zEjJiP3Ci0Oxk-wdg5TF5cs8_UNSe3uTT1BE884je3iXr8QlMjx8/s240/1000094210.jpg" alt="" class="w-3.5 h-3.5 rounded object-cover"> Free Fire MAX
+            </button>
+            <button onclick="setVaultFilter('CODM')" type="button" data-filter="CODM" class="vault-filter-btn px-3 py-1.5 rounded-full font-mono text-[10px] font-bold uppercase bg-white/[0.05] text-[#C4C2D6] border border-white/10 inline-flex items-center gap-1.5 flex-shrink-0">
+              <i class="fa-solid fa-crosshairs text-[#00F2FF] text-[10px]"></i> CODM
+            </button>
+            <button onclick="setVaultFilter('Valorant')" type="button" data-filter="Valorant" class="vault-filter-btn px-3 py-1.5 rounded-full font-mono text-[10px] font-bold uppercase bg-white/[0.05] text-[#C4C2D6] border border-white/10 inline-flex items-center gap-1.5 flex-shrink-0">
+              <i class="fa-solid fa-bolt text-[#FF4655] text-[10px]"></i> Valorant
+            </button>
           </div>
 
-          <div id="ticketInventoryList" class="space-y-2.5"></div>
+          <div id="ticketInventoryList" class="space-y-3"></div>
         </section>
 
         <!-- 3. RECENT TRANSACTION LEDGER -->
         <section class="glass-card rounded-2xl p-5 space-y-3.5">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div class="flex items-center gap-2">
-              <h2 class="font-headline text-sm font-extrabold text-white">Transaction Ledger</h2>
-              <button onclick="exportAllTransactionsPDF()" type="button" title="Download Statement PDF"
+              <h2 class="font-display text-sm font-bold text-white">Transaction Ledger</h2>
+              <button onclick="exportAllTransactionsPDF()" type="button" title="Download Official Statement PDF"
                 class="px-2.5 py-1 rounded-lg bg-[#00F2FF]/12 border border-[#00F2FF]/35 text-[#00F2FF] font-mono text-[10px] font-bold uppercase inline-flex items-center gap-1 hover:bg-[#00F2FF] hover:text-[#050508] transition-colors">
-                <i class="fa-solid fa-file-pdf"></i> PDF
+                <i class="fa-solid fa-file-pdf"></i> Statement PDF
               </button>
             </div>
             <div class="flex items-center gap-2">
@@ -666,9 +784,9 @@
           <div id="txnListContainer" class="space-y-2"></div>
 
           <div class="pt-2 border-t border-white/[0.06] flex flex-wrap items-center justify-center gap-3 font-mono text-[10px] text-[#7A788F]">
-            <span><i class="fa-solid fa-lock text-[#00FF7F] mr-1"></i>Server-Verified HMAC-SHA256</span>
+            <span><i class="fa-solid fa-lock text-[#00FF7F] mr-1"></i>256-Bit Encrypted Vault</span>
             <span>•</span>
-            <span><i class="fa-solid fa-shield-halved text-[#00F2FF] mr-1"></i>Secured by Razorpay</span>
+            <span><i class="fa-solid fa-shield-halved text-[#00F2FF] mr-1"></i>Tournyx Secure Pay Engine</span>
           </div>
         </section>
       </div>
@@ -676,7 +794,7 @@
 
     <!-- Footer -->
     <footer class="pt-6 border-t border-white/[0.06] flex flex-col md:flex-row items-center justify-between gap-2 text-center font-mono text-[10px] text-[#7A788F] uppercase">
-      <span>© 2026 TOURNYX ESPORTS PVT LTD • ENCRYPTED TICKET LEDGER</span>
+      <span>© 2026 TOURNYX ESPORTS PVT LTD • VERIFIED DIGITAL PASS LEDGER</span>
       <span>POWERED BY <strong class="font-orbitron text-white">QUVA</strong> TECHNOLOGIES</span>
     </footer>
   </main>
@@ -727,160 +845,305 @@
        4. MODALS & SLIDE-UP CHECKOUT SHEETS
        ========================================================= -->
 
-  <!-- MODAL A: BUY PASSES + COUPONS + BULK PARTNER REWARD CHECKOUT -->
+  <!-- MODAL A: BUY PASSES CHECKOUT (Upgraded Pro Typography, Game Logos, First-Time Auto-Coupon, Daily ₹20k / 2000 Pass Limit) -->
   <div id="buyPassModal" class="sheet-overlay">
     <div class="sheet-card">
-      <div class="p-4 sm:p-5 border-b border-white/[0.07] flex items-center justify-between flex-shrink-0">
-        <h3 class="font-orbitron text-sm font-black text-[#D4FF00] uppercase flex items-center gap-2">
-          <i class="fa-solid fa-ticket"></i> Buy Tournament Passes
-        </h3>
-        <button onclick="closeModal('buyPassModal')" type="button" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 flex items-center justify-center text-[#9C9AB0] hover:text-white">
-          <i class="fa-solid fa-xmark"></i>
+      <div class="px-5 py-4 border-b border-white/[0.08] flex items-center justify-between flex-shrink-0 bg-[#0A0A12]">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-[#D4FF00]/15 border border-[#D4FF00]/40 flex items-center justify-center text-[#D4FF00]">
+            <i class="fa-solid fa-ticket text-xs"></i>
+          </div>
+          <div>
+            <h3 class="font-display text-sm font-bold text-white leading-none">Buy Arena Passes</h3>
+            <span class="font-mono text-[9.5px] text-[#8E8CA6] uppercase tracking-wider">Instant Minting • ₹10 Per Pass</span>
+          </div>
+        </div>
+        <button onclick="closeModal('buyPassModal')" type="button" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 flex items-center justify-center text-[#9C9AB0] hover:text-white transition-colors">
+          <i class="fa-solid fa-xmark text-sm"></i>
         </button>
       </div>
 
       <div class="sheet-scroll-body p-4 sm:p-5 space-y-4">
-        <!-- 1. Game Category Selector -->
+        <!-- 1. Game Selector with Authentic Game Logos -->
         <div>
-          <span class="font-mono text-[10px] text-[#8E8CA6] uppercase font-bold block mb-2">1. Select Game (₹10 / Pass)</span>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            <button onclick="selectCheckoutGame('Free Fire MAX', this)" type="button" class="game-tile active rounded-xl p-2.5 text-center">
-              <span class="font-orbitron text-[11px] font-bold text-white block">Free Fire</span>
-              <span class="font-mono text-[9px] text-[#FF9900]">FF MAX</span>
+          <span class="font-display text-[11px] text-[#A3A1B8] font-semibold uppercase tracking-wider block mb-2">1. Select Game Arena</span>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="selectCheckoutGame('Free Fire MAX', this)" type="button" class="game-tile active rounded-xl p-2.5 flex items-center gap-2.5 text-left">
+              <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiJvPTY_y_XU-0Lwbnjwm7961lCDkSlQh2MtCWHunFVX6WS7WCprCtkPyB334BU_-4vGsP0NseDQf4NPBEOIxqjk7VZQqZUHpnLb4Bw-c1UeXQy2M9DzNrNdYt_aL0GEb1AlTPupC5zEjJiP3Ci0Oxk-wdg5TF5cs8_UNSe3uTT1BE884je3iXr8QlMjx8/s240/1000094210.jpg"
+                alt="Free Fire MAX" class="w-9 h-9 rounded-lg object-cover border border-white/15 flex-shrink-0" onerror="this.src='https://tournyx.in/favicon.png'">
+              <div class="min-w-0">
+                <span class="font-display text-xs font-bold text-white block truncate">Free Fire MAX</span>
+                <span class="font-mono text-[9px] text-[#FF9900] uppercase">Battle Royale</span>
+              </div>
             </button>
-            <button onclick="selectCheckoutGame('BGMI', this)" type="button" class="game-tile rounded-xl p-2.5 text-center">
-              <span class="font-orbitron text-[11px] font-bold text-white block">BGMI</span>
-              <span class="font-mono text-[9px] text-[#00FF7F]">SQUADS</span>
+
+            <button onclick="selectCheckoutGame('BGMI', this)" type="button" class="game-tile rounded-xl p-2.5 flex items-center gap-2.5 text-left">
+              <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj3MKUI87mMK4_3DltS3LQgqfrK1sESUIMMqlENdi0dPRtOFkeDbvPsTbSaCRaJOb17QZ5s9OO5dR6kFCYiCkgUCF2zBWwvGFSb3T-9Nz51XuIzMvIiOuqwcLzyzeFmn1orKbiETP4LrlaG-RidnWAAzBwUA3aL5_z62HP4_F7R02lAK_WSYdH0U_Gn7Es/s250/1000094211.jpg"
+                alt="BGMI" class="w-9 h-9 rounded-lg object-cover border border-white/15 flex-shrink-0" onerror="this.src='https://tournyx.in/favicon.png'">
+              <div class="min-w-0">
+                <span class="font-display text-xs font-bold text-white block truncate">BGMI</span>
+                <span class="font-mono text-[9px] text-[#00FF7F] uppercase">Pro Squads</span>
+              </div>
             </button>
-            <button onclick="selectCheckoutGame('CODM', this)" type="button" class="game-tile rounded-xl p-2.5 text-center">
-              <span class="font-orbitron text-[11px] font-bold text-white block">CODM</span>
-              <span class="font-mono text-[9px] text-[#00F2FF]">MP / BR</span>
+
+            <button onclick="selectCheckoutGame('CODM', this)" type="button" class="game-tile rounded-xl p-2.5 flex items-center gap-2.5 text-left">
+              <div class="w-9 h-9 rounded-lg bg-[#00F2FF]/15 border border-[#00F2FF]/40 flex items-center justify-center text-[#00F2FF] flex-shrink-0">
+                <i class="fa-solid fa-crosshairs text-sm"></i>
+              </div>
+              <div class="min-w-0">
+                <span class="font-display text-xs font-bold text-white block truncate">COD Mobile</span>
+                <span class="font-mono text-[9px] text-[#00F2FF] uppercase">MP / BR</span>
+              </div>
             </button>
-            <button onclick="selectCheckoutGame('Valorant', this)" type="button" class="game-tile rounded-xl p-2.5 text-center">
-              <span class="font-orbitron text-[11px] font-bold text-white block">Valorant</span>
-              <span class="font-mono text-[9px] text-[#FF4655]">5v5 PRO</span>
+
+            <button onclick="selectCheckoutGame('Valorant', this)" type="button" class="game-tile rounded-xl p-2.5 flex items-center gap-2.5 text-left">
+              <div class="w-9 h-9 rounded-lg bg-[#FF4655]/15 border border-[#FF4655]/40 flex items-center justify-center text-[#FF4655] flex-shrink-0">
+                <i class="fa-solid fa-bolt text-sm"></i>
+              </div>
+              <div class="min-w-0">
+                <span class="font-display text-xs font-bold text-white block truncate">Valorant</span>
+                <span class="font-mono text-[9px] text-[#FF4655] uppercase">5v5 Tactical</span>
+              </div>
             </button>
           </div>
         </div>
 
-        <!-- 2. Quantity + Quick Packs -->
-        <div class="space-y-2.5">
-          <span class="font-mono text-[10px] text-[#8E8CA6] uppercase font-bold block">2. Pass Quantity</span>
+        <!-- 2. Pass Quantity + Daily Limit Meter (Max 2000 Passes / ₹20,000 per day) -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="font-display text-[11px] text-[#A3A1B8] font-semibold uppercase tracking-wider">2. Pass Quantity</span>
+            <span id="buyDailyLimitText" class="font-mono text-[9.5px] text-[#00F2FF]">Max 2,000 Passes (₹20,000/day)</span>
+          </div>
           <div class="relative flex items-center">
-            <span class="absolute left-4 font-orbitron text-xs font-black text-[#D4FF00]">TX</span>
-            <input type="number" id="passQtyInput" min="1" max="500" value="10" oninput="recalculateCheckoutBill()"
-              class="tx-input pl-12 pr-20 font-orbitron text-lg font-black" placeholder="Enter passes">
-            <span class="absolute right-4 font-mono text-[10px] text-[#8E8CA6] uppercase">PASSES</span>
+            <span class="absolute left-3.5 font-orbitron text-[11px] font-black text-[#D4FF00]">TX</span>
+            <input type="number" id="passQtyInput" min="1" max="2000" value="10" oninput="recalculateCheckoutBill()"
+              class="tx-input pl-10 pr-20 font-orbitron text-base font-black" placeholder="1 - 2000">
+            <span class="absolute right-3.5 font-mono text-[9.5px] text-[#8E8CA6] uppercase">PASSES</span>
           </div>
           <div class="grid grid-cols-5 gap-1.5">
-            <button onclick="setPassQty(1)" type="button" class="py-2 rounded-lg bg-white/[0.05] hover:bg-white/10 border border-white/10 font-mono text-[11px] font-bold text-white">1</button>
-            <button onclick="setPassQty(5)" type="button" class="py-2 rounded-lg bg-white/[0.05] hover:bg-white/10 border border-white/10 font-mono text-[11px] font-bold text-white">5</button>
-            <button onclick="setPassQty(10)" type="button" class="py-2 rounded-lg bg-[#00F2FF]/15 border border-[#00F2FF]/40 font-mono text-[11px] font-bold text-[#00F2FF]">10 <span class="text-[8px]">+1</span></button>
-            <button onclick="setPassQty(20)" type="button" class="py-2 rounded-lg bg-[#D4FF00]/15 border border-[#D4FF00]/45 font-mono text-[11px] font-bold text-[#D4FF00]">20 <span class="text-[8px]">+3</span></button>
-            <button onclick="setPassQty(50)" type="button" class="py-2 rounded-lg bg-[#FFD700]/15 border border-[#FFD700]/45 font-mono text-[11px] font-bold text-[#FFD700]">50 <span class="text-[8px]">+8</span></button>
+            <button onclick="setPassQty(1)" type="button" class="py-1.5 rounded-lg bg-white/[0.05] hover:bg-white/10 border border-white/10 font-mono text-[11px] font-bold text-white">1</button>
+            <button onclick="setPassQty(5)" type="button" class="py-1.5 rounded-lg bg-white/[0.05] hover:bg-white/10 border border-white/10 font-mono text-[11px] font-bold text-white">5</button>
+            <button onclick="setPassQty(10)" type="button" class="py-1.5 rounded-lg bg-[#00F2FF]/15 border border-[#00F2FF]/40 font-mono text-[11px] font-bold text-[#00F2FF]">10 <span class="text-[8px]">+1</span></button>
+            <button onclick="setPassQty(20)" type="button" class="py-1.5 rounded-lg bg-[#D4FF00]/15 border border-[#D4FF00]/45 font-mono text-[11px] font-bold text-[#D4FF00]">20 <span class="text-[8px]">+3</span></button>
+            <button onclick="setPassQty(50)" type="button" class="py-1.5 rounded-lg bg-[#FFD700]/15 border border-[#FFD700]/45 font-mono text-[11px] font-bold text-[#FFD700]">50 <span class="text-[8px]">+8</span></button>
           </div>
         </div>
 
         <!-- 3. Bulk Bonus & Brand Partner Perk Ladder -->
-        <div class="p-3.5 rounded-xl bg-[#08080F] border border-[#00FF7F]/25 space-y-2">
+        <div class="p-3 rounded-xl bg-[#08080F] border border-[#00FF7F]/25 space-y-1.5">
           <div class="flex items-center justify-between gap-2">
-            <span class="font-mono text-[10px] font-bold text-[#00FF7F] uppercase"><i class="fa-solid fa-gift mr-1"></i> Bulk Bonus &amp; Brand Perk</span>
-            <span id="bulkPerkBadge" class="font-mono text-[10px] font-bold text-[#D4FF00] uppercase">Silver Perk Unlocked</span>
+            <span class="font-mono text-[9.5px] font-bold text-[#00FF7F] uppercase"><i class="fa-solid fa-gift mr-1"></i> Bulk Bonus &amp; Brand Perk</span>
+            <span id="bulkPerkBadge" class="font-mono text-[9.5px] font-bold text-[#D4FF00] uppercase">Silver Perk Unlocked</span>
           </div>
           <div class="w-full h-1.5 rounded-full bg-[#181726] overflow-hidden">
             <div id="bulkProgressBar" class="h-full rounded-full bg-gradient-to-r from-[#00F2FF] via-[#00FF7F] to-[#D4FF00] transition-all duration-300" style="width: 20%"></div>
           </div>
-          <p id="bulkNextHint" class="font-body text-[11px] text-[#A3A1B8]">Add 10 more passes to unlock +3 Free Passes, ₹0 Fee &amp; Gold Brand Coupon!</p>
+          <p id="bulkNextHint" class="font-body text-[11px] text-[#A3A1B8] leading-snug">Add 10 more passes to unlock +3 Free Passes &amp; Gold Brand Voucher!</p>
         </div>
 
-        <!-- 4. Game-Specific Coupon Code Engine -->
-        <div class="space-y-2">
-          <span class="font-mono text-[10px] text-[#8E8CA6] uppercase font-bold block">3. Apply Coupon / Partner Offer</span>
+        <!-- 4. Coupon Code Field (No public suggestions below — Auto-Filled ONLY for First-Time Buyers) -->
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="font-display text-[11px] text-[#A3A1B8] font-semibold uppercase tracking-wider">3. Promo / Creator Code</span>
+            <span id="firstTimeCouponBadge" class="hidden px-2 py-0.5 rounded bg-[#00FF7F]/15 border border-[#00FF7F]/35 font-mono text-[9px] font-bold text-[#00FF7F] uppercase">🎁 First-Time Offer Auto-Applied</span>
+          </div>
           <div class="flex gap-2">
-            <input type="text" id="couponCodeInput" placeholder="Enter code (e.g. BGMI20, TOURNYX10)"
-              class="tx-input uppercase font-mono text-xs flex-1">
+            <input type="text" id="couponCodeInput" placeholder="Enter promo code (optional)"
+              class="tx-input uppercase font-mono text-xs flex-1 py-2.5">
             <button onclick="applyCheckoutCoupon()" type="button" id="btnApplyCoupon"
-              class="px-4 rounded-xl bg-[#00F2FF]/15 hover:bg-[#00F2FF] border border-[#00F2FF]/45 text-[#00F2FF] hover:text-[#050508] font-mono text-xs font-black uppercase transition-colors">
+              class="px-4 rounded-xl bg-[#00F2FF]/15 hover:bg-[#00F2FF] border border-[#00F2FF]/45 text-[#00F2FF] hover:text-[#050508] font-display text-xs font-bold uppercase transition-colors">
               Apply
             </button>
           </div>
           <div id="couponStatusMsg" class="hidden font-mono text-[10px]"></div>
-          <!-- Auto-suggested live coupons for selected game -->
-          <div id="availableCouponsTray" class="flex items-center gap-1.5 overflow-x-auto pt-0.5"></div>
         </div>
 
-        <!-- 5. Swiggy/Zomato-Style Transparent Bill Breakdown -->
-        <div class="p-4 rounded-xl bg-[#08080F] border border-white/[0.08] space-y-2 font-mono text-xs">
+        <!-- 5. Transparent Bill Breakdown (Clear Fee + First-5 Order Perk + Exact Checkout Total) -->
+        <div class="p-3.5 rounded-xl bg-[#08080F] border border-white/[0.08] space-y-2 font-mono text-[11.5px]">
           <div class="flex justify-between text-[#C4C2D6]">
-            <span>Base Pass Cost (<span id="billQtyLbl">10</span> × ₹10)</span>
+            <span>Pass Subtotal (<span id="billQtyLbl">10</span> × ₹10)</span>
             <span id="billBaseVal">₹100.00</span>
           </div>
           <div id="billBonusRow" class="flex justify-between text-[#00FF7F]">
-            <span>Bulk + Coupon Free Passes</span>
+            <span>Bulk + Promo Bonus Passes</span>
             <span id="billBonusVal">+1 TX FREE</span>
           </div>
           <div id="billDiscountRow" class="hidden flex justify-between text-[#00FF7F]">
-            <span>Coupon Discount (<span id="billCouponName">CODE</span>)</span>
+            <span>Promo Discount (<span id="billCouponName">CODE</span>)</span>
             <span id="billDiscountVal">-₹0.00</span>
           </div>
           <div class="flex justify-between text-[#A3A1B8]">
-            <span>Gateway Convenience Fee</span>
+            <span id="billFeeLabel">Payment Handling &amp; Security Fee</span>
             <span id="billFeeVal">₹2.50</span>
           </div>
-          <div class="pt-2.5 mt-1 border-t border-dashed border-white/15 flex justify-between items-center text-sm font-black text-white">
-            <span>TO PAY (INR)</span>
+          <div class="pt-2.5 mt-1 border-t border-dashed border-white/15 flex justify-between items-center text-xs font-black text-white">
+            <span class="font-display text-xs uppercase tracking-wider">Final Payable</span>
             <span id="billGrandTotal" class="font-orbitron text-lg text-[#D4FF00]">₹102.50</span>
           </div>
         </div>
       </div>
 
-      <div class="p-4 sm:p-5 pb-safe border-t border-white/[0.07] bg-[#090910] flex-shrink-0 space-y-2">
-        <button id="btnPayRazorpay" onclick="initiateSecureRazorpay('PASS')" type="button"
-          class="volt-btn w-full py-3.5 rounded-xl font-orbitron text-xs sm:text-sm uppercase flex items-center justify-center gap-2">
-          <i class="fa-solid fa-lock text-xs"></i>
-          <span>Pay Securely via Razorpay</span>
+      <div class="p-4 pb-safe border-t border-white/[0.08] bg-[#090910] flex-shrink-0 space-y-1.5">
+        <button id="btnPaySecure" onclick="initiateSecurePayment('PASS')" type="button"
+          class="volt-btn w-full py-3.5 rounded-xl font-display text-xs sm:text-sm font-extrabold uppercase tracking-wide flex items-center justify-center gap-2">
+          <i class="fa-solid fa-shield-halved text-xs"></i>
+          <span>Proceed to Tournyx Secure Pay</span>
         </button>
-        <p class="text-center font-mono text-[9.5px] text-[#7A788F]">Server-signed order • HMAC-SHA256 verified • Zero double-charge protection</p>
+        <p class="text-center font-mono text-[9.5px] text-[#7A788F]">256-Bit Encrypted Checkout • Instant Vault Delivery • Anti-Duplicate Guard</p>
       </div>
     </div>
   </div>
 
-  <!-- MODAL B: ORGANIZER CREDITS WALLET TOP-UP -->
+  <!-- MODAL B: ORGANIZER FUNDS TOP-UP (Includes Above ₹1 Lakh Enterprise Support Desk ONLY Here) -->
   <div id="creditsModal" class="sheet-overlay">
     <div class="sheet-card max-w-md">
-      <div class="p-4 sm:p-5 border-b border-white/[0.07] flex items-center justify-between flex-shrink-0">
-        <h3 class="font-orbitron text-sm font-black text-[#FF9900] uppercase flex items-center gap-2">
-          <i class="fa-solid fa-crown"></i> Add Organizer Credits
-        </h3>
+      <div class="px-5 py-4 border-b border-white/[0.08] flex items-center justify-between flex-shrink-0 bg-[#0A0A12]">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-[#FF9900]/15 border border-[#FF9900]/40 flex items-center justify-center text-[#FF9900]">
+            <i class="fa-solid fa-crown text-xs"></i>
+          </div>
+          <div>
+            <h3 class="font-display text-sm font-bold text-[#FF9900] leading-none">Add Organizer Funds</h3>
+            <span class="font-mono text-[9.5px] text-[#8E8CA6] uppercase">Tournament Prize Pool Top-Up</span>
+          </div>
+        </div>
         <button onclick="closeModal('creditsModal')" type="button" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 flex items-center justify-center text-[#9C9AB0] hover:text-white">
-          <i class="fa-solid fa-xmark"></i>
+          <i class="fa-solid fa-xmark text-sm"></i>
         </button>
       </div>
+
       <div class="sheet-scroll-body p-4 sm:p-5 space-y-4">
-        <div class="p-4 rounded-xl bg-[#08080F] border border-[#FF9900]/30 text-center">
-          <span class="font-mono text-[10px] text-[#8E8CA6] uppercase block">Current Host Wallet</span>
+        <div class="p-4 rounded-xl bg-[#08080F] border border-[#FF9900]/30 text-center space-y-1">
+          <span class="font-mono text-[9.5px] text-[#8E8CA6] uppercase block">Current Organizer Wallet</span>
           <span id="creditsCountModal" class="font-orbitron text-3xl font-black text-[#FF9900]">₹0</span>
-          <span class="font-mono text-[10px] text-[#9C9AB0] block mt-1">Server-enforced rolling 24h cap: ₹20,000</span>
+          <span id="orgDailyRemainText" class="font-mono text-[10px] text-[#00FF7F] block">Online Cap: ₹20,000 / 24 Hours</span>
         </div>
-        <div>
-          <label class="font-mono text-[10px] text-[#8E8CA6] uppercase block mb-1.5" for="addCreditInput">Credit Amount (₹100 – ₹20,000)</label>
-          <input type="number" id="addCreditInput" min="100" max="20000" value="500" class="tx-input font-orbitron text-lg font-black">
+
+        <div class="space-y-1.5">
+          <label class="font-display text-[11px] font-semibold text-[#C4C2D6] uppercase block" for="addCreditInput">Fund Amount (₹100 – ₹20,000 Online)</label>
+          <div class="relative flex items-center">
+            <span class="absolute left-3.5 font-orbitron text-sm font-black text-[#FF9900]">₹</span>
+            <input type="number" id="addCreditInput" min="100" max="20000" value="500" class="tx-input pl-9 font-orbitron text-lg font-black">
+          </div>
+          <p class="font-mono text-[9.5px] text-[#8E8CA6]">Standard 2% payment gateway handling applies at checkout.</p>
         </div>
-        <button id="btnPayCredits" onclick="initiateSecureRazorpay('CREDITS')" type="button"
-          class="volt-btn w-full py-3.5 rounded-xl font-orbitron text-xs uppercase flex items-center justify-center gap-2">
-          <i class="fa-solid fa-lock"></i> Secure Razorpay Top-Up
+
+        <button id="btnPayCredits" onclick="initiateSecurePayment('CREDITS')" type="button"
+          class="volt-btn w-full py-3.5 rounded-xl font-display text-xs sm:text-sm font-extrabold uppercase flex items-center justify-center gap-2">
+          <i class="fa-solid fa-lock text-xs"></i> Add Funds via Tournyx Pay
         </button>
+
+        <!-- Enterprise High-Value Support Desk (> ₹1 Lakh) — Organizer Funds ONLY -->
+        <div class="p-4 rounded-xl bg-gradient-to-br from-[#FF9900]/10 to-[#08080F] border border-[#FF9900]/35 space-y-2.5">
+          <div class="flex items-start gap-2.5">
+            <i class="fa-solid fa-building-columns text-[#FF9900] mt-0.5 text-sm"></i>
+            <div>
+              <h4 class="font-display text-xs font-bold text-white">Hosting a Mega Tournament (Above ₹1,00,000)?</h4>
+              <p class="font-body text-[11px] text-[#A3A1B8] mt-0.5 leading-relaxed">
+                Standard wallet top-ups are capped at ₹20,000/day for security. For institutional prize pools or bulk deposits above <strong>₹1 Lakh</strong>, contact Tournyx Enterprise Desk for zero-fee bank/NEFT settlement:
+              </p>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-2 pt-1">
+            <a href="mailto:tournyx.esports.india@gmail.com?subject=Organizer%20High-Value%20Fund%20Deposit%20(%3E%201%20Lakh)"
+              class="py-2 px-3 rounded-xl bg-white/[0.06] hover:bg-white/12 border border-white/15 font-mono text-[10px] font-bold text-white flex items-center justify-center gap-1.5 transition-colors">
+              <i class="fa-solid fa-envelope text-[#00F2FF]"></i> Email Desk
+            </a>
+            <a href="tel:+918608159825"
+              class="py-2 px-3 rounded-xl bg-[#00FF7F]/12 hover:bg-[#00FF7F]/25 border border-[#00FF7F]/35 font-mono text-[10px] font-bold text-[#00FF7F] flex items-center justify-center gap-1.5 transition-colors">
+              <i class="fa-solid fa-phone"></i> Call Support
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- MODAL C: RECEIPT / PASS DETAILS + QR + jsPDF + WHATSAPP SUPPORT -->
+  <!-- MODAL C: HOLOGRAPHIC MOVIE-TICKET ARENA PASS MODAL (Individual Downloadable Ticket) -->
+  <div id="movieTicketModal" class="sheet-overlay">
+    <div class="sheet-card max-w-md">
+      <div class="px-5 py-3.5 border-b border-white/[0.08] flex items-center justify-between flex-shrink-0 bg-[#0A0A12]">
+        <h3 class="font-display text-sm font-bold text-[#D4FF00] uppercase flex items-center gap-2">
+          <i class="fa-solid fa-ticket"></i> Official Arena Pass
+        </h3>
+        <button onclick="closeModal('movieTicketModal')" type="button" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 flex items-center justify-center text-[#9C9AB0] hover:text-white">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <div class="sheet-scroll-body p-4 sm:p-5 space-y-4">
+        <!-- Printable Holographic Cinema Ticket Visual -->
+        <div id="mtCardInner" class="arena-pass-card cinema-ticket-holo">
+          <div class="h-1.5 w-full" style="background: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan), var(--accent-volt));"></div>
+
+          <!-- Top Banner: Tournyx Brand + Game Emblem -->
+          <div class="p-4 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <img id="mtGameLogo" src="https://tournyx.in/favicon.png" alt="Game" class="w-11 h-11 rounded-xl object-cover border border-white/20 bg-[#07070C] flex-shrink-0">
+              <div class="min-w-0">
+                <span class="font-mono text-[9px] text-[#00F2FF] font-bold uppercase tracking-widest block">TOURNYX ADMIT ONE</span>
+                <h4 id="mtGameName" class="font-display text-base font-extrabold text-white truncate">BGMI PASS</h4>
+              </div>
+            </div>
+            <div class="text-right flex-shrink-0">
+              <span id="mtTierBadge" class="px-2 py-0.5 rounded bg-[#D4FF00] text-[#050508] font-mono text-[9px] font-black uppercase block">STANDARD</span>
+              <span id="mtStatusBadge" class="font-mono text-[9px] text-[#00FF7F] font-bold uppercase mt-1 block">● ACTIVE</span>
+            </div>
+          </div>
+
+          <!-- Player Details Strip -->
+          <div class="px-4 pb-3.5 grid grid-cols-2 gap-2.5 text-left">
+            <div class="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+              <span class="font-mono text-[8.5px] text-[#8E8CA6] uppercase block">Player Name</span>
+              <span id="mtPlayerName" class="font-display text-xs font-bold text-white truncate block">Player</span>
+            </div>
+            <div class="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+              <span class="font-mono text-[8.5px] text-[#8E8CA6] uppercase block">In-Game Name (IGN)</span>
+              <span id="mtPlayerIgn" class="font-mono text-xs font-bold text-[#00F2FF] truncate block">IGN</span>
+            </div>
+          </div>
+
+          <!-- Perforated Cinema Tear Line + Gaming QR Code -->
+          <div class="arena-pass-notch-row px-4 py-4 flex items-center justify-between gap-3 bg-[#080810]/70">
+            <div class="space-y-1.5 min-w-0 flex-1">
+              <span class="font-mono text-[8.5px] text-[#8E8CA6] uppercase tracking-wider block">Unique Encrypted Ticket ID</span>
+              <div id="mtTicketCode" class="font-mono text-sm font-black text-[#D4FF00] tracking-wider break-all">TX-BGMI-XXXX-XXXX</div>
+              <span id="mtIssuedDate" class="font-mono text-[9px] text-[#7A788F] block">Issued: --</span>
+            </div>
+            <div class="p-1.5 rounded-xl bg-white border-2 border-[#00F2FF] shadow-[0_0_16px_rgba(0,242,255,0.3)] flex-shrink-0">
+              <img id="mtQrImg" src="" alt="Gaming Pass QR" class="w-20 h-20 object-contain">
+            </div>
+          </div>
+
+          <!-- Mandatory Anti-Share Security Warning Strip -->
+          <div class="px-4 py-2 bg-[#FF4655]/15 border-t border-[#FF4655]/35 flex items-center justify-center gap-1.5 text-center">
+            <i class="fa-solid fa-triangle-exclamation text-[#FF4655] text-[10px]"></i>
+            <span class="font-mono text-[9px] font-bold text-[#FF8A93] uppercase tracking-wider">DO NOT SHARE THIS CODE — SINGLE-USE VERIFIED ENTRY PASS</span>
+          </div>
+        </div>
+
+        <!-- Ticket Actions -->
+        <div class="grid grid-cols-2 gap-2.5">
+          <button id="btnDownloadMovieTicketPdf" onclick="downloadMovieTicketPDF()" type="button"
+            class="volt-btn py-3 rounded-xl font-display text-xs font-extrabold uppercase flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-download"></i> Download Ticket
+          </button>
+          <button id="btnCopyMovieTicketCode" onclick="copyText(document.getElementById('mtTicketCode').innerText, 'Ticket Code')" type="button"
+            class="py-3 rounded-xl bg-white/[0.06] hover:bg-white/12 border border-white/15 font-display text-xs font-bold text-white uppercase flex items-center justify-center gap-1.5 transition-colors">
+            <i class="fa-regular fa-copy text-[#00F2FF]"></i> Copy Code
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL D: TRANSACTION RECEIPT MODAL -->
   <div id="receiptModal" class="sheet-overlay">
     <div class="sheet-card max-w-md">
-      <div class="p-4 sm:p-5 border-b border-white/[0.07] flex items-center justify-between flex-shrink-0">
-        <h3 class="font-orbitron text-sm font-black text-[#00F2FF] uppercase">Verified Digital Receipt</h3>
+      <div class="px-5 py-4 border-b border-white/[0.08] flex items-center justify-between flex-shrink-0 bg-[#0A0A12]">
+        <h3 class="font-display text-sm font-bold text-[#00F2FF] uppercase">Official Payment Receipt</h3>
         <button onclick="closeModal('receiptModal')" type="button" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 flex items-center justify-center text-[#9C9AB0] hover:text-white">
-          <i class="fa-solid fa-xmark"></i>
+          <i class="fa-solid fa-xmark text-sm"></i>
         </button>
       </div>
       <div class="sheet-scroll-body p-5 space-y-4 text-center">
@@ -889,11 +1152,7 @@
         </div>
         <div>
           <div id="rcptAmt" class="font-orbitron text-2xl font-black text-[#00FF7F]">+10 PASS</div>
-          <div id="rcptTitle" class="font-headline text-sm font-bold text-white mt-0.5">BGMI Pass Purchase</div>
-        </div>
-
-        <div id="rcptQrWrap" class="hidden p-3 rounded-xl bg-white w-max mx-auto border-2 border-[#00F2FF]">
-          <img id="rcptQrImg" src="" alt="Ticket QR" class="w-32 h-32 object-contain">
+          <div id="rcptTitle" class="font-display text-sm font-bold text-white mt-0.5">Pass Purchase</div>
         </div>
 
         <div class="p-3.5 rounded-xl bg-[#08080F] border border-white/[0.07] divide-y divide-white/[0.06] text-left font-mono text-xs">
@@ -910,11 +1169,11 @@
 
         <div class="grid grid-cols-2 gap-2.5 pt-1">
           <button onclick="exportSingleReceiptPDF()" type="button"
-            class="py-3 rounded-xl bg-[#00F2FF]/12 border border-[#00F2FF]/40 text-[#00F2FF] font-orbitron text-[11px] font-bold uppercase flex items-center justify-center gap-1.5">
-            <i class="fa-solid fa-file-pdf"></i> PDF Receipt
+            class="py-3 rounded-xl bg-[#00F2FF]/12 border border-[#00F2FF]/40 text-[#00F2FF] font-display text-xs font-bold uppercase flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-file-pdf"></i> Pro PDF Receipt
           </button>
           <button onclick="contactWhatsAppSupport()" type="button"
-            class="py-3 rounded-xl bg-[#25D366]/12 border border-[#25D366]/40 text-[#25D366] font-orbitron text-[11px] font-bold uppercase flex items-center justify-center gap-1.5">
+            class="py-3 rounded-xl bg-[#25D366]/12 border border-[#25D366]/40 text-[#25D366] font-display text-xs font-bold uppercase flex items-center justify-center gap-1.5">
             <i class="fa-brands fa-whatsapp"></i> Support
           </button>
         </div>
@@ -922,15 +1181,15 @@
     </div>
   </div>
 
-  <!-- MODAL D: FULL TRANSACTION LEDGER -->
+  <!-- MODAL E: FULL TRANSACTION LEDGER -->
   <div id="ledgerModal" class="sheet-overlay">
     <div class="sheet-card max-w-2xl">
-      <div class="p-4 sm:p-5 border-b border-white/[0.07] flex items-center justify-between flex-shrink-0">
-        <h3 class="font-orbitron text-sm font-black text-white uppercase">Full Pass &amp; Wallet Ledger</h3>
+      <div class="px-5 py-4 border-b border-white/[0.08] flex items-center justify-between flex-shrink-0 bg-[#0A0A12]">
+        <h3 class="font-display text-sm font-bold text-white uppercase">Full Pass &amp; Wallet Ledger</h3>
         <div class="flex items-center gap-2">
           <button onclick="exportAllTransactionsPDF()" type="button" class="px-3 py-1 rounded-lg bg-[#00F2FF]/15 text-[#00F2FF] font-mono text-[10px] font-bold uppercase">PDF</button>
           <button onclick="closeModal('ledgerModal')" type="button" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 flex items-center justify-center text-[#9C9AB0] hover:text-white">
-            <i class="fa-solid fa-xmark"></i>
+            <i class="fa-solid fa-xmark text-sm"></i>
           </button>
         </div>
       </div>
@@ -938,64 +1197,106 @@
     </div>
   </div>
 
-  <!-- MODAL E: TICKET CODE VERIFIER (ANTI-TAMPER LOOKUP) -->
+  <!-- MODAL F: TICKET CODE VERIFIER -->
   <div id="passVerifyModal" class="sheet-overlay">
     <div class="sheet-card max-w-md p-5 space-y-4">
       <div class="flex items-center justify-between">
-        <h3 class="font-orbitron text-sm font-black text-[#00F2FF] uppercase"><i class="fa-solid fa-qrcode mr-1"></i> Verify Ticket Code</h3>
+        <h3 class="font-display text-sm font-bold text-[#00F2FF] uppercase"><i class="fa-solid fa-qrcode mr-1.5"></i>Verify Ticket Code</h3>
         <button onclick="closeModal('passVerifyModal')" type="button" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 flex items-center justify-center text-[#9C9AB0] hover:text-white">
-          <i class="fa-solid fa-xmark"></i>
+          <i class="fa-solid fa-xmark text-sm"></i>
         </button>
       </div>
-      <p class="font-body text-xs text-[#9C9AB0]">Check authenticity, game eligibility, and active status of any Tournyx unique ticket code.</p>
+      <p class="font-body text-xs text-[#9C9AB0]">Check authenticity, game eligibility, and active status in the Tournyx Database.</p>
       <div class="flex gap-2">
         <input type="text" id="verifyCodeInp" placeholder="TX-BGMI-XXXX-XXXX" class="tx-input uppercase font-mono text-xs flex-1">
-        <button onclick="verifyUniqueTicketCode()" type="button" class="volt-btn px-4 rounded-xl font-orbitron text-[11px] uppercase">Check</button>
+        <button onclick="verifyUniqueTicketCode()" type="button" class="volt-btn px-4 rounded-xl font-display text-xs font-extrabold uppercase">Check</button>
       </div>
       <div id="verifyCodeResult" class="hidden p-3.5 rounded-xl bg-[#08080F] border border-white/10 font-mono text-xs"></div>
     </div>
   </div>
 
-  <!-- MODAL F: PAYMENT RESULT / PARTNER PERK CELEBRATION -->
+  <!-- MODAL G: DAILY LIMIT & FEE STRUCTURE INFO MODAL -->
+  <div id="dailyLimitInfoModal" class="sheet-overlay">
+    <div class="sheet-card max-w-md p-5 space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="font-display text-sm font-bold text-[#D4FF00] uppercase"><i class="fa-solid fa-gauge-high mr-1.5"></i>24h Wallet Cap &amp; Perks</h3>
+        <button onclick="closeModal('dailyLimitInfoModal')" type="button" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 flex items-center justify-center text-[#9C9AB0] hover:text-white">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+      <div class="p-3.5 rounded-xl bg-[#08080F] border border-white/[0.08] space-y-2">
+        <div class="flex justify-between font-mono text-xs">
+          <span class="text-[#8E8CA6]">Today's Online Spend</span>
+          <span id="limitInfoSpent" class="text-white font-bold">₹0 / ₹20,000</span>
+        </div>
+        <div class="w-full h-2 rounded-full bg-[#181726] overflow-hidden">
+          <div id="limitInfoBar" class="h-full rounded-full bg-gradient-to-r from-[#00FF7F] to-[#D4FF00]" style="width: 0%"></div>
+        </div>
+      </div>
+      <ul class="space-y-2 font-body text-xs text-[#C4C2D6]">
+        <li class="flex items-start gap-2"><i class="fa-solid fa-check text-[#00FF7F] mt-0.5"></i><span><strong>Daily Pass Limit:</strong> Up to 2,000 Passes (₹20,000) per 24 hours.</span></li>
+        <li class="flex items-start gap-2"><i class="fa-solid fa-check text-[#00F2FF] mt-0.5"></i><span><strong>First 5 Orders:</strong> Reduced gateway fee + first-time buyer promo auto-fill.</span></li>
+        <li class="flex items-start gap-2"><i class="fa-solid fa-check text-[#FFD700] mt-0.5"></i><span><strong>Bulk Rewards:</strong> 10+ (+1 Free), 20+ (+3 Free + Reduced Handling), 50+ (+8 Free + Elite Brand Perk).</span></li>
+      </ul>
+      <button onclick="closeModal('dailyLimitInfoModal')" type="button" class="volt-btn w-full py-2.5 rounded-xl font-display text-xs font-extrabold uppercase">Got It</button>
+    </div>
+  </div>
+
+  <!-- MODAL H: PAYMENT RESULT + CONFETTI CELEBRATION -->
   <div id="paymentStatusModal" class="sheet-overlay" style="z-index: 7000;">
-    <div class="sheet-card max-w-md p-6 text-center space-y-4">
+    <canvas id="confettiCanvas" class="fixed inset-0 pointer-events-none z-[7001]"></canvas>
+    <div class="sheet-card max-w-md p-6 text-center space-y-4 relative z-[7002]">
       <div id="payStatusIconWrap" class="w-16 h-16 mx-auto rounded-2xl bg-[#00FF7F]/15 border border-[#00FF7F]/45 flex items-center justify-center text-[#00FF7F] text-3xl">
         <i id="payStatusIcon" class="fa-solid fa-circle-check"></i>
       </div>
       <div>
-        <h3 id="payStatusTitle" class="font-orbitron text-base font-black text-white uppercase">Payment Verified!</h3>
-        <p id="payStatusMsg" class="font-body text-xs text-[#A3A1B8] mt-1.5 leading-relaxed">Your passes have been minted with unique codes.</p>
+        <h3 id="payStatusTitle" class="font-display text-lg font-extrabold text-white uppercase">Payment Verified!</h3>
+        <p id="payStatusMsg" class="font-body text-xs text-[#A3A1B8] mt-1 leading-relaxed">Your arena passes have been minted with unique codes.</p>
       </div>
+      <div id="payMintedPreview" class="hidden p-3 rounded-xl bg-[#08080F] border border-[#00F2FF]/35 text-left space-y-1"></div>
       <div id="payPartnerUnlockBox" class="hidden p-4 rounded-xl bg-gradient-to-br from-[#FFD700]/15 to-[#FF9900]/5 border border-[#FFD700]/45 space-y-1.5 text-left">
         <span class="font-mono text-[9.5px] font-black text-[#FFD700] uppercase">🎁 EXCLUSIVE BRAND PERK UNLOCKED!</span>
-        <div id="payPartnerBrand" class="font-headline text-sm font-bold text-white">Partner Offer</div>
+        <div id="payPartnerBrand" class="font-display text-sm font-bold text-white">Partner Offer</div>
         <div class="flex items-center justify-between pt-1">
           <code id="payPartnerCode" class="font-mono text-xs font-black text-[#D4FF00]">CODE</code>
           <button onclick="copyText(document.getElementById('payPartnerCode').innerText, 'Partner Code')" type="button" class="px-2.5 py-1 rounded-lg bg-[#D4FF00] text-[#050508] font-mono text-[10px] font-black uppercase">Copy</button>
         </div>
       </div>
-      <button onclick="closeModal('paymentStatusModal')" type="button" class="volt-btn w-full py-3 rounded-xl font-orbitron text-xs uppercase">Done</button>
+      <button onclick="closeModal('paymentStatusModal')" type="button" class="volt-btn w-full py-3 rounded-xl font-display text-xs font-extrabold uppercase">View My Passes</button>
     </div>
   </div>
 
-  <!-- MODAL G: GUEST LOGIN PROMPT -->
+  <!-- MODAL I: GUEST LOGIN PROMPT -->
   <div id="loginPromptModal" class="sheet-overlay">
     <div class="sheet-card max-w-sm p-6 text-center space-y-4">
       <div class="w-14 h-14 mx-auto rounded-2xl bg-[#8B5CF6]/15 border border-[#8B5CF6]/45 flex items-center justify-center text-[#C4B5FD] text-2xl">
         <i class="fa-solid fa-user-astronaut"></i>
       </div>
-      <h3 class="font-orbitron text-base font-black text-white uppercase">Join the Elite</h3>
-      <p class="font-body text-xs text-[#A3A1B8]">Sign in or create your Tournyx account to buy verified passes, apply coupon codes, and unlock partner brand perks.</p>
-      <a href="login.html" class="volt-btn w-full py-3 rounded-xl font-orbitron text-xs uppercase block">Login / Sign Up</a>
+      <h3 class="font-display text-base font-extrabold text-white uppercase">Join the Elite</h3>
+      <p class="font-body text-xs text-[#A3A1B8]">Sign in or create your Tournyx account to buy verified passes, download arena tickets, and unlock partner brand perks.</p>
+      <a href="login.html" class="volt-btn w-full py-3 rounded-xl font-display text-xs font-extrabold uppercase block">Login / Sign Up</a>
       <button onclick="closeModal('loginPromptModal')" type="button" class="font-mono text-[11px] text-[#8E8CA6] uppercase">Maybe Later</button>
     </div>
   </div>
 
-  <!-- SECURE VERIFICATION OVERLAY -->
-  <div id="verifyOverlay" class="hidden fixed inset-0 z-[9000] bg-[#050508]/95 backdrop-blur-xl flex-col items-center justify-center text-center p-6 space-y-4">
-    <div class="w-16 h-16 rounded-full border-4 border-[#00F2FF]/20 border-t-[#D4FF00] animate-spin"></div>
-    <h3 id="verifyOverlayTitle" class="font-orbitron text-sm font-black text-white uppercase tracking-widest">VERIFYING PAYMENT SIGNATURE...</h3>
-    <p id="verifyOverlayDesc" class="font-mono text-xs text-[#00F2FF]">Authenticating HMAC-SHA256 &amp; minting unique ticket codes</p>
+  <!-- MULTI-STEP ANIMATED PAYMENT WORKFLOW OVERLAY -->
+  <div id="verifyOverlay" class="hidden fixed inset-0 z-[9000] bg-[#050508]/95 backdrop-blur-xl flex-col items-center justify-center text-center p-6 space-y-5">
+    <div class="relative w-20 h-20 flex items-center justify-center">
+      <div class="absolute inset-0 rounded-full border-2 border-[#00F2FF]/25 pay-pulse-ring"></div>
+      <div class="w-16 h-16 rounded-full border-4 border-[#00F2FF]/20 border-t-[#D4FF00] animate-spin"></div>
+      <i class="fa-solid fa-shield-halved absolute text-[#00F2FF] text-lg"></i>
+    </div>
+    <div class="space-y-1 max-w-xs">
+      <h3 id="verifyOverlayTitle" class="font-display text-base font-bold text-white uppercase tracking-wide">Connecting Tournyx Secure Pay</h3>
+      <p id="verifyOverlayDesc" class="font-mono text-[11px] text-[#00F2FF]">Encrypting order &amp; checking daily cap...</p>
+    </div>
+    <div class="flex items-center gap-2 font-mono text-[9.5px] uppercase">
+      <span id="verifyStep1" class="px-2.5 py-1 rounded-full bg-[#D4FF00]/20 text-[#D4FF00] border border-[#D4FF00]/40">1. Order</span>
+      <span class="text-[#4B4963]">→</span>
+      <span id="verifyStep2" class="px-2.5 py-1 rounded-full bg-white/5 text-[#67657E] border border-white/10">2. Verify</span>
+      <span class="text-[#4B4963]">→</span>
+      <span id="verifyStep3" class="px-2.5 py-1 rounded-full bg-white/5 text-[#67657E] border border-white/10">3. Mint Pass</span>
+    </div>
   </div>
 
   <!-- TOAST -->
@@ -1013,36 +1314,73 @@
   </div>
 
   <!-- =========================================================
-       5. 100% SUPABASE TICKETS, COUPONS & PRIVATE RAZORPAY ENGINE
+       5. TOURNYX TICKETS, COUPONS & SECURE PAY ENGINE
        ========================================================= -->
   <script>
     (() => {
       "use strict";
 
-      // PUBLIC SUPABASE CONFIG (RAZORPAY KEYS STAY 100% PRIVATE IN EDGE FUNCTION SECRETS)
-      const SUPABASE_URL = "https://zuatrwfrejnwfnldqqgy.supabase.co";
-      const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1YXRyd2ZyZWpud2ZubGRxcWd5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNDE5NjEsImV4cCI6MjA5OTYxNzk2MX0.zcJO4Es-DnuUKR-L_Eu44xIwmz4PxsFVCgs-t492t1g";
+      // PUBLIC CLIENT CONFIG (PAYMENT SECRETS STAY 100% PRIVATE ON SERVER)
+      const DB_ENDPOINT = "https://zuatrwfrejnwfnldqqgy.supabase.co";
+      const DB_PUBLIC_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1YXRyd2ZyZWpud2ZubGRxcWd5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNDE5NjEsImV4cCI6MjA5OTYxNzk2MX0.zcJO4Es-DnuUKR-L_Eu44xIwmz4PxsFVCgs-t492t1g";
       const TICKET_PRICE = 10;
+      const MAX_DAILY_INR = 20000;
+      const MAX_DAILY_PASSES = 2000;
       const HEX_REGEX = /^#[0-9A-Fa-f]{6}$/;
 
-      let supabaseClient = null;
-      let isSupabaseReady = false;
+      const TOURNYX_LOGO_URL = "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_20wCR-WBMpQmw3vxcYUf-vxIO1PYDJoQN_Sid3UDjA9tf0cuX0eH40jbzHoJad4cxbnjhPjqfCw1Z5V1LhgN9zFuIQC0fJjecTy3D9PFu5WjR2H1wHwTD1bUGnXY_NiApWn5gMs6velcQngSzKoP1yHzX0cVsFSUFM8zIefcbiPayY7680Kz0V0ZAAE/s1264/1000093706.png";
+
+      const GAME_ASSETS = {
+        "Free Fire MAX": {
+          short: "FF",
+          accent: "#FF9900",
+          logo: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiJvPTY_y_XU-0Lwbnjwm7961lCDkSlQh2MtCWHunFVX6WS7WCprCtkPyB334BU_-4vGsP0NseDQf4NPBEOIxqjk7VZQqZUHpnLb4Bw-c1UeXQy2M9DzNrNdYt_aL0GEb1AlTPupC5zEjJiP3Ci0Oxk-wdg5TF5cs8_UNSe3uTT1BE884je3iXr8QlMjx8/s240/1000094210.jpg"
+        },
+        "BGMI": {
+          short: "BG",
+          accent: "#00FF7F",
+          logo: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj3MKUI87mMK4_3DltS3LQgqfrK1sESUIMMqlENdi0dPRtOFkeDbvPsTbSaCRaJOb17QZ5s9OO5dR6kFCYiCkgUCF2zBWwvGFSb3T-9Nz51XuIzMvIiOuqwcLzyzeFmn1orKbiETP4LrlaG-RidnWAAzBwUA3aL5_z62HP4_F7R02lAK_WSYdH0U_Gn7Es/s250/1000094211.jpg"
+        },
+        "CODM": {
+          short: "CD",
+          accent: "#00F2FF",
+          logo: "",
+          icon: "fa-crosshairs"
+        },
+        "Valorant": {
+          short: "VL",
+          accent: "#FF4655",
+          logo: "",
+          icon: "fa-bolt"
+        },
+        "Universal": {
+          short: "VIP",
+          accent: "#FFD700",
+          logo: "https://tournyx.in/favicon.png"
+        }
+      };
+
+      let dbClient = null;
+      let isDbReady = false;
       let isGuest = true;
-      let currentUser = { username: "Guest", email: "", earnings: 0, points: 0, role: "player", is_premium: false };
+      let currentUser = { username: "Guest", ign: "Guest", email: "", earnings: 0, points: 0, role: "player", is_premium: false };
       let vaultTickets = [];
       let transactionsData = [];
       let activeCouponsList = [];
       let partnerVouchers = [];
+      let paidOrdersHistory = [];
+      let spentLast24hInr = 0;
 
       let activeVaultFilter = "ALL";
       let selectedCheckoutGame = "Free Fire MAX";
       let appliedCouponObj = null;
       let activeReceiptObj = null;
+      let activeMovieTicketObj = null;
       let isPrivacyOn = false;
       let particleRafId = null;
 
       // ============================================================================
-      // 1. GLOBAL THEME SYNC + GAMER PARTICLES + UTILITIES
+      // 1. THEME SYNC, PARTICLES, GAME LOGO HELPER & UTILITIES
       // ============================================================================
       function doHaptic() { if (navigator.vibrate) navigator.vibrate(14); }
 
@@ -1068,6 +1406,63 @@
           timeZone: "Asia/Kolkata", month: "short", day: "2-digit", year: "numeric",
           hour: "numeric", minute: "2-digit", hour12: true
         }).toUpperCase();
+      }
+
+      function getGameMeta(rawGame, tier = "") {
+        if (String(tier).toUpperCase() === "UNIVERSAL" || String(rawGame || "").toLowerCase().includes("universal")) {
+          return { key: "Universal", ...GAME_ASSETS["Universal"] };
+        }
+        const g = String(rawGame || "").toLowerCase();
+        if (g.includes("free")) return { key: "Free Fire MAX", ...GAME_ASSETS["Free Fire MAX"] };
+        if (g.includes("bgmi")) return { key: "BGMI", ...GAME_ASSETS["BGMI"] };
+        if (g.includes("cod")) return { key: "CODM", ...GAME_ASSETS["CODM"] };
+        if (g.includes("val")) return { key: "Valorant", ...GAME_ASSETS["Valorant"] };
+        return { key: rawGame || "Universal", ...GAME_ASSETS["Universal"] };
+      }
+
+      function renderGameLogoBadge(meta, sizeCls = "w-10 h-10") {
+        if (meta.logo) {
+          return `<img src="${meta.logo}" alt="${escapeHtml(meta.key)}" class="${sizeCls} rounded-xl object-cover flex-shrink-0" style="border: 1.5px solid color-mix(in srgb, ${meta.accent} 55%, transparent); background:#07070C;" onerror="this.src='https://tournyx.in/favicon.png'">`;
+        }
+        return `<div class="${sizeCls} rounded-xl flex items-center justify-center flex-shrink-0" style="background: color-mix(in srgb, ${meta.accent} 16%, transparent); border: 1.5px solid color-mix(in srgb, ${meta.accent} 48%, transparent); color: ${meta.accent};"><i class="fa-solid ${meta.icon || "fa-gamepad"} text-sm"></i></div>`;
+      }
+
+      function hexToRgbArray(hex, fallback = [212, 255, 0]) {
+        const clean = String(hex || "").trim();
+        if (!HEX_REGEX.test(clean)) return fallback;
+        return [
+          parseInt(clean.slice(1, 3), 16),
+          parseInt(clean.slice(3, 5), 16),
+          parseInt(clean.slice(5, 7), 16)
+        ];
+      }
+
+      function getActiveThemeRgb() {
+        const st = getComputedStyle(document.documentElement);
+        return {
+          volt: hexToRgbArray(st.getPropertyValue("--accent-volt").trim(), [212, 255, 0]),
+          cyan: hexToRgbArray(st.getPropertyValue("--accent-cyan").trim(), [0, 242, 255]),
+          purple: hexToRgbArray(st.getPropertyValue("--accent-purple").trim(), [139, 92, 246])
+        };
+      }
+
+      function loadImageAsDataURL(url) {
+        return new Promise((resolve) => {
+          if (!url) { resolve(null); return; }
+          const img = new Image();
+          img.crossOrigin = "anonymous";
+          img.onload = () => {
+            try {
+              const c = document.createElement("canvas");
+              c.width = img.naturalWidth || 160;
+              c.height = img.naturalHeight || 160;
+              c.getContext("2d").drawImage(img, 0, 0);
+              resolve(c.toDataURL("image/png"));
+            } catch (e) { resolve(null); }
+          };
+          img.onerror = () => resolve(null);
+          img.src = url;
+        });
       }
 
       function applyGlobalAppearance() {
@@ -1102,7 +1497,7 @@
 
         const pts = Array.from({ length: window.innerWidth < 768 ? 18 : 34 }, () => ({
           x: Math.random() * canvas.width, y: Math.random() * canvas.height,
-          r: Math.random() * 1.6 + 0.6, vx: (Math.random() - 0.5) * 0.38, vy: -Math.random() * 0.38 - 0.1
+          r: Math.random() * 1.6 + 0.6, vx: (Math.random() - 0.5) * 0.36, vy: -Math.random() * 0.38 - 0.1
         }));
 
         function frame() {
@@ -1122,6 +1517,55 @@
           particleRafId = requestAnimationFrame(frame);
         }
         frame();
+      }
+
+      function launchCelebrationConfetti() {
+        if (localStorage.getItem("tournyx_psm") === "true") return;
+        const canvas = document.getElementById("confettiCanvas");
+        if (!canvas) return;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const ctx = canvas.getContext("2d");
+        const colors = ["#D4FF00", "#00F2FF", "#00FF7F", "#8B5CF6", "#FFD700", "#FF9900"];
+        const pieces = Array.from({ length: 85 }, () => ({
+          x: canvas.width / 2 + (Math.random() - 0.5) * 120,
+          y: canvas.height * 0.45,
+          vx: (Math.random() - 0.5) * 12,
+          vy: -Math.random() * 12 - 3,
+          size: Math.random() * 6 + 4,
+          rot: Math.random() * Math.PI * 2,
+          vrot: (Math.random() - 0.5) * 0.25,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          alpha: 1
+        }));
+
+        let frames = 0;
+        function tick() {
+          frames++;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          let alive = false;
+          for (const p of pieces) {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.32;
+            p.vx *= 0.99;
+            p.rot += p.vrot;
+            if (frames > 55) p.alpha = Math.max(0, p.alpha - 0.03);
+            if (p.alpha > 0.02 && p.y < canvas.height + 20) {
+              alive = true;
+              ctx.save();
+              ctx.globalAlpha = p.alpha;
+              ctx.translate(p.x, p.y);
+              ctx.rotate(p.rot);
+              ctx.fillStyle = p.color;
+              ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+              ctx.restore();
+            }
+          }
+          if (alive && frames < 120) requestAnimationFrame(tick);
+          else ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        requestAnimationFrame(tick);
       }
 
       let toastTimer = null;
@@ -1174,10 +1618,21 @@
         }
       }
 
-      function setVerifyOverlay(visible, title = "", desc = "") {
+      function setVerifyOverlay(visible, title = "", desc = "", stepNum = 1) {
         const el = document.getElementById("verifyOverlay");
         if (title) document.getElementById("verifyOverlayTitle").innerText = title;
         if (desc) document.getElementById("verifyOverlayDesc").innerText = desc;
+        [1, 2, 3].forEach((n) => {
+          const badge = document.getElementById(`verifyStep${n}`);
+          if (!badge) return;
+          if (n < stepNum) {
+            badge.className = "px-2.5 py-1 rounded-full bg-[#00FF7F]/20 text-[#00FF7F] border border-[#00FF7F]/45";
+          } else if (n === stepNum) {
+            badge.className = "px-2.5 py-1 rounded-full bg-[#D4FF00]/20 text-[#D4FF00] border border-[#D4FF00]/50 font-bold";
+          } else {
+            badge.className = "px-2.5 py-1 rounded-full bg-white/5 text-[#67657E] border border-white/10";
+          }
+        });
         el.classList.toggle("hidden", !visible);
         el.classList.toggle("flex", visible);
       }
@@ -1203,14 +1658,14 @@
       }
 
       // ============================================================================
-      // 2. SUPABASE DATA HYDRATION (USERS, TICKETS_VAULT, TRANSACTIONS, COUPONS, PERKS)
+      // 2. TOURNYX DATABASE HYDRATION (USERS, VAULT, ORDERS, TRANSACTIONS, PERKS)
       // ============================================================================
-      function initSupabase() {
-        if (window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY) {
-          supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      function initDatabaseEngine() {
+        if (window.supabase && DB_ENDPOINT && DB_PUBLIC_KEY) {
+          dbClient = window.supabase.createClient(DB_ENDPOINT, DB_PUBLIC_KEY, {
             auth: { persistSession: true, autoRefreshToken: true }
           });
-          isSupabaseReady = true;
+          isDbReady = true;
         }
       }
 
@@ -1231,17 +1686,13 @@
 
         renderUserHeaderAndWallet();
 
-        if (!isSupabaseReady || !supabaseClient) {
+        if (!isDbReady || !dbClient) {
           if (spin) setTimeout(() => spin.classList.remove("fa-spin"), 400);
           return;
         }
 
-        // Always load active public coupons for display
         try {
-          const { data: coupRows } = await supabaseClient
-            .from("coupons")
-            .select("*")
-            .eq("is_active", true);
+          const { data: coupRows } = await dbClient.from("coupons").select("*").eq("is_active", true);
           activeCouponsList = (coupRows || []).filter((c) => !c.expires_at || new Date(c.expires_at) > new Date());
         } catch (e) { activeCouponsList = []; }
 
@@ -1249,6 +1700,7 @@
           renderVaultList();
           renderPartnerVouchers();
           renderTransactions();
+          updateDailyLimitDisplays();
           if (spin) setTimeout(() => spin.classList.remove("fa-spin"), 400);
           return;
         }
@@ -1256,37 +1708,72 @@
         const cleanEmail = String(currentUser.email).trim().toLowerCase();
 
         await Promise.allSettled([
-          supabaseClient.from("Users").select("*").ilike("email", cleanEmail).limit(1).then(({ data }) => {
+          dbClient.from("Users").select("*").ilike("email", cleanEmail).limit(1).then(({ data }) => {
             if (data && data[0]) {
               currentUser = { ...currentUser, ...data[0], email: cleanEmail };
               localStorage.setItem("tournyx_user", JSON.stringify(currentUser));
               localStorage.setItem("tournyx_userData", JSON.stringify(currentUser));
             }
           }),
-          supabaseClient.from("tickets_vault").select("*").ilike("email", cleanEmail).order("created_at", { ascending: false }).then(({ data }) => {
+          dbClient.from("tickets_vault").select("*").ilike("email", cleanEmail).order("created_at", { ascending: false }).then(({ data }) => {
             vaultTickets = data || [];
           }),
-          supabaseClient.from("Transaction").select("*").ilike("email", cleanEmail).order("created_at", { ascending: false }).then(({ data }) => {
-            transactionsData = (data || []).filter((t) => {
-              const title = String(t.title || "").toLowerCase();
-              return !title.includes("withdraw");
-            });
+          dbClient.from("Transaction").select("*").ilike("email", cleanEmail).order("created_at", { ascending: false }).then(({ data }) => {
+            transactionsData = (data || []).filter((t) => !String(t.title || "").toLowerCase().includes("withdraw"));
           }),
-          supabaseClient.from("partner_vouchers").select("*").ilike("assigned_to_email", cleanEmail).order("created_at", { ascending: false }).then(({ data }) => {
+          dbClient.from("partner_vouchers").select("*").ilike("assigned_to_email", cleanEmail).order("created_at", { ascending: false }).then(({ data }) => {
             partnerVouchers = data || [];
+          }),
+          dbClient.from("payment_orders").select("razorpay_order_id, order_type, base_inr, discount_inr, bonus_passes, status, paid_at").ilike("email", cleanEmail).eq("status", "PAID").then(({ data }) => {
+            paidOrdersHistory = data || [];
+            const cutoff = Date.now() - 86400000;
+            spentLast24hInr = paidOrdersHistory
+              .filter((o) => o.paid_at && new Date(o.paid_at).getTime() >= cutoff)
+              .reduce((sum, o) => sum + safeNum(o.base_inr, 0), 0);
           })
         ]);
 
         applyGlobalAppearance();
         renderUserHeaderAndWallet();
+        updateDailyLimitDisplays();
         renderVaultList();
         renderPartnerVouchers();
         updateLedgerMetrics();
         renderTransactions();
-        renderAvailableCouponsTray();
 
-        if (isManual) showToast("Wallet & Ticket Vault synced live!");
+        if (isManual) showToast("Wallet & Ticket Vault synced with Tournyx Database!");
         if (spin) setTimeout(() => spin.classList.remove("fa-spin"), 450);
+      }
+
+      function updateDailyLimitDisplays() {
+        const remainingInr = Math.max(0, MAX_DAILY_INR - spentLast24hInr);
+        const remainingPasses = Math.floor(remainingInr / TICKET_PRICE);
+        const usedPct = Math.min(100, (spentLast24hInr / MAX_DAILY_INR) * 100);
+
+        const capEl = document.getElementById("dailyCapRemainText");
+        if (capEl) capEl.innerText = `₹${remainingInr.toLocaleString()} Left`;
+
+        const buyCap = document.getElementById("buyDailyLimitText");
+        if (buyCap) buyCap.innerText = `Left Today: ${remainingPasses.toLocaleString()} Passes (₹${remainingInr.toLocaleString()})`;
+
+        const orgCap = document.getElementById("orgDailyRemainText");
+        if (orgCap) orgCap.innerText = `24h Remaining Cap: ₹${remainingInr.toLocaleString()} / ₹20,000`;
+
+        const infoSpent = document.getElementById("limitInfoSpent");
+        if (infoSpent) infoSpent.innerText = `₹${spentLast24hInr.toLocaleString()} / ₹20,000`;
+        const infoBar = document.getElementById("limitInfoBar");
+        if (infoBar) infoBar.style.width = `${usedPct.toFixed(1)}%`;
+
+        // Lifetime Savings Chip (Coupon INR discounts + Bonus free pass value)
+        const totalSaved = paidOrdersHistory.reduce((sum, o) => {
+          return sum + safeNum(o.discount_inr, 0) + safeNum(o.bonus_passes, 0) * TICKET_PRICE;
+        }, 0);
+        const chip = document.getElementById("totalSavingsChip");
+        const valEl = document.getElementById("totalSavingsVal");
+        if (chip && valEl) {
+          valEl.innerText = Math.round(totalSaved).toLocaleString();
+          chip.classList.toggle("hidden", totalSaved <= 0);
+        }
       }
 
       function renderUserHeaderAndWallet() {
@@ -1343,7 +1830,6 @@
           document.getElementById("balanceUnitText").innerText = "TX PASS";
         }
 
-        // Tier Progress
         const badge = document.getElementById("vipBadge");
         const prog = document.getElementById("vipProgress");
         const nextLbl = document.getElementById("nextTierText");
@@ -1351,11 +1837,11 @@
         const tgtLbl = document.getElementById("tierTargetLabel");
 
         if (isVip) {
-          badge.innerHTML = `<i class="fa-solid fa-crown text-[#FFD700]"></i> VIP MEMBER • 0% FEE`;
+          badge.innerHTML = `<i class="fa-solid fa-crown text-[#FFD700]"></i> VIP PRO PASS`;
           prog.style.width = "100%";
           nextLbl.innerText = "MAX VIP TIER";
           curLbl.innerText = "VIP PRESTIGE";
-          tgtLbl.innerText = "ZERO GATEWAY FEES";
+          tgtLbl.innerText = "PRIORITY VIP RATES";
           document.getElementById("tierSubtitle").innerText = "VIP Gold Tier";
         } else if (displayPassTotal >= 50) {
           badge.innerHTML = `<i class="fa-solid fa-crown text-[#D4FF00]"></i> ELITE TIER`;
@@ -1382,7 +1868,7 @@
       }
 
       // ============================================================================
-      // 3. UNIQUE TICKET VAULT RENDERER + PER-GAME FILTERING + TICKET VERIFIER
+      // 3. CINEMA MOVIE-TICKET VAULT, SQUAD COPY-ALL & INDIVIDUAL ARENA TICKET PDF
       // ============================================================================
       function setVaultFilter(filter) {
         doHaptic();
@@ -1390,10 +1876,33 @@
         document.querySelectorAll(".vault-filter-btn").forEach((btn) => {
           const isMatch = btn.dataset.filter === filter;
           btn.className = isMatch
-            ? "vault-filter-btn px-3 py-1.5 rounded-full font-mono text-[10px] font-bold uppercase bg-[#D4FF00] text-[#050508] flex-shrink-0"
-            : "vault-filter-btn px-3 py-1.5 rounded-full font-mono text-[10px] font-bold uppercase bg-white/[0.05] text-[#C4C2D6] border border-white/10 flex-shrink-0";
+            ? "vault-filter-btn px-3 py-1.5 rounded-full font-mono text-[10px] font-bold uppercase bg-[#D4FF00] text-[#050508] inline-flex items-center gap-1.5 flex-shrink-0"
+            : "vault-filter-btn px-3 py-1.5 rounded-full font-mono text-[10px] font-bold uppercase bg-white/[0.05] text-[#C4C2D6] border border-white/10 inline-flex items-center gap-1.5 flex-shrink-0";
         });
         renderVaultList();
+      }
+
+      function getFilteredVaultTickets() {
+        const searchQ = (document.getElementById("vaultSearchInput")?.value || "").trim().toLowerCase();
+        const statusF = document.getElementById("vaultStatusFilter")?.value || "ALL";
+        return vaultTickets.filter((t) => {
+          const g = String(t.game || "Universal").toLowerCase();
+          const st = String(t.status || "ACTIVE").toUpperCase();
+          const code = String(t.ticket_code || "").toLowerCase();
+          const matchGame = activeVaultFilter === "ALL" || g.includes(activeVaultFilter.toLowerCase()) || (activeVaultFilter === "Universal" && String(t.tier || "").toUpperCase() === "UNIVERSAL");
+          const matchStatus = statusF === "ALL" || st === statusF;
+          const matchSearch = !searchQ || code.includes(searchQ) || g.includes(searchQ);
+          return matchGame && matchStatus && matchSearch;
+        });
+      }
+
+      function copyAllActiveCodes() {
+        doHaptic();
+        if (isGuest) { openModal("loginPromptModal"); return; }
+        const activeList = getFilteredVaultTickets().filter((t) => String(t.status || "ACTIVE").toUpperCase() === "ACTIVE");
+        if (!activeList.length) { showToast("No active passes in current filter.", true); return; }
+        const formatted = activeList.slice(0, 20).map((t, i) => `${i + 1}. [${t.game}] ${t.ticket_code}`).join("\n");
+        copyText(formatted, `${Math.min(20, activeList.length)} Active Pass Codes`);
       }
 
       function renderVaultList() {
@@ -1402,58 +1911,53 @@
         document.getElementById("activeVaultCountPill").innerText = `${activeCount} Active`;
 
         if (isGuest) {
-          container.innerHTML = `<div class="p-6 rounded-xl bg-[#08080F] border border-dashed border-white/10 text-center font-mono text-xs text-[#8E8CA6]">Sign in to view your unique cryptographic tournament pass codes.</div>`;
+          container.innerHTML = `<div class="p-6 rounded-xl bg-[#08080F] border border-dashed border-white/10 text-center font-mono text-xs text-[#8E8CA6]">Sign in to view your unique cryptographic tournament movie passes.</div>`;
           return;
         }
 
-        const filtered = vaultTickets.filter((t) => {
-          if (activeVaultFilter === "ALL") return true;
-          const g = String(t.game || "Universal").toLowerCase();
-          return g.includes(activeVaultFilter.toLowerCase()) || (activeVaultFilter === "Universal" && String(t.tier || "").toUpperCase() === "UNIVERSAL");
-        });
-
+        const filtered = getFilteredVaultTickets();
         if (!filtered.length) {
           container.innerHTML = `
             <div class="p-6 rounded-xl bg-[#08080F] border border-dashed border-white/10 text-center space-y-2">
               <i class="fa-solid fa-ticket text-2xl text-[#56546E]"></i>
-              <p class="font-headline text-xs font-bold text-white">No ${activeVaultFilter === "ALL" ? "" : escapeHtml(activeVaultFilter) + " "}Passes in Vault Yet</p>
-              <p class="font-body text-[11px] text-[#8E8CA6]">Purchase passes to receive unique verified codes and unlock bulk brand coupons.</p>
-              <button onclick="openBuyPassModal()" type="button" class="mt-1 px-4 py-1.5 rounded-full bg-[#D4FF00]/15 border border-[#D4FF00]/40 font-mono text-[10px] font-bold text-[#D4FF00] uppercase">+ Buy Pass Now</button>
+              <p class="font-display text-xs font-bold text-white">No Matching Passes in Vault</p>
+              <p class="font-body text-[11px] text-[#8E8CA6]">Purchase verified passes to generate downloadable esports tickets with QR codes.</p>
+              <button onclick="openBuyPassModal()" type="button" class="mt-1 px-4 py-1.5 rounded-full bg-[#D4FF00]/15 border border-[#D4FF00]/40 font-mono text-[10px] font-bold text-[#D4FF00] uppercase">+ Buy Arena Pass</button>
             </div>
           `;
           return;
         }
 
-        container.innerHTML = filtered.slice(0, 12).map((t) => {
+        container.innerHTML = filtered.slice(0, 14).map((t) => {
           const code = escapeHtml(t.ticket_code || "TX-CODE");
-          const game = escapeHtml(t.game || "Universal");
-          const isUni = String(t.tier || "").toUpperCase() === "UNIVERSAL";
+          const meta = getGameMeta(t.game, t.tier);
           const status = String(t.status || "ACTIVE").toUpperCase();
           const isActive = status === "ACTIVE";
-          const accent = isUni ? "#FFD700" : game.toUpperCase().includes("BGMI") ? "#00FF7F" : game.toUpperCase().includes("FREE") ? "#FF9900" : "#00F2FF";
+          const isUni = meta.key === "Universal";
 
           return `
-            <div class="pass-stub rounded-xl p-3.5 pl-5 pr-5 flex items-center justify-between gap-3 ${!isActive ? "opacity-55" : ""}">
-              <div class="flex items-center gap-3 min-w-0">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center font-orbitron text-[11px] font-black flex-shrink-0" style="background: color-mix(in srgb, ${accent} 15%, transparent); border: 1px solid color-mix(in srgb, ${accent} 45%, transparent); color: ${accent};">
-                  ${isUni ? "VIP" : game.slice(0, 2).toUpperCase()}
-                </div>
-                <div class="min-w-0">
+            <div onclick="openMovieTicketModal('${code}')" class="cinema-ticket cinema-ticket-holo cursor-pointer flex items-stretch ${!isActive ? "opacity-55" : ""}" style="--tkt-accent: ${meta.accent};">
+              <div class="w-1.5 flex-shrink-0" style="background: ${meta.accent};"></div>
+              <div class="flex-1 p-3.5 pl-4 flex items-center gap-3 min-w-0">
+                ${renderGameLogoBadge(meta, "w-11 h-11")}
+                <div class="min-w-0 flex-1">
                   <div class="flex items-center gap-1.5 flex-wrap">
-                    <span class="font-headline text-xs font-extrabold text-white">${game} Pass</span>
-                    <span class="px-1.5 py-0.5 rounded font-mono text-[8.5px] font-black uppercase ${isActive ? "bg-[#00FF7F]/15 text-[#00FF7F]" : "bg-white/10 text-[#9C9AB0]"}">${status}</span>
+                    <span class="font-mono text-[8.5px] font-bold uppercase tracking-widest" style="color:${meta.accent};">ADMIT ONE</span>
+                    <span class="px-1.5 py-0.5 rounded font-mono text-[8px] font-black uppercase ${isActive ? "bg-[#00FF7F]/15 text-[#00FF7F]" : "bg-white/10 text-[#9C9AB0]"}">${status}</span>
+                    ${isUni ? `<span class="px-1.5 py-0.5 rounded bg-[#FFD700]/20 text-[#FFD700] font-mono text-[8px] font-black uppercase">VIP BONUS</span>` : ""}
                   </div>
-                  <div class="font-mono text-[11px] font-bold mt-0.5 truncate" style="color: ${accent};">${code}</div>
+                  <div class="font-display text-xs sm:text-sm font-bold text-white truncate mt-0.5">${escapeHtml(meta.key)} Pass</div>
+                  <div class="font-mono text-[11px] font-bold truncate" style="color:${meta.accent};">${code}</div>
                 </div>
               </div>
-              <div class="flex items-center gap-1.5 flex-shrink-0">
-                <button onclick="copyText('${code}', 'Ticket Code')" type="button" title="Copy Code"
-                  class="px-2.5 py-1.5 rounded-lg bg-white/[0.06] hover:bg-[#D4FF00] hover:text-[#050508] font-mono text-[10px] font-bold text-white transition-colors">
-                  <i class="fa-regular fa-copy"></i>
-                </button>
-                <button onclick="openTicketReceipt('${code}')" type="button" title="View QR Pass"
-                  class="px-2.5 py-1.5 rounded-lg bg-[#00F2FF]/12 border border-[#00F2FF]/35 text-[#00F2FF] font-mono text-[10px] font-bold">
+              <div class="cinema-tear-divider px-3.5 py-3 flex flex-col items-center justify-center gap-1.5 bg-white/[0.015] flex-shrink-0">
+                <button onclick="event.stopPropagation(); openMovieTicketModal('${code}');" type="button" title="Open Printable Ticket"
+                  class="w-8 h-8 rounded-lg bg-[#00F2FF]/15 border border-[#00F2FF]/40 text-[#00F2FF] hover:bg-[#00F2FF] hover:text-[#050508] flex items-center justify-center text-xs transition-colors">
                   <i class="fa-solid fa-qrcode"></i>
+                </button>
+                <button onclick="event.stopPropagation(); copyText('${code}', 'Ticket Code');" type="button" title="Copy Code"
+                  class="w-8 h-7 rounded-lg bg-white/[0.06] hover:bg-[#D4FF00] hover:text-[#050508] text-white flex items-center justify-center text-[10px] transition-colors">
+                  <i class="fa-regular fa-copy"></i>
                 </button>
               </div>
             </div>
@@ -1461,17 +1965,196 @@
         }).join("");
       }
 
+      function openMovieTicketModal(code) {
+        const t = vaultTickets.find((x) => x.ticket_code === code);
+        if (!t) return;
+        activeMovieTicketObj = t;
+        const meta = getGameMeta(t.game, t.tier);
+
+        document.getElementById("mtGameLogo").src = meta.logo || TOURNYX_LOGO_URL;
+        document.getElementById("mtGameName").innerText = `${meta.key} Arena Pass`;
+        document.getElementById("mtTierBadge").innerText = String(t.tier || "STANDARD").toUpperCase();
+        const isActive = String(t.status || "ACTIVE").toUpperCase() === "ACTIVE";
+        const stEl = document.getElementById("mtStatusBadge");
+        stEl.innerText = isActive ? "● ACTIVE PASS" : `● ${String(t.status || "USED").toUpperCase()}`;
+        stEl.className = isActive ? "font-mono text-[9px] text-[#00FF7F] font-bold uppercase mt-1 block" : "font-mono text-[9px] text-[#FF9900] font-bold uppercase mt-1 block";
+
+        document.getElementById("mtPlayerName").innerText = currentUser.username || "Player";
+        document.getElementById("mtPlayerIgn").innerText = currentUser.ign || currentUser.username || "N/A";
+        document.getElementById("mtTicketCode").innerText = t.ticket_code;
+        document.getElementById("mtIssuedDate").innerText = `Issued: ${formatIST(t.created_at)}`;
+        document.getElementById("mtQrImg").src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&bgcolor=ffffff&color=050508&qzone=1&data=${encodeURIComponent(`TOURNYX|${t.ticket_code}|${meta.key}|${currentUser.ign || currentUser.email}`)}`;
+
+        openModal("movieTicketModal");
+      }
+
+      // Interactive 3D Holographic Tilt on Movie Ticket Card
+      function bindTicketTiltEffect() {
+        const card = document.getElementById("mtCardInner");
+        if (!card) return;
+        card.addEventListener("pointermove", (e) => {
+          if (localStorage.getItem("tournyx_psm") === "true") return;
+          const r = card.getBoundingClientRect();
+          const x = ((e.clientX - r.left) / r.width - 0.5) * 10;
+          const y = ((e.clientY - r.top) / r.height - 0.5) * -10;
+          card.style.transform = `perspective(700px) rotateX(${y.toFixed(2)}deg) rotateY(${x.toFixed(2)}deg)`;
+        });
+        card.addEventListener("pointerleave", () => {
+          card.style.transform = "perspective(700px) rotateX(0deg) rotateY(0deg)";
+        });
+      }
+
+      // INDIVIDUAL PRINTABLE MOVIE-TICKET PDF WITH LOGO, THEME COLORS, QR & DO-NOT-SHARE WARNING
+      async function downloadMovieTicketPDF() {
+        doHaptic();
+        if (!window.jspdf?.jsPDF || !activeMovieTicketObj) return;
+        showToast("Generating Printable Arena Ticket PDF...");
+
+        const t = activeMovieTicketObj;
+        const meta = getGameMeta(t.game, t.tier);
+        const rgb = getActiveThemeRgb();
+        const accentRgb = hexToRgbArray(meta.accent, rgb.volt);
+
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&bgcolor=ffffff&color=050508&margin=4&data=${encodeURIComponent(`TOURNYX|${t.ticket_code}|${meta.key}|${currentUser.ign || currentUser.email}`)}`;
+        const [logoData, qrData] = await Promise.all([
+          loadImageAsDataURL(TOURNYX_LOGO_URL),
+          loadImageAsDataURL(qrUrl)
+        ]);
+
+        const { jsPDF } = window.jspdf;
+        // Cinema Wide Boarding-Pass Ticket Format (210mm x 105mm)
+        const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: [210, 105] });
+        const W = 210, H = 105;
+
+        // Obsidian Ticket Base
+        doc.setFillColor(7, 7, 13);
+        doc.rect(0, 0, W, H, "F");
+
+        // Top Neon Theme Bar
+        doc.setFillColor(accentRgb[0], accentRgb[1], accentRgb[2]);
+        doc.rect(0, 0, W, 3.2, "F");
+
+        // Outer Neon Frame
+        doc.setDrawColor(rgb.cyan[0], rgb.cyan[1], rgb.cyan[2]);
+        doc.setLineWidth(0.5);
+        doc.roundedRect(5, 6, W - 10, H - 12, 5, 5);
+
+        // Cinema Ticket Perforated Vertical Tear Line (Left Main Stub 145mm | Right QR Stub 65mm)
+        doc.setDrawColor(70, 70, 95);
+        doc.setLineDashPattern([2, 2], 0);
+        doc.line(146, 8, 146, H - 8);
+        doc.setLineDashPattern([], 0);
+
+        // Top & Bottom Semi-Circle Ticket Cutout Notches
+        doc.setFillColor(5, 5, 8);
+        doc.circle(146, 6, 4.5, "F");
+        doc.circle(146, H - 6, 4.5, "F");
+
+        // Left Section: Tournyx Brand Header + Logo
+        if (logoData) {
+          doc.addImage(logoData, "PNG", 12, 12, 13, 13);
+        } else {
+          doc.setFillColor(rgb.volt[0], rgb.volt[1], rgb.volt[2]);
+          doc.roundedRect(12, 12, 13, 13, 2, 2, "F");
+          doc.setTextColor(5, 5, 8);
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(10);
+          doc.text("TX", 15, 20.5);
+        }
+
+        doc.setTextColor(rgb.volt[0], rgb.volt[1], rgb.volt[2]);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(15);
+        doc.text("TOURNYX ESPORTS", 29, 18);
+        doc.setTextColor(rgb.cyan[0], rgb.cyan[1], rgb.cyan[2]);
+        doc.setFontSize(7.5);
+        doc.text("OFFICIAL VERIFIED TOURNAMENT ARENA PASS  •  ADMIT ONE", 29, 23.5);
+
+        // Game Title Pill
+        doc.setFillColor(20, 20, 34);
+        doc.setDrawColor(accentRgb[0], accentRgb[1], accentRgb[2]);
+        doc.roundedRect(12, 30, 126, 14, 2.5, 2.5, "FD");
+        doc.setTextColor(accentRgb[0], accentRgb[1], accentRgb[2]);
+        doc.setFontSize(12);
+        doc.text(`${meta.key.toUpperCase()}  —  ${String(t.tier || "STANDARD").toUpperCase()} PASS`, 17, 39);
+
+        // Player Details Grid
+        const pName = String(currentUser.username || "Player").slice(0, 24);
+        const pIgn = String(currentUser.ign || currentUser.username || "N/A").slice(0, 22);
+        const pEmail = String(currentUser.email || "").slice(0, 34);
+
+        doc.setFillColor(14, 14, 24);
+        doc.roundedRect(12, 48, 61, 16, 2, 2, "F");
+        doc.roundedRect(77, 48, 61, 16, 2, 2, "F");
+
+        doc.setTextColor(140, 140, 165);
+        doc.setFontSize(6.5);
+        doc.text("PLAYER NAME", 16, 53.5);
+        doc.text("IN-GAME NAME (IGN)", 81, 53.5);
+
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(10);
+        doc.text(pName, 16, 60.5);
+        doc.setTextColor(rgb.cyan[0], rgb.cyan[1], rgb.cyan[2]);
+        doc.text(pIgn, 81, 60.5);
+
+        // Ticket ID Box
+        doc.setFillColor(18, 18, 30);
+        doc.roundedRect(12, 68, 126, 13, 2, 2, "F");
+        doc.setTextColor(140, 140, 165);
+        doc.setFontSize(6.5);
+        doc.text("UNIQUE ENCRYPTED TICKET CODE", 16, 73);
+        doc.setTextColor(rgb.volt[0], rgb.volt[1], rgb.volt[2]);
+        doc.setFontSize(11);
+        doc.text(String(t.ticket_code), 16, 79);
+        doc.setTextColor(160, 160, 185);
+        doc.setFontSize(6.5);
+        doc.text(`HOLDER: ${pEmail}`, 134, 79, { align: "right" });
+
+        // Red Anti-Share Security Warning Strip
+        doc.setFillColor(55, 14, 22);
+        doc.setDrawColor(255, 70, 85);
+        doc.roundedRect(12, 84.5, 126, 9, 1.5, 1.5, "FD");
+        doc.setTextColor(255, 138, 147);
+        doc.setFontSize(7.5);
+        doc.text("WARNING: DO NOT SHARE THIS CODE — SINGLE-USE VERIFIED ARENA TICKET", 75, 90.2, { align: "center" });
+
+        // Right Tear-Off Stub: Scannable Gaming QR Code
+        doc.setTextColor(rgb.cyan[0], rgb.cyan[1], rgb.cyan[2]);
+        doc.setFontSize(8);
+        doc.text("SCAN TO VERIFY", 176, 18, { align: "center" });
+
+        doc.setFillColor(255, 255, 255);
+        doc.setDrawColor(accentRgb[0], accentRgb[1], accentRgb[2]);
+        doc.setLineWidth(0.8);
+        doc.roundedRect(156, 22, 40, 40, 3, 3, "FD");
+        if (qrData) {
+          doc.addImage(qrData, "PNG", 158, 24, 36, 36);
+        }
+
+        doc.setTextColor(0, 255, 127);
+        doc.setFontSize(8.5);
+        doc.text(`STATUS: ${String(t.status || "ACTIVE").toUpperCase()}`, 176, 70, { align: "center" });
+        doc.setTextColor(165, 165, 185);
+        doc.setFontSize(6.5);
+        doc.text(formatIST(t.created_at), 176, 76, { align: "center" });
+        doc.text("POWERED BY QUVA", 176, 91, { align: "center" });
+
+        doc.save(`Tournyx_Arena_Ticket_${String(t.ticket_code).replace(/[^A-Z0-9_-]/gi, "")}.pdf`);
+        showToast("Printable Esports Movie Ticket PDF downloaded!");
+      }
+
       async function verifyUniqueTicketCode() {
         doHaptic();
         const code = document.getElementById("verifyCodeInp").value.trim().toUpperCase();
         const box = document.getElementById("verifyCodeResult");
-        if (!code) { showToast("Enter a TX ticket code to inspect.", true); return; }
+        if (!code) { showToast("Enter a TX ticket code to verify.", true); return; }
 
         box.classList.remove("hidden");
-        box.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-[#00F2FF] mr-1"></i> Querying Tournyx Ledger...`;
+        box.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-[#00F2FF] mr-1"></i> Querying Tournyx Database...`;
 
         try {
-          const { data } = await supabaseClient
+          const { data } = await dbClient
             .from("tickets_vault")
             .select("ticket_code, game, tier, status, created_at")
             .eq("ticket_code", code)
@@ -1490,20 +2173,20 @@
             </div>
           `;
         } catch (err) {
-          box.innerHTML = `<span class="text-red-400">Verification service unavailable.</span>`;
+          box.innerHTML = `<span class="text-red-400">Verification service temporarily busy.</span>`;
         }
       }
 
       // ============================================================================
-      // 4. EXCLUSIVE PARTNER BRAND VOUCHERS VAULT
+      // 4. PARTNER BRAND VOUCHERS VAULT
       // ============================================================================
       function renderPartnerVouchers() {
         const box = document.getElementById("partnerVouchersList");
         if (!partnerVouchers.length) {
           box.innerHTML = `
             <div class="p-4 rounded-xl bg-[#08080F] border border-dashed border-[#FFD700]/25 text-center space-y-1.5">
-              <p class="font-headline text-xs font-bold text-white">Unlock Partner Brand Vouchers</p>
-              <p class="font-body text-[11px] text-[#9C9AB0]">Buy <strong>10+</strong>, <strong>20+</strong>, or <strong>50+ Passes</strong> in one checkout to instantly receive exclusive sponsor discount codes!</p>
+              <p class="font-display text-xs font-bold text-white">Unlock Exclusive Brand Perks</p>
+              <p class="font-body text-[11px] text-[#9C9AB0]">Buy <strong>10+</strong>, <strong>20+</strong>, or <strong>50+ Passes</strong> in one order to automatically unlock sponsor brand vouchers!</p>
             </div>
           `;
           return;
@@ -1519,7 +2202,7 @@
               <div class="flex items-center justify-between gap-2">
                 <div class="min-w-0">
                   <span class="font-mono text-[9px] font-bold text-[#FFD700] uppercase block">${brand}</span>
-                  <span class="font-headline text-xs font-bold text-white truncate block">${offer}</span>
+                  <span class="font-display text-xs font-bold text-white truncate block">${offer}</span>
                 </div>
                 ${url ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1 rounded-lg bg-[#FFD700] text-[#050508] font-mono text-[9.5px] font-black uppercase flex-shrink-0">Redeem ↗</a>` : ""}
               </div>
@@ -1545,14 +2228,49 @@
       }
 
       // ============================================================================
-      // 5. BUY PASS CHECKOUT, COUPON MATH, BULK LADDER & PRIVATE RAZORPAY FLOW
+      // 5. CHECKOUT BILL ENGINE, FIRST-TIME AUTO-COUPON & TOURNYX SECURE PAY
       // ============================================================================
+      function isFirstTimePassBuyer() {
+        const pastPassOrders = paidOrdersHistory.filter((o) => String(o.order_type || "PASS") === "PASS").length;
+        return pastPassOrders === 0 && vaultTickets.length === 0;
+      }
+
+      function autoFillFirstTimeCoupon() {
+        const input = document.getElementById("couponCodeInput");
+        const badge = document.getElementById("firstTimeCouponBadge");
+        const msgEl = document.getElementById("couponStatusMsg");
+
+        if (!isFirstTimePassBuyer() || !activeCouponsList.length) {
+          badge.classList.add("hidden");
+          return;
+        }
+
+        // Pick best matching active coupon for this game (or global)
+        const qty = parseInt(document.getElementById("passQtyInput").value, 10) || 10;
+        const match =
+          activeCouponsList.find((c) => selectedCheckoutGame.toLowerCase().includes(String(c.game_scope || "").toLowerCase()) && qty >= safeNum(c.min_passes, 1)) ||
+          activeCouponsList.find((c) => String(c.game_scope || "ALL").toUpperCase() === "ALL" && qty >= safeNum(c.min_passes, 1));
+
+        if (match) {
+          input.value = match.code;
+          appliedCouponObj = match;
+          badge.classList.remove("hidden");
+          msgEl.classList.remove("hidden");
+          msgEl.className = "font-mono text-[10px] text-[#00FF7F] font-bold";
+          msgEl.innerText = `✓ Welcome Offer ${match.code} auto-applied for your first pass purchase!`;
+        } else {
+          badge.classList.add("hidden");
+        }
+      }
+
       function openBuyPassModal() {
         if (isGuest) { openModal("loginPromptModal"); return; }
         appliedCouponObj = null;
         document.getElementById("couponCodeInput").value = "";
         document.getElementById("couponStatusMsg").classList.add("hidden");
-        renderAvailableCouponsTray();
+        document.getElementById("firstTimeCouponBadge").classList.add("hidden");
+        updateDailyLimitDisplays();
+        autoFillFirstTimeCoupon();
         recalculateCheckoutBill();
         openModal("buyPassModal");
       }
@@ -1561,6 +2279,7 @@
         if (isGuest) { openModal("loginPromptModal"); return; }
         const bal = safeNum(currentUser.earnings ?? currentUser.rupees, 0);
         document.getElementById("creditsCountModal").innerText = `₹${bal.toLocaleString()}`;
+        updateDailyLimitDisplays();
         openModal("creditsModal");
       }
 
@@ -1569,13 +2288,14 @@
         selectedCheckoutGame = game;
         document.querySelectorAll(".game-tile").forEach((t) => t.classList.remove("active"));
         el.classList.add("active");
-        // Revalidate applied coupon against newly selected game
-        if (appliedCouponObj && appliedCouponObj.game_scope !== "ALL" && !game.toLowerCase().includes(appliedCouponObj.game_scope.toLowerCase())) {
+
+        if (appliedCouponObj && String(appliedCouponObj.game_scope || "ALL").toUpperCase() !== "ALL" && !game.toLowerCase().includes(String(appliedCouponObj.game_scope).toLowerCase())) {
           appliedCouponObj = null;
+          document.getElementById("couponCodeInput").value = "";
           document.getElementById("couponStatusMsg").classList.add("hidden");
-          showToast(`Coupon removed (not valid for ${game}).`, true);
+          document.getElementById("firstTimeCouponBadge").classList.add("hidden");
+          if (isFirstTimePassBuyer()) autoFillFirstTimeCoupon();
         }
-        renderAvailableCouponsTray();
         recalculateCheckoutBill();
       }
 
@@ -1585,33 +2305,12 @@
         recalculateCheckoutBill();
       }
 
-      function renderAvailableCouponsTray() {
-        const tray = document.getElementById("availableCouponsTray");
-        if (!tray) return;
-        const matching = activeCouponsList.filter((c) => {
-          const scope = String(c.game_scope || "ALL").toLowerCase();
-          return scope === "all" || selectedCheckoutGame.toLowerCase().includes(scope);
-        });
-        if (!matching.length) { tray.innerHTML = ""; return; }
-
-        tray.innerHTML = matching.map((c) => `
-          <button onclick="quickApplyCoupon('${escapeHtml(c.code)}')" type="button"
-            class="px-2.5 py-1 rounded-lg bg-[#8B5CF6]/15 hover:bg-[#8B5CF6]/30 border border-dashed border-[#8B5CF6]/50 font-mono text-[10px] font-bold text-[#C4B5FD] flex-shrink-0 transition-colors">
-            <i class="fa-solid fa-tag mr-1 text-[#D4FF00]"></i>${escapeHtml(c.code)}
-          </button>
-        `).join("");
-      }
-
-      function quickApplyCoupon(code) {
-        document.getElementById("couponCodeInput").value = code;
-        applyCheckoutCoupon();
-      }
-
       function applyCheckoutCoupon() {
         doHaptic();
         const code = document.getElementById("couponCodeInput").value.trim().toUpperCase();
         const msgEl = document.getElementById("couponStatusMsg");
         const qty = parseInt(document.getElementById("passQtyInput").value, 10) || 0;
+        document.getElementById("firstTimeCouponBadge").classList.add("hidden");
 
         if (!code) { appliedCouponObj = null; msgEl.classList.add("hidden"); recalculateCheckoutBill(); return; }
 
@@ -1620,7 +2319,7 @@
         if (!found) {
           appliedCouponObj = null;
           msgEl.className = "font-mono text-[10px] text-red-400";
-          msgEl.innerText = "✗ Invalid or expired coupon code.";
+          msgEl.innerText = "✗ Invalid or expired promo code.";
           recalculateCheckoutBill();
           return;
         }
@@ -1635,40 +2334,69 @@
         if (qty < safeNum(found.min_passes, 1)) {
           appliedCouponObj = null;
           msgEl.className = "font-mono text-[10px] text-[#FF9900]";
-          msgEl.innerText = `⚠ Add at least ${found.min_passes} passes to unlock ${found.code}.`;
+          msgEl.innerText = `⚠ Minimum ${found.min_passes} passes required for ${found.code}.`;
           recalculateCheckoutBill();
           return;
         }
 
         appliedCouponObj = found;
         msgEl.className = "font-mono text-[10px] text-[#00FF7F] font-bold";
-        msgEl.innerText = `✓ Coupon ${found.code} applied! (Verified server-side at checkout)`;
+        msgEl.innerText = `✓ Promo code ${found.code} applied!`;
         recalculateCheckoutBill();
       }
 
-      // Exact Swiggy/Zomato-Style Bill Preview (Mirrored 1:1 in Supabase Edge Function!)
+      // Fair Tiered Gateway Fee Logic (Mirrored 1:1 on Server — Covers 100+ & 2000 Passes Too!)
+      function computeSmartGatewayFee(qty, netAfterDiscount, isVip, completedOrderCount) {
+        if (qty <= 0) return { fee: 0, label: "Payment Handling & Security Fee", tag: "" };
+        // First 5 orders get a special reduced 1.5% rate (min ₹2)
+        if (completedOrderCount < 5) {
+          const f = Math.max(2.0, Number((netAfterDiscount * 0.015).toFixed(2)));
+          return { fee: f, label: "Handling Fee (First-5 Order Rate)", tag: "1.5%" };
+        }
+        if (isVip) {
+          const f = Number((netAfterDiscount * 0.02).toFixed(2));
+          return { fee: f, label: "Handling Fee (VIP 2% Rate)", tag: "2.0%" };
+        }
+        if (qty <= 4) {
+          return { fee: 2.0, label: "Payment Handling & Security Fee", tag: "FLAT ₹2" };
+        }
+        if (qty <= 19) {
+          return { fee: Number((netAfterDiscount * 0.025).toFixed(2)), label: "Payment Handling & Security Fee", tag: "2.5%" };
+        }
+        if (qty <= 99) {
+          return { fee: Number((netAfterDiscount * 0.0225).toFixed(2)), label: "Handling Fee (Bulk Discounted)", tag: "2.25%" };
+        }
+        // 100 to 2000 passes: guaranteed 2.0% Pro Bulk rate so fee is never skipped on large orders
+        return { fee: Number((netAfterDiscount * 0.02).toFixed(2)), label: "Handling Fee (Pro Bulk 2% Rate)", tag: "2.0%" };
+      }
+
       function recalculateCheckoutBill() {
-        const qty = Math.max(0, Math.min(500, parseInt(document.getElementById("passQtyInput").value, 10) || 0));
+        const inputEl = document.getElementById("passQtyInput");
+        let qty = Math.max(0, parseInt(inputEl.value, 10) || 0);
+        if (qty > MAX_DAILY_PASSES) {
+          qty = MAX_DAILY_PASSES;
+          inputEl.value = MAX_DAILY_PASSES;
+          showToast("Maximum 2,000 passes (₹20,000) allowed per day.", true);
+        }
+
         const baseAmt = qty * TICKET_PRICE;
         const isVip = String(currentUser.is_premium).toLowerCase() === "true";
 
-        // Bulk Bonus Ladder
         let bulkBonus = 0;
         let perkLabel = "No Bulk Perk Yet";
         let hintText = `Buy ${Math.max(1, 10 - qty)} more pass(es) to unlock +1 Free Pass & Silver Brand Voucher!`;
         if (qty >= 50) {
-          bulkBonus = 8; perkLabel = "ELITE BUNDLE (+8 FREE)"; hintText = "Maximum tier reached: +8 Free Passes, ₹0 Fee & Elite Partner Bundle!";
+          bulkBonus = 8; perkLabel = "ELITE BUNDLE (+8 FREE)"; hintText = "Max Tier Unlocked: +8 Free Passes & Elite Partner Bundle!";
         } else if (qty >= 20) {
-          bulkBonus = 3; perkLabel = "GOLD PERK (+3 FREE • ₹0 FEE)"; hintText = `Add ${50 - qty} more passes for +8 Free Passes & Elite Partner Bundle!`;
+          bulkBonus = 3; perkLabel = "GOLD PERK (+3 FREE)"; hintText = `Add ${50 - qty} more passes for +8 Free Passes & Elite Partner Bundle!`;
         } else if (qty >= 10) {
-          bulkBonus = 1; perkLabel = "SILVER PERK (+1 FREE)"; hintText = `Add ${20 - qty} more passes for +3 Free Passes, ₹0 Fee & Gold Brand Voucher!`;
+          bulkBonus = 1; perkLabel = "SILVER PERK (+1 FREE)"; hintText = `Add ${20 - qty} more passes for +3 Free Passes & Gold Brand Voucher!`;
         }
 
         document.getElementById("bulkPerkBadge").innerText = perkLabel;
         document.getElementById("bulkNextHint").innerText = hintText;
         document.getElementById("bulkProgressBar").style.width = `${Math.min(100, (qty / 50) * 100)}%`;
 
-        // Coupon Savings
         let discountInr = 0;
         let couponBonusPasses = 0;
         if (appliedCouponObj && qty >= safeNum(appliedCouponObj.min_passes, 1)) {
@@ -1685,11 +2413,8 @@
         discountInr = Math.max(0, Number(discountInr.toFixed(2)));
         const netAfterDiscount = Math.max(10, baseAmt - discountInr);
 
-        // Swiggy/Zomato Style Fair Gateway Fee
-        let rawFee = qty === 0 ? 0 : (qty <= 4 ? 2.0 : Number((netAfterDiscount * 0.025).toFixed(2)));
-        const feeWaived = qty >= 20 || isVip;
-        const actualFee = feeWaived ? 0 : rawFee;
-        const grandTotal = qty === 0 ? 0 : Number((netAfterDiscount + actualFee).toFixed(2));
+        const feeInfo = computeSmartGatewayFee(qty, netAfterDiscount, isVip, paidOrdersHistory.length);
+        const grandTotal = qty === 0 ? 0 : Number((netAfterDiscount + feeInfo.fee).toFixed(2));
         const totalBonus = bulkBonus + couponBonusPasses;
 
         document.getElementById("billQtyLbl").innerText = qty;
@@ -1698,42 +2423,57 @@
         document.getElementById("billBonusVal").innerText = `+${totalBonus} TX FREE`;
 
         document.getElementById("billDiscountRow").classList.toggle("hidden", discountInr <= 0);
-        if (discountInr > 0) {
+        if (discountInr > 0 && appliedCouponObj) {
           document.getElementById("billCouponName").innerText = appliedCouponObj.code;
           document.getElementById("billDiscountVal").innerText = `-₹${discountInr.toFixed(2)}`;
         }
 
-        document.getElementById("billFeeVal").innerHTML = feeWaived && qty > 0
-          ? `<span class="line-through text-[#67657E] mr-1">₹${rawFee.toFixed(2)}</span><span class="text-[#00FF7F] font-bold">FREE</span>`
-          : `₹${actualFee.toFixed(2)}`;
+        document.getElementById("billFeeLabel").innerText = feeInfo.label;
+        document.getElementById("billFeeVal").innerText = `₹${feeInfo.fee.toFixed(2)}`;
         document.getElementById("billGrandTotal").innerText = `₹${grandTotal.toFixed(2)}`;
       }
 
-      // SECURE PRIVATE RAZORPAY FLOW VIA SUPABASE EDGE FUNCTION
-      async function initiateSecureRazorpay(orderType) {
+      // SECURE PAYMENT WORKFLOW (ZERO BRAND LEAKS — 100% SERVER SIGNED)
+      async function initiateSecurePayment(orderType) {
         doHaptic();
         if (isGuest) { openModal("loginPromptModal"); return; }
-        if (!isSupabaseReady || !supabaseClient) { showToast("Payment gateway initializing...", true); return; }
+        if (!isDbReady || !dbClient) { showToast("Tournyx Payment Engine initializing...", true); return; }
 
+        const remainingInr = Math.max(0, MAX_DAILY_INR - spentLast24hInr);
         let payload = { action: "create_order", email: currentUser.email, order_type: orderType };
+
         if (orderType === "PASS") {
           const qty = parseInt(document.getElementById("passQtyInput").value, 10) || 0;
-          if (qty < 1 || qty > 500) { showToast("Enter between 1 and 500 passes.", true); return; }
+          if (qty < 1 || qty > MAX_DAILY_PASSES) {
+            showToast("Enter between 1 and 2,000 passes (₹20,000 daily max).", true);
+            return;
+          }
+          if (qty * TICKET_PRICE > remainingInr) {
+            showToast(`24h limit reached! You can buy up to ${Math.floor(remainingInr / TICKET_PRICE)} more pass(es) today.`, true);
+            return;
+          }
           payload.game = selectedCheckoutGame;
           payload.quantity = qty;
           payload.coupon_code = appliedCouponObj ? appliedCouponObj.code : "";
           closeModal("buyPassModal");
         } else {
           const amt = parseInt(document.getElementById("addCreditInput").value, 10) || 0;
-          if (amt < 100 || amt > 20000) { showToast("Organizer credit must be between ₹100 and ₹20,000.", true); return; }
+          if (amt < 100 || amt > MAX_DAILY_INR) {
+            showToast("Online organizer top-up must be between ₹100 and ₹20,000. Contact Enterprise Support for >₹1 Lakh.", true);
+            return;
+          }
+          if (amt > remainingInr) {
+            showToast(`24h wallet cap reached! Remaining online limit today: ₹${remainingInr.toLocaleString()}.`, true);
+            return;
+          }
           payload.credit_amount = amt;
           closeModal("creditsModal");
         }
 
-        setVerifyOverlay(true, "CREATING ENCRYPTED ORDER...", "Calculating verified pricing & signing Razorpay order");
+        setVerifyOverlay(true, "INITIALIZING TOURNYX SECURE PAY", "Encrypting order & verifying daily cap...", 1);
 
         try {
-          const { data: orderRes, error: orderErr } = await supabaseClient.functions.invoke("tournyx-payment-gateway", { body: payload });
+          const { data: orderRes, error: orderErr } = await dbClient.functions.invoke("tournyx-payment-gateway", { body: payload });
           setVerifyOverlay(false);
 
           if (orderErr || !orderRes?.ok) {
@@ -1742,7 +2482,7 @@
           }
 
           if (typeof window.Razorpay === "undefined") {
-            showPaymentOutcome(false, "Razorpay checkout SDK failed to load. Disable ad-blockers and retry.");
+            showPaymentOutcome(false, "Secure checkout module blocked by browser extension. Please allow payment scripts and retry.");
             return;
           }
 
@@ -1753,65 +2493,69 @@
             order_id: orderRes.order_id,
             name: "Tournyx Esports",
             description: orderRes.description || "Tournyx Digital Pass Order",
-            image: "https://tournyx.in/favicon.png",
+            image: TOURNYX_LOGO_URL,
             prefill: {
               name: currentUser.username || currentUser.ign || "Player",
               email: currentUser.email,
               contact: currentUser.phone ? String(currentUser.phone) : ""
             },
             theme: { color: getComputedStyle(document.documentElement).getPropertyValue("--accent-volt").trim() || "#D4FF00" },
-            handler: async function(rzpResponse) {
-              await finalizeAndVerifyPayment(rzpResponse);
+            handler: async function(payResp) {
+              await finalizeAndVerifyPayment(payResp);
             },
             modal: {
               ondismiss: function() {
-                showToast("Checkout dismissed. No money was deducted.", true);
+                showToast("Payment cancelled. No amount was deducted.", true);
               }
             }
           };
 
-          const rzp = new window.Razorpay(options);
-          rzp.on("payment.failed", (resp) => {
+          const checkout = new window.Razorpay(options);
+          checkout.on("payment.failed", (resp) => {
             showPaymentOutcome(false, resp?.error?.description || "Payment declined by bank.");
           });
-          rzp.open();
+          checkout.open();
         } catch (err) {
           setVerifyOverlay(false);
-          showPaymentOutcome(false, "Network error connecting to Tournyx Payment Gateway.");
+          showPaymentOutcome(false, "Network error connecting to Tournyx Payment Engine.");
         }
       }
 
-      async function finalizeAndVerifyPayment(rzpResponse) {
-        setVerifyOverlay(true, "VERIFYING CRYPTOGRAPHIC SIGNATURE...", "Minting unique pass codes & unlocking brand rewards");
+      async function finalizeAndVerifyPayment(payResp) {
+        setVerifyOverlay(true, "AUTHENTICATING SIGNATURE", "Validating encrypted bank confirmation...", 2);
         try {
-          const { data: verRes, error: verErr } = await supabaseClient.functions.invoke("tournyx-payment-gateway", {
+          const { data: verRes, error: verErr } = await dbClient.functions.invoke("tournyx-payment-gateway", {
             body: {
               action: "verify_payment",
               email: currentUser.email,
-              razorpay_order_id: rzpResponse.razorpay_order_id,
-              razorpay_payment_id: rzpResponse.razorpay_payment_id,
-              razorpay_signature: rzpResponse.razorpay_signature
+              razorpay_order_id: payResp.razorpay_order_id,
+              razorpay_payment_id: payResp.razorpay_payment_id,
+              razorpay_signature: payResp.razorpay_signature
             }
           });
-          setVerifyOverlay(false);
 
           if (verErr || !verRes?.ok) {
-            showPaymentOutcome(false, verRes?.error || "Signature verification pending. If debited, our webhook will auto-credit within 60 seconds.");
+            setVerifyOverlay(false);
+            showPaymentOutcome(false, verRes?.error || "Confirmation pending. If debited, our auto-sync will credit your passes within 60 seconds.");
             return;
           }
 
+          setVerifyOverlay(true, "MINTING ARENA PASSES", "Writing unique QR passes to Tournyx Vault...", 3);
           await syncAllWalletData(false);
-          showPaymentOutcome(true, verRes.message || "Payment verified! Passes added to your vault.", verRes.partner_voucher || null);
+          setTimeout(() => {
+            setVerifyOverlay(false);
+            showPaymentOutcome(true, verRes.message || "Payment verified! Passes added to your vault.", verRes.partner_voucher || null);
+          }, 450);
         } catch (err) {
           setVerifyOverlay(false);
-          showPaymentOutcome(false, "Network interrupted during confirmation. If charged, our Razorpay webhook will auto-credit your passes.");
+          showPaymentOutcome(false, "Network interrupted during confirmation. If debited, auto-recovery will credit your passes shortly.");
         }
       }
 
       function showPaymentOutcome(isSuccess, msg, partnerVoucher = null) {
         const wrap = document.getElementById("payStatusIconWrap");
         const icon = document.getElementById("payStatusIcon");
-        document.getElementById("payStatusTitle").innerText = isSuccess ? "Payment Verified!" : "Payment Not Completed";
+        document.getElementById("payStatusTitle").innerText = isSuccess ? "Passes Unlocked!" : "Payment Not Completed";
         document.getElementById("payStatusMsg").innerText = msg;
 
         if (isSuccess) {
@@ -1822,6 +2566,22 @@
           icon.className = "fa-solid fa-circle-xmark";
         }
 
+        // Show preview of freshly minted pass code
+        const previewBox = document.getElementById("payMintedPreview");
+        if (isSuccess && vaultTickets.length > 0) {
+          const newest = vaultTickets[0];
+          previewBox.innerHTML = `
+            <span class="font-mono text-[9px] text-[#00F2FF] uppercase block">LATEST MINTED PASS CODE</span>
+            <div class="flex items-center justify-between gap-2">
+              <code class="font-mono text-xs font-black text-[#D4FF00]">${escapeHtml(newest.ticket_code)}</code>
+              <button onclick="closeModal('paymentStatusModal'); openMovieTicketModal('${escapeHtml(newest.ticket_code)}');" type="button" class="px-2.5 py-1 rounded-lg bg-[#00F2FF]/15 text-[#00F2FF] font-mono text-[9.5px] font-bold uppercase">Open Ticket</button>
+            </div>
+          `;
+          previewBox.classList.remove("hidden");
+        } else {
+          previewBox.classList.add("hidden");
+        }
+
         const pBox = document.getElementById("payPartnerUnlockBox");
         if (isSuccess && partnerVoucher && partnerVoucher.voucher_code) {
           document.getElementById("payPartnerBrand").innerText = `${partnerVoucher.brand_name}: ${partnerVoucher.offer_title}`;
@@ -1830,11 +2590,13 @@
         } else {
           pBox.classList.add("hidden");
         }
+
         openModal("paymentStatusModal");
+        if (isSuccess) launchCelebrationConfetti();
       }
 
       // ============================================================================
-      // 6. LEDGER METRICS, TRANSACTIONS, RECEIPT MODAL & CRISP jsPDF EXPORT
+      // 6. LEDGER METRICS, TRANSACTIONS, RECEIPT MODAL & BRANDED PDF RECEIPTS
       // ============================================================================
       function updateLedgerMetrics() {
         let mIn = 0, mOut = 0, week = 0, month = 0;
@@ -1869,14 +2631,18 @@
         const amtLabel = isPts ? `${isCred ? "+" : "-"}${rawAmt} PTS` : (isOrg ? `${isCred ? "+" : "-"}₹${rawAmt.toLocaleString()}` : `${isCred ? "+" : "-"}${Math.max(1, Math.floor(rawAmt / TICKET_PRICE))} TX`);
         const status = escapeHtml(t.status || "Success");
 
+        const titleStr = String(t.title || "Tournyx Transaction");
+        const hasGameLogo = /bgmi|free fire|cod|valorant/i.test(titleStr);
+        const iconHtml = hasGameLogo
+          ? renderGameLogoBadge(getGameMeta(titleStr), "w-9 h-9")
+          : `<div class="w-9 h-9 rounded-xl ${isCred ? "bg-[#00FF7F]/12 text-[#00FF7F] border-[#00FF7F]/30" : "bg-red-500/12 text-red-400 border-red-500/30"} border flex items-center justify-center flex-shrink-0"><i class="fa-solid ${isCred ? "fa-arrow-down" : "fa-arrow-up"} text-xs"></i></div>`;
+
         return `
           <div onclick="openTxnReceipt(${idx})" class="p-3 rounded-xl bg-[#08080F] hover:bg-[#12121E] border border-white/[0.06] flex items-center justify-between gap-3 cursor-pointer transition-colors">
             <div class="flex items-center gap-3 min-w-0">
-              <div class="w-9 h-9 rounded-xl ${isCred ? "bg-[#00FF7F]/12 text-[#00FF7F] border-[#00FF7F]/30" : "bg-red-500/12 text-red-400 border-red-500/30"} border flex items-center justify-center flex-shrink-0">
-                <i class="fa-solid ${isCred ? "fa-arrow-down" : "fa-arrow-up"} text-xs"></i>
-              </div>
+              ${iconHtml}
               <div class="min-w-0">
-                <div class="font-headline text-xs font-bold text-white truncate">${escapeHtml(t.title || "Tournyx Transaction")}</div>
+                <div class="font-display text-xs font-bold text-white truncate">${escapeHtml(titleStr)}</div>
                 <div class="font-mono text-[10px] text-[#8E8CA6] truncate">${escapeHtml(t.category || "Ledger")} • ${formatIST(t.created_at || t.date)}</div>
               </div>
             </div>
@@ -1905,7 +2671,7 @@
           box.innerHTML = `
             <div class="p-6 rounded-xl bg-[#08080F] border border-dashed border-white/10 text-center space-y-2">
               <i class="fa-solid fa-receipt text-2xl text-[#56546E]"></i>
-              <p class="font-headline text-xs font-bold text-white">No Transactions Yet</p>
+              <p class="font-display text-xs font-bold text-white">No Transactions Yet</p>
               <a href="explore.html" class="inline-block px-3.5 py-1.5 rounded-full bg-white/[0.06] text-[#00F2FF] font-mono text-[10px] font-bold uppercase">Browse Active Matches →</a>
             </div>
           `;
@@ -1923,21 +2689,6 @@
         openModal("ledgerModal");
       }
 
-      function openTicketReceipt(code) {
-        const t = vaultTickets.find((x) => x.ticket_code === code);
-        if (!t) return;
-        activeReceiptObj = {
-          id: t.ticket_code,
-          title: `${t.game} Tournament Pass`,
-          amountText: "1 VERIFIED PASS",
-          status: t.status || "ACTIVE",
-          category: `${t.tier || "STANDARD"} VAULT`,
-          date: formatIST(t.created_at),
-          isQr: true
-        };
-        populateReceiptModal(activeReceiptObj);
-      }
-
       function openTxnReceipt(idx) {
         const t = transactionsData[idx];
         if (!t) return;
@@ -1949,110 +2700,129 @@
           amountText: `${isCred ? "+" : "-"}₹${rawAmt.toLocaleString()}`,
           status: t.status || "SUCCESS",
           category: t.category || "Wallet Ledger",
-          date: formatIST(t.created_at || t.date),
-          isQr: false
+          date: formatIST(t.created_at || t.date)
         };
-        populateReceiptModal(activeReceiptObj);
-      }
-
-      function populateReceiptModal(r) {
-        document.getElementById("rcptAmt").innerText = r.amountText;
-        document.getElementById("rcptTitle").innerText = r.title;
-        document.getElementById("rcptStatusVal").innerText = String(r.status).toUpperCase();
-        document.getElementById("rcptCat").innerText = r.category;
-        document.getElementById("rcptDate").innerText = r.date;
-        document.getElementById("rcptId").innerText = r.id;
-
-        const qrWrap = document.getElementById("rcptQrWrap");
-        if (r.isQr) {
-          document.getElementById("rcptQrImg").src = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(r.id)}`;
-          qrWrap.classList.remove("hidden");
-        } else {
-          qrWrap.classList.add("hidden");
-        }
+        document.getElementById("rcptAmt").innerText = activeReceiptObj.amountText;
+        document.getElementById("rcptTitle").innerText = activeReceiptObj.title;
+        document.getElementById("rcptStatusVal").innerText = String(activeReceiptObj.status).toUpperCase();
+        document.getElementById("rcptCat").innerText = activeReceiptObj.category;
+        document.getElementById("rcptDate").innerText = activeReceiptObj.date;
+        document.getElementById("rcptId").innerText = activeReceiptObj.id;
         openModal("receiptModal");
       }
 
       function contactWhatsAppSupport() {
         const r = activeReceiptObj || { id: "N/A", title: "Wallet Query", amountText: "N/A", status: "N/A" };
-        const msg = `Hello Tournyx Support,\nI need help with my transaction/pass.\n\n*Reference ID:* ${r.id}\n*Details:* ${r.title}\n*Amount:* ${r.amountText}\n*Status:* ${r.status}`;
+        const msg = `Hello Tournyx Support,\nI need help with my transaction.\n\n*Reference ID:* ${r.id}\n*Details:* ${r.title}\n*Amount:* ${r.amountText}\n*Status:* ${r.status}`;
         window.open(`https://wa.me/918608159825?text=${encodeURIComponent(msg)}`, "_blank", "noopener,noreferrer");
       }
 
-      function exportSingleReceiptPDF() {
+      // PROFESSIONAL BRANDED PDF RECEIPT (WITH TOURNYX LOGO & ACTIVE THEME COLORS)
+      async function exportSingleReceiptPDF() {
         doHaptic();
         if (!window.jspdf?.jsPDF || !activeReceiptObj) return;
+        showToast("Building Official Branded PDF Receipt...");
+        const rgb = getActiveThemeRgb();
+        const logoData = await loadImageAsDataURL(TOURNYX_LOGO_URL);
+
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF({ unit: "mm", format: "a5" });
-        doc.setFillColor(7, 7, 12); doc.rect(0, 0, 148, 210, "F");
-        doc.setDrawColor(212, 255, 0); doc.setLineWidth(0.7); doc.rect(7, 7, 134, 196);
-        doc.setTextColor(212, 255, 0); doc.setFont("helvetica", "bold"); doc.setFontSize(18);
-        doc.text("TOURNYX ESPORTS", 15, 22);
-        doc.setTextColor(0, 242, 255); doc.setFontSize(9);
-        doc.text("OFFICIAL VERIFIED PASS & PAYMENT RECEIPT", 15, 29);
+        doc.setFillColor(7, 7, 13); doc.rect(0, 0, 148, 210, "F");
+        doc.setFillColor(rgb.volt[0], rgb.volt[1], rgb.volt[2]); doc.rect(0, 0, 148, 3, "F");
+        doc.setDrawColor(rgb.cyan[0], rgb.cyan[1], rgb.cyan[2]); doc.setLineWidth(0.5); doc.roundedRect(7, 8, 134, 194, 4, 4);
 
-        doc.setTextColor(255, 255, 255); doc.setFontSize(14);
-        doc.text(String(activeReceiptObj.title), 15, 48);
-        doc.setTextColor(0, 255, 127); doc.setFontSize(20);
-        doc.text(String(activeReceiptObj.amountText), 15, 60);
+        // Header Banner with Tournyx Logo
+        doc.setFillColor(16, 16, 28); doc.roundedRect(11, 13, 126, 26, 3, 3, "F");
+        if (logoData) {
+          doc.addImage(logoData, "PNG", 16, 18, 15, 15);
+        }
+        doc.setTextColor(rgb.volt[0], rgb.volt[1], rgb.volt[2]);
+        doc.setFont("helvetica", "bold"); doc.setFontSize(16);
+        doc.text("TOURNYX ESPORTS", 35, 25);
+        doc.setTextColor(rgb.cyan[0], rgb.cyan[1], rgb.cyan[2]);
+        doc.setFontSize(7.5);
+        doc.text("OFFICIAL VERIFIED PAYMENT RECEIPT", 35, 31);
+
+        // Amount Highlight
+        doc.setTextColor(255, 255, 255); doc.setFontSize(13);
+        doc.text(String(activeReceiptObj.title).slice(0, 38), 15, 52);
+        doc.setTextColor(0, 255, 127); doc.setFontSize(22);
+        doc.text(String(activeReceiptObj.amountText), 15, 64);
 
         const rows = [
-          ["Reference / Pass ID", String(activeReceiptObj.id)],
-          ["Account", String(currentUser.email || "Player")],
+          ["Reference ID", String(activeReceiptObj.id)],
+          ["Player Name", String(currentUser.username || "Player")],
+          ["In-Game Name", String(currentUser.ign || "N/A")],
+          ["Account Email", String(currentUser.email || "")],
           ["Category", String(activeReceiptObj.category)],
           ["Status", String(activeReceiptObj.status).toUpperCase()],
           ["Timestamp (IST)", String(activeReceiptObj.date)]
         ];
-        let y = 78;
+        let y = 80;
         rows.forEach(([k, v]) => {
-          doc.setTextColor(150, 150, 175); doc.setFontSize(9); doc.text(k, 15, y);
-          doc.setTextColor(255, 255, 255); doc.text(v.slice(0, 36), 133, y, { align: "right" });
-          doc.setDrawColor(35, 35, 52); doc.line(15, y + 4, 133, y + 4);
-          y += 14;
+          doc.setTextColor(145, 145, 170); doc.setFontSize(8.5); doc.text(k, 15, y);
+          doc.setTextColor(255, 255, 255); doc.text(v.slice(0, 34), 133, y, { align: "right" });
+          doc.setDrawColor(32, 32, 48); doc.line(15, y + 3.5, 133, y + 3.5);
+          y += 12.5;
         });
 
-        doc.setTextColor(130, 130, 155); doc.setFontSize(8);
-        doc.text("Digitally generated by Tournyx 256-bit Ticketing Engine • Powered by Quva", 74, 192, { align: "center" });
+        doc.setFillColor(16, 16, 26); doc.roundedRect(15, 176, 118, 16, 2, 2, "F");
+        doc.setTextColor(rgb.volt[0], rgb.volt[1], rgb.volt[2]); doc.setFontSize(8);
+        doc.text("DIGITALLY AUTHENTICATED BY TOURNYX DATABASE", 74, 183, { align: "center" });
+        doc.setTextColor(150, 150, 175); doc.setFontSize(7);
+        doc.text("© 2026 Tournyx Esports Pvt Ltd • Powered by Quva Technologies", 74, 189, { align: "center" });
+
         doc.save(`Tournyx_Receipt_${String(activeReceiptObj.id).replace(/[^A-Z0-9_-]/gi, "")}.pdf`);
-        showToast("Official PDF Receipt downloaded!");
+        showToast("Branded PDF Receipt downloaded!");
       }
 
-      function exportAllTransactionsPDF() {
+      async function exportAllTransactionsPDF() {
         doHaptic();
         if (isGuest) { openModal("loginPromptModal"); return; }
         if (!window.jspdf?.jsPDF) return;
+        showToast("Generating Branded Statement PDF...");
+        const rgb = getActiveThemeRgb();
+        const logoData = await loadImageAsDataURL(TOURNYX_LOGO_URL);
+
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF({ unit: "mm", format: "a4" });
-        doc.setFillColor(7, 7, 12); doc.rect(0, 0, 210, 297, "F");
-        doc.setTextColor(212, 255, 0); doc.setFont("helvetica", "bold"); doc.setFontSize(18);
-        doc.text("TOURNYX ESPORTS • STATEMENT LEDGER", 16, 22);
-        doc.setTextColor(0, 242, 255); doc.setFontSize(9);
-        doc.text(`Account: ${currentUser.email}  |  Generated: ${formatIST()}`, 16, 29);
+        doc.setFillColor(7, 7, 13); doc.rect(0, 0, 210, 297, "F");
+        doc.setFillColor(rgb.volt[0], rgb.volt[1], rgb.volt[2]); doc.rect(0, 0, 210, 3.5, "F");
 
-        let y = 44;
-        doc.setFillColor(20, 20, 32); doc.rect(14, y - 6, 182, 9, "F");
-        doc.setTextColor(212, 255, 0); doc.setFontSize(8.5);
-        doc.text("DATE (IST)", 16, y); doc.text("DESCRIPTION", 64, y); doc.text("STATUS", 142, y); doc.text("AMOUNT", 192, y, { align: "right" });
+        if (logoData) doc.addImage(logoData, "PNG", 15, 12, 14, 14);
+        doc.setTextColor(rgb.volt[0], rgb.volt[1], rgb.volt[2]);
+        doc.setFont("helvetica", "bold"); doc.setFontSize(17);
+        doc.text("TOURNYX ESPORTS • OFFICIAL STATEMENT LEDGER", 33, 20);
+        doc.setTextColor(rgb.cyan[0], rgb.cyan[1], rgb.cyan[2]); doc.setFontSize(8.5);
+        doc.text(`Account: ${currentUser.email}  |  IGN: ${currentUser.ign || "N/A"}  |  Generated: ${formatIST()}`, 33, 26);
+
+        let y = 42;
+        doc.setFillColor(20, 20, 34); doc.rect(14, y - 6, 182, 9, "F");
+        doc.setTextColor(rgb.volt[0], rgb.volt[1], rgb.volt[2]); doc.setFontSize(8.5);
+        doc.text("DATE (IST)", 16, y); doc.text("DESCRIPTION", 62, y); doc.text("STATUS", 142, y); doc.text("AMOUNT", 192, y, { align: "right" });
         y += 10;
 
         transactionsData.slice(0, 24).forEach((t) => {
           doc.setTextColor(175, 175, 195); doc.setFontSize(8);
           doc.text(formatIST(t.created_at || t.date).slice(0, 18), 16, y);
           doc.setTextColor(255, 255, 255);
-          doc.text(String(t.title || "Transaction").slice(0, 34), 64, y);
+          doc.text(String(t.title || "Transaction").slice(0, 36), 62, y);
           doc.setTextColor(0, 255, 127);
           doc.text(String(t.status || "SUCCESS").toUpperCase(), 142, y);
           doc.text(`INR ${Math.abs(safeNum(t.amount, 0))}`, 192, y, { align: "right" });
-          doc.setDrawColor(30, 30, 45); doc.line(14, y + 3, 196, y + 3);
+          doc.setDrawColor(30, 30, 46); doc.line(14, y + 3, 196, y + 3);
           y += 9.5;
         });
 
+        doc.setTextColor(135, 135, 160); doc.setFontSize(8);
+        doc.text("Digitally Verified by Tournyx Database • Powered by Quva Technologies", 105, 286, { align: "center" });
+
         doc.save(`Tournyx_Ledger_${String(currentUser.ign || "Player").replace(/[^A-Z0-9]/gi, "_")}.pdf`);
-        showToast("Full Statement Ledger PDF downloaded!");
+        showToast("Official Statement Ledger PDF downloaded!");
       }
 
       // ============================================================================
-      // 7. MENISCUS LIQUID-SOCKET BOTTOM NAV ENGINE (EXACT SPRING + DRAG PHYSICS)
+      // 7. MENISCUS LIQUID-SOCKET BOTTOM NAV ENGINE
       // ============================================================================
       function initMeniscusNav() {
         const dock = document.getElementById("meniscusDock");
@@ -2187,7 +2957,7 @@
         else window.addEventListener("resize", measureDock);
       }
 
-      // Backdrop click + Android Back Button modal handling
+      // Global Modal Backdrop, Hardware Back Button, & Tab Focus Sync
       document.addEventListener("click", (e) => {
         if (e.target.classList.contains("sheet-overlay") && e.target.id) closeModal(e.target.id);
       });
@@ -2202,19 +2972,20 @@
       Object.assign(window, {
         doHaptic, copyText, openModal, closeModal, hideToast, togglePrivacy,
         handleProtectedNav, handleProfileClick, syncAllWalletData,
-        setVaultFilter, verifyUniqueTicketCode, revealPartnerCode,
+        setVaultFilter, copyAllActiveCodes, openMovieTicketModal, downloadMovieTicketPDF,
+        verifyUniqueTicketCode, revealPartnerCode,
         openBuyPassModal, openCreditsModal, selectCheckoutGame, setPassQty,
-        quickApplyCoupon, applyCheckoutCoupon, recalculateCheckoutBill,
-        initiateSecureRazorpay, renderTransactions, openAllTxns,
-        openTicketReceipt, openTxnReceipt, contactWhatsAppSupport,
+        applyCheckoutCoupon, recalculateCheckoutBill, initiateSecurePayment,
+        renderTransactions, openAllTxns, openTxnReceipt, contactWhatsAppSupport,
         exportSingleReceiptPDF, exportAllTransactionsPDF
       });
 
       window.addEventListener("DOMContentLoaded", () => {
-        initSupabase();
+        initDatabaseEngine();
         applyGlobalAppearance();
         initGamerParticles();
         initMeniscusNav();
+        bindTicketTiltEffect();
         syncAllWalletData(false);
       });
     })();
