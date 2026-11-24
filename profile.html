@@ -390,11 +390,13 @@
     .tx-switch input:checked + .tx-slider { background-color: #FFD700; }
     .tx-switch input:checked + .tx-slider::before { transform: translateX(18px); background-color: #050508; }
 
-    /* FLOATING PILL-SHAPED MOBILE BOTTOM NAVIGATION */
-    .floating-nav-wrap {
+    /* =========================================================
+       MENISCUS LIQUID-SOCKET FLOATING BOTTOM NAVIGATION
+       ========================================================= */
+    .meniscus-nav-wrap {
       position: fixed;
-      left: 12px;
-      right: 12px;
+      left: 10px;
+      right: 10px;
       bottom: calc(12px + env(safe-area-inset-bottom, 0px));
       z-index: 50;
       display: flex;
@@ -402,72 +404,136 @@
       pointer-events: none;
     }
     @media (min-width: 1024px) {
-      .floating-nav-wrap { display: none !important; }
+      .meniscus-nav-wrap { display: none !important; }
     }
-    .floating-pill-nav {
+
+    .meniscus-dock {
       pointer-events: auto;
+      position: relative;
       width: 100%;
-      max-width: 440px;
+      max-width: 430px;
       height: 62px;
-      padding: 6px 10px;
-      border-radius: 9999px;
-      background: rgba(11, 11, 17, 0.92);
-      backdrop-filter: blur(22px);
-      -webkit-backdrop-filter: blur(22px);
-      border: 1px solid rgba(255, 255, 255, 0.10);
-      box-shadow: 0 14px 38px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 2px;
+      padding: 0 10px;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+      filter: drop-shadow(0 16px 34px rgba(0, 0, 0, 0.85));
     }
-    .pill-nav-link {
-      flex: 1;
-      height: 48px;
+
+    .meniscus-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Ambient Glow Halo Behind Floating Bead */
+    .meniscus-glow {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 58px;
+      height: 58px;
       border-radius: 9999px;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.42;
+      filter: blur(14px);
+      will-change: transform, background-color;
+      transition: background-color 0.28s ease;
+    }
+
+    /* Floating Interactive Orb / Bead */
+    .meniscus-bead {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 38px;
+      height: 38px;
+      border-radius: 9999px;
+      z-index: 3;
+      pointer-events: none;
+      will-change: transform, background-color, box-shadow;
+      box-shadow:
+        0 6px 18px rgba(0, 0, 0, 0.55),
+        inset 0 1.5px 2px rgba(255, 255, 255, 0.55),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.22);
+      transition: background-color 0.25s ease;
+    }
+
+    /* Even 7-Column Tab Grid */
+    .meniscus-tabs {
+      position: relative;
+      z-index: 4;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      width: 100%;
+      height: 100%;
+      align-items: center;
+    }
+
+    .meniscus-tab {
+      position: relative;
+      height: 100%;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 2px;
-      color: #8B89A1;
       text-decoration: none;
-      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      color: #8B89A1;
+      cursor: pointer;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
     }
-    .pill-nav-link .nav-ico { font-size: 16px; transition: transform 0.2s ease; }
-    .pill-nav-link .nav-lbl {
+
+    .meniscus-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate3d(-50%, -50%, 0) scale(1);
+      font-size: 16px;
+      line-height: 1;
+      color: #8B89A1;
+      will-change: transform, color;
+      transition:
+        transform 0.34s cubic-bezier(0.22, 1.25, 0.36, 1),
+        color 0.2s ease;
+      pointer-events: none;
+    }
+
+    .meniscus-tab.is-active .meniscus-icon {
+      transform: translate3d(-50%, calc(-50% - 34px), 0) scale(1.04);
+      color: #050508;
+    }
+
+    /* Label Appears Cleanly Underneath Active Carved Socket Only */
+    .meniscus-label {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translate3d(-50%, 5px, 0);
       font-family: 'JetBrains Mono', monospace;
       font-size: 8.5px;
-      font-weight: 700;
+      font-weight: 800;
       letter-spacing: 0.04em;
       text-transform: uppercase;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.22s ease, transform 0.26s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .pill-nav-link.active {
-      background: color-mix(in srgb, var(--accent-volt) 15%, transparent);
-      color: var(--accent-volt);
-      border: 1px solid color-mix(in srgb, var(--accent-volt) 35%, transparent);
-    }
-    .pill-nav-link.active .nav-ico { transform: translateY(-1px); }
-    .pill-fab-btn {
-      width: 46px;
-      height: 46px;
-      flex-shrink: 0;
-      border-radius: 9999px;
-      background: linear-gradient(135deg, var(--accent-volt), var(--accent-cyan));
-      color: #050508;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      font-weight: 900;
-      box-shadow: 0 6px 20px color-mix(in srgb, var(--accent-volt) 40%, transparent);
-      transition: transform 0.2s ease;
-      margin: 0 2px;
-    }
-    .pill-fab-btn:active { transform: scale(0.92); }
 
-    .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
-    .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
+    .meniscus-tab.is-active .meniscus-label {
+      opacity: 1;
+      transform: translate3d(-50%, 0, 0);
+      color: var(--tab-accent, var(--accent-volt));
+    }
+
+    /* Power Saving Mode Compatibility */
+    body.power-save .meniscus-dock { filter: none !important; }
+    body.power-save .meniscus-glow { display: none !important; }
   </style>
 </head>
 
@@ -1224,37 +1290,56 @@
   </div>
 
   <!-- =========================================================
-       6. FLOATING PILL-SHAPED MOBILE NAVIGATION
+       6. MENISCUS LIQUID-SOCKET FLOATING MOBILE NAVIGATION
        ========================================================= -->
-  <div id="bottomNavBar" class="floating-nav-wrap">
-    <nav class="floating-pill-nav" aria-label="Mobile Navigation">
-      <a href="index.html" class="pill-nav-link">
-        <i class="fa-solid fa-house nav-ico"></i>
-        <span class="nav-lbl">Home</span>
-      </a>
-      <a href="explore.html" class="pill-nav-link">
-        <i class="fa-solid fa-compass nav-ico"></i>
-        <span class="nav-lbl">Explore</span>
-      </a>
-      <a href="matches.html" class="pill-nav-link">
-        <i class="fa-solid fa-trophy nav-ico"></i>
-        <span class="nav-lbl">Matches</span>
-      </a>
-      <a href="tournament.html" onclick="doHaptic();" class="pill-fab-btn" title="Create Tournament">
-        <i class="fa-solid fa-plus"></i>
-      </a>
-      <a href="clans.html" class="pill-nav-link">
-        <i class="fa-solid fa-shield-halved nav-ico"></i>
-        <span class="nav-lbl">Clans</span>
-      </a>
-      <a href="tickets.html" class="pill-nav-link">
-        <i class="fa-solid fa-ticket nav-ico"></i>
-        <span class="nav-lbl">Tickets</span>
-      </a>
-      <a href="profile.html" class="pill-nav-link active" aria-current="page">
-        <i class="fa-solid fa-user nav-ico"></i>
-        <span class="nav-lbl">Profile</span>
-      </a>
+  <div id="bottomNavBar" class="meniscus-nav-wrap">
+    <nav id="meniscusDock" class="meniscus-dock" aria-label="Mobile Navigation">
+      <!-- Dynamic Parametric Liquid-Notch SVG Skin -->
+      <svg id="meniscusSvg" class="meniscus-svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="meniscusGlassGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#141422" stop-opacity="0.96"></stop>
+            <stop offset="100%" stop-color="#090910" stop-opacity="0.98"></stop>
+          </linearGradient>
+        </defs>
+        <path id="meniscusPath" fill="url(#meniscusGlassGrad)" stroke="rgba(255,255,255,0.13)" stroke-width="1"></path>
+      </svg>
+
+      <!-- Glowing Floating Orb + Ambient Halo -->
+      <div id="meniscusGlow" class="meniscus-glow" aria-hidden="true"></div>
+      <div id="meniscusBead" class="meniscus-bead" aria-hidden="true"></div>
+
+      <!-- Evenly Spaced Tournyx Tabs (Tap or Drag Bead Across) -->
+      <div class="meniscus-tabs" role="tablist">
+        <a href="index.html" class="meniscus-tab" data-page="index.html" data-accent="var(--accent-volt)" style="--tab-accent: var(--accent-volt);" aria-label="Home">
+          <i class="fa-solid fa-house meniscus-icon"></i>
+          <span class="meniscus-label">Home</span>
+        </a>
+        <a href="explore.html" class="meniscus-tab" data-page="explore.html" data-accent="var(--accent-cyan)" style="--tab-accent: var(--accent-cyan);" aria-label="Explore">
+          <i class="fa-solid fa-compass meniscus-icon"></i>
+          <span class="meniscus-label">Explore</span>
+        </a>
+        <a href="matches.html" class="meniscus-tab" data-page="matches.html" data-accent="#FF9900" style="--tab-accent: #FF9900;" aria-label="Matches">
+          <i class="fa-solid fa-trophy meniscus-icon"></i>
+          <span class="meniscus-label">Matches</span>
+        </a>
+        <a href="tournament.html" class="meniscus-tab" data-page="tournament.html" data-accent="#00FF7F" style="--tab-accent: #00FF7F;" aria-label="Host Event">
+          <i class="fa-solid fa-plus meniscus-icon"></i>
+          <span class="meniscus-label">Host</span>
+        </a>
+        <a href="clans.html" class="meniscus-tab" data-page="clans.html" data-accent="var(--accent-purple)" style="--tab-accent: var(--accent-purple);" aria-label="Clans">
+          <i class="fa-solid fa-shield-halved meniscus-icon"></i>
+          <span class="meniscus-label">Clans</span>
+        </a>
+        <a href="tickets.html" class="meniscus-tab" data-page="tickets.html" data-accent="#FF4655" style="--tab-accent: #FF4655;" aria-label="Tickets">
+          <i class="fa-solid fa-ticket meniscus-icon"></i>
+          <span class="meniscus-label">Tickets</span>
+        </a>
+        <a href="profile.html" class="meniscus-tab is-active" data-page="profile.html" data-accent="var(--accent-volt)" style="--tab-accent: var(--accent-volt);" aria-label="Profile" aria-current="page">
+          <i class="fa-solid fa-user meniscus-icon"></i>
+          <span class="meniscus-label">Profile</span>
+        </a>
+      </div>
     </nav>
   </div>
 
@@ -2109,6 +2194,7 @@
       // 3. GAMER PARTICLES + 5 THEME STUDIO + ₹10 CUSTOM PALETTE + POWER SAVING
       // ============================================================================
       function initGamerParticles() {
+        
         const canvas = document.getElementById("gamerParticlesCanvas");
         if (!canvas) return;
         if (particleRafId) {
@@ -2228,7 +2314,16 @@
             : "Off • Gamer Particles & Glass Blur";
         }
       }
-
+     const activeTabEl = document.querySelector(".meniscus-tab.is-active");
+        if (activeTabEl) {
+          const beadEl = document.getElementById("meniscusBead");
+          const glowEl = document.getElementById("meniscusGlow");
+          const rawAcc = activeTabEl.dataset.accent || "var(--accent-volt)";
+          const m = rawAcc.match(/^var\((--[^)]+)\)$/);
+          const resolved = m ? (getComputedStyle(document.documentElement).getPropertyValue(m[1]).trim() || "#D4FF00") : rawAcc;
+          if (beadEl) beadEl.style.backgroundColor = resolved;
+          if (glowEl) glowEl.style.backgroundColor = resolved;
+        }
       function openThemeStudioModal() {
         doHaptic();
         if (isGuestMode || isPublicView) return;
@@ -4234,11 +4329,244 @@
         saveTournamentChanges, promptDeleteTournament, promptLogout
       });
 
+      // ============================================================================
+      // 12. MENISCUS LIQUID-SOCKET BOTTOM NAV ENGINE (SPRING + DRAG + ZERO LAG)
+      // ============================================================================
+      function initMeniscusNav() {
+        const dock = document.getElementById("meniscusDock");
+        const svg = document.getElementById("meniscusSvg");
+        const pathEl = document.getElementById("meniscusPath");
+        const bead = document.getElementById("meniscusBead");
+        const glow = document.getElementById("meniscusGlow");
+        if (!dock || !svg || !pathEl || !bead || !glow) return;
+
+        const tabs = Array.from(dock.querySelectorAll(".meniscus-tab"));
+        if (!tabs.length) return;
+
+        // Auto-detect active page so this exact code works across ALL Tournyx pages
+        const currentFile = (window.location.pathname.split("/").pop() || "index.html").toLowerCase();
+        let activeIdx = tabs.findIndex((t) => (t.dataset.page || "").toLowerCase() === currentFile);
+        if (activeIdx < 0) activeIdx = tabs.length - 1;
+
+        let dockW = 0, dockH = 62;
+        let centers = [];
+        let curX = 0, targetX = 0, velX = 0;
+        let rafId = null;
+        let isPointerDown = false;
+        let isDragging = false;
+        let startClientX = 0;
+        let navTimer = null;
+
+        function resolveColor(accentStr) {
+          if (!accentStr) return "#D4FF00";
+          const m = accentStr.match(/^var\((--[^)]+)\)$/);
+          if (m) {
+            return getComputedStyle(document.documentElement).getPropertyValue(m[1]).trim() || "#D4FF00";
+          }
+          return accentStr;
+        }
+
+        function setVisualActive(idx, vibrateOnChange = false) {
+          if (idx < 0 || idx >= tabs.length) return;
+          const changed = idx !== activeIdx;
+          activeIdx = idx;
+          tabs.forEach((t, i) => {
+            t.classList.toggle("is-active", i === idx);
+            if (i === idx) t.setAttribute("aria-current", "page");
+            else t.removeAttribute("aria-current");
+          });
+          const color = resolveColor(tabs[idx].dataset.accent);
+          bead.style.backgroundColor = color;
+          glow.style.backgroundColor = color;
+          if (changed && vibrateOnChange) {
+            if (typeof window.doHaptic === "function") window.doHaptic();
+            else if (navigator.vibrate) navigator.vibrate(10);
+          }
+        }
+
+        function measureDock() {
+          const rect = dock.getBoundingClientRect();
+          if (rect.width < 40) return false;
+          dockW = rect.width;
+          dockH = rect.height || 62;
+          svg.setAttribute("viewBox", `0 0 ${dockW} ${dockH}`);
+          centers = tabs.map((t) => {
+            const tr = t.getBoundingClientRect();
+            return tr.left - rect.left + tr.width / 2;
+          });
+          if (!curX || !isDragging) {
+            curX = centers[activeIdx];
+            targetX = curX;
+            velX = 0;
+          }
+          drawMeniscus(curX, 0);
+          return true;
+        }
+
+        // Exact Parametric Liquid-Notch Curve (Zero corner clipping on any screen width)
+        function drawMeniscus(cx, vx) {
+          if (!dockW || !centers.length) return;
+          const H = dockH;
+          const W = dockW;
+          const CR = 22;
+          const tabW = centers.length > 1 ? Math.abs(centers[1] - centers[0]) : 54;
+          const R = Math.min(22.5, Math.max(19.5, tabW * 0.41));
+          const cy = -3;
+          const baseShoulder = 9;
+          const warp = Math.max(-6, Math.min(6, vx * 0.45));
+
+          // Trailing shoulder stretches out; leading shoulder tightens
+          let rL = Math.max(3.5, baseShoulder + (warp > 0 ? warp : warp * 0.45));
+          let rR = Math.max(3.5, baseShoulder + (warp < 0 ? -warp : -warp * 0.45));
+
+          // Clamp radii mathematically so shoulders never overlap dock rounded corners
+          const availL = Math.max(R + 1.5, cx - CR - 1);
+          const availR = Math.max(R + 1.5, W - CR - 1 - cx);
+          const maxRL = Math.max(2, (availL * availL - R * R + cy * cy) / (2 * (R + cy)));
+          const maxRR = Math.max(2, (availR * availR - R * R + cy * cy) / (2 * (R + cy)));
+          rL = Math.min(rL, maxRL);
+          rR = Math.min(rR, maxRR);
+
+          const dxL = Math.sqrt(Math.max(1, (R + rL) * (R + rL) - (rL - cy) * (rL - cy)));
+          const dxR = Math.sqrt(Math.max(1, (R + rR) * (R + rR) - (rR - cy) * (rR - cy)));
+
+          const xL0 = cx - dxL;
+          const xR0 = cx + dxR;
+          const tLx = xL0 + dxL * (rL / (R + rL));
+          const tLy = rL + (cy - rL) * (rL / (R + rL));
+          const tRx = xR0 - dxR * (rR / (R + rR));
+          const tRy = rR + (cy - rR) * (rR / (R + rR));
+
+          const d = [
+            `M ${CR} 0`,
+            `L ${xL0.toFixed(2)} 0`,
+            `A ${rL.toFixed(2)} ${rL.toFixed(2)} 0 0 1 ${tLx.toFixed(2)} ${tLy.toFixed(2)}`,
+            `A ${R.toFixed(2)} ${R.toFixed(2)} 0 0 0 ${tRx.toFixed(2)} ${tRy.toFixed(2)}`,
+            `A ${rR.toFixed(2)} ${rR.toFixed(2)} 0 0 1 ${xR0.toFixed(2)} 0`,
+            `L ${(W - CR).toFixed(2)} 0`,
+            `A ${CR} ${CR} 0 0 1 ${W.toFixed(2)} ${CR}`,
+            `L ${W.toFixed(2)} ${(H - CR).toFixed(2)}`,
+            `A ${CR} ${CR} 0 0 1 ${(W - CR).toFixed(2)} ${H.toFixed(2)}`,
+            `L ${CR} ${H.toFixed(2)}`,
+            `A ${CR} ${CR} 0 0 1 0 ${(H - CR).toFixed(2)}`,
+            `L 0 ${CR}`,
+            `A ${CR} ${CR} 0 0 1 ${CR} 0`,
+            `Z`
+          ].join(" ");
+
+          pathEl.setAttribute("d", d);
+
+          const stretchScaleX = 1 + Math.min(0.12, Math.abs(vx) * 0.008);
+          const stretchScaleY = 1 - Math.min(0.08, Math.abs(vx) * 0.005);
+          bead.style.transform = `translate3d(${(cx - 19).toFixed(2)}px, ${(cy - 19).toFixed(2)}px, 0) scale(${stretchScaleX.toFixed(3)}, ${stretchScaleY.toFixed(3)})`;
+          glow.style.transform = `translate3d(${(cx - 29).toFixed(2)}px, ${(cy - 29).toFixed(2)}px, 0)`;
+        }
+
+        function startSpring() {
+          if (rafId) return;
+          const step = () => {
+            const force = (targetX - curX) * 0.24;
+            velX = (velX + force) * 0.72;
+            curX += velX;
+            drawMeniscus(curX, velX);
+
+            if (!isDragging && Math.abs(targetX - curX) < 0.08 && Math.abs(velX) < 0.08) {
+              curX = targetX;
+              velX = 0;
+              drawMeniscus(curX, 0);
+              rafId = null;
+              return;
+            }
+            rafId = requestAnimationFrame(step);
+          };
+          rafId = requestAnimationFrame(step);
+        }
+
+        function nearestTabIndex(localX) {
+          let best = 0, minDist = Infinity;
+          for (let i = 0; i < centers.length; i++) {
+            const d = Math.abs(centers[i] - localX);
+            if (d < minDist) { minDist = d; best = i; }
+          }
+          return best;
+        }
+
+        function commitTabSelection(idx) {
+          if (!centers.length) return;
+          setVisualActive(idx, true);
+          targetX = centers[idx];
+          startSpring();
+
+          const targetHref = tabs[idx].getAttribute("href");
+          const targetPage = (tabs[idx].dataset.page || "").toLowerCase();
+          clearTimeout(navTimer);
+          if (targetHref && targetPage !== currentFile) {
+            navTimer = setTimeout(() => {
+              window.location.href = targetHref;
+            }, 230);
+          }
+        }
+
+        // Prevent instant link jump so the liquid meniscus glide always plays first
+        tabs.forEach((tab) => {
+          tab.addEventListener("click", (e) => e.preventDefault());
+        });
+
+        // Unified Tap + Smooth Bead Drag Support
+        dock.addEventListener("pointerdown", (e) => {
+          if (!centers.length && !measureDock()) return;
+          isPointerDown = true;
+          isDragging = false;
+          startClientX = e.clientX;
+          dock.setPointerCapture?.(e.pointerId);
+        });
+
+        dock.addEventListener("pointermove", (e) => {
+          if (!isPointerDown || !centers.length) return;
+          if (!isDragging && Math.abs(e.clientX - startClientX) > 5) {
+            isDragging = true;
+          }
+          if (!isDragging) return;
+          const rect = dock.getBoundingClientRect();
+          const localX = Math.max(centers[0], Math.min(centers[centers.length - 1], e.clientX - rect.left));
+          targetX = localX;
+          setVisualActive(nearestTabIndex(localX), true);
+          startSpring();
+        });
+
+        function endPointer(e) {
+          if (!isPointerDown) return;
+          isPointerDown = false;
+          const wasDragging = isDragging;
+          isDragging = false;
+          try { dock.releasePointerCapture?.(e.pointerId); } catch (err) {}
+
+          if (!centers.length) return;
+          const rect = dock.getBoundingClientRect();
+          const localX = e.clientX - rect.left;
+          const chosenIdx = nearestTabIndex(wasDragging ? curX : localX);
+          commitTabSelection(chosenIdx);
+        }
+
+        dock.addEventListener("pointerup", endPointer);
+        dock.addEventListener("pointercancel", endPointer);
+
+        // Auto-sync when theme palette changes or viewport resizes
+        setVisualActive(activeIdx, false);
+        measureDock();
+        if (window.ResizeObserver) {
+          new ResizeObserver(() => measureDock()).observe(dock);
+        } else {
+          window.addEventListener("resize", measureDock);
+        }
+      }
+      
       // Boot Sequence
       window.addEventListener("DOMContentLoaded", () => {
         initSupabase();
         applyGlobalTheme();
         initGamerParticles();
+        initMeniscusNav();
 
         const stateSel = document.getElementById("editState");
         if (stateSel) {
