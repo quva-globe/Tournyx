@@ -4045,8 +4045,14 @@
         openModal("setScrimRoomModal");
       }
 
-      async function saveScrimRoomCreds() {
+     async function saveScrimRoomCreds() {
         if (!activeClan) return;
+        const existingScrim = activeClan.nextScrim || {};
+        if (existingScrim.host_clan_id && existingScrim.host_clan_id !== activeClan.clanId) {
+          showToast("Only the invited host clan's Captain can publish Room ID & Pass.", true);
+          return;
+        }
+
         const roomId = document.getElementById("ssrRoomId").value.trim();
         const roomPass = document.getElementById("ssrRoomPass").value.trim();
         const title = document.getElementById("ssrTitle").value.trim() || `${activeClan.name} Custom Scrim`;
@@ -4057,6 +4063,9 @@
 
         if (!roomId) { showToast("Enter a valid Room ID.", true); return; }
 
+        const hostId = existingScrim.host_clan_id || activeClan.clanId;
+        const hostName = existingScrim.host_clan_name || activeClan.name;
+
         const scrimObj = {
           title,
           subtitle: `${activeClan.game} • ${mapMode}`,
@@ -4064,6 +4073,8 @@
           room_id: roomId,
           room_pass: roomPass || "NONE",
           slot: "4v4",
+          host_clan_id: hostId,
+          host_clan_name: hostName,
           challenge_id: challengeId || null,
           partner_clan_id: partnerClanId || null,
           start_time: new Date(Date.now() + mins * 60000).toISOString(),
@@ -4074,7 +4085,6 @@
         activeClan.notifications.push({ msg: `Room ID (${roomId}) published for ${title}!`, timestamp: Date.now() });
         await saveActiveClanUpdate("Scrim Room ID & Password published live!");
 
-        // Sync identical Room ID & Pass to Partner/Rival Clan if this is a 4v4 Challenge!
         const allNotifyEmails = activeClan.roster.map((r) => r.email);
         if (partnerClanId) {
           const rival = globalClans.find((c) => c.clanId === partnerClanId);
@@ -4097,7 +4107,6 @@
 
         closeModal("setScrimRoomModal");
       }
-
       function copyScrimRoomCreds() {
         const scrim = activeClan?.nextScrim;
         if (scrim && scrim.room_id) {
@@ -5573,7 +5582,7 @@
                           <button onclick="respondScrimChallenge('${escapeHtml(ch.id)}', 'ACCEPTED')" type="button" class="volt-btn min-h-[40px] px-4 rounded-xl font-display text-xs font-extrabold uppercase">Accept</button>
                           <button onclick="respondScrimChallenge('${escapeHtml(ch.id)}', 'DECLINED')" type="button" class="min-h-[40px] px-3.5 rounded-xl bg-red-500/15 border border-red-500/40 font-display text-xs font-bold text-red-400 uppercase">Decline</button>
                         ` : `<span class="font-mono text-xs font-black uppercase ${stCol}">${escapeHtml(ch.status)}</span>`}
-                        ${ch.status === "ACCEPTED" && isMod && myInvolvedClan ? `
+                       ${ch.status === "ACCEPTED" && isMod && isIncoming && myInvolvedClan ? `
                           <button onclick="openChallengeRoomSetup('${escapeHtml(myInvolvedClan.clanId)}', '${escapeHtml(ch.id)}', '${escapeHtml(rivalClanId)}', '${escapeHtml(matchTitle).replace(/'/g, "\\'")}', '${escapeHtml(ch.map_mode).replace(/'/g, "\\'")}')" type="button"
                             class="min-h-[38px] px-3 rounded-xl bg-[#D4FF00]/15 border border-[#D4FF00]/45 font-mono text-[11px] font-bold text-[#D4FF00] uppercase">
                             <i class="fa-solid fa-key mr-1"></i>${ch.room_id ? "Edit Room ID" : "Set Room ID"}
@@ -5645,6 +5654,8 @@
                 subtitle: `${ch.game} • ${ch.map_mode} • ${ch.proposed_time}`,
                 map_mode: ch.map_mode,
                 slot: "4v4",
+                host_clan_id: ch.target_clan_id,
+                host_clan_name: ch.target_clan_name,
                 challenge_id: ch.id
               };
 
@@ -6105,8 +6116,10 @@
       }
 
       // ============================================================================
-      // 11. DISCORD VOICE ROOMS + ADAPTIVE 720p/1080p/4K SCREEN SHARE + HEARTBEAT
+      // 11. DISCORD VOICE ROOMS + ADAPTIVE SCREEN SHARE (WITH GAME AUDIO) + HEARTBEAT
       // ============================================================================
+      let isInternalNav = false;
+
       const RTC_ICE_CONFIG = {
         iceServers: [
           { urls: "stun:stun.l.google.com:19302" },
@@ -6245,7 +6258,6 @@
           }
 
           await enterVoiceRoomSession(roomRow);
-          
         } finally {
           inFlightActions.delete("createVoice");
           btn.disabled = false;
@@ -6296,7 +6308,7 @@
         if (activeVoiceRoom && activeVoiceRoom.id !== roomRow.id) {
           await leaveActiveVoiceRoom(true);
         }
-       
+
         const myIdentityKey = normStr(user.email) || normalizePhone10(user.phone);
         myVoicePeerKey = myIdentityKey + "_" + Math.random().toString(36).slice(2, 6);
 
@@ -6319,13 +6331,22 @@
         voiceConnectedAt = Date.now();
         activeVoiceRoom = roomRow;
 
+        localStorage.setItem("tournyx_active_voice_session", JSON.stringify({
+          roomId: roomRow.id,
+          clanId: roomRow.clan_id,
+          clanName: roomRow.clan_name,
+          roomName: roomRow.room_name,
+          joinedAt: Date.now()
+        }));
+
+        const clanMatch = userLiveClans.find((c) => c.clanId === roomRow.clan_id) || activeClan;
         const myPart = {
           key: myIdentityKey,
           peerKey: myVoicePeerKey,
           name: String(user.ign || user.username || "Player").trim(),
           email: normStr(user.email),
           avatar: String(user.avatar || "").trim(),
-          role: getMyRosterEntry(activeClan)?.role || "Player",
+          role: (clanMatch ? getMyRosterEntry(clanMatch)?.role : null) || "Player",
           muted: isVoiceMuted,
           last_seen: Date.now()
         };
@@ -6350,11 +6371,7 @@
         document.getElementById("miniVoiceDock").classList.add("hidden");
         openModal("voiceRoomModal");
       }
-      localStorage.setItem("tournyx_active_voice_session", JSON.stringify({
-  roomId: roomRow.id, clanId: roomRow.clan_id, clanName: roomRow.clan_name,
-  roomName: roomRow.room_name, joinedAt: Date.now()
-}));
-      /** 15-second Heartbeat: keeps active members alive & prunes cache-cleared ghosts (>45s) */
+
       function startVoiceHeartbeat(roomId) {
         if (voiceHeartbeatInterval) clearInterval(voiceHeartbeatInterval);
         voiceHeartbeatInterval = setInterval(async () => {
@@ -6444,11 +6461,10 @@
           localAudioStream.getTracks().forEach((track) => pc.addTrack(track, localAudioStream));
         }
         if (localScreenStream) {
-          const vTrack = localScreenStream.getVideoTracks()[0];
-          if (vTrack) {
-            const sender = pc.addTrack(vTrack, localScreenStream);
-            applyAdaptiveVideoBitrate(sender, currentScreenPreset);
-          }
+          localScreenStream.getTracks().forEach((tr) => {
+            const sender = pc.addTrack(tr, localScreenStream);
+            if (tr.kind === "video") applyAdaptiveVideoBitrate(sender, currentScreenPreset);
+          });
         }
 
         pc.onicecandidate = (ev) => {
@@ -6464,14 +6480,26 @@
         pc.ontrack = (ev) => {
           const stream = ev.streams?.[0];
           if (!stream) return;
-          if (ev.track.kind === "video") {
+          // Route Screen Share (Video + Game/Device Audio) to #voiceScreenVideo
+          if (ev.track.kind === "video" || stream.getVideoTracks().length > 0) {
             const vid = document.getElementById("voiceScreenVideo");
             if (vid) {
               vid.srcObject = stream;
+              vid.muted = isVoiceDeafened;
+              vid.play().catch(() => {});
               document.getElementById("voiceScreenStage").classList.remove("hidden");
-              ev.track.onended = () => clearRemoteScreenStage();
+              const audioBtn = document.getElementById("vrScreenAudioBtn");
+              if (audioBtn) {
+                audioBtn.innerHTML = vid.muted
+                  ? `<i class="fa-solid fa-volume-xmark text-red-400 text-sm"></i>`
+                  : `<i class="fa-solid fa-volume-high text-sm"></i>`;
+              }
+              if (ev.track.kind === "video") {
+                ev.track.onended = () => clearRemoteScreenStage();
+              }
             }
           } else {
+            // Route Squadmate Voice Mic Audio to hidden <audio> element + Speaking Ring VAD
             let audioEl = remoteAudioEls[remotePeerKey];
             if (!audioEl) {
               audioEl = document.createElement("audio");
@@ -6728,6 +6756,8 @@
         doHaptic();
         isVoiceDeafened = !isVoiceDeafened;
         Object.values(remoteAudioEls).forEach((el) => { el.muted = isVoiceDeafened; });
+        const vid = document.getElementById("voiceScreenVideo");
+        if (vid && !isVoiceScreenSharing) vid.muted = isVoiceDeafened;
         const btn = document.getElementById("vrDeafenBtn");
         if (btn) {
           btn.className = isVoiceDeafened
@@ -6750,7 +6780,6 @@
         }
       }
 
-      // 3-Tier Adaptive Screen Share (720p Recommended / 1080p High / 4K Ultra + Instant Stop Broadcast)
       function handleScreenShareButton() {
         doHaptic();
         if (isVoiceScreenSharing) {
@@ -6808,42 +6837,61 @@
               autoGainControl: false
             }
           });
-          // ...
+
+          isVoiceScreenSharing = true;
           const vid = document.getElementById("voiceScreenVideo");
-          vid.muted = true; // Mute host's own preview to prevent echo; remote viewers remain unmuted!
+          vid.muted = true; // Mute host's own preview to prevent echo; viewers remain unmuted!
           vid.srcObject = localScreenStream;
-          // Attach BOTH video + system audio tracks to all connected peers
-          for (const [peerKey, pc] of Object.entries(peerConnections)) {
-            localScreenStream.getTracks().forEach((tr) => {
-              const sender = pc.addTrack(tr, localScreenStream);
-              if (tr.kind === "video") applyAdaptiveVideoBitrate(sender, presetKey);
-            });
-            const offer = await pc.createOffer();
-            await pc.setLocalDescription(offer);
-            voiceSignalChannel?.send({ type: "broadcast", event: "rtc_signal", payload: { type: "offer", from: myVoicePeerKey, to: peerKey, sdp: offer } });
+          document.getElementById("voiceScreenStage").classList.remove("hidden");
+          document.getElementById("voiceScreenOwner").innerText = "Sharing Your Screen";
+          document.getElementById("voiceScreenQualityPill").innerText = spec.label;
+          document.getElementById("vrScreenBtn").innerHTML = `<i class="fa-solid fa-stop"></i> <span>Stop Share</span>`;
+
+          const videoTrack = localScreenStream.getVideoTracks()[0];
+          if (videoTrack) {
+            if ("contentHint" in videoTrack) videoTrack.contentHint = "motion";
+            videoTrack.onended = () => stopLocalScreenShare(true);
           }
 
+          const hostLabel = String(user.ign || user.username || "Host").trim();
+          voiceSignalChannel?.send({
+            type: "broadcast",
+            event: "rtc_signal",
+            payload: { type: "screen_start", from: myVoicePeerKey, hostName: hostLabel, qualityLabel: spec.label }
+          });
+
+          // Attach BOTH video + device/game audio tracks to every connected peer
           for (const [peerKey, pc] of Object.entries(peerConnections)) {
-            const sender = pc.addTrack(videoTrack, localScreenStream);
-            await applyAdaptiveVideoBitrate(sender, presetKey);
+            for (const tr of localScreenStream.getTracks()) {
+              const sender = pc.addTrack(tr, localScreenStream);
+              if (tr.kind === "video") await applyAdaptiveVideoBitrate(sender, presetKey);
+            }
             const offer = await pc.createOffer();
             await pc.setLocalDescription(offer);
-            voiceSignalChannel?.send({ type: "broadcast", event: "rtc_signal", payload: { type: "offer", from: myVoicePeerKey, to: peerKey, sdp: offer } });
+            voiceSignalChannel?.send({
+              type: "broadcast",
+              event: "rtc_signal",
+              payload: { type: "offer", from: myVoicePeerKey, to: peerKey, sdp: offer }
+            });
           }
-          showToast(`📺 Screen sharing live at ${spec.label}!`);
+
+          const hasAudio = localScreenStream.getAudioTracks().length > 0;
+          showToast(`📺 Screen live at ${spec.label}${hasAudio ? " + Game Audio" : ""}!`);
         } catch (e) {
           showToast("Screen share cancelled or blocked.", true);
         }
       }
-      
+
       function toggleScreenAudioMute() {
         const vid = document.getElementById("voiceScreenVideo");
         const btn = document.getElementById("vrScreenAudioBtn");
         if (!vid || !btn) return;
         vid.muted = !vid.muted;
-        btn.innerHTML = vid.muted ? `<i class="fa-solid fa-volume-xmark text-red-400 text-sm"></i>` : `<i class="fa-solid fa-volume-high text-sm"></i>`;
+        btn.innerHTML = vid.muted
+          ? `<i class="fa-solid fa-volume-xmark text-red-400 text-sm"></i>`
+          : `<i class="fa-solid fa-volume-high text-sm"></i>`;
       }
-      
+
       function stopLocalScreenShare(broadcastStop = true) {
         const wasSharing = isVoiceScreenSharing;
         isVoiceScreenSharing = false;
@@ -6912,6 +6960,7 @@
         if (!isSilent) doHaptic("heavy");
         const roomToLeave = activeVoiceRoom;
         activeVoiceRoom = null;
+        localStorage.removeItem("tournyx_active_voice_session");
 
         if (voiceDurationInterval) { clearInterval(voiceDurationInterval); voiceDurationInterval = null; }
         if (voiceHeartbeatInterval) { clearInterval(voiceHeartbeatInterval); voiceHeartbeatInterval = null; }
@@ -7070,6 +7119,7 @@
           const href = tabs[chosen].getAttribute("href");
           clearTimeout(navTimer);
           if (href && (tabs[chosen].dataset.page || "").toLowerCase() !== currentFile) {
+            isInternalNav = true; // Keep Voice Room active when switching to other Tournyx pages
             navTimer = setTimeout(() => { window.location.href = href; }, 230);
           }
         };
@@ -7084,6 +7134,10 @@
 
       // Global Event Bindings
       document.addEventListener("click", (e) => {
+        const link = e.target.closest?.("a[href]");
+        if (link && link.getAttribute("href") && !link.getAttribute("href").startsWith("http")) {
+          isInternalNav = true;
+        }
         if (e.target.classList.contains("cmd-modal-overlay") && e.target.id) {
           if (e.target.id === "voiceRoomModal") minimizeVoiceModal();
           else if (e.target.id === "chatModal") closeChat();
@@ -7093,32 +7147,21 @@
         if (picker && picker.style.display === "flex" && !picker.contains(e.target)) picker.style.display = "none";
       });
 
-      // Mobile Hardware Back Gesture Listener (Closes Modals / Sub-views cleanly without leaving page)
       window.addEventListener("popstate", () => {
         handleUniversalBack(true);
       });
 
-      // Keepalive beacon on tab/app close to remove ghost voice presence immediately
-      let isInternalNav = false;
- document.addEventListener("click", (e) => {
-   const link = e.target.closest?.("a[href]");
-   if (link && link.getAttribute("href") && !link.getAttribute("href").startsWith("http")) {
-     isInternalNav = true;
-   }
- });
-
- window.addEventListener("pagehide", () => {
-   if (!activeVoiceRoom || !isDbReady || isInternalNav) return;
-   // Only send immediate remove beacon if truly closing the app/site
-   const myId = normStr(user.email) || normalizePhone10(user.phone);
-   const remaining = (activeVoiceRoom.participants || []).filter((p) => p.key !== myId);
-   fetch(`${DB_ENDPOINT}/rest/v1/clan_voice_rooms?id=eq.${encodeURIComponent(activeVoiceRoom.id)}`, {
-     method: "PATCH",
-     keepalive: true,
-     headers: { "Content-Type": "application/json", "apikey": DB_PUBLIC_KEY, "Authorization": `Bearer ${DB_PUBLIC_KEY}` },
-     body: JSON.stringify({ participants: remaining, is_active: remaining.length > 0 })
-   }).catch(() => {});
- });
+      window.addEventListener("pagehide", () => {
+        if (!activeVoiceRoom || !isDbReady || isInternalNav) return;
+        const myId = normStr(user.email) || normalizePhone10(user.phone);
+        const remaining = (activeVoiceRoom.participants || []).filter((p) => p.key !== myId);
+        fetch(`${DB_ENDPOINT}/rest/v1/clan_voice_rooms?id=eq.${encodeURIComponent(activeVoiceRoom.id)}`, {
+          method: "PATCH",
+          keepalive: true,
+          headers: { "Content-Type": "application/json", "apikey": DB_PUBLIC_KEY, "Authorization": `Bearer ${DB_PUBLIC_KEY}` },
+          body: JSON.stringify({ participants: remaining, is_active: remaining.length > 0 })
+        }).catch(() => {});
+      });
 
       document.addEventListener("visibilitychange", () => {
         if (document.visibilityState === "visible" && !isGuestMode) {
@@ -7143,7 +7186,7 @@
         pttBtn.addEventListener("pointercancel", stopTalk);
       }
 
-      // Expose Global Handlers
+      // Expose Global Handlers (All Verified, Zero Dead References)
       Object.assign(window, {
         doHaptic, copyText, openModal, closeModal, hideToast, handleUniversalBack, cyclePerfTier,
         submitTacticalInput, syncAllClanData, handleProfileClick, switchTab, enablePushAlertsManual,
@@ -7152,7 +7195,8 @@
         triggerSquadReadyCheck, respondReadyCheck, openSeasonArchiveModal, nativeShare,
         triggerUpload, processImageUpload, processAvatarUpload, openEditFieldModal,
         openInviteModal, copyInviteLink, openSetScrimRoomModal, saveScrimRoomCreds,
-        copyScrimRoomCreds, openResolveScrimModal, submitScrimResolution, copyClanId,
+        copyScrimRoomCreds, openResolveScrimModal, handleAiScreenshotSelection,
+        submitAiScrimVerification, cancelActiveScrimNoXp, copyClanId,
         toggleRecruitment, toggleAutoAccept, openSocialEditModal, openEditSocialInput,
         claimPremiumClanBadge, openTransferOwnershipModal, confirmOwnershipTransfer,
         promptDisbandClan, promptLeaveClan, deleteNotice,
@@ -7168,9 +7212,9 @@
         openCreateVoiceRoomModal, openOrJoinClanVoice, createAndJoinVoiceRoom, joinVoiceRoomById,
         minimizeVoiceModal, reopenActiveVoiceModal, leaveActiveVoiceRoom,
         toggleVoiceMute, toggleVoiceDeafen, toggleVoicePttMode, handleScreenShareButton,
-        startVoiceScreenShareWithPreset, toggleScreenFullscreen, healVoiceConnections,
-        changeVoiceRoomAccess, pingSquadToVoice, approveVoiceKnock, denyVoiceKnock,
-        adminMuteVoicePeer, adminKickVoicePeer
+        startVoiceScreenShareWithPreset, toggleScreenAudioMute, toggleScreenFullscreen,
+        healVoiceConnections, changeVoiceRoomAccess, pingSquadToVoice,
+        approveVoiceKnock, denyVoiceKnock, adminMuteVoicePeer, adminKickVoicePeer
       });
 
       // Boot Sequence + Deep-Link Handlers (?readycheck=, ?voice=, ?invite=)
@@ -7186,7 +7230,6 @@
         document.getElementById("globalSeasonLabel").innerText = season.label;
         document.getElementById("globalSeasonCountdown").innerText = `Resets in ${season.daysLeft}d`;
 
-        // Seed initial history anchor so mobile hardware back stays inside app
         pushViewHistoryState("root");
 
         try {
@@ -7233,14 +7276,15 @@
         } else if (inviteId && globalClans.some((c) => c.clanId === inviteId)) {
           switchTab("searchClanTab", document.getElementById("tabBtnFind"));
           openPublicClanModal(inviteId, false);
+        } else {
+          try {
+            const savedVoice = JSON.parse(localStorage.getItem("tournyx_active_voice_session") || "null");
+            if (savedVoice && activeVoiceRoomsMap[savedVoice.clanId] && !activeVoiceRoom) {
+              await enterVoiceRoomSession(activeVoiceRoomsMap[savedVoice.clanId]);
+              minimizeVoiceModal();
+            }
+          } catch (e) {}
         }
-        try {
-     const savedVoice = JSON.parse(localStorage.getItem("tournyx_active_voice_session") || "null");
-     if (savedVoice && activeVoiceRoomsMap[savedVoice.clanId] && !activeVoiceRoom) {
-       await enterVoiceRoomSession(activeVoiceRoomsMap[savedVoice.clanId]);
-       minimizeVoiceModal();
-     }
-   } catch (e) {}
       });
     })();
   </script>
