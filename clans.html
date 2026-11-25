@@ -1091,36 +1091,56 @@
                 <div id="upcomingTournamentsList" class="space-y-2.5"></div>
               </div>
 
-              <!-- 4V4 CLAN SCRIM LOBBY CARD (With Captain Set Room ID/Pass & Finish Match) -->
-              <div class="glass-card rounded-2xl p-5 space-y-3.5">
+              <!-- 4V4 CLAN SCRIM LOBBY (Shows Active Card ONLY When Upcoming Scrim Exists) -->
+              <div id="noActiveScrimCard" class="glass-card rounded-2xl p-5 space-y-3 border border-white/[0.08]">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="font-display text-base font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-bolt text-[#D4FF00]"></i> 4v4 Scrims &amp; Battles
+                  </span>
+                  <span class="px-2.5 py-0.5 rounded-full bg-white/[0.06] font-mono text-[10px] text-[#9C9AB0] uppercase">No Active Scrim</span>
+                </div>
+                <p class="font-body text-xs sm:text-sm text-[#9C9AB0]">Challenge a rival clan to a verified 4v4 match or enter an official tournament to unlock live Room ID &amp; AI Match Verification.</p>
+                <div class="grid grid-cols-2 gap-2.5">
+                  <button onclick="switchTab('searchClanTab', document.getElementById('tabBtnFind'))" type="button"
+                    class="volt-btn min-h-[44px] rounded-xl font-display text-xs font-extrabold uppercase flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-crosshairs"></i> Challenge Clan
+                  </button>
+                  <a href="explore.html" onclick="doHaptic();"
+                    class="min-h-[44px] rounded-xl bg-[#00F2FF]/15 hover:bg-[#00F2FF] hover:text-[#050508] border border-[#00F2FF]/40 font-display text-xs font-bold text-[#00F2FF] uppercase flex items-center justify-center gap-1.5 transition-colors">
+                    <i class="fa-solid fa-trophy"></i> Join Scrims
+                  </a>
+                </div>
+              </div>
+
+              <div id="activeScrimLobbyCard" class="hidden glass-card rounded-2xl p-5 space-y-3.5 border border-[#FF4655]/50 shadow-[0_0_24px_rgba(255,70,85,0.14)]">
                 <div class="flex items-center justify-between gap-2 flex-wrap">
-                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#FF4655]/15 border border-[#FF4655]/35 font-mono text-[11px] font-bold text-[#FF4655] uppercase">
-                    <span class="w-1.5 h-1.5 rounded-full bg-[#FF4655] animate-ping"></span> 4v4 Clan Scrim Lobby
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#FF4655]/15 border border-[#FF4655]/40 font-mono text-[11px] font-bold text-[#FF4655] uppercase">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#FF4655] animate-ping"></span> Upcoming 4v4 Scrim Live
                   </span>
                   <div class="flex items-center gap-1.5">
-                    <span id="scrimSlotPill" class="px-2.5 py-1 rounded bg-white/[0.06] font-mono text-[11px] font-bold text-[#D4FF00] uppercase">Queue Open</span>
+                    <span id="scrimSlotPill" class="px-2.5 py-1 rounded bg-white/[0.06] font-mono text-[11px] font-bold text-[#D4FF00] uppercase">4v4</span>
+                    <!-- Shown ONLY to the Invited Host Clan's Captain/Admins -->
                     <button id="btnSetScrimRoom" onclick="openSetScrimRoomModal()" type="button"
-                      class="edit-admin px-2.5 py-1 rounded-lg bg-[#D4FF00]/15 hover:bg-[#D4FF00] hover:text-[#050508] border border-[#D4FF00]/40 font-mono text-[10.5px] font-bold text-[#D4FF00] uppercase transition-colors">
+                      class="hidden px-2.5 py-1 rounded-lg bg-[#D4FF00]/15 hover:bg-[#D4FF00] hover:text-[#050508] border border-[#D4FF00]/45 font-mono text-[10.5px] font-bold text-[#D4FF00] uppercase transition-colors">
                       <i class="fa-solid fa-sliders mr-1"></i>Set Room ID
                     </button>
                   </div>
                 </div>
 
                 <div>
-                  <h3 id="scrimMatchTitle" class="font-display text-base font-extrabold text-white">No Active 4v4 Scrim</h3>
-                  <p id="scrimMatchSub" class="font-body text-xs sm:text-sm text-[#9C9AB0] mt-0.5">Challenge any clan from Find or Ranks, or set your custom scrim Room ID &amp; Password.</p>
+                  <h3 id="scrimMatchTitle" class="font-display text-base font-extrabold text-white">Match Title</h3>
+                  <p id="scrimMatchSub" class="font-body text-xs sm:text-sm text-[#9C9AB0] mt-0.5">Match Info</p>
+                  <span id="scrimHostOwnerTag" class="font-mono text-[10.5px] text-[#00F2FF] block mt-1"></span>
                 </div>
 
                 <div class="p-3.5 rounded-xl bg-[#080810] border border-white/[0.08] flex items-center justify-between gap-3">
                   <div>
-                    <span class="font-mono text-[10px] text-[#8E8CA6] uppercase block">Room Unlock / Match Status</span>
+                    <span class="font-mono text-[10px] text-[#8E8CA6] uppercase block">Room Unlock Timer</span>
                     <span id="scrimTimerVal" class="font-orbitron text-lg font-black text-[#D4FF00]">READY</span>
                   </div>
                   <div class="text-right">
                     <span class="font-mono text-[10px] text-[#8E8CA6] uppercase block">Room Credentials</span>
-                    <span id="scrimCredsBadge" class="font-mono text-xs font-bold text-[#9C9AB0] inline-flex items-center gap-1.5">
-                      Not Published
-                    </span>
+                    <span id="scrimCredsBadge" class="font-mono text-xs font-bold text-[#9C9AB0] inline-flex items-center gap-1.5">Waiting on Host</span>
                   </div>
                 </div>
 
@@ -1132,8 +1152,8 @@
                     <i class="fa-solid fa-key text-[#D4FF00]"></i> <span>Copy Room ID &amp; Pass</span>
                   </button>
                   <button id="btnResolveScrim" onclick="openResolveScrimModal()" type="button"
-                    class="edit-admin w-full min-h-[44px] py-2.5 px-3 rounded-xl bg-[#00FF7F]/12 hover:bg-[#00FF7F] hover:text-[#050508] border border-[#00FF7F]/40 font-display text-xs sm:text-sm font-bold text-[#00FF7F] flex items-center justify-center gap-2 transition-colors">
-                    <i class="fa-solid fa-trophy"></i> <span>Complete Scrim</span>
+                    class="edit-admin w-full min-h-[44px] py-2.5 px-3 rounded-xl bg-[#00FF7F]/12 hover:bg-[#00FF7F] hover:text-[#050508] border border-[#00FF7F]/45 font-display text-xs sm:text-sm font-bold text-[#00FF7F] flex items-center justify-center gap-2 transition-colors">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> <span>AI Verify &amp; Complete</span>
                   </button>
                 </div>
               </div>
@@ -1597,17 +1617,23 @@
 
         <!-- Screen Share Video Stage -->
         <div id="voiceScreenStage" class="hidden rounded-2xl overflow-hidden bg-black border border-[#00F2FF]/45 relative">
-          <video id="voiceScreenVideo" autoplay playsinline muted class="w-full max-h-[360px] object-contain bg-black"></video>
+          <video id="voiceScreenVideo" autoplay playsinline class="w-full max-h-[360px] object-contain bg-black"></video>
           <div class="absolute top-3 left-3 flex items-center gap-2">
             <span class="px-3 py-1 rounded-full bg-black/80 font-mono text-xs font-bold text-[#00F2FF]">
               <i class="fa-solid fa-display mr-1"></i> <span id="voiceScreenOwner">Live Screen Share</span>
             </span>
             <span id="voiceScreenQualityPill" class="px-2.5 py-1 rounded-full bg-[#D4FF00]/90 text-[#050508] font-mono text-[10px] font-black uppercase">720P</span>
           </div>
-          <button onclick="toggleScreenFullscreen()" type="button" title="Fullscreen"
-            class="absolute bottom-3 right-3 w-10 h-10 rounded-xl bg-black/80 text-white hover:bg-[#00F2FF] hover:text-black flex items-center justify-center">
-            <i class="fa-solid fa-expand text-sm"></i>
-          </button>
+          <div class="absolute bottom-3 right-3 flex items-center gap-2">
+            <button id="vrScreenAudioBtn" onclick="toggleScreenAudioMute()" type="button" title="Toggle Stream Game Audio"
+              class="w-10 h-10 rounded-xl bg-black/80 text-[#00FF7F] hover:bg-[#00FF7F] hover:text-black flex items-center justify-center">
+              <i class="fa-solid fa-volume-high text-sm"></i>
+            </button>
+            <button onclick="toggleScreenFullscreen()" type="button" title="Fullscreen"
+              class="w-10 h-10 rounded-xl bg-black/80 text-white hover:bg-[#00F2FF] hover:text-black flex items-center justify-center">
+              <i class="fa-solid fa-expand text-sm"></i>
+            </button>
+          </div>
         </div>
 
         <!-- Live Participants Grid -->
@@ -1808,31 +1834,54 @@
     </div>
   </div>
 
-  <!-- MODAL 5: COMPLETE 4V4 SCRIM & LOG RESULT -->
+  <!-- MODAL 5: AI SCREENSHOT REFEREE (1-3 Match Screenshots + Anti-Exploit Verification) -->
   <div id="resolveScrimModal" class="cmd-modal-overlay" style="z-index: 6500;">
-    <div class="cmd-modal-card narrow">
+    <div class="cmd-modal-card">
       <div class="px-5 py-4 border-b border-white/[0.09] bg-[#0A0A13] flex items-center justify-between">
         <div class="flex items-center gap-2.5">
           <button onclick="closeModal('resolveScrimModal')" type="button" class="hidden lg:flex w-9 h-9 rounded-xl bg-white/[0.06] text-white items-center justify-center"><i class="fa-solid fa-arrow-left text-xs"></i></button>
-          <h3 class="font-display text-base font-bold text-[#00FF7F] uppercase">Complete Scrim &amp; Log XP</h3>
+          <div>
+            <h3 class="font-display text-base font-bold text-[#00FF7F] uppercase">AI Match Referee Verification</h3>
+            <span class="font-mono text-[10px] text-[#8E8CA6] uppercase">Upload 1–3 Scoreboard Screenshots • Auto-Extracts Kills, DMG, K/D &amp; XP</span>
+          </div>
         </div>
         <button onclick="closeModal('resolveScrimModal')" type="button" class="w-9 h-9 rounded-full bg-white/5 text-[#9C9AB0] hover:text-white flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="cmd-modal-body p-5 space-y-4">
-        <p class="font-body text-xs text-[#9C9AB0]">Close the current custom scrim lobby, log your squad's match outcome, and earn Scrim Practice XP.</p>
-        <div>
-          <label class="font-mono text-xs text-[#9C9AB0] uppercase block mb-1.5" for="resScrimOutcome">Scrim Result</label>
-          <select id="resScrimOutcome" class="tx-input">
-            <option value="WIN">Victory (+100 Scrim XP)</option>
-            <option value="PLAYED">Completed / Practice (+40 Scrim XP)</option>
-            <option value="CANCEL">Cancel / Clear Lobby (0 XP)</option>
-          </select>
+        <div class="p-3.5 rounded-xl bg-[#00F2FF]/10 border border-[#00F2FF]/30 font-body text-xs text-[#E2E8F0] leading-relaxed">
+          <i class="fa-solid fa-shield-halved text-[#00F2FF] mr-1"></i>
+          <strong>Fair-Play Verification:</strong> Tournyx AI verifies stylized fonts, Captain/IGL presence, and at least <strong>2–4 registered roster players</strong> on the scoreboard before awarding Clan XP, K/D, and Role stats.
         </div>
+
         <div>
-          <label class="font-mono text-xs text-[#9C9AB0] uppercase block mb-1.5" for="resScrimKills">Squad Eliminations (Optional)</label>
-          <input type="number" id="resScrimKills" min="0" max="60" value="0" class="tx-input font-mono">
+          <label class="font-mono text-xs text-[#D4FF00] uppercase block mb-2">Upload Match Screenshots (Max 3) *</label>
+          <input type="file" id="aiScrimScreenshotsInp" accept="image/*" multiple onchange="handleAiScreenshotSelection(event)" class="hidden">
+          <button onclick="document.getElementById('aiScrimScreenshotsInp').click()" type="button"
+            class="w-full py-5 px-4 rounded-2xl bg-[#080810] hover:bg-[#121220] border-2 border-dashed border-[#00F2FF]/45 text-center space-y-1.5 transition-colors">
+            <i class="fa-solid fa-cloud-arrow-up text-2xl text-[#00F2FF]"></i>
+            <div class="font-display text-sm font-bold text-white">Tap to Select 1–3 Scoreboard Screenshots</div>
+            <div class="font-mono text-[11px] text-[#8E8CA6]">Supports Free Fire MAX Clash Squad, Battle Royale, BGMI &amp; CODM</div>
+          </button>
+          <div id="aiScreenshotPreviews" class="grid grid-cols-3 gap-2.5 mt-3"></div>
         </div>
-        <button onclick="submitScrimResolution()" type="button" class="volt-btn w-full min-h-[48px] rounded-xl font-display text-sm font-extrabold uppercase">Confirm &amp; Close Lobby</button>
+
+        <div>
+          <label class="font-mono text-xs text-[#9C9AB0] uppercase block mb-1.5" for="aiScrimNotes">Optional Match Notes / Player IGN Clarification</label>
+          <input type="text" id="aiScrimNotes" maxlength="240" placeholder="e.g. Snow White is Captain, played 4v4 CS Bermuda" class="tx-input">
+        </div>
+
+        <div id="aiVerifyResultBox" class="hidden p-4 rounded-xl bg-[#080810] border border-[#00FF7F]/45 font-mono text-xs space-y-1"></div>
+
+        <div class="flex flex-col sm:flex-row gap-2.5">
+          <button id="btnSubmitAiScrim" onclick="submitAiScrimVerification()" type="button"
+            class="volt-btn flex-1 min-h-[48px] rounded-xl font-display text-sm font-extrabold uppercase flex items-center justify-center gap-2">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Verify &amp; Award XP
+          </button>
+          <button onclick="cancelActiveScrimNoXp()" type="button"
+            class="min-h-[48px] px-4 rounded-xl bg-red-500/12 hover:bg-red-500/22 border border-red-500/40 font-mono text-xs font-bold text-red-400 uppercase">
+            Cancel Match
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -3910,10 +3959,32 @@
         }).join("");
       }
 
-      // 4v4 Scrim Lobby + Captain Set Room ID/Pass + Complete Scrim
+      let aiUploadedScreenshots = [];
+
+      function isInvitedHostForScrim(clan, scrim) {
+        if (!clan || !scrim) return false;
+        const me = getMyRosterEntry(clan);
+        const isMod = me && (me.role === "Owner" || me.role === "Admin");
+        if (!isMod) return false;
+        // Strict rule: ONLY the invited host clan can set Room ID & Pass
+        if (scrim.host_clan_id) return scrim.host_clan_id === clan.clanId;
+        return true;
+      }
+
       function renderScrimWidget(clan, sortedRoster) {
         if (scrimCountdownInterval) { clearInterval(scrimCountdownInterval); scrimCountdownInterval = null; }
         const scrim = clan.nextScrim;
+        const emptyCard = document.getElementById("noActiveScrimCard");
+        const activeCard = document.getElementById("activeScrimLobbyCard");
+
+        if (!scrim || !scrim.title) {
+          emptyCard?.classList.remove("hidden");
+          activeCard?.classList.add("hidden");
+          return;
+        }
+
+        emptyCard?.classList.add("hidden");
+        activeCard?.classList.remove("hidden");
 
         document.getElementById("scrimCheckinStrip").innerHTML = sortedRoster.slice(0, 4).map((m) => `
           <div class="p-2.5 rounded-xl bg-[#080810] border border-white/[0.07] text-center">
@@ -3922,40 +3993,48 @@
           </div>
         `).join("");
 
+        const canSetRoom = isInvitedHostForScrim(clan, scrim);
+        document.getElementById("btnSetScrimRoom")?.classList.toggle("hidden", !canSetRoom);
+
+        const hostName = scrim.host_clan_name || (canSetRoom ? clan.name : "Invited Host Clan");
+        document.getElementById("scrimHostOwnerTag").innerText = canSetRoom
+          ? `Room Host: Your Clan (${clan.name}) — You control Room ID & Pass`
+          : `Room Host: ${hostName} (Only invited host captain can set Room ID)`;
+
+        document.getElementById("scrimSlotPill").innerText = scrim.slot ? `Slot #${scrim.slot}` : "4v4 Live";
+        document.getElementById("scrimMatchTitle").innerText = scrim.title;
+        document.getElementById("scrimMatchSub").innerText = scrim.subtitle || `${clan.game} 4v4 Custom Scrim`;
+
         const credsBadge = document.getElementById("scrimCredsBadge");
-        if (scrim && scrim.title) {
-          document.getElementById("scrimSlotPill").innerText = scrim.slot ? `Slot #${scrim.slot}` : "4v4 Live";
-          document.getElementById("scrimMatchTitle").innerText = scrim.title;
-          document.getElementById("scrimMatchSub").innerText = scrim.subtitle || `${clan.game} Custom Scrim`;
-          if (scrim.room_id) {
-            credsBadge.innerHTML = `<span class="text-[#00FF7F]">ID: ${escapeHtml(scrim.room_id)} • PASS: ${escapeHtml(scrim.room_pass || "OPEN")}</span>`;
-          } else {
-            credsBadge.innerHTML = `<span class="text-[#FF9900]">Captain: Tap "Set Room ID"</span>`;
-          }
-          if (scrim.start_time) {
-            const updateT = () => {
-              const diff = Math.max(0, Math.floor((new Date(scrim.start_time).getTime() - Date.now()) / 1000));
-              if (diff <= 0) { document.getElementById("scrimTimerVal").innerText = "LOBBY OPEN"; return; }
-              const m = Math.floor(diff / 60), s = diff % 60;
-              document.getElementById("scrimTimerVal").innerText = `${m}m ${s < 10 ? "0" : ""}${s}s`;
-            };
-            updateT();
-            scrimCountdownInterval = setInterval(updateT, 1000);
-          } else {
-            document.getElementById("scrimTimerVal").innerText = scrim.room_id ? "LOBBY OPEN" : "SCHEDULED";
-          }
+        if (scrim.room_id) {
+          credsBadge.innerHTML = `<span class="text-[#00FF7F]">ID: ${escapeHtml(scrim.room_id)} • PASS: ${escapeHtml(scrim.room_pass || "NONE")}</span>`;
         } else {
-          document.getElementById("scrimSlotPill").innerText = "Queue Open";
-          document.getElementById("scrimMatchTitle").innerText = `${clan.name} 4v4 Scrim Lobby`;
-          document.getElementById("scrimMatchSub").innerText = `Challenge any rival clan or tap "Set Room ID" to publish a private custom room for your squad.`;
-          document.getElementById("scrimTimerVal").innerText = "READY";
-          credsBadge.innerHTML = `<span class="text-[#8E8CA6]">Not Published</span>`;
+          credsBadge.innerHTML = canSetRoom
+            ? `<span class="text-[#D4FF00]">Tap "Set Room ID" to publish</span>`
+            : `<span class="text-[#FF9900]">Waiting for ${escapeHtml(hostName)}</span>`;
+        }
+
+        if (scrim.start_time) {
+          const updateT = () => {
+            const diff = Math.max(0, Math.floor((new Date(scrim.start_time).getTime() - Date.now()) / 1000));
+            if (diff <= 0) { document.getElementById("scrimTimerVal").innerText = "LOBBY OPEN"; return; }
+            const m = Math.floor(diff / 60), s = diff % 60;
+            document.getElementById("scrimTimerVal").innerText = `${m}m ${s < 10 ? "0" : ""}${s}s`;
+          };
+          updateT();
+          scrimCountdownInterval = setInterval(updateT, 1000);
+        } else {
+          document.getElementById("scrimTimerVal").innerText = scrim.room_id ? "LOBBY OPEN" : "SCHEDULED";
         }
       }
 
       function openSetScrimRoomModal(challengeId = "", partnerClanId = "", prefillTitle = "", prefillMap = "") {
         if (!activeClan) return;
         const scrim = activeClan.nextScrim || {};
+        if (scrim.host_clan_id && scrim.host_clan_id !== activeClan.clanId) {
+          showToast("Only the invited host clan's Captain can set the Room ID & Password.", true);
+          return;
+        }
         document.getElementById("ssrChallengeId").value = challengeId || scrim.challenge_id || "";
         document.getElementById("ssrPartnerClanId").value = partnerClanId || scrim.partner_clan_id || "";
         document.getElementById("ssrTitle").value = prefillTitle || scrim.title || `${activeClan.name} Custom Scrim`;
@@ -4035,45 +4114,102 @@
       }
 
       function openResolveScrimModal() {
-        if (!activeClan) return;
-        document.getElementById("resScrimOutcome").value = "WIN";
-        document.getElementById("resScrimKills").value = "0";
+        if (!activeClan || !activeClan.nextScrim) {
+          showToast("No active scrim to verify.", true);
+          return;
+        }
+        aiUploadedScreenshots = [];
+        document.getElementById("aiScreenshotPreviews").innerHTML = "";
+        document.getElementById("aiScrimNotes").value = "";
+        document.getElementById("aiVerifyResultBox").classList.add("hidden");
         openModal("resolveScrimModal");
       }
 
-      async function submitScrimResolution() {
-        if (!activeClan) return;
-        const outcome = document.getElementById("resScrimOutcome").value;
-        const kills = Math.max(0, Math.min(60, parseInt(document.getElementById("resScrimKills").value, 10) || 0));
-        const scrimTitle = activeClan.nextScrim?.title || "4v4 Custom Scrim";
-        const chId = activeClan.nextScrim?.challenge_id;
+      function handleAiScreenshotSelection(e) {
+        const files = Array.from(e.target.files || []).slice(0, 3);
+        e.target.value = "";
+        if (!files.length) return;
+        aiUploadedScreenshots = [];
+        const previewEl = document.getElementById("aiScreenshotPreviews");
+        previewEl.innerHTML = "";
 
-        if (outcome === "WIN") {
-          const xp = Math.round((100 + kills * 2) * (activeClan.isPremiumClan ? 1.15 : 1));
-          activeClan.seasonalXp += xp;
-          activeClan.allTimeXp += xp;
-          activeClan.statsPlayed += 1;
-          activeClan.statsWon += 1;
-          activeClan.totalKills += kills;
-          activeClan.notifications.push({ msg: `Won ${scrimTitle} (+${xp} Clan XP, ${kills} Kills)!`, timestamp: Date.now() });
-        } else if (outcome === "PLAYED") {
-          const xp = Math.round((40 + kills * 2) * (activeClan.isPremiumClan ? 1.15 : 1));
-          activeClan.seasonalXp += xp;
-          activeClan.allTimeXp += xp;
-          activeClan.statsPlayed += 1;
-          activeClan.totalKills += kills;
-          activeClan.notifications.push({ msg: `Completed ${scrimTitle} (+${xp} Clan XP).`, timestamp: Date.now() });
-        }
-
-        activeClan.nextScrim = null;
-        if (chId && isDbReady && dbClient) {
-          await dbClient.from("clan_scrim_challenges").update({ status: "COMPLETED" }).eq("id", chId).catch(() => {});
-        }
-        closeModal("resolveScrimModal");
-        await saveActiveClanUpdate(outcome === "CANCEL" ? "Scrim lobby cleared." : "Scrim completed & Clan XP updated!");
-        if (outcome === "WIN") triggerCelebration("SCRIM VICTORY!", "CLAN XP & STATS UPDATED");
+        files.forEach((file) => {
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            const img = new Image();
+            img.onload = () => {
+              const canvas = document.createElement("canvas");
+              const scale = Math.min(1, 1280 / img.width);
+              canvas.width = Math.round(img.width * scale);
+              canvas.height = Math.round(img.height * scale);
+              canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+              const compressed = canvas.toDataURL("image/jpeg", 0.82);
+              aiUploadedScreenshots.push(compressed);
+              previewEl.innerHTML += `<div class="rounded-xl overflow-hidden border border-[#00F2FF]/40 bg-black aspect-video"><img src="${compressed}" alt="Proof" class="w-full h-full object-cover"></div>`;
+            };
+            img.src = ev.target.result;
+          };
+          reader.readAsDataURL(file);
+        });
       }
 
+      async function submitAiScrimVerification() {
+        if (!activeClan || !isDbReady || !dbClient || inFlightActions.has("aiScrim")) return;
+        if (!aiUploadedScreenshots.length) {
+          showToast("Upload at least 1 match scoreboard screenshot first.", true);
+          return;
+        }
+
+        inFlightActions.add("aiScrim");
+        const btn = document.getElementById("btnSubmitAiScrim");
+        const resBox = document.getElementById("aiVerifyResultBox");
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> AI Analyzing Scoreboard...`;
+
+        try {
+          const { data, error } = await dbClient.functions.invoke("tournyx-ai-referee", {
+            body: {
+              clan_id: activeClan.clanId,
+              challenge_id: activeClan.nextScrim?.challenge_id || null,
+              submitted_by_email: normStr(user.email),
+              notes: document.getElementById("aiScrimNotes").value.trim(),
+              images: aiUploadedScreenshots
+            }
+          });
+
+          if (error || !data?.ok) {
+            resBox.classList.remove("hidden");
+            resBox.className = "p-4 rounded-xl bg-red-500/12 border border-red-500/45 font-mono text-xs text-red-300";
+            resBox.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1"></i> ${escapeHtml(data?.error || error?.message || "Verification failed.")}`;
+            return;
+          }
+
+          resBox.classList.remove("hidden");
+          resBox.className = "p-4 rounded-xl bg-[#00FF7F]/12 border border-[#00FF7F]/45 font-mono text-xs text-[#00FF7F]";
+          resBox.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> Verified ${escapeHtml(data.summary)} • ${data.matched_count} Squadmates Matched • <strong>+${data.xp_awarded} Clan XP</strong>`;
+
+          await syncAllClanData(false);
+          setTimeout(() => {
+            closeModal("resolveScrimModal");
+            triggerCelebration(data.won ? "BOOYAH VERIFIED!" : "MATCH VERIFIED!", `+${data.xp_awarded} CLAN XP • ${data.team_kills} KILLS`);
+          }, 1200);
+        } finally {
+          inFlightActions.delete("aiScrim");
+          btn.disabled = false;
+          btn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> Verify &amp; Award XP`;
+        }
+      }
+
+      async function cancelActiveScrimNoXp() {
+        if (!activeClan) return;
+        const chId = activeClan.nextScrim?.challenge_id;
+        activeClan.nextScrim = null;
+        if (chId && isDbReady && dbClient) {
+          await dbClient.from("clan_scrim_challenges").update({ status: "DECLINED" }).eq("id", chId).catch(() => {});
+        }
+        closeModal("resolveScrimModal");
+        await saveActiveClanUpdate("Scrim lobby cancelled (0 XP awarded).");
+      }
       async function claimDailyGuildCheckin() {
         if (!activeClan || inFlightActions.has("dailyCheckin")) return;
         const todayKey = getTodayIsoDate();
@@ -6109,6 +6245,7 @@
           }
 
           await enterVoiceRoomSession(roomRow);
+          
         } finally {
           inFlightActions.delete("createVoice");
           btn.disabled = false;
@@ -6159,7 +6296,7 @@
         if (activeVoiceRoom && activeVoiceRoom.id !== roomRow.id) {
           await leaveActiveVoiceRoom(true);
         }
-
+       
         const myIdentityKey = normStr(user.email) || normalizePhone10(user.phone);
         myVoicePeerKey = myIdentityKey + "_" + Math.random().toString(36).slice(2, 6);
 
@@ -6213,7 +6350,10 @@
         document.getElementById("miniVoiceDock").classList.add("hidden");
         openModal("voiceRoomModal");
       }
-
+      localStorage.setItem("tournyx_active_voice_session", JSON.stringify({
+  roomId: roomRow.id, clanId: roomRow.clan_id, clanName: roomRow.clan_name,
+  roomName: roomRow.room_name, joinedAt: Date.now()
+}));
       /** 15-second Heartbeat: keeps active members alive & prunes cache-cleared ghosts (>45s) */
       function startVoiceHeartbeat(roomId) {
         if (voiceHeartbeatInterval) clearInterval(voiceHeartbeatInterval);
@@ -6662,27 +6802,26 @@
               height: { ideal: spec.height, max: spec.height },
               frameRate: { ideal: spec.frameRate, max: spec.frameRate }
             },
-            audio: false
+            audio: {
+              echoCancellation: false,
+              noiseSuppression: false,
+              autoGainControl: false
+            }
           });
-
-          isVoiceScreenSharing = true;
+          // ...
           const vid = document.getElementById("voiceScreenVideo");
+          vid.muted = true; // Mute host's own preview to prevent echo; remote viewers remain unmuted!
           vid.srcObject = localScreenStream;
-          document.getElementById("voiceScreenStage").classList.remove("hidden");
-          document.getElementById("voiceScreenOwner").innerText = "Sharing Your Screen";
-          document.getElementById("voiceScreenQualityPill").innerText = spec.label;
-          document.getElementById("vrScreenBtn").innerHTML = `<i class="fa-solid fa-stop"></i> <span>Stop Share</span>`;
-
-          const videoTrack = localScreenStream.getVideoTracks()[0];
-          if ("contentHint" in videoTrack) videoTrack.contentHint = "motion";
-          videoTrack.onended = () => stopLocalScreenShare(true);
-
-          const hostLabel = String(user.ign || user.username || "Host").trim();
-          voiceSignalChannel?.send({
-            type: "broadcast",
-            event: "rtc_signal",
-            payload: { type: "screen_start", from: myVoicePeerKey, hostName: hostLabel, qualityLabel: spec.label }
-          });
+          // Attach BOTH video + system audio tracks to all connected peers
+          for (const [peerKey, pc] of Object.entries(peerConnections)) {
+            localScreenStream.getTracks().forEach((tr) => {
+              const sender = pc.addTrack(tr, localScreenStream);
+              if (tr.kind === "video") applyAdaptiveVideoBitrate(sender, presetKey);
+            });
+            const offer = await pc.createOffer();
+            await pc.setLocalDescription(offer);
+            voiceSignalChannel?.send({ type: "broadcast", event: "rtc_signal", payload: { type: "offer", from: myVoicePeerKey, to: peerKey, sdp: offer } });
+          }
 
           for (const [peerKey, pc] of Object.entries(peerConnections)) {
             const sender = pc.addTrack(videoTrack, localScreenStream);
@@ -6696,7 +6835,15 @@
           showToast("Screen share cancelled or blocked.", true);
         }
       }
-
+      
+      function toggleScreenAudioMute() {
+        const vid = document.getElementById("voiceScreenVideo");
+        const btn = document.getElementById("vrScreenAudioBtn");
+        if (!vid || !btn) return;
+        vid.muted = !vid.muted;
+        btn.innerHTML = vid.muted ? `<i class="fa-solid fa-volume-xmark text-red-400 text-sm"></i>` : `<i class="fa-solid fa-volume-high text-sm"></i>`;
+      }
+      
       function stopLocalScreenShare(broadcastStop = true) {
         const wasSharing = isVoiceScreenSharing;
         isVoiceScreenSharing = false;
@@ -6952,22 +7099,26 @@
       });
 
       // Keepalive beacon on tab/app close to remove ghost voice presence immediately
-      window.addEventListener("pagehide", () => {
-        if (activeVoiceRoom && isDbReady) {
-          const myId = normStr(user.email) || normalizePhone10(user.phone);
-          const remaining = (activeVoiceRoom.participants || []).filter((p) => p.key !== myId);
-          fetch(`${DB_ENDPOINT}/rest/v1/clan_voice_rooms?id=eq.${encodeURIComponent(activeVoiceRoom.id)}`, {
-            method: "PATCH",
-            keepalive: true,
-            headers: {
-              "Content-Type": "application/json",
-              "apikey": DB_PUBLIC_KEY,
-              "Authorization": `Bearer ${DB_PUBLIC_KEY}`
-            },
-            body: JSON.stringify({ participants: remaining, is_active: remaining.length > 0 })
-          }).catch(() => {});
-        }
-      });
+      let isInternalNav = false;
+ document.addEventListener("click", (e) => {
+   const link = e.target.closest?.("a[href]");
+   if (link && link.getAttribute("href") && !link.getAttribute("href").startsWith("http")) {
+     isInternalNav = true;
+   }
+ });
+
+ window.addEventListener("pagehide", () => {
+   if (!activeVoiceRoom || !isDbReady || isInternalNav) return;
+   // Only send immediate remove beacon if truly closing the app/site
+   const myId = normStr(user.email) || normalizePhone10(user.phone);
+   const remaining = (activeVoiceRoom.participants || []).filter((p) => p.key !== myId);
+   fetch(`${DB_ENDPOINT}/rest/v1/clan_voice_rooms?id=eq.${encodeURIComponent(activeVoiceRoom.id)}`, {
+     method: "PATCH",
+     keepalive: true,
+     headers: { "Content-Type": "application/json", "apikey": DB_PUBLIC_KEY, "Authorization": `Bearer ${DB_PUBLIC_KEY}` },
+     body: JSON.stringify({ participants: remaining, is_active: remaining.length > 0 })
+   }).catch(() => {});
+ });
 
       document.addEventListener("visibilitychange", () => {
         if (document.visibilityState === "visible" && !isGuestMode) {
@@ -7083,6 +7234,13 @@
           switchTab("searchClanTab", document.getElementById("tabBtnFind"));
           openPublicClanModal(inviteId, false);
         }
+        try {
+     const savedVoice = JSON.parse(localStorage.getItem("tournyx_active_voice_session") || "null");
+     if (savedVoice && activeVoiceRoomsMap[savedVoice.clanId] && !activeVoiceRoom) {
+       await enterVoiceRoomSession(activeVoiceRoomsMap[savedVoice.clanId]);
+       minimizeVoiceModal();
+     }
+   } catch (e) {}
       });
     })();
   </script>
