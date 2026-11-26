@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#050508">
   <meta name="color-scheme" content="dark only">
 
-  <title>My Matches &amp; Results - Tournyx Esports</title>
-  <meta name="description" content="Your private Tournyx vault for registered tournaments and daily scrims. Unlock live Room IDs, launch games in one tap, check official results, and download verified E-Certificates.">
+  <title>My Matches, Room Vault &amp; Results - Tournyx Esports</title>
+  <meta name="description" content="Private Tournyx player vault for registered tournaments and daily scrims. Unlock live Room IDs, launch games in one tap, download verified E-Certificates, and join official game WhatsApp groups.">
 
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" href="https://tournyx.in/favicon.ico" sizes="any">
@@ -20,13 +20,13 @@
     }
   </script>
 
-  <!-- Refined App Typography -->
+  <!-- Typography: Plus Jakarta Sans, Space Grotesk, Orbitron, JetBrains Mono, Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Orbitron:wght@700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Orbitron:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <!-- jsPDF for Instant Verified E-Certificates -->
+  <!-- jsPDF for Verified E-Certificates & Match Summary PDFs -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
 
   <!-- Database Client & Tailwind CSS -->
@@ -45,6 +45,7 @@
             "volt": "#D4FF00",
             "cyan-tx": "#00F2FF",
             "emerald-tx": "#00FF7F",
+            "amber-tx": "#FFB020",
             "crimson-tx": "#FF4655"
           },
           fontFamily: {
@@ -82,14 +83,15 @@
       color-scheme: dark only;
       forced-color-adjust: none;
       --bg-canvas: #050508;
-      --bg-glass: rgba(15, 16, 26, 0.74);
-      --bg-glass-strong: rgba(18, 20, 32, 0.90);
+      --bg-glass: rgba(14, 15, 25, 0.78);
+      --bg-glass-hover: rgba(20, 22, 36, 0.88);
       --border-hairline: rgba(255, 255, 255, 0.09);
-      --border-glow: rgba(0, 242, 255, 0.24);
+      --border-strong: rgba(255, 255, 255, 0.16);
       --accent-volt: #D4FF00;
       --accent-cyan: #00F2FF;
       --accent-purple: #8B5CF6;
       --accent-emerald: #00FF7F;
+      --accent-amber: #FFB020;
       --accent-danger: #FF4655;
       --text-primary: #F8FAFC;
       --text-secondary: #94A3B8;
@@ -111,7 +113,7 @@
       padding: 0;
       background-color: var(--bg-canvas);
       scroll-behavior: smooth;
-      font-size: clamp(14.5px, 0.3vw + 13.5px, 16px);
+      font-size: clamp(15px, 0.35vw + 13.5px, 16.5px);
     }
 
     body {
@@ -135,22 +137,25 @@
 
     :focus-visible { outline: 2px solid var(--accent-cyan); outline-offset: 2px; }
 
-    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: #07070C; }
-    ::-webkit-scrollbar-thumb { background: #26283B; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb { background: #27293D; border-radius: 9999px; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
 
-    /* Refined Ambient Glass Backdrop */
+    /* Ambient Tactical Glass Backdrop */
     .ambient-backdrop {
       position: fixed;
       inset: 0;
       z-index: 0;
       pointer-events: none;
-      background:
-        radial-gradient(620px circle at 12% -5%, color-mix(in srgb, var(--accent-cyan) 12%, transparent), transparent 62%),
-        radial-gradient(560px circle at 90% 10%, color-mix(in srgb, var(--accent-volt) 8%, transparent), transparent 58%),
-        radial-gradient(520px circle at 50% 105%, color-mix(in srgb, var(--accent-purple) 10%, transparent), transparent 62%);
+      background-image:
+        radial-gradient(680px circle at 10% -5%, color-mix(in srgb, var(--accent-cyan) 12%, transparent), transparent 62%),
+        radial-gradient(600px circle at 92% 8%, color-mix(in srgb, var(--accent-volt) 8%, transparent), transparent 58%),
+        radial-gradient(540px circle at 50% 105%, color-mix(in srgb, var(--accent-purple) 11%, transparent), transparent 62%),
+        linear-gradient(to right, rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 100% 100%, 34px 34px, 34px 34px;
     }
 
     #ambientParticlesCanvas {
@@ -160,21 +165,25 @@
       height: 100vh;
       z-index: 1;
       pointer-events: none;
-      opacity: 0.32;
+      opacity: 0.34;
     }
 
-    /* Clean Apple-Grade Obsidian Glassmorphism (3-Tier Adaptive) */
+    /* 3-Tier Adaptive Obsidian Glassmorphism (Ultra / Balanced / Lite) */
     .glass-surface {
       background: var(--bg-glass);
       backdrop-filter: blur(18px) saturate(140%);
       -webkit-backdrop-filter: blur(18px) saturate(140%);
       border: 1px solid var(--border-hairline);
-      box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.72), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      box-shadow: 0 14px 36px -12px rgba(0, 0, 0, 0.74), inset 0 1px 0 rgba(255, 255, 255, 0.06);
       transition: border-color 0.22s ease, transform 0.2s ease, background-color 0.22s ease;
     }
+    .glass-surface-hover:hover {
+      background: var(--bg-glass-hover);
+      border-color: rgba(255, 255, 255, 0.16);
+    }
     .glass-inset {
-      background: rgba(8, 9, 15, 0.78);
-      border: 1px solid rgba(255, 255, 255, 0.07);
+      background: rgba(8, 9, 16, 0.80);
+      border: 1px solid rgba(255, 255, 255, 0.075);
     }
 
     html[data-perf-tier="balanced"] .glass-surface {
@@ -185,7 +194,7 @@
     body.power-save .glass-surface {
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
-      background: #0E0F18 !important;
+      background: #0E0F19 !important;
       box-shadow: none !important;
     }
     html[data-perf-tier="lite"] #ambientParticlesCanvas,
@@ -197,47 +206,63 @@
     html[data-perf-tier="lite"] .ambient-backdrop,
     body.power-save .ambient-backdrop {
       background: #050508 !important;
+      background-image: none !important;
     }
     body.power-save { background: #000000 !important; }
     body.power-save .meniscus-dock { filter: none !important; }
 
-    /* Refined App-Grade Buttons */
+    /* App-Grade Action Buttons */
     .btn-primary {
-      background: var(--accent-volt);
+      background: linear-gradient(135deg, var(--accent-volt) 0%, #B8F500 100%);
       color: #050508;
-      font-weight: 700;
+      font-weight: 800;
       border: 1px solid transparent;
-      box-shadow: 0 6px 20px -4px color-mix(in srgb, var(--accent-volt) 35%, transparent);
+      box-shadow: 0 8px 22px -6px color-mix(in srgb, var(--accent-volt) 38%, transparent);
       transition: transform 0.14s ease, filter 0.18s ease, box-shadow 0.18s ease;
     }
     .btn-primary:hover:not(:disabled) { filter: brightness(1.06); }
     .btn-primary:active:not(:disabled) { transform: scale(0.98); }
-    .btn-primary:disabled { opacity: 0.48; cursor: not-allowed; box-shadow: none; }
+    .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; }
 
     .btn-launch {
       background: linear-gradient(135deg, var(--accent-emerald) 0%, var(--accent-cyan) 100%);
       color: #04090B;
       font-weight: 800;
-      box-shadow: 0 8px 24px -6px rgba(0, 255, 127, 0.36);
+      box-shadow: 0 10px 26px -6px rgba(0, 255, 127, 0.38);
       transition: transform 0.14s ease, filter 0.18s ease;
     }
     .btn-launch:hover:not(:disabled) { filter: brightness(1.06); }
     .btn-launch:active:not(:disabled) { transform: scale(0.98); }
 
+    .btn-whatsapp {
+      background: linear-gradient(135deg, rgba(37, 211, 102, 0.18), rgba(18, 140, 126, 0.16));
+      border: 1px solid rgba(37, 211, 102, 0.45);
+      color: #4ADE80;
+      font-weight: 700;
+      transition: all 0.18s ease;
+    }
+    .btn-whatsapp:hover:not(:disabled) {
+      background: linear-gradient(135deg, #25D366, #16A34A);
+      color: #041209;
+      border-color: #25D366;
+      box-shadow: 0 8px 22px -6px rgba(37, 211, 102, 0.45);
+    }
+    .btn-whatsapp:active:not(:disabled) { transform: scale(0.98); }
+
     .btn-ghost {
       background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.10);
+      border: 1px solid rgba(255, 255, 255, 0.11);
       color: #E2E8F0;
       font-weight: 600;
       transition: background-color 0.18s ease, border-color 0.18s ease, transform 0.14s ease;
     }
-    .btn-ghost:hover:not(:disabled) { background: rgba(255, 255, 255, 0.10); border-color: rgba(255, 255, 255, 0.18); }
+    .btn-ghost:hover:not(:disabled) { background: rgba(255, 255, 255, 0.10); border-color: rgba(255, 255, 255, 0.20); }
     .btn-ghost:active:not(:disabled) { transform: scale(0.98); }
-    .btn-ghost:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-ghost:disabled { opacity: 0.48; cursor: not-allowed; }
 
     .btn-danger-soft {
       background: rgba(255, 70, 85, 0.10);
-      border: 1px solid rgba(255, 70, 85, 0.28);
+      border: 1px solid rgba(255, 70, 85, 0.30);
       color: #FF8A93;
       font-weight: 600;
       transition: background-color 0.18s ease, transform 0.14s ease;
@@ -245,18 +270,18 @@
     .btn-danger-soft:hover:not(:disabled) { background: rgba(255, 70, 85, 0.18); }
     .btn-danger-soft:active:not(:disabled) { transform: scale(0.98); }
 
-    /* Clean Segmented Tab Control */
+    /* Spacious Segmented Tab Control */
     .seg-shell {
-      background: rgba(12, 13, 21, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 4px;
-      border-radius: 16px;
+      background: rgba(12, 13, 22, 0.88);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      padding: 5px;
+      border-radius: 18px;
     }
     .seg-btn {
-      min-height: 42px;
-      border-radius: 12px;
+      min-height: 46px;
+      border-radius: 13px;
       font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 13.5px;
+      font-size: 14px;
       font-weight: 600;
       color: #94A3B8;
       transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
@@ -265,46 +290,77 @@
     .seg-btn.is-active {
       background: rgba(255, 255, 255, 0.11);
       color: #FFFFFF;
-      font-weight: 700;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.09);
+      font-weight: 800;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.10);
     }
 
-    /* Clean Input */
+    /* Search Input */
     .tx-search {
       width: 100%;
-      min-height: 44px;
-      background: rgba(12, 13, 21, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.09);
+      min-height: 48px;
+      background: rgba(12, 13, 22, 0.88);
+      border: 1px solid rgba(255, 255, 255, 0.10);
       color: #F8FAFC;
-      border-radius: 14px;
-      padding: 10px 14px 10px 40px;
-      font-size: 14px;
+      border-radius: 15px;
+      padding: 11px 16px 11px 44px;
+      font-size: 14.5px;
       outline: none;
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
     .tx-search:focus {
       border-color: var(--accent-cyan);
-      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-cyan) 14%, transparent);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-cyan) 16%, transparent);
     }
 
-    /* Element-Level Shimmer Skeleton */
+    /* Game-Specific WhatsApp Channel Cards */
+    .wa-game-card {
+      background: rgba(13, 15, 24, 0.84);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .wa-game-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(37, 211, 102, 0.50);
+      box-shadow: 0 14px 30px -10px rgba(37, 211, 102, 0.18);
+    }
+
+    /* Digital Entry Pass Perforated Ticket Edge */
+    .pass-divider {
+      position: relative;
+      border-top: 1.5px dashed rgba(255, 255, 255, 0.16);
+    }
+    .pass-divider::before,
+    .pass-divider::after {
+      content: "";
+      position: absolute;
+      top: -10px;
+      width: 18px;
+      height: 18px;
+      border-radius: 9999px;
+      background: #0F101A;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .pass-divider::before { left: -29px; }
+    .pass-divider::after { right: -29px; }
+
+    /* Shimmer Skeleton */
     @keyframes skelShimmer {
       0% { background-position: -220% 0; }
       100% { background-position: 220% 0; }
     }
     .skel {
-      background: linear-gradient(90deg, rgba(28, 30, 46, 0.85) 20%, rgba(50, 54, 80, 0.92) 50%, rgba(28, 30, 46, 0.85) 80%);
+      background: linear-gradient(90deg, rgba(28, 30, 46, 0.88) 20%, rgba(52, 56, 84, 0.94) 50%, rgba(28, 30, 46, 0.88) 80%);
       background-size: 220% 100%;
-      animation: skelShimmer 1.4s infinite linear;
-      border-radius: 10px;
+      animation: skelShimmer 1.35s infinite linear;
+      border-radius: 12px;
     }
     html[data-perf-tier="lite"] .skel,
     body.power-save .skel { animation: none; background: #191B29; }
 
-    /* Live Pulse Dot */
+    /* Soft Live Pulse */
     @keyframes softPulse {
       0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.45; transform: scale(0.84); }
+      50% { opacity: 0.42; transform: scale(0.84); }
     }
     .pulse-dot { animation: softPulse 1.5s infinite ease-in-out; }
     html[data-perf-tier="lite"] .pulse-dot { animation: none; }
@@ -318,12 +374,12 @@
       -webkit-backdrop-filter: none !important;
     }
 
-    /* Responsive Native-Style Bottom Sheets / Modals */
+    /* Native-Style Bottom Sheets & Centered Modals */
     .sheet-overlay {
       position: fixed;
       inset: 0;
       z-index: 6000;
-      background: rgba(3, 4, 9, 0.84);
+      background: rgba(3, 4, 9, 0.85);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       display: none;
@@ -336,25 +392,25 @@
     body.power-save .sheet-overlay {
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
-      background: rgba(2, 2, 6, 0.95);
+      background: rgba(2, 2, 6, 0.96);
     }
     @media (min-width: 768px) { .sheet-overlay { align-items: center; padding: 20px; } }
     .sheet-overlay.active { display: flex; opacity: 1; }
 
     .sheet-card {
       width: 100%;
-      max-width: 460px;
-      max-height: 90dvh;
+      max-width: 480px;
+      max-height: 91dvh;
       background: #0F101A;
-      border: 1px solid rgba(255, 255, 255, 0.13);
+      border: 1px solid rgba(255, 255, 255, 0.14);
       border-radius: 26px 26px 0 0;
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      box-shadow: 0 28px 68px rgba(0, 0, 0, 0.92);
+      box-shadow: 0 28px 68px rgba(0, 0, 0, 0.94);
       animation: sheetSlideUp 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
-    .sheet-card.wide { max-width: 720px; }
+    .sheet-card.wide { max-width: 740px; }
     @media (min-width: 768px) { .sheet-card { border-radius: 24px; } }
 
     @keyframes sheetSlideUp {
@@ -397,7 +453,7 @@
     .meniscus-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; z-index: 1; }
     .meniscus-glow {
       position: absolute; top: 0; left: 0; width: 58px; height: 58px; border-radius: 9999px;
-      pointer-events: none; z-index: 1; opacity: 0.40; filter: blur(14px);
+      pointer-events: none; z-index: 1; opacity: 0.42; filter: blur(14px);
       will-change: transform, background-color; transition: background-color 0.28s ease;
     }
     .meniscus-bead {
@@ -432,60 +488,68 @@
   <canvas id="ambientParticlesCanvas" aria-hidden="true"></canvas>
 
   <!-- OFFLINE SWR CACHE BANNER -->
-  <div id="offlineBanner" class="hidden fixed top-0 left-0 right-0 z-[9000] bg-[#D4FF00] text-[#050508] py-1.5 px-4 text-center font-mono text-[11px] font-bold uppercase tracking-wider">
+  <div id="offlineBanner" class="hidden fixed top-0 left-0 right-0 z-[9000] bg-[#D4FF00] text-[#050508] py-1.5 px-4 text-center font-mono text-xs font-bold uppercase tracking-wider">
     <i class="fa-solid fa-wifi mr-1.5"></i> Offline — Showing Cached Registered Matches
   </div>
 
   <!-- =========================================================
-       1. CLEAN STICKY GLASS HEADER (Zero Clutter, Zero Alert Buttons)
+       1. STICKY GLASS COMMAND HEADER (Matched 1280px Width & 72px Height)
        ========================================================= -->
-  <header class="sticky top-0 left-0 right-0 z-40 pt-safe bg-[#050508]/88 backdrop-blur-xl border-b border-white/[0.07]">
-    <div class="max-w-[1160px] mx-auto h-16 lg:h-[70px] px-4 lg:px-8 flex items-center justify-between gap-3">
+  <header class="sticky top-0 left-0 right-0 z-40 pt-safe bg-[#050508]/92 backdrop-blur-xl border-b border-white/[0.08]">
+    <div class="max-w-[1280px] mx-auto h-16 lg:h-[72px] px-4 lg:px-8 flex items-center justify-between gap-3">
       <div class="flex items-center gap-3.5 lg:gap-6 min-w-0">
-        <!-- Desktop-Only Back Button -->
+        <!-- Desktop-Only Back Button (Mobile Uses Native Back Gesture) -->
         <button onclick="handleUniversalBack()" type="button" title="Go Back"
-          class="hidden lg:flex w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] hover:border-[#00F2FF]/50 items-center justify-center text-[#94A3B8] hover:text-white transition-colors active:scale-95 flex-shrink-0">
+          class="hidden lg:flex w-10 h-10 rounded-xl bg-[#0D0E16] border border-white/10 hover:border-[#00F2FF]/60 items-center justify-center text-[#C4C2D6] hover:text-white transition-colors active:scale-95 flex-shrink-0">
           <i class="fa-solid fa-arrow-left text-sm"></i>
         </button>
 
         <a href="index.html" class="flex items-center gap-2.5 flex-shrink-0">
           <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_20wCR-WBMpQmw3vxcYUf-vxIO1PYDJoQN_Sid3UDjA9tf0cuX0eH40jbzHoJad4cxbnjhPjqfCw1Z5V1LhgN9zFuIQC0fJjecTy3D9PFu5WjR2H1wHwTD1bUGnXY_NiApWn5gMs6velcQngSzKoP1yHzX0cVsFSUFM8zIefcbiPayY7680Kz0V0ZAAE/s1264/1000093706.png"
-            alt="Tournyx" class="w-9 h-9 rounded-xl border border-white/15 object-cover bg-[#0D0E16]"
+            alt="Tournyx" class="w-9 h-9 rounded-xl border border-[#00F2FF]/40 object-cover bg-[#0D0E16]"
             onerror="this.src='https://placehold.co/80x80/0D0E16/D4FF00?text=TX'">
           <div class="flex flex-col">
-            <span class="font-orbitron text-sm lg:text-[15px] font-black tracking-wider text-white leading-none">
+            <span class="font-orbitron text-sm lg:text-base font-black tracking-wider text-white leading-none">
               TOURNYX<span style="color: var(--accent-volt);">.</span>
             </span>
-            <span class="font-mono text-[10px] text-[#94A3B8] uppercase tracking-wider mt-0.5">My Matches</span>
+            <span class="font-mono text-[10px] text-[#00FF7F] uppercase tracking-wider mt-0.5">Match Vault</span>
           </div>
         </a>
 
         <nav class="hidden lg:flex items-center gap-1" aria-label="Primary Navigation">
-          <a href="index.html" class="px-3.5 py-2 rounded-xl font-display text-xs font-semibold text-[#94A3B8] hover:text-white hover:bg-white/[0.05] transition-colors">Home</a>
-          <a href="explore.html" class="px-3.5 py-2 rounded-xl font-display text-xs font-semibold text-[#94A3B8] hover:text-white hover:bg-white/[0.05] transition-colors">Explore</a>
-          <a href="matches.html" aria-current="page" class="px-3.5 py-2 rounded-xl font-display text-xs font-bold shadow-sm" style="background: var(--accent-volt); color: #050508;">Matches</a>
-          <a href="clans.html" class="px-3.5 py-2 rounded-xl font-display text-xs font-semibold text-[#94A3B8] hover:text-white hover:bg-white/[0.05] transition-colors">Clans</a>
-          <a href="tournament.html" class="px-3.5 py-2 rounded-xl font-display text-xs font-semibold text-[#94A3B8] hover:text-white hover:bg-white/[0.05] transition-colors">Host</a>
-          <a href="tickets.html" class="px-3.5 py-2 rounded-xl font-display text-xs font-semibold text-[#94A3B8] hover:text-white hover:bg-white/[0.05] transition-colors">Tickets</a>
+          <a href="index.html" class="px-3.5 py-2 rounded-xl font-display text-xs font-semibold text-[#A3A1B8] hover:text-white hover:bg-[#141524] transition-colors">Home</a>
+          <a href="explore.html" class="px-3.5 py-2 rounded-xl font-display text-xs font-semibold text-[#A3A1B8] hover:text-white hover:bg-[#141524] transition-colors">Explore</a>
+          <a href="matches.html" aria-current="page" class="px-3.5 py-2 rounded-xl font-display text-xs font-extrabold shadow-sm" style="background: var(--accent-volt); color: #050508;">Matches</a>
+          <a href="clans.html" class="px-3.5 py-2 rounded-xl font-display text-xs font-semibold text-[#A3A1B8] hover:text-white hover:bg-[#141524] transition-colors">Clans &amp; Voice</a>
+          <a href="tournament.html" class="px-3.5 py-2 rounded-xl font-display text-xs font-semibold text-[#A3A1B8] hover:text-white hover:bg-[#141524] transition-colors">Host Studio</a>
+          <a href="tickets.html" class="px-3.5 py-2 rounded-xl font-display text-xs font-semibold text-[#A3A1B8] hover:text-white hover:bg-[#141524] transition-colors">Tickets</a>
         </nav>
       </div>
 
       <div class="flex items-center gap-2 flex-shrink-0">
+        <!-- Official Game WhatsApp Lobbies Quick Pill -->
+        <button onclick="openModal('waGroupsModal')" type="button" title="Join Game-Specific Official WhatsApp Groups"
+          class="btn-whatsapp min-h-[40px] px-3 sm:px-3.5 rounded-xl font-display text-xs inline-flex items-center gap-1.5">
+          <i class="fa-brands fa-whatsapp text-sm"></i>
+          <span class="hidden sm:inline">WhatsApp Groups</span>
+          <span class="sm:hidden">WA Groups</span>
+        </button>
+
         <!-- Adaptive Graphics Toggle -->
-        <button id="perfTierBtn" onclick="cyclePerfTier()" type="button" title="Graphics Mode (Ultra / Balanced / Lite)"
-          class="hidden sm:inline-flex items-center gap-1.5 h-10 px-3 rounded-xl bg-white/[0.04] border border-white/[0.08] hover:border-[#00F2FF]/45 font-mono text-[11px] font-semibold text-[#CBD5E1] uppercase transition-colors">
+        <button id="perfTierBtn" onclick="cyclePerfTier()" type="button" title="Graphics Quality (Ultra / Balanced / Lite)"
+          class="hidden md:inline-flex items-center gap-1.5 h-10 px-3 rounded-xl bg-[#0D0E16] border border-white/10 hover:border-[#00F2FF]/50 font-mono text-[11px] font-bold text-[#CBD5E1] uppercase transition-colors">
           <i class="fa-solid fa-gauge-high text-[#00F2FF] text-xs"></i>
           <span id="perfTierLabel">AUTO</span>
         </button>
 
         <!-- Manual Sync -->
         <button onclick="syncRegisteredMatches(true)" type="button" title="Refresh My Matches"
-          class="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] hover:border-[#00F2FF]/45 text-[#00F2FF] flex items-center justify-center transition-colors active:scale-95">
+          class="w-10 h-10 rounded-xl bg-[#0D0E16] border border-white/10 hover:border-[#00F2FF]/50 text-[#00F2FF] flex items-center justify-center transition-colors active:scale-95">
           <i id="syncSpinIcon" class="fa-solid fa-rotate text-sm"></i>
         </button>
 
         <!-- Profile Avatar -->
-        <button onclick="handleProfileClick()" type="button" class="w-10 h-10 rounded-xl overflow-hidden border border-white/20 bg-[#0D0E16] flex-shrink-0">
+        <button onclick="handleProfileClick()" type="button" class="w-10 h-10 rounded-xl overflow-hidden border border-[#00F2FF]/50 bg-[#0D0E16] flex-shrink-0">
           <img id="headerProfilePic" src="https://api.dicebear.com/7.x/adventurer/svg?seed=Player" alt="Profile" class="w-full h-full object-cover">
         </button>
       </div>
@@ -493,142 +557,220 @@
   </header>
 
   <!-- =========================================================
-       2. MAIN WORKSPACE — STRICTLY REGISTERED MATCHES & RESULTS
+       2. MAIN WORKSPACE (MATCHED 1280px WIDTH & SPACIOUS RHYTHM)
        ========================================================= -->
-  <main class="relative z-10 w-full max-w-[1160px] mx-auto px-4 lg:px-8 pt-5 pb-32 lg:pb-14 space-y-6">
+  <main class="relative z-10 w-full max-w-[1280px] mx-auto px-4 lg:px-8 pt-6 pb-36 lg:pb-16 space-y-6 sm:space-y-7">
 
-    <!-- Clean Page Title & Live Sync Indicator -->
-    <section class="flex items-end justify-between gap-3">
-      <div>
-        <h1 class="font-display text-2xl sm:text-[28px] font-extrabold text-white tracking-tight leading-tight">My Matches</h1>
-        <p class="font-body text-xs sm:text-sm text-[#94A3B8] mt-1">Your registered tournaments, daily scrims, live Room IDs &amp; verified results.</p>
+    <!-- Hero Title Row + Live Ping Diagnostics Pill -->
+    <section class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+      <div class="space-y-1.5">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.08]">
+          <span class="w-2 h-2 rounded-full bg-[#00FF7F] pulse-dot"></span>
+          <span class="font-mono text-[10.5px] font-bold text-[#CBD5E1] uppercase tracking-wider">Private Player Vault</span>
+        </div>
+        <h1 class="font-display text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-tight">My Matches &amp; Results</h1>
+        <p class="font-body text-sm text-[#94A3B8]">Your registered tournaments, daily scrims, private Room IDs, entry passes &amp; verified E-Certificates.</p>
       </div>
-      <div class="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] flex-shrink-0">
-        <span class="w-2 h-2 rounded-full bg-[#00FF7F] pulse-dot"></span>
-        <span id="livePingLabel" class="font-mono text-[11px] font-semibold text-[#CBD5E1]">Live Sync</span>
+
+      <div class="flex items-center gap-2.5 flex-wrap">
+        <button onclick="openReadinessModal()" type="button"
+          class="btn-ghost min-h-[42px] px-3.5 rounded-xl font-mono text-xs inline-flex items-center gap-2">
+          <span id="pingStatusDot" class="w-2 h-2 rounded-full bg-[#00FF7F]"></span>
+          <span id="livePingLabel" class="text-white font-bold">--ms</span>
+          <span class="text-[#94A3B8] hidden sm:inline">• Ping Check</span>
+        </button>
+
+        <a href="explore.html" class="btn-primary min-h-[42px] px-4 rounded-xl font-display text-xs uppercase inline-flex items-center gap-1.5">
+          <i class="fa-solid fa-compass"></i> Browse Arena
+        </a>
       </div>
     </section>
 
+    <!-- 4-Card Spacious Career Telemetry Ribbon (Instant Non-Blocking Numbers) -->
+    <section id="careerStatsRibbon" class="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
+      <div class="glass-surface rounded-2xl p-4 sm:p-5 flex items-center gap-3.5 min-h-[84px]">
+        <div class="w-11 h-11 rounded-2xl bg-[#D4FF00]/14 border border-[#D4FF00]/35 flex items-center justify-center text-[#D4FF00] flex-shrink-0">
+          <i class="fa-solid fa-crosshairs text-lg"></i>
+        </div>
+        <div class="min-w-0">
+          <span class="font-mono text-[10.5px] text-[#94A3B8] uppercase block truncate">Active Lobbies</span>
+          <strong id="statActiveCount" class="font-orbitron text-xl sm:text-2xl font-black text-white block mt-0.5">0</strong>
+        </div>
+      </div>
+
+      <div class="glass-surface rounded-2xl p-4 sm:p-5 flex items-center gap-3.5 min-h-[84px]">
+        <div class="w-11 h-11 rounded-2xl bg-[#00F2FF]/14 border border-[#00F2FF]/35 flex items-center justify-center text-[#00F2FF] flex-shrink-0">
+          <i class="fa-solid fa-award text-lg"></i>
+        </div>
+        <div class="min-w-0">
+          <span class="font-mono text-[10.5px] text-[#94A3B8] uppercase block truncate">E-Certificates</span>
+          <strong id="statCertsCount" class="font-orbitron text-xl sm:text-2xl font-black text-[#00F2FF] block mt-0.5">0</strong>
+        </div>
+      </div>
+
+      <div class="glass-surface rounded-2xl p-4 sm:p-5 flex items-center gap-3.5 min-h-[84px]">
+        <div class="w-11 h-11 rounded-2xl bg-[#8B5CF6]/16 border border-[#8B5CF6]/35 flex items-center justify-center text-[#C4B5FD] flex-shrink-0">
+          <i class="fa-solid fa-skull-crossbones text-lg"></i>
+        </div>
+        <div class="min-w-0">
+          <span class="font-mono text-[10.5px] text-[#94A3B8] uppercase block truncate">Total Frags</span>
+          <strong id="statFragsCount" class="font-orbitron text-xl sm:text-2xl font-black text-white block mt-0.5">0</strong>
+        </div>
+      </div>
+
+      <div class="glass-surface rounded-2xl p-4 sm:p-5 flex items-center gap-3.5 min-h-[84px]">
+        <div class="w-11 h-11 rounded-2xl bg-[#00FF7F]/14 border border-[#00FF7F]/35 flex items-center justify-center text-[#00FF7F] flex-shrink-0">
+          <i class="fa-solid fa-indian-rupee-sign text-lg"></i>
+        </div>
+        <div class="min-w-0">
+          <span class="font-mono text-[10.5px] text-[#94A3B8] uppercase block truncate">Verified Won</span>
+          <strong id="statWonAmount" class="font-orbitron text-xl sm:text-2xl font-black text-[#00FF7F] block mt-0.5">₹0</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dynamic Priority Live / Imminent Match Spotlight Bar (Appears Only When Needed) -->
+    <section id="nextMatchSpotlight" class="hidden"></section>
+
     <!-- Guest Login Gate -->
-    <section id="guestLoginState" class="hidden glass-surface rounded-3xl p-8 sm:p-10 max-w-lg mx-auto text-center space-y-5">
-      <div class="w-14 h-14 mx-auto rounded-2xl bg-[#D4FF00]/12 border border-[#D4FF00]/35 flex items-center justify-center text-[#D4FF00] text-2xl">
+    <section id="guestLoginState" class="hidden glass-surface rounded-3xl p-8 sm:p-12 max-w-xl mx-auto text-center space-y-5">
+      <div class="w-16 h-16 mx-auto rounded-2xl bg-[#D4FF00]/12 border border-[#D4FF00]/35 flex items-center justify-center text-[#D4FF00] text-3xl">
         <i class="fa-solid fa-lock"></i>
       </div>
       <div class="space-y-2">
-        <h2 class="font-display text-xl font-bold text-white">Sign In to View Your Entries</h2>
+        <h2 class="font-display text-xl sm:text-2xl font-extrabold text-white">Sign In to Unlock Your Match Vault</h2>
         <p class="font-body text-sm text-[#94A3B8] leading-relaxed">
-          Only your registered tournaments, private Room IDs, official standings, and E-Certificates appear here.
+          View your registered tournaments and daily scrims, unlock private Room IDs &amp; Passwords, access digital entry passes, and download verified E-Certificates.
         </p>
       </div>
       <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-1">
-        <a href="login.html" class="btn-primary w-full sm:w-auto min-h-[46px] px-7 rounded-xl font-display text-sm inline-flex items-center justify-center gap-2">
-          Sign In
+        <a href="login.html" class="btn-primary w-full sm:w-auto min-h-[48px] px-8 rounded-xl font-display text-sm uppercase inline-flex items-center justify-center gap-2">
+          <i class="fa-solid fa-right-to-bracket"></i> Sign In
         </a>
-        <a href="explore.html" class="btn-ghost w-full sm:w-auto min-h-[46px] px-6 rounded-xl font-display text-sm inline-flex items-center justify-center gap-2">
-          Browse Explore
+        <a href="explore.html" class="btn-ghost w-full sm:w-auto min-h-[48px] px-7 rounded-xl font-display text-sm uppercase inline-flex items-center justify-center gap-2">
+          Explore Arena
         </a>
       </div>
     </section>
 
-    <!-- AUTHENTICATED VAULT SHELL -->
-    <div id="authenticatedVaultShell" class="space-y-5">
+    <!-- AUTHENTICATED PLAYER VAULT SHELL -->
+    <div id="authenticatedVaultShell" class="space-y-6">
 
-      <!-- Clean 3-Tab Switcher (Active | Results | History) + Compact Filter Row -->
+      <!-- Clean 3-Tab Switcher (Active | Results | History) + Search & Event Type Filter -->
       <section class="space-y-3.5">
-        <div role="tablist" class="seg-shell grid grid-cols-3 gap-1">
+        <div role="tablist" class="seg-shell grid grid-cols-3 gap-1.5">
           <button id="tabBtnActive" onclick="switchVaultTab('tabActive', this)" role="tab" aria-selected="true" type="button"
-            class="seg-btn is-active flex items-center justify-center gap-1.5 px-2">
+            class="seg-btn is-active flex items-center justify-center gap-2 px-2">
             <span>Active</span>
-            <span id="cntActive" class="px-1.5 py-0.5 rounded-md bg-white/10 font-mono text-[10px] font-bold text-[#D4FF00] leading-none">0</span>
+            <span id="cntActive" class="px-2 py-0.5 rounded-md bg-white/10 font-mono text-[11px] font-bold text-[#D4FF00] leading-none">0</span>
           </button>
 
           <button id="tabBtnResults" onclick="switchVaultTab('tabResults', this)" role="tab" aria-selected="false" type="button"
-            class="seg-btn flex items-center justify-center gap-1.5 px-2">
+            class="seg-btn flex items-center justify-center gap-2 px-2">
             <span>Results</span>
-            <span id="cntResults" class="px-1.5 py-0.5 rounded-md bg-white/10 font-mono text-[10px] font-bold text-[#00F2FF] leading-none">0</span>
+            <span id="cntResults" class="px-2 py-0.5 rounded-md bg-white/10 font-mono text-[11px] font-bold text-[#00F2FF] leading-none">0</span>
           </button>
 
           <button id="tabBtnHistory" onclick="switchVaultTab('tabHistory', this)" role="tab" aria-selected="false" type="button"
-            class="seg-btn flex items-center justify-center gap-1.5 px-2">
+            class="seg-btn flex items-center justify-center gap-2 px-2">
             <span>History</span>
-            <span id="cntHistory" class="px-1.5 py-0.5 rounded-md bg-white/10 font-mono text-[10px] font-bold text-[#94A3B8] leading-none">0</span>
+            <span id="cntHistory" class="px-2 py-0.5 rounded-md bg-white/10 font-mono text-[11px] font-bold text-[#94A3B8] leading-none">0</span>
           </button>
         </div>
 
-        <!-- Compact Search + Subtle Type Filter (All / Cups / Scrims) -->
-        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+        <div class="flex flex-col md:flex-row items-stretch md:items-center gap-3">
           <div class="relative flex-1 min-w-0">
-            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-[#64748B] text-sm"></i>
-            <input id="vaultSearchInput" type="search" oninput="renderVaultPanels()" placeholder="Search your registered matches, scrims, or clan..." class="tx-search">
+            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-[#64748B] text-sm"></i>
+            <input id="vaultSearchInput" type="search" oninput="renderVaultPanels()" placeholder="Search your registered tournaments, daily scrims, clan, or ID..." class="tx-search">
           </div>
 
-          <div class="grid grid-cols-3 gap-1 p-1 rounded-xl bg-[#0C0D15] border border-white/[0.08] sm:w-[270px] flex-shrink-0">
+          <div class="grid grid-cols-3 gap-1.5 p-1.5 rounded-2xl bg-[#0C0D16] border border-white/[0.09] md:w-[320px] flex-shrink-0">
             <button onclick="setTypeFilter('ALL', this)" data-mtype="ALL" type="button"
-              class="mtype-pill min-h-[36px] rounded-lg bg-white/[0.10] text-white font-display text-xs font-bold transition-colors">All</button>
+              class="mtype-pill min-h-[38px] rounded-xl bg-white/[0.11] text-white font-display text-xs font-bold transition-colors">All</button>
             <button onclick="setTypeFilter('TOURNAMENT', this)" data-mtype="TOURNAMENT" type="button"
-              class="mtype-pill min-h-[36px] rounded-lg text-[#94A3B8] hover:text-white font-display text-xs font-semibold transition-colors">Cups</button>
+              class="mtype-pill min-h-[38px] rounded-xl text-[#94A3B8] hover:text-white font-display text-xs font-semibold transition-colors">Cups</button>
             <button onclick="setTypeFilter('SCRIM', this)" data-mtype="SCRIM" type="button"
-              class="mtype-pill min-h-[36px] rounded-lg text-[#94A3B8] hover:text-white font-display text-xs font-semibold transition-colors">Scrims</button>
+              class="mtype-pill min-h-[38px] rounded-xl text-[#94A3B8] hover:text-white font-display text-xs font-semibold transition-colors">Scrims</button>
           </div>
         </div>
       </section>
 
-      <!-- =======================================================
-           TAB 1: ACTIVE REGISTERED MATCHES & DAILY SCRIMS
-           ======================================================= -->
-      <section id="tabActive" class="vault-panel block space-y-5">
-        <div id="activeMatchesContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-          <!-- Clean Matching Glass Skeletons -->
-          <div class="glass-surface rounded-3xl p-5 space-y-4">
+      <!-- TAB 1: ACTIVE REGISTERED MATCHES & DAILY SCRIMS -->
+      <section id="tabActive" class="vault-panel block">
+        <div id="activeMatchesContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6">
+          <!-- Initial Loading Skeleton (Guaranteed to Replace in <= 12s or Immediately on Response) -->
+          <div class="glass-surface rounded-3xl p-5 sm:p-6 space-y-4">
+            <div class="h-32 w-full rounded-2xl skel"></div>
             <div class="flex items-start justify-between gap-3">
               <div class="space-y-2 flex-1">
-                <div class="h-4 w-32 skel"></div>
-                <div class="h-6 w-3/4 skel"></div>
+                <div class="h-5 w-3/4 skel"></div>
+                <div class="h-4 w-1/2 skel"></div>
               </div>
-              <div class="h-9 w-20 rounded-xl skel"></div>
+              <div class="h-9 w-24 rounded-xl skel"></div>
             </div>
-            <div class="h-24 w-full rounded-2xl skel"></div>
-            <div class="grid grid-cols-2 gap-2.5">
-              <div class="h-12 rounded-xl skel"></div>
-              <div class="h-12 rounded-xl skel"></div>
+            <div class="h-20 w-full rounded-2xl skel"></div>
+            <div class="grid grid-cols-3 gap-2.5">
+              <div class="h-11 rounded-xl skel"></div>
+              <div class="h-11 rounded-xl skel"></div>
+              <div class="h-11 rounded-xl skel"></div>
             </div>
           </div>
-          <div class="glass-surface rounded-3xl p-5 space-y-4">
+          <div class="glass-surface rounded-3xl p-5 sm:p-6 space-y-4">
+            <div class="h-32 w-full rounded-2xl skel"></div>
             <div class="flex items-start justify-between gap-3">
               <div class="space-y-2 flex-1">
-                <div class="h-4 w-28 skel"></div>
-                <div class="h-6 w-2/3 skel"></div>
+                <div class="h-5 w-2/3 skel"></div>
+                <div class="h-4 w-2/5 skel"></div>
               </div>
-              <div class="h-9 w-20 rounded-xl skel"></div>
+              <div class="h-9 w-24 rounded-xl skel"></div>
             </div>
-            <div class="h-24 w-full rounded-2xl skel"></div>
-            <div class="grid grid-cols-2 gap-2.5">
-              <div class="h-12 rounded-xl skel"></div>
-              <div class="h-12 rounded-xl skel"></div>
+            <div class="h-20 w-full rounded-2xl skel"></div>
+            <div class="grid grid-cols-3 gap-2.5">
+              <div class="h-11 rounded-xl skel"></div>
+              <div class="h-11 rounded-xl skel"></div>
+              <div class="h-11 rounded-xl skel"></div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- =======================================================
-           TAB 2: OFFICIAL & PROVISIONAL RESULTS + E-CERTIFICATES
-           ======================================================= -->
-      <section id="tabResults" class="vault-panel hidden space-y-5">
-        <div id="resultsMatchesContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-5"></div>
+      <!-- TAB 2: OFFICIAL & PROVISIONAL RESULTS + E-CERTIFICATES -->
+      <section id="tabResults" class="vault-panel hidden">
+        <div id="resultsMatchesContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6"></div>
       </section>
 
-      <!-- =======================================================
-           TAB 3: MATCH HISTORY & REFUND RECORDS
-           ======================================================= -->
-      <section id="tabHistory" class="vault-panel hidden space-y-5">
-        <div id="historyMatchesContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-5"></div>
+      <!-- TAB 3: MATCH HISTORY & REFUND ARCHIVE -->
+      <section id="tabHistory" class="vault-panel hidden">
+        <div id="historyMatchesContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6"></div>
       </section>
     </div>
 
-    <!-- Clean Minimal Footer -->
-    <footer class="pt-8 border-t border-white/[0.06] flex flex-col sm:flex-row items-center justify-between gap-2 text-center font-mono text-[10.5px] text-[#64748B] uppercase">
-      <span>© 2026 TOURNYX ESPORTS PVT LTD</span>
-      <span>POWERED BY <strong class="font-orbitron text-[#CBD5E1]">QUVA</strong></span>
+    <!-- =========================================================
+         GAME-SPECIFIC OFFICIAL WHATSAPP LOBBY GROUPS SECTION
+         ========================================================= -->
+    <section class="glass-surface rounded-3xl p-5 sm:p-6 space-y-5 border border-[#25D366]/25">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="flex items-center gap-3.5">
+          <div class="w-12 h-12 rounded-2xl bg-[#25D366]/16 border border-[#25D366]/45 flex items-center justify-center text-[#25D366] text-2xl flex-shrink-0">
+            <i class="fa-brands fa-whatsapp"></i>
+          </div>
+          <div>
+            <h2 class="font-display text-base sm:text-lg font-extrabold text-white">Official Game WhatsApp Communities</h2>
+            <p class="font-body text-xs sm:text-sm text-[#94A3B8]">Join your game's official WhatsApp group for 25-min squad rally reminders, daily scrim updates &amp; room-live pings.</p>
+          </div>
+        </div>
+        <span class="self-start sm:self-auto px-3 py-1 rounded-full bg-[#25D366]/14 border border-[#25D366]/35 font-mono text-[10.5px] font-bold text-[#4ADE80] uppercase flex-shrink-0">
+          Verified Tournyx Groups
+        </span>
+      </div>
+
+      <div id="inlineWaGroupsGrid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3.5"></div>
+    </section>
+
+    <!-- Clean Footer -->
+    <footer class="pt-6 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-2 text-center font-mono text-[11px] text-[#64748B] uppercase">
+      <span>© 2026 TOURNYX ESPORTS PVT LTD • PRIVATE MATCH VAULT</span>
+      <span>POWERED BY <strong class="font-orbitron text-[#E2E8F0]">QUVA</strong> TECHNOLOGIES</span>
     </footer>
   </main>
 
@@ -644,7 +786,7 @@
             <stop offset="100%" stop-color="#090A12" stop-opacity="0.98"></stop>
           </linearGradient>
         </defs>
-        <path id="meniscusPath" fill="url(#meniscusGlassGrad)" stroke="rgba(255,255,255,0.12)" stroke-width="1"></path>
+        <path id="meniscusPath" fill="url(#meniscusGlassGrad)" stroke="rgba(255,255,255,0.13)" stroke-width="1"></path>
       </svg>
       <div id="meniscusGlow" class="meniscus-glow" aria-hidden="true"></div>
       <div id="meniscusBead" class="meniscus-bead" aria-hidden="true"></div>
@@ -675,15 +817,16 @@
   </div>
 
   <!-- =========================================================
-       4. MINIMAL PURPOSE-BUILT MODALS (ONLY 3 CLEAN SHEETS)
+       4. PURPOSE-BUILT COMMAND MODALS
        ========================================================= -->
 
-  <!-- MODAL 1: PRO LAUNCH HUD (Auto-Copy Room ID + Click-Only 60s Password Notification + Direct Game Intent) -->
+  <!-- MODAL 1: PRO LAUNCH PROTOCOL HUD (Direct Game Intent + Auto-Copy ID + Click-Only 60s Password Notification) -->
   <div id="proLaunchModal" class="sheet-overlay" style="z-index: 7200;" role="dialog" aria-modal="true" aria-label="Launch Game">
     <div class="sheet-card">
+      <div class="h-1.5 w-full bg-gradient-to-r from-[#00FF7F] via-[#00F2FF] to-[#D4FF00]"></div>
       <div class="px-5 py-4 border-b border-white/[0.08] flex items-center justify-between gap-3">
         <div class="min-w-0">
-          <h3 id="plGameTitle" class="font-display text-base font-bold text-white truncate">Launching Game</h3>
+          <h3 id="plGameTitle" class="font-display text-base font-bold text-white truncate">Launch Game</h3>
           <p id="plMatchSub" class="font-mono text-[11px] text-[#00F2FF] truncate mt-0.5">Room Ready</p>
         </div>
         <button onclick="cancelProLaunch()" type="button" class="w-9 h-9 rounded-full bg-white/[0.06] text-[#94A3B8] hover:text-white flex items-center justify-center flex-shrink-0">
@@ -692,25 +835,23 @@
       </div>
 
       <div class="sheet-body p-5 space-y-4">
-        <!-- Room ID Auto-Copied Strip -->
-        <div class="p-3.5 rounded-2xl bg-[#00FF7F]/10 border border-[#00FF7F]/35 flex items-center justify-between gap-3">
+        <div class="p-4 rounded-2xl bg-[#00FF7F]/10 border border-[#00FF7F]/35 flex items-center justify-between gap-3">
           <div class="min-w-0">
-            <span class="font-mono text-[10px] font-bold text-[#00FF7F] uppercase block"><i class="fa-solid fa-check mr-1"></i>Room ID Copied</span>
+            <span class="font-mono text-[10px] font-bold text-[#00FF7F] uppercase block"><i class="fa-solid fa-check mr-1"></i>Room ID Auto-Copied</span>
             <strong id="plRoomIdVal" class="font-orbitron text-lg font-extrabold text-white tracking-wider block mt-0.5 truncate">--</strong>
           </div>
-          <button onclick="copyLaunchField('id')" type="button" class="min-h-[36px] px-3 rounded-xl bg-white/10 font-mono text-[11px] font-semibold text-white">Copy</button>
+          <button onclick="copyLaunchField('id')" type="button" class="min-h-[38px] px-3.5 rounded-xl bg-white/10 hover:bg-white/16 font-mono text-xs font-bold text-white">Copy</button>
         </div>
 
-        <!-- Clean Password Glance Box -->
         <div class="p-5 rounded-2xl glass-inset text-center space-y-2 border border-white/10">
           <span class="font-mono text-[10.5px] font-semibold text-[#94A3B8] uppercase tracking-wider block">Room Password</span>
           <div id="plRoomPassVal" class="font-orbitron text-3xl font-black text-[#D4FF00] tracking-[0.16em] break-all">--</div>
           <p id="plNotifHint" class="font-body text-xs text-[#00F2FF] pt-1">60-second password notification pinned to your status bar.</p>
         </div>
 
-        <!-- Free Fire MAX / Classic Edition Switcher (Visible Only for Free Fire Lobbies) -->
-        <div id="plFfEditionRow" class="hidden p-2.5 rounded-xl glass-inset flex items-center justify-between gap-2">
-          <span class="font-mono text-[11px] text-[#94A3B8]">Edition</span>
+        <!-- Free Fire MAX / Classic Edition Switcher -->
+        <div id="plFfEditionRow" class="hidden p-3 rounded-xl glass-inset flex items-center justify-between gap-2">
+          <span class="font-mono text-xs text-[#94A3B8]">Game App</span>
           <div class="flex items-center gap-1.5">
             <button id="plPkgFfMax" onclick="setFfEdition('max')" type="button" class="px-3 py-1.5 rounded-lg bg-[#D4FF00] text-[#050508] font-display text-xs font-bold">FF MAX</button>
             <button id="plPkgFfStd" onclick="setFfEdition('std')" type="button" class="px-3 py-1.5 rounded-lg bg-white/[0.06] text-[#94A3B8] font-display text-xs font-semibold">FF Classic</button>
@@ -719,35 +860,106 @@
 
         <div class="space-y-2.5 pt-1">
           <button id="plLaunchNowBtn" onclick="fireDirectGameIntent()" type="button"
-            class="btn-launch w-full min-h-[50px] rounded-2xl font-display text-sm flex items-center justify-center gap-2">
+            class="btn-launch w-full min-h-[52px] rounded-2xl font-display text-sm flex items-center justify-center gap-2">
             <i class="fa-solid fa-gamepad"></i>
             <span id="plLaunchBtnText">Opening Game in 2s...</span>
           </button>
 
           <div class="grid grid-cols-2 gap-2.5">
-            <button onclick="copyLaunchField('pass')" type="button" class="btn-ghost min-h-[44px] rounded-xl font-display text-xs">
-              Copy Password
-            </button>
-            <button onclick="cancelProLaunch()" type="button" class="btn-danger-soft min-h-[44px] rounded-xl font-display text-xs">
-              Cancel
-            </button>
+            <button onclick="copyLaunchField('pass')" type="button" class="btn-ghost min-h-[44px] rounded-xl font-display text-xs">Copy Password</button>
+            <button onclick="cancelProLaunch()" type="button" class="btn-danger-soft min-h-[44px] rounded-xl font-display text-xs">Cancel</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- MODAL 2: SAFE UNJOIN CONFIRMATION -->
-  <div id="unjoinConfirmModal" class="sheet-overlay" style="z-index: 6600;" role="dialog" aria-modal="true" aria-label="Confirm Unjoin">
+  <!-- MODAL 2: DIGITAL MATCH ENTRY PASS (Boarding Pass + Scannable QR Verification) -->
+  <div id="entryPassModal" class="sheet-overlay" style="z-index: 6800;" role="dialog" aria-modal="true" aria-label="Digital Match Entry Pass">
+    <div class="sheet-card">
+      <div class="h-1.5 w-full bg-gradient-to-r from-[#D4FF00] via-[#00F2FF] to-[#8B5CF6]"></div>
+      <div class="px-5 py-4 border-b border-white/[0.08] flex items-center justify-between gap-2">
+        <div>
+          <h3 class="font-display text-base font-bold text-white">Official Match Entry Pass</h3>
+          <span class="font-mono text-[10.5px] text-[#00FF7F] uppercase">Verified Tournyx Slot Ticket</span>
+        </div>
+        <button onclick="closeModal('entryPassModal')" type="button" class="w-9 h-9 rounded-full bg-white/[0.06] text-[#94A3B8] hover:text-white flex items-center justify-center"><i class="fa-solid fa-xmark text-sm"></i></button>
+      </div>
+      <div id="entryPassBody" class="sheet-body p-5 space-y-4"></div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: GAME-SPECIFIC OFFICIAL WHATSAPP COMMUNITIES -->
+  <div id="waGroupsModal" class="sheet-overlay" style="z-index: 6750;" role="dialog" aria-modal="true" aria-label="Official WhatsApp Groups">
+    <div class="sheet-card wide">
+      <div class="px-5 py-4 border-b border-white/[0.08] flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-[#25D366]/18 border border-[#25D366]/45 flex items-center justify-center text-[#25D366] text-xl">
+            <i class="fa-brands fa-whatsapp"></i>
+          </div>
+          <div>
+            <h3 class="font-display text-base font-bold text-white">Game-Specific WhatsApp Groups</h3>
+            <span class="font-mono text-[10.5px] text-[#4ADE80] uppercase">25-Min Rally Alerts • Scrim Schedules • Room Pings</span>
+          </div>
+        </div>
+        <button onclick="closeModal('waGroupsModal')" type="button" class="w-9 h-9 rounded-full bg-white/[0.06] text-[#94A3B8] hover:text-white flex items-center justify-center"><i class="fa-solid fa-xmark text-sm"></i></button>
+      </div>
+      <div class="sheet-body p-5 space-y-4">
+        <p class="font-body text-sm text-[#CBD5E1] leading-relaxed">
+          Pick your game below to join the verified Tournyx WhatsApp community. Organizers post daily scrim timings, slot sheets, and instant room-live alerts directly in these groups.
+        </p>
+        <div id="modalWaGroupsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 4: LIVE PING & PRE-MATCH READINESS DIAGNOSTICS (User-Triggered Only) -->
+  <div id="readinessModal" class="sheet-overlay" style="z-index: 6650;" role="dialog" aria-modal="true" aria-label="Ping and Readiness Check">
+    <div class="sheet-card">
+      <div class="px-5 py-4 border-b border-white/[0.08] flex items-center justify-between gap-2">
+        <div>
+          <h3 class="font-display text-base font-bold text-white">Pre-Match Readiness Check</h3>
+          <span class="font-mono text-[10.5px] text-[#00F2FF] uppercase">Network Latency &amp; Device Telemetry</span>
+        </div>
+        <button onclick="closeModal('readinessModal')" type="button" class="w-9 h-9 rounded-full bg-white/[0.06] text-[#94A3B8] hover:text-white flex items-center justify-center"><i class="fa-solid fa-xmark text-sm"></i></button>
+      </div>
+      <div class="sheet-body p-5 space-y-4">
+        <div class="grid grid-cols-3 gap-2.5 text-center">
+          <div class="p-3.5 rounded-2xl glass-inset">
+            <span class="font-mono text-[10px] text-[#94A3B8] uppercase block">Avg Ping</span>
+            <strong id="diagAvgPing" class="font-orbitron text-lg font-black text-[#00FF7F] mt-1 block">--</strong>
+          </div>
+          <div class="p-3.5 rounded-2xl glass-inset">
+            <span class="font-mono text-[10px] text-[#94A3B8] uppercase block">Jitter</span>
+            <strong id="diagJitter" class="font-orbitron text-lg font-black text-[#00F2FF] mt-1 block">--</strong>
+          </div>
+          <div class="p-3.5 rounded-2xl glass-inset">
+            <span class="font-mono text-[10px] text-[#94A3B8] uppercase block">Grade</span>
+            <strong id="diagGrade" class="font-orbitron text-lg font-black text-[#D4FF00] mt-1 block">--</strong>
+          </div>
+        </div>
+
+        <div id="diagChecklist" class="space-y-2.5"></div>
+
+        <button id="btnRunReadiness" onclick="runLiveReadinessDiagnostics()" type="button"
+          class="btn-primary w-full min-h-[48px] rounded-xl font-display text-sm uppercase flex items-center justify-center gap-2">
+          <i class="fa-solid fa-bolt"></i> Run 4-Sample Latency Test
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 5: SAFE UNJOIN CONFIRMATION -->
+  <div id="unjoinConfirmModal" class="sheet-overlay" style="z-index: 6600;" role="dialog" aria-modal="true" aria-label="Confirm Leave">
     <div class="sheet-card p-5 space-y-4">
       <div class="space-y-1">
         <h3 class="font-display text-lg font-bold text-white">Leave This Match?</h3>
         <p id="unjoinMatchTitle" class="font-mono text-xs text-[#00F2FF] truncate">--</p>
       </div>
       <input type="hidden" id="unjoinMatchId">
-      <div class="p-3.5 rounded-2xl glass-inset font-body text-xs text-[#CBD5E1] space-y-1.5 leading-relaxed">
-        <div>• Any TX Passes used from your vault are restored to <strong>ACTIVE</strong> immediately.</div>
-        <div>• Leaving is locked within 30 minutes of start or once Room ID is live.</div>
+      <div class="p-4 rounded-2xl glass-inset font-body text-xs sm:text-sm text-[#CBD5E1] space-y-1.5 leading-relaxed">
+        <div>• Any TX Passes redeemed from your vault are restored to <strong>ACTIVE</strong> immediately.</div>
+        <div>• Leaving is locked within 30 minutes of start or once Room ID is unlocked.</div>
       </div>
       <div class="grid grid-cols-2 gap-2.5">
         <button onclick="closeModal('unjoinConfirmModal')" type="button" class="btn-ghost min-h-[46px] rounded-xl font-display text-xs">Keep Slot</button>
@@ -756,7 +968,7 @@
     </div>
   </div>
 
-  <!-- MODAL 3: SPECTATOR STREAM POV -->
+  <!-- MODAL 6: SPECTATOR STREAM POV -->
   <div id="spectatorModal" class="sheet-overlay" style="z-index: 6700;" role="dialog" aria-modal="true" aria-label="Live Stream">
     <div class="sheet-card wide">
       <div class="px-5 py-3.5 border-b border-white/[0.08] flex items-center justify-between gap-2">
@@ -788,7 +1000,7 @@
     <button onclick="hideToast()" type="button" aria-label="Dismiss" class="text-[#94A3B8] hover:text-white p-1.5 pointer-events-auto flex-shrink-0"><i class="fa-solid fa-xmark text-sm"></i></button>
   </div>
   <!-- =========================================================
-       5. TOURNYX REGISTERED VAULT ENGINE (PART 2 OF 2 — FINAL)
+       5. TOURNYX REGISTERED MATCH VAULT ENGINE (PART 2 OF 2 — FINAL)
        ========================================================= -->
   <script>
     (() => {
@@ -797,12 +1009,60 @@
       const CONFIG = {
         DB_ENDPOINT: "https://zuatrwfrejnwfnldqqgy.supabase.co",
         DB_PUBLIC_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1YXRyd2ZyZWpud2ZubGRxcWd5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNDE5NjEsImV4cCI6MjA5OTYxNzk2MX0.zcJO4Es-DnuUKR-L_Eu44xIwmz4PxsFVCgs-t492t1g",
-        CACHE_KEY: "tournyx_my_matches_v5",
+        SITE_ORIGIN: "https://tournyx.in",
+        CACHE_KEY: "tournyx_my_matches_v6",
         HEX_REGEX: /^#[0-9A-Fa-f]{6}$/,
-        QUERY_TIMEOUT_MS: 12000
+        QUERY_TIMEOUT_MS: 11000,
+        // Replace these invite URLs with your live official WhatsApp group invite links
+        GAME_WA_GROUPS: [
+          {
+            id: "ffmax",
+            key: "free fire",
+            game: "Free Fire MAX",
+            title: "Free Fire MAX Lobbies",
+            subtitle: "Daily Scrims • Clash Squad & BR Cups",
+            badge: "T1 / T2 / T3",
+            accent: "#FF9900",
+            iconImg: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiJvPTY_y_XU-0Lwbnjwm7961lCDkSlQh2MtCWHunFVX6WS7WCprCtkPyB334BU_-4vGsP0NseDQf4NPBEOIxqjk7VZQqZUHpnLb4Bw-c1UeXQy2M9DzNrNdYt_aL0GEb1AlTPupC5zEjJiP3Ci0Oxk-wdg5TF5cs8_UNSe3uTT1BE884je3iXr8QlMjx8/s240/1000094210.jpg",
+            url: "https://whatsapp.com/channel/0029VbChcQv9xVJnZZNMgX3K"
+          },
+          {
+            id: "bgmi",
+            key: "bgmi",
+            game: "BGMI",
+            title: "BGMI Pro Scrims Hub",
+            subtitle: "Erangel & Miramar • Daily IDP Drops",
+            badge: "SQUAD TPP",
+            accent: "#00FF7F",
+            iconImg: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj3MKUI87mMK4_3DltS3LQgqfrK1sESUIMMqlENdi0dPRtOFkeDbvPsTbSaCRaJOb17QZ5s9OO5dR6kFCYiCkgUCF2zBWwvGFSb3T-9Nz51XuIzMvIiOuqwcLzyzeFmn1orKbiETP4LrlaG-RidnWAAzBwUA3aL5_z62HP4_F7R02lAK_WSYdH0U_Gn7Es/s250/1000094211.jpg",
+            url: "https://whatsapp.com/channel/0029VbChcQv9xVJnZZNMgX3K"
+          },
+          {
+            id: "codm",
+            key: "cod",
+            game: "COD Mobile",
+            title: "CODM Arena Dispatch",
+            subtitle: "MP Ranked, S&D & Battle Royale",
+            badge: "MOBILE",
+            accent: "#00F2FF",
+            iconImg: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg8vsDFFkLAXTA234WJzc3OqsLbmB3HBlKaXhiJo-JFVcTtYmMUI2DVdk5ljTPvGPKj-vtcejjFAxZO0sapDafr6xqN7VpHLGCcxqYWWY2LIZszXhrnnO1gcXFeJzY2EclP6G1bLoea5bshOtT7Dl3p4F_l0pGDuz1j5KJ78dEnI7cQixwAeDC1vKG89N4/s460/1000094209.jpg",
+            url: "https://whatsapp.com/channel/0029VbChcQv9xVJnZZNMgX3K"
+          },
+          {
+            id: "valorant",
+            key: "valorant",
+            game: "Valorant",
+            title: "Valorant India Cups",
+            subtitle: "Mumbai Server 5v5 • BO1 & BO3",
+            badge: "PC 5V5",
+            accent: "#FF4655",
+            iconFa: "fa-solid fa-bolt",
+            url: "https://whatsapp.com/channel/0029VbChcQv9xVJnZZNMgX3K"
+          }
+        ]
       };
 
-      // Proven Direct Android Intents (Opens Installed Game Directly — No Play Store Redirect)
+      // Proven Direct Android Intents (Exact package + scheme — opens installed game directly, never Play Store)
       const GAME_LAUNCHERS = {
         "free fire": {
           label: "Free Fire MAX",
@@ -826,11 +1086,13 @@
         }
       };
 
-      // State
+      // Core State
       let dbClient = null;
       let isDbReady = false;
       let currentUser = null;
       let registeredMatches = [];
+      let isInitialLoadDone = false;
+      let lastSyncFailed = false;
       let activeTabId = "tabActive";
       let activeTypeFilter = "ALL";
       let focusedMatchId = null;
@@ -841,13 +1103,13 @@
       let countdownTimerId = null;
       let particleRafId = null;
 
-      // Pro Launch State (Triggered ONLY on explicit button tap)
+      // Pro Launch State (Strictly Click-Triggered — Zero Auto-Popups)
       let launchCtx = null;
       let launchCountdownTimer = null;
       let passNotifCloseTimer = null;
 
       // ============================================================================
-      // 1. UTILITIES, 3-TIER ADAPTIVE ENGINE & SAFE HELPERS
+      // 1. UTILITIES, CLEAN EXTENSIONLESS URLS & 3-TIER ADAPTIVE ENGINE
       // ============================================================================
       function doHaptic(style = "light") {
         try {
@@ -885,6 +1147,18 @@
         if (!raw) return fallback;
         if (typeof raw === "object") return raw;
         try { return JSON.parse(String(raw)); } catch (e) { return fallback; }
+      }
+
+      // Clean Extensionless Sharing URLs (NEVER includes .html)
+      function getCleanMatchShareUrl(matchId, tab = "") {
+        const q = new URLSearchParams();
+        if (tab) q.set("tab", tab);
+        if (matchId) q.set("focus", matchId);
+        return `${CONFIG.SITE_ORIGIN}/matches?${q.toString()}`;
+      }
+
+      function getCleanExploreShareUrl(matchId) {
+        return `${CONFIG.SITE_ORIGIN}/explore?tournament=${encodeURIComponent(matchId)}`;
       }
 
       function formatIstShort(dateStr) {
@@ -981,10 +1255,10 @@
         const ctx = canvas.getContext("2d");
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        const count = tier === "ultra" ? (window.innerWidth < 768 ? 12 : 20) : 8;
+        const count = tier === "ultra" ? (window.innerWidth < 768 ? 14 : 24) : 10;
         const pts = Array.from({ length: count }, () => ({
           x: Math.random() * canvas.width, y: Math.random() * canvas.height,
-          r: Math.random() * 1.3 + 0.5, vx: (Math.random() - 0.5) * 0.2, vy: -Math.random() * 0.22 - 0.06
+          r: Math.random() * 1.4 + 0.5, vx: (Math.random() - 0.5) * 0.22, vy: -Math.random() * 0.24 - 0.06
         }));
         let lastTs = 0;
         const minDelta = tier === "ultra" ? 16 : 33;
@@ -1007,16 +1281,23 @@
         particleRafId = requestAnimationFrame(frame);
       }
 
+      async function measureSinglePing() {
+        const t0 = performance.now();
+        await fetch(CONFIG.DB_ENDPOINT + "/rest/v1/", { method: "HEAD", headers: { apikey: CONFIG.DB_PUBLIC_KEY } });
+        return Math.max(8, Math.round(performance.now() - t0));
+      }
+
       async function measureLivePing() {
         const el = document.getElementById("livePingLabel");
+        const dot = document.getElementById("pingStatusDot");
         if (!el) return;
-        const t0 = performance.now();
         try {
-          await fetch(CONFIG.DB_ENDPOINT + "/rest/v1/", { method: "HEAD", headers: { apikey: CONFIG.DB_PUBLIC_KEY } });
-          const ms = Math.max(8, Math.round(performance.now() - t0));
-          el.innerText = `Live • ${ms}ms`;
+          const ms = await measureSinglePing();
+          el.innerText = `${ms}ms`;
+          if (dot) dot.className = `w-2 h-2 rounded-full ${ms < 85 ? "bg-[#00FF7F]" : ms < 170 ? "bg-[#FFB020]" : "bg-[#FF4655]"}`;
         } catch (e) {
           el.innerText = "Offline";
+          if (dot) dot.className = "w-2 h-2 rounded-full bg-[#FF4655]";
         }
       }
 
@@ -1122,7 +1403,7 @@
       async function safeQuery(executor, fallback = null) {
         if (!isDbReady || !dbClient) return { data: fallback, error: new Error("Offline") };
         try {
-          const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), CONFIG.QUERY_TIMEOUT_MS));
+          const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error("Request timeout")), CONFIG.QUERY_TIMEOUT_MS));
           const res = await Promise.race([Promise.resolve().then(executor), timeout]);
           if (res?.error) return { data: fallback, error: res.error };
           return { data: res?.data ?? fallback, error: null };
@@ -1132,7 +1413,7 @@
       }
 
       // ============================================================================
-      // 2. STRICT REGISTERED-ONLY RPC SYNC (ZERO GLOBAL LEAKS, ZERO AUTO-POPUPS)
+      // 2. FAIL-SAFE REGISTERED-ONLY SYNC (GUARANTEES SKELETON NEVER HANGS!)
       // ============================================================================
       function resolveRoomCreds(row) {
         let roomId = String(row.room_id || "").trim();
@@ -1161,7 +1442,7 @@
       }
 
       function normalizeEntry(row) {
-        const regStatus = normStr(row.reg_status || "confirmed");
+        const regStatus = normStr(row.reg_status || row.status || "confirmed");
         const isUnjoined = regStatus === "unjoined" || regStatus === "leaved" || regStatus === "cancelled";
         const isCheckedIn = regStatus === "checked_in";
         const tStatus = normStr(row.tourney_status || "upcoming");
@@ -1184,6 +1465,7 @@
           safeNum(row.payout_amount, 0) > 0 ||
           safeNum(row.payout_points, 0) > 0 ||
           Boolean(row.certificate_code) ||
+          Boolean(row.certificate_url) ||
           (Array.isArray(liveSb.standings) && liveSb.standings.length > 0) ||
           (liveSb.mode === "KNOCKOUT" && Boolean(liveSb.teamA && liveSb.teamB))
         );
@@ -1194,15 +1476,15 @@
           : [{ username: row.clan_name || currentUser?.username || "Captain", ign: currentUser?.ign || currentUser?.username || "Player", role: "Captain", is_captain: true }];
 
         return {
-          regId: row.reg_id,
-          matchId: String(row.match_id || ""),
-          eventType: String(row.event_type || "TOURNAMENT").toUpperCase(),
+          regId: row.reg_id || row.id,
+          matchId: String(row.match_id || row.tournament_id || ""),
+          eventType: String(row.event_type || (String(row.match_id || "").startsWith("S-") ? "SCRIM" : "TOURNAMENT")).toUpperCase(),
           scrimMeta: parseJsonSafe(row.scrim_meta, {}) || {},
-          title: row.title || row.match_id,
+          title: row.title || row.match_id || "Registered Event",
           game: String(row.game || "Free Fire MAX").replace(/\s*\[.*\]/, "").trim(),
           format: row.format || "Squad",
           mapName: row.map_name || "Bermuda",
-          banner: safeExternalUrl(row.banner) || "https://placehold.co/900x400/0D0E16/D4FF00?text=TOURNYX",
+          banner: safeExternalUrl(row.banner) || "https://placehold.co/960x420/0D0E16/D4FF00?text=TOURNYX+MATCH",
           prize: safeNum(row.prize, 0),
           prizePts: safeNum(row.prize_pts, 0),
           rewardXp: safeNum(row.reward_xp, 150),
@@ -1226,7 +1508,7 @@
           clanName: row.clan_name || "Solo Entry",
           isCaptain: Boolean(row.is_captain),
           roster,
-          receiptId: row.receipt_id || `TX-${row.match_id}`,
+          receiptId: row.receipt_id || `TX-${row.match_id || "PASS"}`,
           refundStatus: String(row.refund_status || "NONE").toUpperCase(),
           finalRank: safeNum(row.final_rank, 0),
           finalKills: safeNum(row.final_kills, 0),
@@ -1236,40 +1518,137 @@
           payoutStatus: String(row.payout_status || "NONE").toUpperCase(),
           certificateCode: row.certificate_code || "",
           certificateUrl: safeExternalUrl(row.certificate_url),
-          resolvedAt: row.resolved_at || null,
-          alertsEnrolled: row.alerts_enrolled !== false
+          resolvedAt: row.resolved_at || null
         };
       }
 
+      // Fallback strictly registered-only query if RPC hasn't been deployed yet
+      async function fetchRegisteredMatchesFallback(myEmail) {
+        const regRes = await safeQuery(() => dbClient
+          .from("tournament_registrations")
+          .select("*")
+          .ilike("captain_email", myEmail)
+          .order("created_at", { ascending: false }), null);
+
+        if (regRes.error) return { ok: false, matches: [] };
+        const regs = Array.isArray(regRes.data) ? regRes.data : [];
+        if (!regs.length) return { ok: true, matches: [] };
+
+        const ids = [...new Set(regs.map((r) => r.tournament_id).filter(Boolean))];
+        const tRes = await safeQuery(() => dbClient.from("Tournaments").select("*").in("match_id", ids), []);
+        const tMap = new Map();
+        (tRes.data || []).forEach((t) => tMap.set(t.match_id, t));
+
+        const combined = regs
+          .filter((r) => tMap.has(r.tournament_id))
+          .map((r) => {
+            const t = tMap.get(r.tournament_id);
+            const isUnj = ["unjoined", "leaved", "cancelled"].includes(normStr(r.status));
+            return {
+              reg_id: r.id,
+              match_id: t.match_id,
+              event_type: t.event_type,
+              scrim_meta: t.scrim_meta,
+              title: t.title,
+              game: t.game,
+              format: t.format,
+              map_name: t.map_name,
+              banner: t.banner,
+              prize: t.prize,
+              prize_pts: t.prize_pts,
+              reward_xp: t.reward_xp,
+              has_certificates: t.has_certificates,
+              certificate_scope: t.certificate_scope,
+              organizer_username: t.organizer_username,
+              date: t.date,
+              match_period: t.match_period,
+              stream_url: t.stream_url,
+              tourney_status: t.status,
+              verification_status: t.verification_status,
+              room_id: isUnj ? null : t.room_id,
+              room_pass: isUnj ? null : t.room_pass,
+              rooms_json: isUnj ? null : t.rooms_json,
+              live_scoreboard: t.live_scoreboard,
+              slot_number: r.slot_number,
+              clan_name: r.clan_name,
+              is_captain: normStr(r.captain_email) === myEmail,
+              playing_roster: r.playing_roster,
+              receipt_id: r.receipt_id,
+              reg_status: r.status,
+              refund_status: r.refund_status,
+              final_rank: r.final_rank,
+              final_kills: r.final_kills,
+              final_points: r.final_points,
+              payout_amount: r.payout_amount,
+              payout_points: r.payout_points,
+              payout_status: r.payout_status,
+              certificate_code: r.certificate_code,
+              certificate_url: r.certificate_url,
+              resolved_at: r.resolved_at
+            };
+          });
+
+        return { ok: true, matches: combined };
+      }
+
       async function syncRegisteredMatches(isManual = false) {
-        if (!currentUser?.email) return;
+        if (!currentUser?.email) {
+          isInitialLoadDone = true;
+          renderVaultPanels();
+          return;
+        }
+
         const spin = document.getElementById("syncSpinIcon");
         if (isManual && spin) spin.classList.add("fa-spin");
 
         const myEmail = normStr(currentUser.email);
-        const res = await safeQuery(() => dbClient.rpc("get_my_registered_matches", { p_user_email: myEmail }), null);
+        let fetchedOk = false;
+        let rawList = [];
 
-        if (!res.error && res.data?.ok && Array.isArray(res.data.matches)) {
-          const list = res.data.matches.map(normalizeEntry);
-          list.sort((a, b) => {
-            if (focusedMatchId && a.matchId === focusedMatchId) return -1;
-            if (focusedMatchId && b.matchId === focusedMatchId) return 1;
-            if (a.isLive !== b.isLive) return a.isLive ? -1 : 1;
-            if (a.isCompleted !== b.isCompleted) return a.isCompleted ? 1 : -1;
-            return (a.startMs || Infinity) - (b.startMs || Infinity);
-          });
-          registeredMatches = list;
-          try {
-            localStorage.setItem(CONFIG.CACHE_KEY, JSON.stringify({ ts: Date.now(), email: myEmail, matches: list }));
-          } catch (e) {}
+        try {
+          // Primary: Server-verified strict RPC
+          const rpcRes = await safeQuery(() => dbClient.rpc("get_my_registered_matches", { p_user_email: myEmail }), null);
+          if (!rpcRes.error && rpcRes.data?.ok && Array.isArray(rpcRes.data.matches)) {
+            fetchedOk = true;
+            rawList = rpcRes.data.matches;
+          } else {
+            // Secondary: Strict registered-only fallback query (prevents stuck skeletons if RPC is missing)
+            const fb = await fetchRegisteredMatchesFallback(myEmail);
+            if (fb.ok) {
+              fetchedOk = true;
+              rawList = fb.matches;
+            }
+          }
+
+          if (fetchedOk) {
+            lastSyncFailed = false;
+            const list = rawList.map(normalizeEntry);
+            list.sort((a, b) => {
+              if (focusedMatchId && a.matchId === focusedMatchId) return -1;
+              if (focusedMatchId && b.matchId === focusedMatchId) return 1;
+              if (a.isLive !== b.isLive) return a.isLive ? -1 : 1;
+              if (a.isCompleted !== b.isCompleted) return a.isCompleted ? 1 : -1;
+              return (a.startMs || Infinity) - (b.startMs || Infinity);
+            });
+            registeredMatches = list;
+            try {
+              localStorage.setItem(CONFIG.CACHE_KEY, JSON.stringify({ ts: Date.now(), email: myEmail, matches: list }));
+            } catch (e) {}
+            if (isManual) showToast(list.length ? "Registered matches synced" : "Synced — no registered matches yet");
+          } else {
+            const restored = hydrateFromCache();
+            lastSyncFailed = !restored && registeredMatches.length === 0;
+            if (isManual) showToast(restored ? "Offline — showing cached entries" : "Unable to reach Tournyx servers", true);
+          }
+        } catch (err) {
+          const restored = hydrateFromCache();
+          lastSyncFailed = !restored && registeredMatches.length === 0;
+        } finally {
+          // ALWAYS clear skeletons — guaranteed zero infinite loading
+          isInitialLoadDone = true;
           renderVaultPanels();
-          if (isManual) showToast("Your registered matches are up to date");
-        } else {
-          hydrateFromCache();
-          if (isManual) showToast("Offline — showing cached entries", true);
+          if (spin) setTimeout(() => spin.classList.remove("fa-spin"), 350);
         }
-
-        if (spin) setTimeout(() => spin.classList.remove("fa-spin"), 350);
       }
 
       function hydrateFromCache() {
@@ -1277,16 +1656,17 @@
           const cached = JSON.parse(localStorage.getItem(CONFIG.CACHE_KEY) || "null");
           if (cached && normStr(cached.email) === normStr(currentUser?.email) && Array.isArray(cached.matches)) {
             registeredMatches = cached.matches;
-            renderVaultPanels();
+            return true;
           }
         } catch (e) {}
+        return false;
       }
 
-      // Passive Realtime UI Refresh ONLY — Never triggers browser popups or sounds on visit
+      // Passive Realtime UI Refresh ONLY — Never triggers popups/sounds on visit
       function setupRealtimeSync() {
         if (!isDbReady || !dbClient || realtimeChannel) return;
         realtimeChannel = dbClient
-          .channel("tournyx-my-matches-v5")
+          .channel("tournyx-my-matches-v6")
           .on("postgres_changes", { event: "UPDATE", schema: "public", table: "Tournaments" }, (payload) => {
             const id = payload.new?.match_id;
             if (id && registeredMatches.some((m) => m.matchId === id)) {
@@ -1300,7 +1680,110 @@
       }
 
       // ============================================================================
-      // 3. CLEAN 3-TAB RENDERING (ACTIVE | RESULTS | HISTORY)
+      // 3. GAME-SPECIFIC WHATSAPP COMMUNITIES + CAREER STATS + SPOTLIGHT BAR
+      // ============================================================================
+      function getMatchingWaGroup(gameName) {
+        const g = normStr(gameName);
+        return CONFIG.GAME_WA_GROUPS.find((x) => g.includes(x.key)) || CONFIG.GAME_WA_GROUPS[0];
+      }
+
+      function renderGameWaGroups() {
+        const cardHtml = CONFIG.GAME_WA_GROUPS.map((g) => {
+          const iconEl = g.iconImg
+            ? `<img src="${escapeHtml(g.iconImg)}" alt="${escapeHtml(g.game)}" class="w-12 h-12 rounded-xl object-cover border border-white/15 flex-shrink-0">`
+            : `<div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl flex-shrink-0 border border-white/15" style="background: color-mix(in srgb, ${g.accent} 18%, #0A0B12); color: ${g.accent};"><i class="${g.iconFa}"></i></div>`;
+
+          return `
+            <a href="${escapeHtml(g.url)}" target="_blank" rel="noopener noreferrer" onclick="doHaptic()"
+              class="wa-game-card rounded-2xl p-4 flex flex-col justify-between gap-4">
+              <div class="flex items-start gap-3">
+                ${iconEl}
+                <div class="min-w-0 flex-1">
+                  <span class="px-2 py-0.5 rounded-md font-mono text-[9.5px] font-bold uppercase inline-block mb-1" style="background: color-mix(in srgb, ${g.accent} 18%, transparent); color: ${g.accent};">${escapeHtml(g.badge)}</span>
+                  <h3 class="font-display text-sm sm:text-[15px] font-extrabold text-white leading-snug truncate">${escapeHtml(g.title)}</h3>
+                  <p class="font-body text-xs text-[#94A3B8] mt-0.5 line-clamp-2">${escapeHtml(g.subtitle)}</p>
+                </div>
+              </div>
+
+              <div class="w-full min-h-[40px] px-3.5 rounded-xl bg-[#25D366]/14 border border-[#25D366]/40 text-[#4ADE80] font-display text-xs font-bold flex items-center justify-between gap-2">
+                <span class="inline-flex items-center gap-1.5"><i class="fa-brands fa-whatsapp text-sm"></i> Join ${escapeHtml(g.game)}</span>
+                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+              </div>
+            </a>
+          `;
+        }).join("");
+
+        const inlineGrid = document.getElementById("inlineWaGroupsGrid");
+        const modalGrid = document.getElementById("modalWaGroupsGrid");
+        if (inlineGrid) inlineGrid.innerHTML = cardHtml;
+        if (modalGrid) modalGrid.innerHTML = cardHtml;
+      }
+
+      function updateCareerStats() {
+        const active = registeredMatches.filter((m) => !m.isCompleted && !m.isUnjoined);
+        const certs = registeredMatches.filter((m) => !m.isUnjoined && Boolean(m.certificateCode || m.certificateUrl));
+        const frags = registeredMatches.reduce((sum, m) => sum + safeNum(m.finalKills, 0), 0);
+        const won = registeredMatches.reduce((sum, m) => sum + safeNum(m.payoutAmount, 0), 0);
+
+        document.getElementById("statActiveCount").innerText = String(active.length);
+        document.getElementById("statCertsCount").innerText = String(certs.length);
+        document.getElementById("statFragsCount").innerText = String(frags);
+        document.getElementById("statWonAmount").innerText = `₹${won.toLocaleString("en-IN")}`;
+      }
+
+      function renderNextMatchSpotlight(activeList) {
+        const box = document.getElementById("nextMatchSpotlight");
+        if (!box) return;
+        const priority = activeList.find((m) => m.room.isUnlocked) ||
+          activeList.find((m) => m.startMs && m.startMs - Date.now() <= 3 * 3600000 && m.startMs > Date.now() - 3600000);
+
+        if (!priority) {
+          box.classList.add("hidden");
+          box.innerHTML = "";
+          return;
+        }
+
+        const isLive = priority.room.isUnlocked;
+        const slotTxt = priority.slotNumber ? `Slot #${String(priority.slotNumber).padStart(2, "0")}` : "Confirmed";
+        const unlockMs = priority.startMs ? priority.startMs - 15 * 60000 : null;
+
+        box.classList.remove("hidden");
+        box.innerHTML = `
+          <div class="glass-surface rounded-3xl p-4 sm:p-5 border ${isLive ? "border-[#00FF7F]/50 bg-[#00FF7F]/[0.06]" : "border-[#D4FF00]/40"} flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="flex items-center gap-3.5 min-w-0">
+              <div class="w-12 h-12 rounded-2xl ${isLive ? "bg-[#00FF7F]/20 text-[#00FF7F] border-[#00FF7F]/45" : "bg-[#D4FF00]/16 text-[#D4FF00] border-[#D4FF00]/40"} border flex items-center justify-center text-xl flex-shrink-0">
+                <i class="fa-solid ${isLive ? "fa-bolt" : "fa-hourglass-half"}"></i>
+              </div>
+              <div class="min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="font-mono text-[10px] font-black uppercase ${isLive ? "text-[#00FF7F]" : "text-[#D4FF00]"}">${isLive ? "● Room Credentials Ready" : "Starting Soon"}</span>
+                  <span class="font-mono text-[10px] text-[#94A3B8]">• ${escapeHtml(slotTxt)} • ${escapeHtml(priority.game)}</span>
+                </div>
+                <div class="font-display text-base sm:text-lg font-extrabold text-white truncate mt-0.5">${escapeHtml(priority.title)}</div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2.5 flex-shrink-0 flex-wrap">
+              ${isLive
+                ? `<button onclick="initiateProGameLaunch('${escapeHtml(priority.matchId)}')" type="button"
+                     class="btn-launch min-h-[44px] px-5 rounded-xl font-display text-xs sm:text-sm inline-flex items-center gap-2">
+                     <i class="fa-solid fa-gamepad"></i> Launch ${escapeHtml(getGameLabel(priority.game))}
+                   </button>`
+                : `<div class="px-4 py-2.5 rounded-xl glass-inset font-mono text-sm font-black text-[#D4FF00]">
+                     <span class="live-countdown" data-target-ms="${unlockMs || priority.startMs || ""}">--:--</span>
+                   </div>`
+              }
+              <button onclick="openEntryPassModal('${escapeHtml(priority.matchId)}')" type="button"
+                class="btn-ghost min-h-[44px] px-4 rounded-xl font-display text-xs inline-flex items-center gap-1.5">
+                <i class="fa-solid fa-qrcode text-[#00F2FF]"></i> Entry Pass
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      // ============================================================================
+      // 4. CLEAN 3-TAB RENDERING (ACTIVE | RESULTS | HISTORY)
       // ============================================================================
       function switchVaultTab(tabId, btnEl, pushHist = true) {
         doHaptic();
@@ -1315,6 +1798,7 @@
           p.classList.toggle("hidden", p.id !== tabId);
           p.classList.toggle("block", p.id === tabId);
         });
+        if (isInitialLoadDone) renderVaultPanels();
       }
 
       function setTypeFilter(typeVal, btnEl) {
@@ -1323,8 +1807,8 @@
         document.querySelectorAll(".mtype-pill").forEach((b) => {
           const active = b.dataset.mtype === activeTypeFilter;
           b.className = active
-            ? "mtype-pill min-h-[36px] rounded-lg bg-white/[0.10] text-white font-display text-xs font-bold transition-colors"
-            : "mtype-pill min-h-[36px] rounded-lg text-[#94A3B8] hover:text-white font-display text-xs font-semibold transition-colors";
+            ? "mtype-pill min-h-[38px] rounded-xl bg-white/[0.11] text-white font-display text-xs font-bold transition-colors"
+            : "mtype-pill min-h-[38px] rounded-xl text-[#94A3B8] hover:text-white font-display text-xs font-semibold transition-colors";
         });
         renderVaultPanels();
       }
@@ -1341,101 +1825,109 @@
       function buildActiveCard(m) {
         const isLive = m.room.isUnlocked;
         const gameLabel = getGameLabel(m.game);
+        const waGroup = getMatchingWaGroup(m.game);
         const slotTxt = m.slotNumber ? `Slot #${String(m.slotNumber).padStart(2, "0")}` : "Confirmed";
         const unlockMs = m.startMs ? m.startMs - 15 * 60000 : null;
         const isFocused = focusedMatchId && focusedMatchId === m.matchId;
 
         const roomSection = isLive
           ? `
-            <div class="rounded-2xl p-4 bg-[#00FF7F]/[0.07] border border-[#00FF7F]/35 space-y-3.5">
+            <div class="rounded-2xl p-4 sm:p-5 bg-[#00FF7F]/[0.07] border border-[#00FF7F]/40 space-y-3.5">
               <div class="flex items-center justify-between gap-2">
                 <span class="font-mono text-[11px] font-bold text-[#00FF7F] uppercase inline-flex items-center gap-1.5">
                   <span class="w-2 h-2 rounded-full bg-[#00FF7F] pulse-dot"></span>
                   Room Unlocked ${m.room.groupTag ? `• ${escapeHtml(m.room.groupTag)}` : ""}
                 </span>
                 <button onclick="shareSquadWhatsApp('${escapeHtml(m.matchId)}')" type="button"
-                  class="text-xs font-display font-semibold text-[#CBD5E1] hover:text-[#25D366] inline-flex items-center gap-1 transition-colors">
-                  <i class="fa-brands fa-whatsapp text-[#25D366]"></i> Share Squad
+                  class="text-xs font-display font-bold text-[#4ADE80] hover:underline inline-flex items-center gap-1">
+                  <i class="fa-brands fa-whatsapp"></i> Share Squad
                 </button>
               </div>
 
-              <div class="grid grid-cols-2 gap-2.5">
+              <div class="grid grid-cols-2 gap-3">
                 <button onclick="copyText('${escapeHtml(m.room.roomId)}', 'Room ID')" type="button"
-                  class="p-3 rounded-xl glass-inset hover:border-[#00F2FF]/45 text-left transition-colors">
+                  class="p-3.5 rounded-xl glass-inset hover:border-[#00F2FF]/45 text-left transition-colors">
                   <span class="font-mono text-[10px] text-[#94A3B8] uppercase flex items-center justify-between">Room ID <i class="fa-regular fa-copy text-[#00F2FF]"></i></span>
-                  <strong class="font-orbitron text-base font-extrabold text-white tracking-wider block mt-1 truncate">${escapeHtml(m.room.roomId)}</strong>
+                  <strong class="font-orbitron text-base sm:text-lg font-extrabold text-white tracking-wider block mt-1 truncate">${escapeHtml(m.room.roomId)}</strong>
                 </button>
 
                 <button onclick="copyText('${escapeHtml(m.room.roomPass)}', 'Password')" type="button"
-                  class="p-3 rounded-xl glass-inset hover:border-[#D4FF00]/45 text-left transition-colors">
+                  class="p-3.5 rounded-xl glass-inset hover:border-[#D4FF00]/45 text-left transition-colors">
                   <span class="font-mono text-[10px] text-[#94A3B8] uppercase flex items-center justify-between">Password <i class="fa-regular fa-copy text-[#D4FF00]"></i></span>
-                  <strong class="font-orbitron text-base font-extrabold text-[#D4FF00] tracking-wider block mt-1 truncate">${escapeHtml(m.room.roomPass)}</strong>
+                  <strong class="font-orbitron text-base sm:text-lg font-extrabold text-[#D4FF00] tracking-wider block mt-1 truncate">${escapeHtml(m.room.roomPass)}</strong>
                 </button>
               </div>
 
               <button onclick="initiateProGameLaunch('${escapeHtml(m.matchId)}')" type="button"
-                class="btn-launch w-full min-h-[48px] px-4 rounded-xl font-display text-sm flex items-center justify-center gap-2">
-                <i class="fa-solid fa-gamepad"></i>
+                class="btn-launch w-full min-h-[50px] px-4 rounded-xl font-display text-sm sm:text-[15px] flex items-center justify-center gap-2">
+                <i class="fa-solid fa-gamepad text-base"></i>
                 <span>Launch ${escapeHtml(gameLabel)}</span>
               </button>
             </div>
           `
           : `
-            <div class="rounded-2xl p-4 glass-inset flex items-center justify-between gap-3">
+            <div class="rounded-2xl p-4 glass-inset flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div class="min-w-0">
                 <span class="font-mono text-[10px] text-[#94A3B8] uppercase block">Room Vault Locked</span>
-                <p class="font-display text-xs sm:text-sm font-semibold text-white mt-0.5 truncate">
-                  Unlocks around <span class="text-[#00F2FF]">${escapeHtml(unlockMs ? formatIstTime(new Date(unlockMs).toISOString()) : formatIstTime(m.dateRaw))}</span>
+                <p class="font-display text-sm font-semibold text-white mt-0.5 truncate">
+                  Unlocks near <span class="text-[#00F2FF]">${escapeHtml(unlockMs ? formatIstTime(new Date(unlockMs).toISOString()) : formatIstTime(m.dateRaw))}</span>
                 </p>
               </div>
-              <div class="px-3 py-1.5 rounded-xl bg-white/[0.05] border border-white/[0.08] font-mono text-xs font-bold text-[#D4FF00] flex-shrink-0">
-                <span class="live-countdown" data-target-ms="${unlockMs || m.startMs || ""}">--:--</span>
+              <div class="inline-flex items-center gap-2 self-start sm:self-auto flex-shrink-0">
+                <div class="px-3.5 py-2 rounded-xl bg-white/[0.06] border border-white/[0.09] font-mono text-xs font-bold text-[#D4FF00]">
+                  <span class="live-countdown" data-target-ms="${unlockMs || m.startMs || ""}">--:--</span>
+                </div>
+                <button onclick="downloadMatchIcs('${escapeHtml(m.matchId)}')" type="button" title="Save Phone Calendar Alarm"
+                  class="w-10 h-10 rounded-xl bg-white/[0.05] hover:bg-white/12 border border-white/10 text-[#CBD5E1] hover:text-[#D4FF00] flex items-center justify-center transition-colors">
+                  <i class="fa-regular fa-calendar-plus text-sm"></i>
+                </button>
               </div>
             </div>
           `;
 
         return `
-          <article class="glass-surface rounded-3xl overflow-hidden flex flex-col ${isFocused ? "border-[#D4FF00]/60" : isLive ? "border-[#00FF7F]/40" : ""}">
-            <!-- Clean Banner Header -->
-            <div class="relative h-32 bg-[#080910]">
-              <img src="${escapeHtml(m.banner)}" alt="" class="w-full h-full object-cover opacity-80">
-              <div class="absolute inset-0 bg-gradient-to-t from-[#0D0E16] via-[#0D0E16]/45 to-transparent"></div>
-              <div class="absolute top-3 left-3.5 flex items-center gap-1.5 flex-wrap">
-                <span class="px-2.5 py-1 rounded-full font-mono text-[10px] font-bold uppercase ${isLive ? "bg-[#00FF7F] text-[#050508]" : "bg-black/75 border border-white/15 text-white"}">
-                  ${isLive ? "Live Now" : m.eventType === "SCRIM" ? `Daily Scrim${m.scrimMeta?.tier ? ` • ${escapeHtml(String(m.scrimMeta.tier).split(" ")[0])}` : ""}` : "Upcoming"}
+          <article class="glass-surface glass-surface-hover rounded-3xl overflow-hidden flex flex-col ${isFocused ? "border-[#D4FF00]/65" : isLive ? "border-[#00FF7F]/45" : ""}">
+            <!-- Spacious 16:9-Style Header Banner -->
+            <div class="relative h-36 sm:h-40 bg-[#080910]">
+              <img src="${escapeHtml(m.banner)}" alt="" class="w-full h-full object-cover opacity-82">
+              <div class="absolute inset-0 bg-gradient-to-t from-[#0D0E18] via-[#0D0E18]/45 to-transparent"></div>
+              <div class="absolute top-3.5 left-4 flex items-center gap-2 flex-wrap">
+                <span class="px-3 py-1 rounded-full font-mono text-[10.5px] font-bold uppercase ${isLive ? "bg-[#00FF7F] text-[#050508]" : "bg-black/75 border border-white/15 text-white"}">
+                  ${isLive ? "● Live Now" : m.eventType === "SCRIM" ? `⚡ Scrim${m.scrimMeta?.tier ? ` • ${escapeHtml(String(m.scrimMeta.tier).split(" ")[0])}` : ""}` : "Upcoming"}
                 </span>
-                <span class="px-2.5 py-1 rounded-full bg-black/75 border border-white/10 font-mono text-[10px] text-[#CBD5E1]">${escapeHtml(m.matchId)}</span>
+                <span class="px-2.5 py-1 rounded-full bg-black/75 border border-white/12 font-mono text-[10.5px] text-[#CBD5E1]">${escapeHtml(m.matchId)}</span>
               </div>
-              <span class="absolute top-3 right-3.5 px-2.5 py-1 rounded-xl bg-black/80 border border-[#D4FF00]/35 font-mono text-[11px] font-bold text-[#D4FF00]">
-                ${escapeHtml(slotTxt)}
-              </span>
+              <button onclick="openEntryPassModal('${escapeHtml(m.matchId)}')" type="button" title="Open Digital Entry Pass"
+                class="absolute top-3.5 right-4 px-3 py-1 rounded-xl bg-black/80 hover:bg-black border border-[#D4FF00]/45 font-mono text-[11px] font-bold text-[#D4FF00] inline-flex items-center gap-1.5 transition-colors">
+                <i class="fa-solid fa-qrcode text-[11px]"></i> ${escapeHtml(slotTxt)}
+              </button>
             </div>
 
             <!-- Card Body -->
-            <div class="p-5 space-y-4 flex-1 flex flex-col justify-between">
+            <div class="p-5 sm:p-6 space-y-4 flex-1 flex flex-col justify-between">
               <div class="space-y-4">
                 <div>
-                  <h3 class="font-display text-lg font-bold text-white leading-snug break-words">${escapeHtml(m.title)}</h3>
-                  <div class="flex items-center flex-wrap gap-x-2.5 gap-y-1 font-mono text-[11px] text-[#94A3B8] mt-1.5">
-                    <span>${escapeHtml(m.game)} • ${escapeHtml(m.format)}</span>
+                  <h3 class="font-display text-lg sm:text-xl font-extrabold text-white leading-snug break-words">${escapeHtml(m.title)}</h3>
+                  <div class="flex items-center flex-wrap gap-x-2.5 gap-y-1 font-mono text-xs text-[#94A3B8] mt-1.5">
+                    <span class="text-[#CBD5E1] font-semibold">${escapeHtml(m.game)} • ${escapeHtml(m.format)}</span>
                     <span>•</span>
                     <span>${escapeHtml(m.mapName)}</span>
                     <span>•</span>
-                    <span class="text-[#CBD5E1]">${escapeHtml(m.matchPeriod)}</span>
+                    <span>${escapeHtml(m.matchPeriod)}</span>
                   </div>
                 </div>
 
                 ${roomSection}
 
                 <!-- Compact Locked Roster -->
-                <div class="space-y-2">
+                <div class="space-y-2.5">
                   <div class="flex items-center justify-between gap-2">
-                    <span class="font-display text-xs font-semibold text-[#CBD5E1] truncate">${escapeHtml(m.clanName)} • ${m.roster.length} Player${m.roster.length === 1 ? "" : "s"}</span>
-                    <button onclick="copySquadUids('${escapeHtml(m.matchId)}')" type="button" class="font-mono text-[10.5px] text-[#00F2FF] hover:underline flex-shrink-0">Copy UIDs</button>
+                    <span class="font-display text-xs sm:text-sm font-bold text-[#CBD5E1] truncate">${escapeHtml(m.clanName)} • ${m.roster.length} Locked</span>
+                    <button onclick="copySquadUids('${escapeHtml(m.matchId)}')" type="button" class="font-mono text-[11px] font-semibold text-[#00F2FF] hover:underline flex-shrink-0">Copy UIDs</button>
                   </div>
                   <div class="grid grid-cols-2 gap-2">
                     ${m.roster.slice(0, 4).map((p, i) => `
-                      <div class="px-3 py-2 rounded-xl glass-inset flex items-center justify-between gap-2 min-w-0">
+                      <div class="px-3 py-2.5 rounded-xl glass-inset flex items-center justify-between gap-2 min-w-0">
                         <span class="font-display text-xs font-semibold text-white truncate">${escapeHtml(p.ign || p.username || `Player ${i + 1}`)}</span>
                         ${i === 0 ? `<span class="font-mono text-[9.5px] font-bold text-[#D4FF00] flex-shrink-0">CAP</span>` : ""}
                       </div>
@@ -1444,36 +1936,41 @@
                 </div>
               </div>
 
-              <!-- Clean Action Row + Quiet Auto-Reminder Status -->
+              <!-- Clean Action Row + Game WA Group Shortcut -->
               <div class="space-y-3 pt-1">
-                <div class="grid grid-cols-3 gap-2">
+                <div class="grid grid-cols-3 gap-2.5">
                   <button onclick="executeSquadCheckIn('${escapeHtml(m.matchId)}', this)" type="button" ${m.isCheckedIn ? "disabled" : ""}
-                    class="min-h-[42px] px-2.5 rounded-xl font-display text-xs flex items-center justify-center gap-1.5 ${m.isCheckedIn ? "bg-[#00FF7F]/15 border border-[#00FF7F]/35 text-[#00FF7F] font-bold" : "btn-primary"}">
+                    class="min-h-[44px] px-3 rounded-xl font-display text-xs flex items-center justify-center gap-1.5 ${m.isCheckedIn ? "bg-[#00FF7F]/16 border border-[#00FF7F]/40 text-[#00FF7F] font-bold" : "btn-primary"}">
                     <i class="fa-solid ${m.isCheckedIn ? "fa-check-double" : "fa-check"} text-[11px]"></i>
                     <span>${m.isCheckedIn ? "Ready" : "Check In"}</span>
                   </button>
 
                   <button onclick="openSquadVoiceOrChat('${escapeHtml(m.matchId)}')" type="button"
-                    class="btn-ghost min-h-[42px] px-2.5 rounded-xl font-display text-xs flex items-center justify-center gap-1.5">
-                    <i class="fa-solid fa-headset text-[#00F2FF] text-[11px]"></i>
+                    class="btn-ghost min-h-[44px] px-3 rounded-xl font-display text-xs flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-headset text-[#00F2FF] text-xs"></i>
                     <span>Voice</span>
                   </button>
 
                   ${isLive
-                    ? `<a href="explore.html?tournament=${encodeURIComponent(m.matchId)}"
-                         class="btn-ghost min-h-[42px] px-2.5 rounded-xl font-display text-xs flex items-center justify-center gap-1.5">
-                         <i class="fa-solid fa-sitemap text-[#D4FF00] text-[11px]"></i> Bracket
-                       </a>`
+                    ? `<button onclick="openEntryPassModal('${escapeHtml(m.matchId)}')" type="button"
+                         class="btn-ghost min-h-[44px] px-3 rounded-xl font-display text-xs flex items-center justify-center gap-1.5">
+                         <i class="fa-solid fa-qrcode text-[#D4FF00] text-xs"></i> Pass
+                       </button>`
                     : `<button onclick="openUnjoinModal('${escapeHtml(m.matchId)}')" type="button"
-                         class="btn-danger-soft min-h-[42px] px-2.5 rounded-xl font-display text-xs flex items-center justify-center gap-1.5">
+                         class="btn-danger-soft min-h-[44px] px-3 rounded-xl font-display text-xs flex items-center justify-center gap-1.5">
                          Leave
                        </button>`
                   }
                 </div>
 
-                <div class="flex items-center justify-between gap-2 pt-2.5 border-t border-white/[0.06] font-mono text-[10.5px] text-[#64748B]">
-                  <span class="inline-flex items-center gap-1.5"><i class="fa-regular fa-bell text-[#00F2FF]"></i> Auto-reminders active (Email &amp; Push)</span>
-                  <a href="explore.html?tournament=${encodeURIComponent(m.matchId)}" class="text-[#CBD5E1] hover:text-white">Details ↗</a>
+                <div class="flex items-center justify-between gap-2 pt-3 border-t border-white/[0.07] font-mono text-[11px]">
+                  <a href="${escapeHtml(waGroup.url)}" target="_blank" rel="noopener noreferrer"
+                    class="text-[#4ADE80] hover:underline inline-flex items-center gap-1.5 font-semibold truncate">
+                    <i class="fa-brands fa-whatsapp text-xs"></i> Join ${escapeHtml(waGroup.game)} WA Group ↗
+                  </a>
+                  <button onclick="shareCleanEventLink('${escapeHtml(m.matchId)}', '${escapeHtml(m.title)}')" type="button" class="text-[#CBD5E1] hover:text-white flex-shrink-0">
+                    Share <i class="fa-solid fa-share-nodes text-[10px] ml-0.5"></i>
+                  </button>
                 </div>
               </div>
             </div>
@@ -1484,7 +1981,6 @@
       function buildResultCard(m) {
         const sb = m.liveScoreboard || {};
         const isVerified = m.isResolved || m.verifyStatus === "VERIFIED";
-        const isProvisional = !isVerified && (m.verifyStatus === "PROVISIONAL" || Boolean(sb.provisional));
         const standings = Array.isArray(sb.standings) ? sb.standings : [];
         const isKnockout = sb.mode === "KNOCKOUT" || Boolean(sb.teamA && sb.teamB);
 
@@ -1495,18 +1991,18 @@
         const canDownloadCert = Boolean(m.certificateUrl || m.certificateCode);
 
         const statusBadge = isVerified
-          ? `<span class="px-2.5 py-1 rounded-full bg-[#00FF7F]/15 border border-[#00FF7F]/40 font-mono text-[10px] font-bold text-[#00FF7F] uppercase">Verified Result</span>`
+          ? `<span class="px-2.5 py-1 rounded-full bg-[#00FF7F]/16 border border-[#00FF7F]/40 font-mono text-[10px] font-bold text-[#00FF7F] uppercase">Verified Result</span>`
           : `<span class="px-2.5 py-1 rounded-full bg-[#D4FF00]/12 border border-[#D4FF00]/35 font-mono text-[10px] font-bold text-[#D4FF00] uppercase">Provisional • Verifying in 24h</span>`;
 
         let standingsHtml = "";
         if (isKnockout) {
           standingsHtml = `
-            <div class="p-3.5 rounded-2xl glass-inset flex items-center justify-between gap-3">
+            <div class="p-4 rounded-2xl glass-inset flex items-center justify-between gap-3">
               <div class="min-w-0 flex-1">
                 <span class="font-display text-sm font-bold text-white block truncate">${escapeHtml(sb.teamA || m.clanName)}</span>
-                <span class="font-mono text-[10px] text-[#94A3B8]">vs ${escapeHtml(sb.teamB || "Opponent")}</span>
+                <span class="font-mono text-[11px] text-[#94A3B8]">vs ${escapeHtml(sb.teamB || "Opponent")}</span>
               </div>
-              <div class="px-3.5 py-1.5 rounded-xl bg-white/[0.06] font-orbitron text-sm font-black text-[#D4FF00] flex-shrink-0">
+              <div class="px-4 py-2 rounded-xl bg-white/[0.06] font-orbitron text-base font-black text-[#D4FF00] flex-shrink-0">
                 ${safeNum(sb.scoreA, 0)} - ${safeNum(sb.scoreB, 0)}
               </div>
             </div>
@@ -1514,7 +2010,7 @@
         } else if (standings.length > 0) {
           standingsHtml = `
             <div class="rounded-2xl glass-inset overflow-hidden">
-              <div class="px-3.5 py-2 border-b border-white/[0.06] grid grid-cols-12 font-mono text-[10px] text-[#64748B] uppercase">
+              <div class="px-4 py-2.5 border-b border-white/[0.07] grid grid-cols-12 font-mono text-[10px] text-[#64748B] uppercase">
                 <span class="col-span-2">Rank</span>
                 <span class="col-span-6">Squad</span>
                 <span class="col-span-2 text-center">Kills</span>
@@ -1524,7 +2020,7 @@
                 ${standings.slice(0, 4).map((row, idx) => {
                   const isMine = normStr(row.team).includes(normStr(m.clanName)) && normStr(m.clanName).length > 2;
                   return `
-                    <div class="px-3.5 py-2 grid grid-cols-12 items-center text-xs ${isMine ? "bg-[#D4FF00]/10" : ""}">
+                    <div class="px-4 py-2.5 grid grid-cols-12 items-center text-xs ${isMine ? "bg-[#D4FF00]/10" : ""}">
                       <span class="col-span-2 font-mono font-bold ${idx === 0 ? "text-[#D4FF00]" : "text-[#94A3B8]"}">#${safeNum(row.rank, idx + 1)}</span>
                       <span class="col-span-6 font-display font-semibold ${isMine ? "text-[#D4FF00]" : "text-white"} truncate pr-1">${escapeHtml(row.team)}</span>
                       <span class="col-span-2 text-center font-mono text-[#00F2FF]">${safeNum(row.kills, 0)}</span>
@@ -1538,71 +2034,70 @@
         }
 
         return `
-          <article class="glass-surface rounded-3xl p-5 space-y-4 flex flex-col justify-between ${isVerified && m.finalRank === 1 ? "border-[#D4FF00]/45" : ""}">
+          <article class="glass-surface rounded-3xl p-5 sm:p-6 space-y-4 flex flex-col justify-between ${isVerified && m.finalRank === 1 ? "border-[#D4FF00]/45" : ""}">
             <div class="space-y-4">
               <div class="flex items-start justify-between gap-3">
                 <div class="min-w-0">
                   <div class="flex items-center gap-2 flex-wrap mb-1.5">
                     ${statusBadge}
-                    <span class="font-mono text-[10.5px] text-[#94A3B8]">${escapeHtml(m.matchId)}</span>
+                    <span class="font-mono text-[11px] text-[#94A3B8]">${escapeHtml(m.matchId)}</span>
                   </div>
-                  <h3 class="font-display text-lg font-bold text-white leading-snug break-words">${escapeHtml(m.title)}</h3>
-                  <p class="font-mono text-[11px] text-[#94A3B8] mt-0.5">${escapeHtml(m.clanName)} • ${escapeHtml(m.game)}</p>
+                  <h3 class="font-display text-lg sm:text-xl font-extrabold text-white leading-snug break-words">${escapeHtml(m.title)}</h3>
+                  <p class="font-mono text-xs text-[#94A3B8] mt-1">${escapeHtml(m.clanName)} • ${escapeHtml(m.game)}</p>
                 </div>
                 ${m.finalRank > 0 ? `
-                  <div class="px-3 py-2 rounded-2xl bg-[#D4FF00]/12 border border-[#D4FF00]/35 text-center flex-shrink-0">
-                    <span class="font-mono text-[9px] text-[#CBD5E1] uppercase block">Rank</span>
-                    <strong class="font-orbitron text-base font-black text-[#D4FF00]">#${m.finalRank}</strong>
+                  <div class="px-3.5 py-2 rounded-2xl bg-[#D4FF00]/14 border border-[#D4FF00]/40 text-center flex-shrink-0">
+                    <span class="font-mono text-[9.5px] text-[#CBD5E1] uppercase block">Rank</span>
+                    <strong class="font-orbitron text-lg font-black text-[#D4FF00]">#${m.finalRank}</strong>
                   </div>
                 ` : ""}
               </div>
 
-              <!-- Your Performance & Payout Strip -->
-              <div class="grid grid-cols-3 gap-2">
-                <div class="p-3 rounded-2xl glass-inset text-center">
-                  <span class="font-mono text-[9.5px] text-[#94A3B8] uppercase block">Kills</span>
-                  <strong class="font-orbitron text-sm sm:text-base font-bold text-white">${m.finalKills}</strong>
+              <div class="grid grid-cols-3 gap-2.5">
+                <div class="p-3.5 rounded-2xl glass-inset text-center">
+                  <span class="font-mono text-[10px] text-[#94A3B8] uppercase block">Frags</span>
+                  <strong class="font-orbitron text-base font-bold text-white mt-0.5 block">${m.finalKills}</strong>
                 </div>
-                <div class="p-3 rounded-2xl glass-inset text-center">
-                  <span class="font-mono text-[9.5px] text-[#94A3B8] uppercase block">Points</span>
-                  <strong class="font-orbitron text-sm sm:text-base font-bold text-[#00F2FF]">${m.finalPoints}</strong>
+                <div class="p-3.5 rounded-2xl glass-inset text-center">
+                  <span class="font-mono text-[10px] text-[#94A3B8] uppercase block">Points</span>
+                  <strong class="font-orbitron text-base font-bold text-[#00F2FF] mt-0.5 block">${m.finalPoints}</strong>
                 </div>
-                <div class="p-3 rounded-2xl glass-inset text-center">
-                  <span class="font-mono text-[9.5px] text-[#94A3B8] uppercase block">${hasPayout ? (m.payoutStatus === "SETTLED" ? "Credited" : "Prize") : "Status"}</span>
-                  <strong class="font-orbitron text-xs sm:text-sm font-bold ${hasPayout ? "text-[#00FF7F]" : "text-[#CBD5E1]"} truncate block">${hasPayout ? escapeHtml(prizeParts.join(" + ")) : (isVerified ? "Settled" : "Live")}</strong>
+                <div class="p-3.5 rounded-2xl glass-inset text-center">
+                  <span class="font-mono text-[10px] text-[#94A3B8] uppercase block">${hasPayout ? (m.payoutStatus === "SETTLED" ? "Credited" : "Prize") : "Status"}</span>
+                  <strong class="font-orbitron text-xs sm:text-sm font-bold ${hasPayout ? "text-[#00FF7F]" : "text-[#CBD5E1]"} mt-1 block truncate">${hasPayout ? escapeHtml(prizeParts.join(" + ")) : (isVerified ? "Settled" : "Live")}</strong>
                 </div>
               </div>
 
               ${standingsHtml}
             </div>
 
-            <!-- Action Buttons: Direct E-Certificate Download + Full Bracket / Stream -->
             <div class="space-y-2.5 pt-1">
               ${canDownloadCert ? `
                 <button onclick="downloadEventCertificate('${escapeHtml(m.matchId)}')" type="button"
-                  class="btn-primary w-full min-h-[46px] px-4 rounded-xl font-display text-sm flex items-center justify-center gap-2">
+                  class="btn-primary w-full min-h-[48px] px-4 rounded-xl font-display text-sm flex items-center justify-center gap-2">
                   <i class="fa-solid fa-award"></i>
                   <span>Download Official E-Certificate</span>
                 </button>
               ` : (m.hasCertificates && !isVerified ? `
-                <div class="px-3.5 py-2.5 rounded-xl glass-inset font-mono text-[11px] text-[#94A3B8] text-center">
+                <div class="px-4 py-3 rounded-xl glass-inset font-mono text-xs text-[#94A3B8] text-center">
                   <i class="fa-solid fa-award text-[#00F2FF] mr-1.5"></i>E-Certificate unlocks once organizer verifies results
                 </div>
               ` : "")}
 
-              <div class="grid grid-cols-2 gap-2">
-                <a href="explore.html?tournament=${encodeURIComponent(m.matchId)}"
-                  class="btn-ghost min-h-[42px] px-3 rounded-xl font-display text-xs flex items-center justify-center gap-1.5">
-                  <i class="fa-solid fa-sitemap text-[#00F2FF] text-[11px]"></i> Full Standings
-                </a>
+              <div class="grid grid-cols-2 gap-2.5">
+                <button onclick="downloadMatchSummaryPdf('${escapeHtml(m.matchId)}')" type="button"
+                  class="btn-ghost min-h-[44px] px-3 rounded-xl font-display text-xs flex items-center justify-center gap-1.5">
+                  <i class="fa-solid fa-file-pdf text-[#D4FF00]"></i> Result PDF
+                </button>
                 ${m.streamUrl
                   ? `<button onclick="openSpectatorModal('${escapeHtml(m.matchId)}')" type="button"
-                       class="btn-ghost min-h-[42px] px-3 rounded-xl font-display text-xs flex items-center justify-center gap-1.5">
-                       <i class="fa-solid fa-play text-[#D4FF00] text-[11px]"></i> Watch Stream
+                       class="btn-ghost min-h-[44px] px-3 rounded-xl font-display text-xs flex items-center justify-center gap-1.5">
+                       <i class="fa-solid fa-play text-[#00F2FF]"></i> Watch Stream
                      </button>`
-                  : `<div class="min-h-[42px] px-3 rounded-xl glass-inset font-mono text-[10.5px] text-[#64748B] flex items-center justify-center truncate">
-                       #${escapeHtml(m.receiptId)}
-                     </div>`
+                  : `<a href="explore.html?tournament=${encodeURIComponent(m.matchId)}"
+                       class="btn-ghost min-h-[44px] px-3 rounded-xl font-display text-xs flex items-center justify-center gap-1.5">
+                       <i class="fa-solid fa-sitemap text-[#00F2FF]"></i> Full Bracket
+                     </a>`
                 }
               </div>
             </div>
@@ -1616,28 +2111,29 @@
         const canDownloadCert = !m.isUnjoined && Boolean(m.certificateUrl || m.certificateCode);
 
         const badge = m.isUnjoined
-          ? `<span class="px-2.5 py-1 rounded-full font-mono text-[10px] font-bold uppercase ${isRefundDone ? "bg-[#00FF7F]/15 text-[#00FF7F]" : "bg-[#FF4655]/15 text-[#FF8A93]"}">${isRefundDone ? "Passes Refunded" : isRefundPending ? "Refund Pending" : "Left Match"}</span>`
+          ? `<span class="px-2.5 py-1 rounded-full font-mono text-[10px] font-bold uppercase ${isRefundDone ? "bg-[#00FF7F]/16 text-[#00FF7F]" : "bg-[#FF4655]/16 text-[#FF8A93]"}">${isRefundDone ? "Passes Refunded" : isRefundPending ? "Refund Pending" : "Left Match"}</span>`
           : `<span class="px-2.5 py-1 rounded-full bg-white/[0.08] font-mono text-[10px] font-semibold text-[#CBD5E1] uppercase">Completed</span>`;
 
         return `
-          <article class="glass-surface rounded-3xl p-5 space-y-4">
+          <article class="glass-surface glass-surface-hover rounded-3xl p-5 sm:p-6 space-y-4">
             <div class="flex items-start justify-between gap-3">
               <div class="min-w-0 space-y-1">
                 <div class="flex items-center gap-2 flex-wrap">
                   ${badge}
-                  <span class="font-mono text-[10.5px] text-[#94A3B8]">${escapeHtml(m.matchId)}</span>
+                  <span class="font-mono text-[11px] text-[#94A3B8]">${escapeHtml(m.matchId)}</span>
                 </div>
-                <h3 class="font-display text-base font-bold text-white truncate">${escapeHtml(m.title)}</h3>
-                <p class="font-mono text-[11px] text-[#94A3B8] truncate">${escapeHtml(m.clanName)} • ${escapeHtml(m.game)} • ${escapeHtml(m.matchPeriod)}</p>
+                <h3 class="font-display text-base sm:text-lg font-extrabold text-white truncate">${escapeHtml(m.title)}</h3>
+                <p class="font-mono text-xs text-[#94A3B8] truncate">${escapeHtml(m.clanName)} • ${escapeHtml(m.game)} • ${escapeHtml(m.matchPeriod)}</p>
               </div>
-              ${m.payoutAmount > 0 ? `<span class="font-orbitron text-sm font-extrabold text-[#00FF7F] flex-shrink-0">+₹${m.payoutAmount.toLocaleString("en-IN")}</span>` : ""}
+              ${m.payoutAmount > 0 ? `<span class="font-orbitron text-base font-extrabold text-[#00FF7F] flex-shrink-0">+₹${m.payoutAmount.toLocaleString("en-IN")}</span>` : ""}
             </div>
 
-            <div class="flex items-center justify-between gap-2 pt-3 border-t border-white/[0.07] font-mono text-[11px]">
+            <div class="flex items-center justify-between gap-2 pt-3.5 border-t border-white/[0.07] font-mono text-xs">
               <span class="text-[#64748B]">Receipt #${escapeHtml(m.receiptId)}</span>
-              <div class="flex items-center gap-3">
-                ${canDownloadCert ? `<button onclick="downloadEventCertificate('${escapeHtml(m.matchId)}')" type="button" class="text-[#D4FF00] hover:underline font-semibold"><i class="fa-solid fa-award mr-1"></i>Certificate</button>` : ""}
-                <a href="explore.html?tournament=${encodeURIComponent(m.matchId)}" class="text-[#00F2FF] hover:underline">View ↗</a>
+              <div class="flex items-center gap-3.5">
+                ${canDownloadCert ? `<button onclick="downloadEventCertificate('${escapeHtml(m.matchId)}')" type="button" class="text-[#D4FF00] hover:underline font-bold"><i class="fa-solid fa-award mr-1"></i>Certificate</button>` : ""}
+                <button onclick="downloadMatchSummaryPdf('${escapeHtml(m.matchId)}')" type="button" class="text-[#CBD5E1] hover:text-white">PDF</button>
+                <a href="explore.html?tournament=${encodeURIComponent(m.matchId)}" class="text-[#00F2FF] hover:underline font-semibold">Open ↗</a>
               </div>
             </div>
           </article>
@@ -1645,6 +2141,8 @@
       }
 
       function renderVaultPanels() {
+        updateCareerStats();
+
         const q = normStr(document.getElementById("vaultSearchInput")?.value);
         const filtered = registeredMatches.filter((m) => {
           if (activeTypeFilter !== "ALL" && m.eventType !== activeTypeFilter) return false;
@@ -1660,35 +2158,65 @@
         document.getElementById("cntResults").innerText = String(resultsList.length);
         document.getElementById("cntHistory").innerText = String(historyList.length);
 
+        renderNextMatchSpotlight(activeList);
+
         const activeBox = document.getElementById("activeMatchesContainer");
-        activeBox.innerHTML = activeList.length
-          ? activeList.map(buildActiveCard).join("")
-          : `
-            <div class="col-span-full glass-surface rounded-3xl p-10 text-center space-y-4">
-              <div class="w-14 h-14 mx-auto rounded-2xl bg-white/[0.05] border border-white/10 flex items-center justify-center text-[#00F2FF] text-2xl">
-                <i class="fa-solid fa-trophy"></i>
+        if (lastSyncFailed && registeredMatches.length === 0) {
+          activeBox.innerHTML = `
+            <div class="col-span-full glass-surface rounded-3xl p-10 sm:p-12 text-center space-y-4">
+              <div class="w-16 h-16 mx-auto rounded-2xl bg-[#FF4655]/14 border border-[#FF4655]/40 flex items-center justify-center text-[#FF4655] text-2xl">
+                <i class="fa-solid fa-wifi"></i>
               </div>
-              <div class="space-y-1">
-                <h3 class="font-display text-base font-bold text-white">No Active Registered Matches</h3>
-                <p class="font-body text-sm text-[#94A3B8]">Register for a tournament or daily scrim on Explore to unlock your private Room Vault here.</p>
+              <div class="space-y-1.5">
+                <h3 class="font-display text-lg font-extrabold text-white">Couldn't Sync Your Match Vault</h3>
+                <p class="font-body text-sm text-[#94A3B8] max-w-md mx-auto">Check your internet connection and tap retry to load your registered tournaments and scrims.</p>
               </div>
-              <a href="explore.html" class="btn-primary inline-flex min-h-[44px] px-6 rounded-xl font-display text-sm items-center justify-center gap-2">
-                Explore Tournaments
-              </a>
+              <button onclick="syncRegisteredMatches(true)" type="button" class="btn-primary min-h-[46px] px-7 rounded-xl font-display text-sm uppercase inline-flex items-center gap-2">
+                <i class="fa-solid fa-rotate"></i> Retry Sync
+              </button>
             </div>
           `;
+        } else {
+          activeBox.innerHTML = activeList.length
+            ? activeList.map(buildActiveCard).join("")
+            : `
+              <div class="col-span-full glass-surface rounded-3xl p-10 sm:p-12 text-center space-y-5">
+                <div class="w-16 h-16 mx-auto rounded-2xl bg-[#D4FF00]/12 border border-[#D4FF00]/35 flex items-center justify-center text-[#D4FF00] text-3xl">
+                  <i class="fa-solid fa-trophy"></i>
+                </div>
+                <div class="space-y-1.5">
+                  <h3 class="font-display text-lg sm:text-xl font-extrabold text-white">${q || activeTypeFilter !== "ALL" ? "No Matching Registered Lobbies" : "No Active Registered Matches Yet"}</h3>
+                  <p class="font-body text-sm text-[#94A3B8] max-w-md mx-auto">
+                    ${q || activeTypeFilter !== "ALL"
+                      ? "Try clearing your search or switching back to All to see all your registered entries."
+                      : "Register for an upcoming tournament or daily scrim on Explore to unlock your private Room ID, Digital Entry Pass & 1-Tap Game Launcher here."}
+                  </p>
+                </div>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+                  <a href="explore.html" class="btn-primary w-full sm:w-auto min-h-[48px] px-7 rounded-xl font-display text-sm uppercase inline-flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-compass"></i> Explore Tournaments
+                  </a>
+                  <button onclick="openModal('waGroupsModal')" type="button" class="btn-whatsapp w-full sm:w-auto min-h-[48px] px-6 rounded-xl font-display text-sm inline-flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-whatsapp text-base"></i> Join Game WA Groups
+                  </button>
+                </div>
+              </div>
+            `;
+        }
 
         const resultsBox = document.getElementById("resultsMatchesContainer");
         resultsBox.innerHTML = resultsList.length
           ? resultsList.map(buildResultCard).join("")
           : `
-            <div class="col-span-full glass-surface rounded-3xl p-10 text-center space-y-3">
-              <div class="w-14 h-14 mx-auto rounded-2xl bg-white/[0.05] border border-white/10 flex items-center justify-center text-[#D4FF00] text-2xl">
+            <div class="col-span-full glass-surface rounded-3xl p-10 sm:p-12 text-center space-y-4">
+              <div class="w-16 h-16 mx-auto rounded-2xl bg-[#00F2FF]/12 border border-[#00F2FF]/35 flex items-center justify-center text-[#00F2FF] text-3xl">
                 <i class="fa-solid fa-award"></i>
               </div>
-              <div class="space-y-1">
-                <h3 class="font-display text-base font-bold text-white">No Results Published Yet</h3>
-                <p class="font-body text-sm text-[#94A3B8]">Live provisional standings, verified payouts, and downloadable E-Certificates appear here once your matches conclude.</p>
+              <div class="space-y-1.5">
+                <h3 class="font-display text-lg sm:text-xl font-extrabold text-white">No Results Published Yet</h3>
+                <p class="font-body text-sm text-[#94A3B8] max-w-md mx-auto">
+                  Live provisional AI standings, verified payouts, and 1-tap E-Certificates appear here as soon as your matches conclude.
+                </p>
               </div>
             </div>
           `;
@@ -1697,9 +2225,14 @@
         historyBox.innerHTML = historyList.length
           ? historyList.map(buildHistoryCard).join("")
           : `
-            <div class="col-span-full glass-surface rounded-3xl p-10 text-center space-y-2">
-              <h3 class="font-display text-base font-bold text-white">No Match History Yet</h3>
-              <p class="font-body text-sm text-[#94A3B8]">Your completed tournaments and cancelled slot records will appear here.</p>
+            <div class="col-span-full glass-surface rounded-3xl p-10 sm:p-12 text-center space-y-4">
+              <div class="w-16 h-16 mx-auto rounded-2xl bg-white/[0.05] border border-white/12 flex items-center justify-center text-[#94A3B8] text-2xl">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+              </div>
+              <div class="space-y-1.5">
+                <h3 class="font-display text-lg font-extrabold text-white">No Match History Yet</h3>
+                <p class="font-body text-sm text-[#94A3B8] max-w-md mx-auto">Your completed tournaments, payout settlements, and TX Pass refund records will appear here.</p>
+              </div>
             </div>
           `;
 
@@ -1717,7 +2250,7 @@
       }
 
       // ============================================================================
-      // 4. PRO LAUNCH PROTOCOL (DIRECT GAME INTENT + AUTO-COPY ID + CLICK-ONLY 60s PASS)
+      // 5. PRO LAUNCH PROTOCOL (DIRECT GAME INTENT + AUTO-COPY ID + CLICK-ONLY 60s PASS)
       // ============================================================================
       function resolveLauncherKey(gameName) {
         const g = normStr(gameName);
@@ -1728,7 +2261,6 @@
         return "free fire";
       }
 
-      // Fires ONLY when the user explicitly clicks "Launch Game" — auto-closes after 60s
       async function showClickOnly60sPasswordNotification(m) {
         if (!("Notification" in window)) return false;
         let perm = Notification.permission;
@@ -1752,7 +2284,7 @@
               tag,
               renotify: true,
               requireInteraction: true,
-              data: { url: `/matches.html?focus=${encodeURIComponent(m.matchId)}` }
+              data: { url: `/matches?focus=${encodeURIComponent(m.matchId)}` }
             });
             clearTimeout(passNotifCloseTimer);
             passNotifCloseTimer = setTimeout(async () => {
@@ -1787,13 +2319,9 @@
         const savedFf = localStorage.getItem("tournyx_ff_edition") || "max";
         launchCtx = { match: m, key, ffEdition: savedFf };
 
-        // 1. Auto-copy Room ID immediately
         await copyText(m.room.roomId, "Room ID", true);
-
-        // 2. Show 60-second password shade notification (click-triggered only)
         const notifOk = await showClickOnly60sPasswordNotification(m);
 
-        // 3. Populate clean 2-second Pre-Launch HUD
         document.getElementById("plGameTitle").innerText = `Launch ${getGameLabel(m.game)}`;
         document.getElementById("plMatchSub").innerText = `${m.slotNumber ? `Slot #${String(m.slotNumber).padStart(2, "0")}` : m.matchId} • ${m.title}`;
         document.getElementById("plRoomIdVal").innerText = m.room.roomId;
@@ -1841,7 +2369,6 @@
         }, 1000);
       }
 
-      // Direct Android App Intent (Exact Working Scheme from maintenance.html — Zero Play Store Redirect)
       function fireDirectGameIntent() {
         clearInterval(launchCountdownTimer);
         if (!launchCtx) return;
@@ -1884,20 +2411,174 @@
       }
 
       // ============================================================================
-      // 5. DIRECT E-CERTIFICATE DOWNLOADER, CHECK-IN, UNJOIN & SQUAD ACTIONS
+      // 6. DIGITAL MATCH ENTRY PASS (QR), PING DIAGNOSTICS, .ICS ALARM & PDFs
       // ============================================================================
+      function openEntryPassModal(matchId) {
+        const m = registeredMatches.find((x) => x.matchId === matchId);
+        if (!m) return;
+        const slotTxt = m.slotNumber ? `SLOT #${String(m.slotNumber).padStart(2, "0")}` : "VERIFIED";
+        const passUrl = getCleanMatchShareUrl(m.matchId);
+        const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=6&bgcolor=0F101A&color=D4FF00&data=${encodeURIComponent(passUrl)}`;
+
+        document.getElementById("entryPassBody").innerHTML = `
+          <div class="rounded-2xl glass-inset p-4 space-y-4">
+            <div class="flex items-start justify-between gap-3">
+              <div class="min-w-0">
+                <span class="font-mono text-[10px] font-bold text-[#00F2FF] uppercase">${escapeHtml(m.game)} • ${escapeHtml(m.format)}</span>
+                <h4 class="font-display text-lg font-extrabold text-white mt-0.5 leading-snug break-words">${escapeHtml(m.title)}</h4>
+                <p class="font-mono text-[11px] text-[#94A3B8] mt-1">${escapeHtml(m.matchPeriod)}</p>
+              </div>
+              <div class="px-3 py-1.5 rounded-xl bg-[#D4FF00]/16 border border-[#D4FF00]/45 font-orbitron text-xs font-black text-[#D4FF00] flex-shrink-0">
+                ${escapeHtml(slotTxt)}
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 text-xs">
+              <div>
+                <span class="font-mono text-[9.5px] text-[#64748B] uppercase block">Squad / Entry</span>
+                <strong class="font-display text-white font-bold truncate block mt-0.5">${escapeHtml(m.clanName)}</strong>
+              </div>
+              <div>
+                <span class="font-mono text-[9.5px] text-[#64748B] uppercase block">Receipt ID</span>
+                <strong class="font-mono text-[#00FF7F] font-bold truncate block mt-0.5">#${escapeHtml(m.receiptId)}</strong>
+              </div>
+            </div>
+
+            <div class="pass-divider pt-4 flex items-center justify-between gap-4">
+              <div class="space-y-1.5 min-w-0 flex-1">
+                <span class="font-mono text-[10px] text-[#94A3B8] uppercase block">Check-In Status</span>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg font-mono text-[10.5px] font-bold ${m.isCheckedIn ? "bg-[#00FF7F]/18 text-[#00FF7F]" : "bg-[#00F2FF]/16 text-[#00F2FF]"}">
+                  <i class="fa-solid ${m.isCheckedIn ? "fa-check-double" : "fa-shield-halved"}"></i>
+                  ${m.isCheckedIn ? "CHECKED IN" : "SLOT CONFIRMED"}
+                </span>
+                <p class="font-mono text-[10px] text-[#64748B] pt-1 break-all">${escapeHtml(passUrl)}</p>
+              </div>
+              <div class="w-24 h-24 rounded-xl overflow-hidden border border-[#D4FF00]/35 bg-[#0F101A] p-1 flex-shrink-0">
+                <img src="${qrSrc}" alt="Pass QR" class="w-full h-full object-contain rounded-lg" onerror="this.style.display='none'">
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <button onclick="copyText('${escapeHtml(passUrl)}', 'Match Link')" type="button" class="btn-ghost min-h-[44px] rounded-xl font-display text-xs flex items-center justify-center gap-1.5">
+              <i class="fa-regular fa-copy text-[#00F2FF]"></i> Copy Link
+            </button>
+            <button onclick="downloadMatchIcs('${escapeHtml(m.matchId)}')" type="button" class="btn-primary min-h-[44px] rounded-xl font-display text-xs flex items-center justify-center gap-1.5">
+              <i class="fa-regular fa-calendar-plus"></i> Save Alarm
+            </button>
+          </div>
+        `;
+        openModal("entryPassModal");
+      }
+
+      function openReadinessModal() {
+        openModal("readinessModal");
+        runLiveReadinessDiagnostics();
+      }
+
+      async function runLiveReadinessDiagnostics() {
+        if (inFlight.has("diag")) return;
+        inFlight.add("diag");
+        const btn = document.getElementById("btnRunReadiness");
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Testing 4 Packets...`;
+
+        const samples = [];
+        try {
+          for (let i = 0; i < 4; i++) {
+            samples.push(await measureSinglePing());
+          }
+          const avg = Math.round(samples.reduce((a, b) => a + b, 0) / samples.length);
+          const jitter = Math.max(...samples) - Math.min(...samples);
+          const grade = avg < 65 && jitter < 35 ? "S-TIER" : avg < 115 ? "A-TIER" : avg < 180 ? "PLAYABLE" : "HIGH PING";
+
+          document.getElementById("diagAvgPing").innerText = `${avg}ms`;
+          document.getElementById("diagJitter").innerText = `±${jitter}ms`;
+          document.getElementById("diagGrade").innerText = grade;
+          document.getElementById("livePingLabel").innerText = `${avg}ms`;
+
+          const notifOk = ("Notification" in window) && Notification.permission === "granted";
+          const clipOk = Boolean(navigator.clipboard?.writeText);
+          const checks = [
+            { label: "Supabase Live Room Socket", ok: Boolean(realtimeChannel), note: realtimeChannel ? "Connected" : "Standby" },
+            { label: "Clipboard Auto-Copy Room ID", ok: clipOk, note: clipOk ? "Ready" : "Fallback Active" },
+            { label: "60s Password Status Notification", ok: notifOk, note: notifOk ? "Enabled" : "Will Prompt on Launch" },
+            { label: "Graphics Performance Tier", ok: true, note: (document.documentElement.getAttribute("data-perf-tier") || "balanced").toUpperCase() }
+          ];
+          document.getElementById("diagChecklist").innerHTML = checks.map((c) => `
+            <div class="px-3.5 py-2.5 rounded-xl glass-inset flex items-center justify-between gap-2 font-mono text-xs">
+              <span class="text-[#CBD5E1]">${escapeHtml(c.label)}</span>
+              <span class="font-bold ${c.ok ? "text-[#00FF7F]" : "text-[#FFB020]"}">${escapeHtml(c.note)}</span>
+            </div>
+          `).join("");
+        } catch (e) {
+          document.getElementById("diagAvgPing").innerText = "OFFLINE";
+          document.getElementById("diagJitter").innerText = "--";
+          document.getElementById("diagGrade").innerText = "RETRY";
+        } finally {
+          inFlight.delete("diag");
+          btn.disabled = false;
+          btn.innerHTML = `<i class="fa-solid fa-bolt"></i> Run 4-Sample Latency Test`;
+        }
+      }
+
+      // Offline Native Phone Calendar Alarm (.ics with 25m & 10m OS Alarms — Extensionless URL)
+      function downloadMatchIcs(matchId) {
+        const m = registeredMatches.find((x) => x.matchId === matchId);
+        if (!m) return;
+        const start = new Date(m.startMs || Date.now() + 3600000);
+        const end = new Date(start.getTime() + 60 * 60000);
+        const toIcs = (d) => d.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+        const cleanIcs = (str) => String(str || "").replace(/[\r\n,;]/g, " ");
+        const cleanLink = getCleanMatchShareUrl(m.matchId);
+
+        const ics = [
+          "BEGIN:VCALENDAR",
+          "VERSION:2.0",
+          "PRODID:-//Tournyx Esports//Match Vault//EN",
+          "BEGIN:VEVENT",
+          `UID:${m.matchId}@tournyx.in`,
+          `DTSTAMP:${toIcs(new Date())}`,
+          `DTSTART:${toIcs(start)}`,
+          `DTEND:${toIcs(end)}`,
+          `SUMMARY:${cleanIcs(m.title)} (${m.matchId})`,
+          `DESCRIPTION:Game: ${cleanIcs(m.game)} | Map: ${cleanIcs(m.mapName)} | Slot #${m.slotNumber || "TBA"} | Open ${cleanLink}`,
+          "BEGIN:VALARM",
+          "TRIGGER:-PT25M",
+          "ACTION:DISPLAY",
+          "DESCRIPTION:25m Tournyx Squad Rally — Prepare your lineup!",
+          "END:VALARM",
+          "BEGIN:VALARM",
+          "TRIGGER:-PT10M",
+          "ACTION:DISPLAY",
+          "DESCRIPTION:10m Tournyx Match Lock-In — Room ID unlocking soon!",
+          "END:VALARM",
+          "END:VEVENT",
+          "END:VCALENDAR"
+        ].join("\r\n");
+
+        const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `Tournyx_${m.matchId}_Alarm.ics`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1500);
+        showToast("Phone Calendar Alarm (.ics) saved");
+      }
+
+      // Official E-Certificate Downloader (Organizer URL or Instant Verifiable Landscape PDF)
       function downloadEventCertificate(matchId) {
         const m = registeredMatches.find((x) => x.matchId === matchId);
         if (!m) return;
         doHaptic("heavy");
 
-        // If organizer uploaded a custom certificate PDF/image, open it directly
         if (m.certificateUrl) {
           window.open(m.certificateUrl, "_blank", "noopener,noreferrer");
           return;
         }
-
-        // Otherwise generate a crisp Official Tournyx Verifiable Landscape E-Certificate PDF
         if (!window.jspdf?.jsPDF) {
           showToast("Certificate engine loading — tap again in a second", true);
           return;
@@ -1908,19 +2589,15 @@
         const W = doc.internal.pageSize.getWidth();
         const H = doc.internal.pageSize.getHeight();
 
-        // Obsidian Background & Double Championship Frame
         doc.setFillColor(8, 9, 16);
         doc.rect(0, 0, W, H, "F");
-
         doc.setDrawColor(212, 255, 0);
         doc.setLineWidth(3);
         doc.rect(24, 24, W - 48, H - 48);
-
         doc.setDrawColor(0, 242, 255);
         doc.setLineWidth(0.8);
         doc.rect(34, 34, W - 68, H - 68);
 
-        // Header
         doc.setTextColor(0, 242, 255);
         doc.setFont("helvetica", "bold");
         doc.setFontSize(12);
@@ -1936,7 +2613,6 @@
         doc.setFontSize(13);
         doc.text("PROUDLY PRESENTED TO", W / 2, 198, { align: "center" });
 
-        // Recipient Name & Squad
         const recipient = currentUser?.username || currentUser?.ign || m.clanName;
         doc.setTextColor(255, 255, 255);
         doc.setFont("helvetica", "bold");
@@ -1947,7 +2623,6 @@
         doc.setFontSize(14);
         doc.text(`SQUAD: ${String(m.clanName).toUpperCase().slice(0, 42)}`, W / 2, 280, { align: "center" });
 
-        // Event Details
         doc.setTextColor(203, 213, 225);
         doc.setFont("helvetica", "normal");
         doc.setFontSize(14);
@@ -1955,10 +2630,8 @@
 
         doc.setTextColor(148, 163, 184);
         doc.setFontSize(12);
-        const statLine = `${m.game} (${m.format})  •  ${m.finalRank > 0 ? `Rank #${m.finalRank}` : "Verified Entry"}  •  ${m.finalKills} Frags  •  ${m.finalPoints} PTS`;
-        doc.text(statLine, W / 2, 366, { align: "center" });
+        doc.text(`${m.game} (${m.format})  •  ${m.finalRank > 0 ? `Rank #${m.finalRank}` : "Verified Entry"}  •  ${m.finalKills} Frags  •  ${m.finalPoints} PTS`, W / 2, 366, { align: "center" });
 
-        // Verification Footer
         doc.setDrawColor(50, 54, 80);
         doc.setLineWidth(1);
         doc.line(70, H - 122, W - 70, H - 122);
@@ -1979,7 +2652,7 @@
         doc.setFont("helvetica", "normal");
         doc.setFontSize(9.5);
         doc.setTextColor(148, 163, 184);
-        doc.text("Authenticated via Tournyx Esports • Quva Technologies", W / 2, H - 76, { align: "center" });
+        doc.text("Authenticated via Tournyx Esports • https://tournyx.in", W / 2, H - 76, { align: "center" });
 
         doc.setFont("helvetica", "bold");
         doc.setFontSize(11);
@@ -1994,6 +2667,73 @@
         showToast("Official E-Certificate downloaded!");
       }
 
+      // Official Match Summary PDF Report
+      function downloadMatchSummaryPdf(matchId) {
+        const m = registeredMatches.find((x) => x.matchId === matchId);
+        if (!m) return;
+        if (!window.jspdf?.jsPDF) { showToast("PDF engine loading — tap again in a second", true); return; }
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ unit: "pt", format: "a4" });
+        const W = doc.internal.pageSize.getWidth();
+
+        doc.setFillColor(10, 11, 20);
+        doc.rect(0, 0, W, 116, "F");
+        doc.setFillColor(212, 255, 0);
+        doc.rect(0, 0, W, 5, "F");
+
+        doc.setTextColor(0, 242, 255);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(11);
+        doc.text("TOURNYX ESPORTS • OFFICIAL MATCH RESULT REPORT", 40, 38);
+
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(20);
+        doc.text(String(m.title).slice(0, 44), 40, 68);
+
+        doc.setTextColor(203, 213, 225);
+        doc.setFontSize(10);
+        doc.text(`Event ID: ${m.matchId}  |  ${m.game} (${m.format})  |  Map: ${m.mapName}`, 40, 92);
+
+        let y = 148;
+        doc.setDrawColor(210, 214, 224);
+        doc.setFillColor(246, 248, 252);
+        doc.roundedRect(40, y, W - 80, 96, 8, 8, "FD");
+
+        doc.setTextColor(15, 23, 42);
+        doc.setFontSize(11);
+        doc.text(`Squad: ${m.clanName}`, 56, y + 26);
+        doc.text(`Slot: ${m.slotNumber ? `#${String(m.slotNumber).padStart(2, "0")}` : "Confirmed"}`, 56, y + 48);
+        doc.text(`Receipt: #${m.receiptId}`, 56, y + 70);
+
+        doc.text(`Official Rank: ${m.finalRank > 0 ? `#${m.finalRank}` : "Recorded"}`, W / 2 + 10, y + 26);
+        doc.text(`Frags / Points: ${m.finalKills} Kills • ${m.finalPoints} PTS`, W / 2 + 10, y + 48);
+        doc.text(`Payout: INR ${m.payoutAmount.toLocaleString("en-IN")} (${m.payoutStatus})`, W / 2 + 10, y + 70);
+
+        y += 126;
+        doc.setFontSize(13);
+        doc.text("Locked Playing Roster", 40, y);
+        y += 18;
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10.5);
+        m.roster.forEach((p, idx) => {
+          doc.text(`${idx + 1}. ${p.ign || p.username || "Player"} ${p.uid ? `(UID: ${p.uid})` : ""}`, 48, y);
+          y += 20;
+        });
+
+        y += 24;
+        doc.setFontSize(9);
+        doc.setTextColor(100, 116, 139);
+        doc.text(`Verify online: ${getCleanExploreShareUrl(m.matchId)}`, 40, y);
+        doc.text("Tournyx Esports Pvt Ltd • Powered by Quva Technologies", 40, y + 16);
+
+        doc.save(`Tournyx_Result_${m.matchId}.pdf`);
+        showToast("Match Result PDF downloaded");
+      }
+
+      // ============================================================================
+      // 7. CHECK-IN, SAFE UNJOIN, EXTENSIONLESS SHARING & SQUAD OPS
+      // ============================================================================
       async function executeSquadCheckIn(matchId, btnEl) {
         if (!currentUser?.email || inFlight.has(`ci_${matchId}`)) return;
         inFlight.add(`ci_${matchId}`);
@@ -2052,19 +2792,31 @@
         }
       }
 
+      // Extensionless WhatsApp Squad Rally Share (ZERO .html)
       function shareSquadWhatsApp(matchId) {
         const m = registeredMatches.find((x) => x.matchId === matchId);
         if (!m) return;
         const slotTxt = m.slotNumber ? `Slot #${String(m.slotNumber).padStart(2, "0")}` : "Confirmed";
+        const cleanLink = getCleanMatchShareUrl(m.matchId);
         const msg = [
           `🚨 *${m.title}* (${m.game} • ${slotTxt})`,
           m.room.isUnlocked ? `🆔 *Room ID:* ${m.room.roomId}` : `⏰ *Time:* ${m.matchPeriod}`,
           m.room.isUnlocked ? `🔑 *Password:* ${m.room.roomPass}` : "",
           ``,
           `Open Tournyx to launch directly:`,
-          `https://tournyx.in/matches.html?focus=${encodeURIComponent(m.matchId)}`
+          cleanLink
         ].filter(Boolean).join("\n");
         window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank", "noopener,noreferrer");
+      }
+
+      // Extensionless Native / Clipboard Event Share (ZERO .html)
+      function shareCleanEventLink(matchId, title) {
+        const cleanLink = getCleanExploreShareUrl(matchId);
+        if (navigator.share) {
+          navigator.share({ title: title || "Tournyx Match", text: `Join ${title} on Tournyx Esports!`, url: cleanLink }).catch(() => {});
+        } else {
+          copyText(cleanLink, "Clean Event Link");
+        }
       }
 
       function copySquadUids(matchId) {
@@ -2090,7 +2842,7 @@
         if (yt?.[1]) {
           box.innerHTML = `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${yt[1]}?autoplay=1&rel=0" title="Stream" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
         } else {
-          box.innerHTML = `<div class="p-6 text-center space-y-3"><p class="font-body text-sm text-[#CBD5E1]">Stream opens in your browser or app.</p><a href="${escapeHtml(m.streamUrl)}" target="_blank" rel="noopener noreferrer" class="btn-primary inline-flex min-h-[44px] px-5 rounded-xl font-display text-xs items-center gap-2">Watch Stream ↗</a></div>`;
+          box.innerHTML = `<div class="p-6 text-center space-y-3"><p class="font-body text-sm text-[#CBD5E1]">Broadcast opens in your browser or app.</p><a href="${escapeHtml(m.streamUrl)}" target="_blank" rel="noopener noreferrer" class="btn-primary inline-flex min-h-[44px] px-5 rounded-xl font-display text-xs items-center gap-2">Watch Stream ↗</a></div>`;
         }
         openModal("spectatorModal");
       }
@@ -2102,7 +2854,7 @@
       }
 
       // ============================================================================
-      // 6. MENISCUS FLOATING NAV & BOOT SEQUENCE
+      // 8. MENISCUS FLOATING NAV & BOOT SEQUENCE
       // ============================================================================
       function initMeniscusNav() {
         const dock = document.getElementById("meniscusDock");
@@ -2113,7 +2865,8 @@
         if (!dock || !svg || !pathEl || !bead || !glow) return;
 
         const tabs = Array.from(dock.querySelectorAll(".meniscus-tab"));
-        const currentFile = (window.location.pathname.split("/").pop() || "matches.html").toLowerCase();
+        const rawPath = (window.location.pathname.split("/").pop() || "matches.html").toLowerCase();
+        const currentFile = rawPath.endsWith(".html") ? rawPath : `${rawPath}.html`;
         let activeIdx = tabs.findIndex((t) => (t.dataset.page || "").toLowerCase() === currentFile);
         if (activeIdx < 0) activeIdx = 2;
 
@@ -2259,21 +3012,25 @@
         if (realtimeChannel && dbClient) dbClient.removeChannel(realtimeChannel);
       });
 
-      // Expose Verified Global Handlers
+      // Expose Every Verified Global Handler
       Object.assign(window, {
         doHaptic, copyText, openModal, closeModal, hideToast, handleUniversalBack, handleProfileClick, cyclePerfTier,
         syncRegisteredMatches, switchVaultTab, setTypeFilter, renderVaultPanels,
         initiateProGameLaunch, setFfEdition, fireDirectGameIntent, cancelProLaunch, copyLaunchField,
-        downloadEventCertificate, executeSquadCheckIn, openUnjoinModal, executeSafeUnjoin,
-        shareSquadWhatsApp, copySquadUids, openSquadVoiceOrChat, openSpectatorModal, closeSpectatorModal
+        openEntryPassModal, openReadinessModal, runLiveReadinessDiagnostics,
+        downloadMatchIcs, downloadEventCertificate, downloadMatchSummaryPdf,
+        executeSquadCheckIn, openUnjoinModal, executeSafeUnjoin,
+        shareSquadWhatsApp, shareCleanEventLink, copySquadUids, openSquadVoiceOrChat,
+        openSpectatorModal, closeSpectatorModal
       });
 
-      // Boot Sequence (Zero Auto-Notifications on Load!)
+      // Boot Sequence (Guaranteed Zero Stuck Skeletons & Zero Auto-Popups!)
       window.addEventListener("DOMContentLoaded", async () => {
         initDatabase();
         applyPerfTier(detectHardwarePerfTier(), false);
         runStartupFpsGuard();
         initMeniscusNav();
+        renderGameWaGroups();
         measureLivePing();
         setInterval(measureLivePing, 30000);
         pushViewHistory("root");
@@ -2293,10 +3050,12 @@
 
         const guestEl = document.getElementById("guestLoginState");
         const vaultEl = document.getElementById("authenticatedVaultShell");
+        const statsEl = document.getElementById("careerStatsRibbon");
 
         if (!currentUser?.email || currentUser.email === "guest@tournyx.com") {
           guestEl.classList.remove("hidden");
           vaultEl.classList.add("hidden");
+          if (statsEl) statsEl.classList.add("hidden");
           return;
         }
 
@@ -2304,11 +3063,15 @@
           ? currentUser.avatar
           : `https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(currentUser.username || "Player")}`;
 
-        // Honor ?tab=results or ?tab=history deep-links from background Push Notifications
         if (startTab === "results") switchVaultTab("tabResults", document.getElementById("tabBtnResults"), false);
         else if (startTab === "history") switchVaultTab("tabHistory", document.getElementById("tabBtnHistory"), false);
 
-        hydrateFromCache();
+        // Hydrate cached data immediately if present, then run fail-safe live sync
+        if (hydrateFromCache()) {
+          isInitialLoadDone = true;
+          renderVaultPanels();
+        }
+
         countdownTimerId = setInterval(tickCountdowns, 1000);
         await syncRegisteredMatches(false);
         setupRealtimeSync();
