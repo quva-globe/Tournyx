@@ -63,8 +63,11 @@ jobs:
           node scripts/patch-native.mjs android
           npx cap sync android
 
-      - name: Generate Android App Icons (If favicon.png Present)
+      - name: Generate Android App Icons
         run: |
+          if [ ! -f "favicon.png" ]; then
+            curl -fsSL "https://tournyx.in/favicon.png" -o favicon.png || true
+          fi
           if [ -f "favicon.png" ]; then
             mkdir -p assets
             cp favicon.png assets/icon-only.png
@@ -79,8 +82,7 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleDebug
 
-      - name: Build Signed Play Store Release (When Keystore Secrets Are Set)
-        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+      - name: Build Signed Play Store Release (Optional When Keystore Secrets Exist)
         working-directory: android
         env:
           KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
@@ -88,15 +90,20 @@ jobs:
           KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           KEY_PASS: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
-          echo "$KEYSTORE_B64" | base64 --decode > app/release-keystore.jks
-          ./gradlew assembleRelease bundleRelease \
-            -Pandroid.injected.signing.store.file="$(pwd)/app/release-keystore.jks" \
-            -Pandroid.injected.signing.store.password="$KEYSTORE_PASS" \
-            -Pandroid.injected.signing.key.alias="$KEY_ALIAS" \
-            -Pandroid.injected.signing.key.password="$KEY_PASS"
-          rm -f app/release-keystore.jks
+          if [ -n "$KEYSTORE_B64" ]; then
+            echo "Keystore secret detected — building signed Play Store release..."
+            echo "$KEYSTORE_B64" | base64 --decode > app/release-keystore.jks
+            ./gradlew assembleRelease bundleRelease \
+              -Pandroid.injected.signing.store.file="$(pwd)/app/release-keystore.jks" \
+              -Pandroid.injected.signing.store.password="$KEYSTORE_PASS" \
+              -Pandroid.injected.signing.key.alias="$KEY_ALIAS" \
+              -Pandroid.injected.signing.key.password="$KEY_PASS"
+            rm -f app/release-keystore.jks
+          else
+            echo "No ANDROID_KEYSTORE_BASE64 secret set — skipping signed Play Store bundle."
+          fi
 
-      - name: Rename Output APK
+      - name: Collect Android Output Files
         run: |
           mkdir -p release-out
           cp android/app/build/outputs/apk/debug/app-debug.apk release-out/Tournyx-Esports-Android.apk
@@ -234,8 +241,11 @@ jobs:
           node scripts/patch-native.mjs ios
           npx cap sync ios
 
-      - name: Generate iOS App Icons (If favicon.png Present)
+      - name: Generate iOS App Icons
         run: |
+          if [ ! -f "favicon.png" ]; then
+            curl -fsSL "https://tournyx.in/favicon.png" -o favicon.png || true
+          fi
           if [ -f "favicon.png" ]; then
             mkdir -p assets
             cp favicon.png assets/icon-only.png
@@ -245,16 +255,29 @@ jobs:
 
       - name: Build Unsigned iOS App & Package IPA
         run: |
-          xcodebuild \
-            -workspace ios/App/App.xcworkspace \
-            -scheme App \
-            -configuration Release \
-            -sdk iphoneos \
-            -derivedDataPath ios/build \
-            CODE_SIGNING_ALLOWED=NO \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGN_IDENTITY="" \
-            build
+          if [ -d "ios/App/App.xcworkspace" ]; then
+            xcodebuild \
+              -workspace ios/App/App.xcworkspace \
+              -scheme App \
+              -configuration Release \
+              -sdk iphoneos \
+              -derivedDataPath ios/build \
+              CODE_SIGNING_ALLOWED=NO \
+              CODE_SIGNING_REQUIRED=NO \
+              CODE_SIGNING_IDENTITY="" \
+              build
+          else
+            xcodebuild \
+              -project ios/App/App.xcodeproj \
+              -scheme App \
+              -configuration Release \
+              -sdk iphoneos \
+              -derivedDataPath ios/build \
+              CODE_SIGNING_ALLOWED=NO \
+              CODE_SIGNING_REQUIRED=NO \
+              CODE_SIGNING_IDENTITY="" \
+              build
+          fi
 
           mkdir -p ios-out/Payload
           cp -R ios/build/Build/Products/Release-iphoneos/App.app ios-out/Payload/
