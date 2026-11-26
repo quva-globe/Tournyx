@@ -1,0 +1,2171 @@
+<!DOCTYPE html>
+<html class="dark" lang="en" data-perf-tier="balanced" style="color-scheme: dark;">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#050508">
+  <meta name="color-scheme" content="dark only">
+
+  <title>Clutch Reels &amp; Highlights - Tournyx Esports</title>
+  <meta name="description" content="Watch vertical esports clutch reels, Free Fire MAX & BGMI highlights, and live creator moments on Tournyx Esports. Upload clips, follow players & organizers, and earn Creator Rewards.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://tournyx.in/reels">
+
+  <!-- OpenGraph & Twitter Meta (Extensionless) -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://tournyx.in/reels">
+  <meta property="og:title" content="Clutch Reels - Tournyx Esports">
+  <meta property="og:description" content="Swipe vertical esports clutches, final zone plays & organizer highlights on Tournyx Esports.">
+  <meta property="og:image" content="https://tournyx.in/favicon.png">
+  <meta property="twitter:card" content="summary_large_image">
+
+  <!-- PWA & Favicons -->
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="https://tournyx.in/favicon.ico" sizes="any">
+  <link rel="icon" href="https://tournyx.in/favicon.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="https://tournyx.in/apple-touch-icon.png">
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function() {
+        navigator.serviceWorker.register("/sw.js").catch(function() {});
+      });
+    }
+  </script>
+
+  <!-- Refined App Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Orbitron:wght@700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Adaptive HLS Video Engine -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.15/dist/hls.min.js" defer></script>
+
+  <!-- Supabase & Tailwind CSS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "obsidian": "#050508",
+            "surface-1": "#0C0D15",
+            "surface-2": "#131522",
+            "volt": "#D4FF00",
+            "cyan-tx": "#00F2FF",
+            "emerald-tx": "#00FF7F",
+            "amber-tx": "#FFB020",
+            "crimson-tx": "#FF4655"
+          },
+          fontFamily: {
+            "display": ["Plus Jakarta Sans", "Inter", "sans-serif"],
+            "orbitron": ["Orbitron", "sans-serif"],
+            "mono": ["JetBrains Mono", "monospace"],
+            "body": ["Inter", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- OneSignal Passive Session Sync (Zero Auto-Popups) -->
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    window.OneSignalDeferred.push(async function(OneSignal) {
+      window.OneSignal = OneSignal;
+      try {
+        await OneSignal.init({
+          appId: "15a8e2b2-240c-4547-929e-797d7170e988",
+          notifyButton: { enable: false }
+        });
+        const u = JSON.parse(localStorage.getItem("tournyx_user") || "null");
+        if (u && u.email) {
+          await OneSignal.login(String(u.email).trim().toLowerCase());
+        }
+      } catch (e) {}
+    });
+  </script>
+
+  <style>
+    :root {
+      color-scheme: dark only;
+      forced-color-adjust: none;
+      --bg-canvas: #050508;
+      --bg-glass: rgba(13, 14, 24, 0.80);
+      --border-hairline: rgba(255, 255, 255, 0.09);
+      --accent-volt: #D4FF00;
+      --accent-cyan: #00F2FF;
+      --accent-purple: #8B5CF6;
+      --accent-emerald: #00FF7F;
+      --accent-amber: #FFB020;
+      --accent-danger: #FF4655;
+      --sidebar-w: 248px;
+    }
+
+    body.theme-vip {
+      --accent-volt: #FFD700;
+      --accent-cyan: #FFD700;
+    }
+
+    body.sidebar-collapsed {
+      --sidebar-w: 76px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100dvh;
+      background-color: var(--bg-canvas);
+      color: #F8FAFC;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+    }
+
+    .font-display { font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; letter-spacing: -0.02em; }
+    .font-orbitron { font-family: 'Orbitron', sans-serif; letter-spacing: 0.04em; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+
+    :focus-visible { outline: 2px solid var(--accent-cyan); outline-offset: 2px; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+
+    /* Ambient Backdrop (Desktop Outer Canvas) */
+    .reels-ambient-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(640px circle at 25% 15%, rgba(0, 242, 255, 0.09), transparent 60%),
+        radial-gradient(560px circle at 80% 85%, rgba(212, 255, 0, 0.06), transparent 60%),
+        #050508;
+    }
+    html[data-perf-tier="lite"] .reels-ambient-bg,
+    body.power-save .reels-ambient-bg {
+      background: #000000 !important;
+    }
+
+    /* Glass Surfaces (3-Tier Adaptive) */
+    .glass-surface {
+      background: var(--bg-glass);
+      backdrop-filter: blur(16px) saturate(135%);
+      -webkit-backdrop-filter: blur(16px) saturate(135%);
+      border: 1px solid var(--border-hairline);
+    }
+    .glass-pill {
+      background: rgba(8, 9, 16, 0.66);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .glass-inset {
+      background: rgba(8, 9, 16, 0.86);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    html[data-perf-tier="balanced"] .glass-surface,
+    html[data-perf-tier="balanced"] .glass-pill {
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    html[data-perf-tier="lite"] .glass-surface,
+    html[data-perf-tier="lite"] .glass-pill,
+    body.power-save .glass-surface,
+    body.power-save .glass-pill {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      background: rgba(12, 13, 21, 0.94) !important;
+    }
+
+    /* Desktop Persistent Left Sidebar (>= 1024px) */
+    .desktop-sidebar { display: none; }
+    @media (min-width: 1024px) {
+      .desktop-sidebar {
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: var(--sidebar-w);
+        z-index: 45;
+        background: rgba(9, 10, 18, 0.95);
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
+        transition: width 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .reels-workspace {
+        padding-left: var(--sidebar-w);
+        transition: padding-left 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      body.sidebar-collapsed .sidebar-label,
+      body.sidebar-collapsed .sidebar-section-lbl,
+      body.sidebar-collapsed .sidebar-brand-text {
+        display: none !important;
+      }
+      body.sidebar-collapsed .sidebar-nav-item {
+        justify-content: center;
+        padding-left: 0;
+        padding-right: 0;
+      }
+    }
+
+    .sidebar-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 42px;
+      padding: 0 12px;
+      border-radius: 12px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #A1A7BC;
+      transition: background-color 0.16s ease, color 0.16s ease;
+    }
+    .sidebar-nav-item:hover { background: rgba(255, 255, 255, 0.06); color: #FFFFFF; }
+    .sidebar-nav-item.is-active {
+      background: rgba(255, 70, 85, 0.15);
+      color: #FF6B78;
+      border: 1px solid rgba(255, 70, 85, 0.38);
+      font-weight: 700;
+    }
+
+    /* Action Buttons */
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-volt) 0%, #B8F500 100%);
+      color: #050508;
+      font-weight: 700;
+      transition: transform 0.14s ease, filter 0.18s ease;
+    }
+    .btn-primary:hover:not(:disabled) { filter: brightness(1.06); }
+    .btn-primary:active:not(:disabled) { transform: scale(0.97); }
+    .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #E2E8F0;
+      font-weight: 600;
+      transition: background-color 0.18s ease, transform 0.14s ease;
+    }
+    .btn-ghost:hover:not(:disabled) { background: rgba(255, 255, 255, 0.12); }
+    .btn-ghost:active:not(:disabled) { transform: scale(0.97); }
+
+    /* ============================================================
+       VERTICAL SNAP-SCROLL REELS STAGE (MOBILE FULLSCREEN + DESKTOP 9:16)
+       ============================================================ */
+    .reels-viewport-frame {
+      position: relative;
+      width: 100%;
+      height: 100dvh;
+      background: #000000;
+      overflow: hidden;
+    }
+    @media (min-width: 1024px) {
+      .reels-viewport-frame {
+        width: min(440px, calc((100dvh - 104px) * 9 / 16));
+        height: calc(100dvh - 104px);
+        max-height: 860px;
+        border-radius: 28px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        box-shadow: 0 28px 70px rgba(0, 0, 0, 0.90), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      }
+    }
+
+    .reels-snap-scroller {
+      width: 100%;
+      height: 100%;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+      overscroll-behavior-y: contain;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .reel-slide {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      background: #030408;
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .reel-media-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: #000000;
+    }
+
+    .reel-gradient-top {
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 132px;
+      background: linear-gradient(to bottom, rgba(3, 4, 8, 0.82) 0%, rgba(3, 4, 8, 0.35) 55%, transparent 100%);
+      pointer-events: none;
+      z-index: 8;
+    }
+    .reel-gradient-bottom {
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 52%;
+      background: linear-gradient(to top, rgba(3, 4, 8, 0.95) 0%, rgba(3, 4, 8, 0.62) 48%, transparent 100%);
+      pointer-events: none;
+      z-index: 8;
+    }
+
+    /* Right-Side Vertical Action Rail */
+    .reel-action-btn {
+      width: 46px;
+      height: 46px;
+      border-radius: 9999px;
+      background: rgba(8, 9, 16, 0.62);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF;
+      transition: transform 0.14s ease, background-color 0.18s ease;
+    }
+    .reel-action-btn:hover { background: rgba(255, 255, 255, 0.16); }
+    .reel-action-btn:active { transform: scale(0.90); }
+
+    /* Double-Tap Heart Pop Burst */
+    @keyframes reelHeartBurst {
+      0% { transform: translate(-50%, -50%) scale(0.35) rotate(-10deg); opacity: 0; }
+      25% { transform: translate(-50%, -50%) scale(1.28) rotate(4deg); opacity: 1; }
+      70% { transform: translate(-50%, -50%) scale(1.0) rotate(0deg); opacity: 0.95; }
+      100% { transform: translate(-50%, -50%) scale(1.45); opacity: 0; }
+    }
+    .reel-heart-burst {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      z-index: 35;
+      pointer-events: none;
+      animation: reelHeartBurst 0.78s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    /* Thin Bottom Playback Progress Scrubber */
+    .reel-progress-track {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.18);
+      z-index: 25;
+      pointer-events: none;
+    }
+    .reel-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #00F2FF, #D4FF00);
+      transition: width 0.15s linear;
+    }
+
+    /* Shimmer Skeleton */
+    @keyframes skelShimmer {
+      0% { background-position: -220% 0; }
+      100% { background-position: 220% 0; }
+    }
+    .skel {
+      background: linear-gradient(90deg, rgba(24, 26, 40, 0.9) 20%, rgba(44, 48, 72, 0.95) 50%, rgba(24, 26, 40, 0.9) 80%);
+      background-size: 220% 100%;
+      animation: skelShimmer 1.35s infinite linear;
+      border-radius: 12px;
+    }
+    html[data-perf-tier="lite"] .skel,
+    body.power-save .skel { animation: none; background: #161826; }
+
+    /* Solid Slate-Gray High-Contrast Toast */
+    #toast {
+      background-color: #1E202E !important;
+      border: 1px solid #3E4158 !important;
+      box-shadow: 0 18px 44px rgba(0, 0, 0, 0.92) !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+
+    /* Native-Style Sheets / Modals */
+    .sheet-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 6500;
+      background: rgba(3, 4, 9, 0.82);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    html[data-perf-tier="lite"] .sheet-overlay,
+    body.power-save .sheet-overlay {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      background: rgba(2, 2, 6, 0.95);
+    }
+    @media (min-width: 768px) { .sheet-overlay { align-items: center; padding: 20px; } }
+    .sheet-overlay.active { display: flex; opacity: 1; }
+
+    .sheet-card {
+      width: 100%;
+      max-width: 480px;
+      max-height: 88dvh;
+      background: #0F101A;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 26px 26px 0 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 28px 68px rgba(0, 0, 0, 0.94);
+      animation: sheetSlideUp 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @media (min-width: 768px) { .sheet-card { border-radius: 24px; } }
+
+    @keyframes sheetSlideUp {
+      from { transform: translateY(20px) scale(0.98); opacity: 0.4; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    .sheet-body {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+    .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
+  </style>
+</head>
+
+<body class="selection:bg-[#D4FF00] selection:text-[#050508]">
+  <div class="reels-ambient-bg" aria-hidden="true"></div>
+
+  <!-- =========================================================
+       1. DESKTOP PERSISTENT LEFT SIDEBAR (MATCHED TO index.html)
+       ========================================================= -->
+  <aside id="desktopSidebar" class="desktop-sidebar" aria-label="Primary Sidebar Navigation">
+    <div class="h-[72px] px-4 border-b border-white/[0.07] flex items-center justify-between gap-2 flex-shrink-0">
+      <a href="index.html" class="flex items-center gap-2.5 min-w-0">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_20wCR-WBMpQmw3vxcYUf-vxIO1PYDJoQN_Sid3UDjA9tf0cuX0eH40jbzHoJad4cxbnjhPjqfCw1Z5V1LhgN9zFuIQC0fJjecTy3D9PFu5WjR2H1wHwTD1bUGnXY_NiApWn5gMs6velcQngSzKoP1yHzX0cVsFSUFM8zIefcbiPayY7680Kz0V0ZAAE/s1264/1000093706.png"
+          alt="Tournyx Esports" class="w-9 h-9 rounded-xl border border-[#D4FF00]/50 object-cover bg-[#0D0E16] flex-shrink-0"
+          onerror="this.src='https://placehold.co/80x80/0D0E16/D4FF00?text=TX'">
+        <div class="sidebar-brand-text flex flex-col min-w-0">
+          <span class="font-orbitron text-sm font-black tracking-wider text-white leading-none truncate">TOURNYX<span style="color: var(--accent-volt);">.</span></span>
+          <span class="font-mono text-[9.5px] text-[#FF6B78] uppercase tracking-wider mt-0.5">CLUTCH REELS</span>
+        </div>
+      </a>
+      <button id="sidebarToggleBtn" onclick="toggleDesktopSidebar()" type="button" title="Collapse / Expand Sidebar"
+        class="w-8 h-8 rounded-lg bg-white/[0.05] hover:bg-white/10 text-[#94A3B8] hover:text-white flex items-center justify-center flex-shrink-0 transition-colors">
+        <i class="fa-solid fa-angles-left text-xs"></i>
+      </button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto p-3 space-y-5">
+      <div class="space-y-1">
+        <span class="sidebar-section-lbl px-3 font-mono text-[10px] font-bold text-[#64748B] uppercase tracking-wider block mb-1.5">Arena</span>
+        <a href="index.html" class="sidebar-nav-item"><i class="fa-solid fa-house w-5 text-center text-sm"></i><span class="sidebar-label">Home Feed</span></a>
+        <a href="explore.html" class="sidebar-nav-item"><i class="fa-solid fa-compass w-5 text-center text-sm text-[#00F2FF]"></i><span class="sidebar-label">Explore Cups</span></a>
+        <a href="matches.html" onclick="return requireAuthOrOpen(event)" class="sidebar-nav-item"><i class="fa-solid fa-trophy w-5 text-center text-sm text-[#FFB020]"></i><span class="sidebar-label">My Matches</span></a>
+        <a href="/reels" aria-current="page" class="sidebar-nav-item is-active"><i class="fa-solid fa-clapperboard w-5 text-center text-sm"></i><span class="sidebar-label">Clutch Reels</span></a>
+        <a href="clans.html" onclick="return requireAuthOrOpen(event)" class="sidebar-nav-item"><i class="fa-solid fa-shield-halved w-5 text-center text-sm text-[#C4B5FD]"></i><span class="sidebar-label">Clans &amp; Voice</span></a>
+      </div>
+
+      <div class="space-y-1">
+        <span class="sidebar-section-lbl px-3 font-mono text-[10px] font-bold text-[#64748B] uppercase tracking-wider block mb-1.5">Creator</span>
+        <button onclick="openUploadReelModal()" type="button" class="sidebar-nav-item w-full text-left"><i class="fa-solid fa-cloud-arrow-up w-5 text-center text-sm text-[#D4FF00]"></i><span class="sidebar-label text-white">Upload Reel</span></button>
+        <a href="tournament.html" onclick="return requireAuthOrOpen(event)" class="sidebar-nav-item"><i class="fa-solid fa-satellite-dish w-5 text-center text-sm text-[#00FF7F]"></i><span class="sidebar-label">Host Studio</span></a>
+        <a href="tickets.html" onclick="return requireAuthOrOpen(event)" class="sidebar-nav-item"><i class="fa-solid fa-ticket w-5 text-center text-sm text-[#00F2FF]"></i><span class="sidebar-label">Tickets &amp; Wallet</span></a>
+        <a href="profile.html" onclick="return requireAuthOrOpen(event)" class="sidebar-nav-item"><i class="fa-solid fa-user w-5 text-center text-sm text-[#94A3B8]"></i><span class="sidebar-label">Profile</span></a>
+      </div>
+    </div>
+
+    <div class="p-3 border-t border-white/[0.07] space-y-2 flex-shrink-0">
+      <button id="perfTierBtn" onclick="cyclePerfTier()" type="button" class="sidebar-nav-item w-full text-left">
+        <i class="fa-solid fa-gauge-high w-5 text-center text-sm text-[#00F2FF]"></i>
+        <span class="sidebar-label">Graphics: <strong id="perfTierLabel" class="text-white">AUTO</strong></span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- =========================================================
+       2. MAIN VERTICAL REELS WORKSPACE (DESKTOP CENTERED + MOBILE FULLSCREEN)
+       ========================================================= -->
+  <div class="reels-workspace relative z-10 w-full h-[100dvh] flex flex-col">
+
+    <!-- DESKTOP TOP SEARCH & FILTER TOOLBAR (>= 1024px) -->
+    <header class="hidden lg:flex items-center justify-between gap-4 h-[72px] px-8 border-b border-white/[0.07] bg-[#050508]/85 backdrop-blur-xl flex-shrink-0">
+      <div class="flex items-center gap-3 flex-1 max-w-2xl">
+        <div class="relative flex-1 max-w-sm">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-[#64748B] text-xs"></i>
+          <input id="desktopReelsSearch" type="search" oninput="onReelsSearchInput(this.value)" placeholder="Search reels, creators, clans, games..."
+            class="w-full h-10 pl-10 pr-4 rounded-xl bg-[#0D0E17] border border-white/[0.10] focus:border-[#00F2FF] text-sm text-white placeholder-[#64748B] outline-none">
+        </div>
+
+        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+          <button onclick="setReelsFilter('ALL', 'ALL', this)" data-rf="ALL" type="button"
+            class="rf-pill whitespace-nowrap h-9 px-3.5 rounded-xl bg-[#D4FF00] text-[#050508] font-display text-xs font-extrabold transition-colors">All Reels</button>
+          <button onclick="setReelsFilter('ALL', 'Free Fire MAX', this)" data-rf="Free Fire MAX" type="button"
+            class="rf-pill whitespace-nowrap h-9 px-3.5 rounded-xl bg-white/[0.06] border border-white/10 text-[#CBD5E1] hover:text-white font-display text-xs font-semibold transition-colors">FF MAX</button>
+          <button onclick="setReelsFilter('ALL', 'BGMI', this)" data-rf="BGMI" type="button"
+            class="rf-pill whitespace-nowrap h-9 px-3.5 rounded-xl bg-white/[0.06] border border-white/10 text-[#CBD5E1] hover:text-white font-display text-xs font-semibold transition-colors">BGMI</button>
+          <button onclick="setReelsFilter('ALL', 'CODM', this)" data-rf="CODM" type="button"
+            class="rf-pill whitespace-nowrap h-9 px-3.5 rounded-xl bg-white/[0.06] border border-white/10 text-[#CBD5E1] hover:text-white font-display text-xs font-semibold transition-colors">CODM</button>
+          <button onclick="setReelsFilter('ORGANIZERS', 'ALL', this)" data-rf="ORGANIZERS" type="button"
+            class="rf-pill whitespace-nowrap h-9 px-3.5 rounded-xl bg-white/[0.06] border border-white/10 text-[#CBD5E1] hover:text-white font-display text-xs font-semibold transition-colors">Verified Orgs</button>
+          <button onclick="setReelsFilter('FOLLOWING', 'ALL', this)" data-rf="FOLLOWING" type="button"
+            class="rf-pill whitespace-nowrap h-9 px-3.5 rounded-xl bg-white/[0.06] border border-white/10 text-[#CBD5E1] hover:text-white font-display text-xs font-semibold transition-colors">Following</button>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2.5 flex-shrink-0">
+        <button onclick="openUploadReelModal()" type="button" class="btn-primary h-10 px-4 rounded-xl font-display text-xs inline-flex items-center gap-1.5">
+          <i class="fa-solid fa-cloud-arrow-up"></i> Upload Reel
+        </button>
+        <a href="index.html" class="btn-ghost h-10 px-3.5 rounded-xl font-display text-xs inline-flex items-center gap-1.5">
+          <i class="fa-solid fa-arrow-left text-[11px]"></i> Home
+        </a>
+      </div>
+    </header>
+
+    <!-- STAGE WRAPPER (FULLSCREEN ON MOBILE, CENTERED 9:16 ON DESKTOP) -->
+    <main class="relative flex-1 w-full flex items-center justify-center lg:py-4 lg:px-6 overflow-hidden">
+
+      <!-- VERTICAL REELS VIEWPORT -->
+      <div class="reels-viewport-frame">
+
+        <!-- MOBILE FLOATING TOP OVERLAY BAR (Back, Search Toggle, Upload & Filter Strip) -->
+        <div class="lg:hidden absolute top-0 left-0 right-0 z-30 pt-safe px-3.5 pt-3 space-y-2.5 pointer-events-none">
+          <div class="flex items-center justify-between gap-2 pointer-events-auto">
+            <div class="flex items-center gap-2">
+              <a href="index.html" aria-label="Back to Home"
+                class="w-10 h-10 rounded-full glass-pill text-white flex items-center justify-center active:scale-95">
+                <i class="fa-solid fa-arrow-left text-sm"></i>
+              </a>
+              <span class="font-display text-base font-extrabold text-white drop-shadow">Reels</span>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <button onclick="toggleMobileSearchBar()" type="button" aria-label="Search Reels"
+                class="w-10 h-10 rounded-full glass-pill text-white flex items-center justify-center active:scale-95">
+                <i class="fa-solid fa-magnifying-glass text-xs"></i>
+              </button>
+              <button onclick="openUploadReelModal()" type="button"
+                class="btn-primary h-10 px-3.5 rounded-full font-display text-xs inline-flex items-center gap-1.5 shadow-lg">
+                <i class="fa-solid fa-plus text-xs"></i> Upload
+              </button>
+            </div>
+          </div>
+
+          <!-- Expandable Mobile Search Input -->
+          <div id="mobileSearchWrap" class="hidden pointer-events-auto">
+            <div class="relative">
+              <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94A3B8] text-xs"></i>
+              <input id="mobileReelsSearch" type="search" oninput="onReelsSearchInput(this.value)" placeholder="Search clutches, uploader name, clan, game..."
+                class="w-full h-10 pl-9 pr-9 rounded-xl bg-[#090A14]/92 border border-white/20 focus:border-[#D4FF00] text-sm text-white placeholder-[#94A3B8] outline-none">
+              <button onclick="onReelsSearchInput(''); toggleMobileSearchBar(false);" type="button"
+                class="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-white p-1"><i class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+          </div>
+
+          <!-- Compact Translucent Mobile Filter Chips -->
+          <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pointer-events-auto pb-0.5">
+            <button onclick="setReelsFilter('ALL', 'ALL', this)" data-rf="ALL" type="button"
+              class="rf-pill whitespace-nowrap px-3 py-1 rounded-full bg-[#D4FF00] text-[#050508] font-display text-[11px] font-extrabold">All</button>
+            <button onclick="setReelsFilter('ALL', 'Free Fire MAX', this)" data-rf="Free Fire MAX" type="button"
+              class="rf-pill whitespace-nowrap px-3 py-1 rounded-full glass-pill text-white font-display text-[11px] font-semibold">FF MAX</button>
+            <button onclick="setReelsFilter('ALL', 'BGMI', this)" data-rf="BGMI" type="button"
+              class="rf-pill whitespace-nowrap px-3 py-1 rounded-full glass-pill text-white font-display text-[11px] font-semibold">BGMI</button>
+            <button onclick="setReelsFilter('ALL', 'CODM', this)" data-rf="CODM" type="button"
+              class="rf-pill whitespace-nowrap px-3 py-1 rounded-full glass-pill text-white font-display text-[11px] font-semibold">CODM</button>
+            <button onclick="setReelsFilter('ALL', 'Valorant', this)" data-rf="Valorant" type="button"
+              class="rf-pill whitespace-nowrap px-3 py-1 rounded-full glass-pill text-white font-display text-[11px] font-semibold">Valorant</button>
+            <button onclick="setReelsFilter('ORGANIZERS', 'ALL', this)" data-rf="ORGANIZERS" type="button"
+              class="rf-pill whitespace-nowrap px-3 py-1 rounded-full glass-pill text-[#00F2FF] font-display text-[11px] font-semibold">Orgs</button>
+            <button onclick="setReelsFilter('FOLLOWING', 'ALL', this)" data-rf="FOLLOWING" type="button"
+              class="rf-pill whitespace-nowrap px-3 py-1 rounded-full glass-pill text-white font-display text-[11px] font-semibold">Following</button>
+          </div>
+        </div>
+
+        <!-- 2x SPEED HOLD INDICATOR PILL -->
+        <div id="reelSpeedHoldPill" class="hidden absolute top-20 left-1/2 -translate-x-1/2 z-40 px-3.5 py-1 rounded-full bg-black/80 border border-[#D4FF00]/55 font-mono text-xs font-bold text-[#D4FF00] pointer-events-none">
+          2.0× Speed »
+        </div>
+
+        <!-- VERTICAL SNAP-SCROLL FEED CONTAINER (Hydrated Live From Supabase) -->
+        <div id="reelsSnapContainer" class="reels-snap-scroller no-scrollbar">
+          <!-- Initial Matching Vertical Skeleton (Guaranteed Zero-Hang) -->
+          <div class="reel-slide flex flex-col justify-end p-5 space-y-4">
+            <div class="w-48 h-4 skel"></div>
+            <div class="w-3/4 h-6 skel"></div>
+            <div class="w-1/2 h-4 skel"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DESKTOP FLOATING PREV / NEXT REEL CONTROLS + SHORTCUT GUIDE -->
+      <div class="hidden lg:flex flex-col items-center gap-3 ml-6">
+        <button onclick="scrollReelStep(-1)" type="button" title="Previous Reel (Up Arrow)"
+          class="w-12 h-12 rounded-2xl glass-surface hover:border-[#D4FF00]/55 text-white flex items-center justify-center transition-all active:scale-95">
+          <i class="fa-solid fa-chevron-up text-sm"></i>
+        </button>
+
+        <div class="px-2.5 py-1.5 rounded-xl glass-surface font-mono text-[11px] font-bold text-[#94A3B8] text-center">
+          <span id="desktopReelCounter">0/0</span>
+        </div>
+
+        <button onclick="scrollReelStep(1)" type="button" title="Next Reel (Down Arrow)"
+          class="w-12 h-12 rounded-2xl glass-surface hover:border-[#D4FF00]/55 text-white flex items-center justify-center transition-all active:scale-95">
+          <i class="fa-solid fa-chevron-down text-sm"></i>
+        </button>
+
+        <div class="mt-4 p-3 rounded-2xl glass-surface font-mono text-[10px] text-[#64748B] space-y-1 text-center">
+          <div><strong class="text-[#CBD5E1]">↑ / ↓</strong> Swipe</div>
+          <div><strong class="text-[#CBD5E1]">Space</strong> Pause</div>
+          <div><strong class="text-[#CBD5E1]">M</strong> Mute</div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- =========================================================
+       3. REELS COMPANION SHEETS & MODALS
+       ========================================================= -->
+
+  <!-- MODAL 1: COMMENTS DRAWER -->
+  <div id="commentsModal" class="sheet-overlay" role="dialog" aria-modal="true" aria-label="Reel Comments">
+    <div class="sheet-card">
+      <div class="px-5 py-4 border-b border-white/[0.08] flex items-center justify-between gap-2">
+        <div class="min-w-0">
+          <h3 class="font-display text-base font-bold text-white">Comments</h3>
+          <p id="cmPostTitle" class="font-body text-xs text-[#94A3B8] truncate">--</p>
+        </div>
+        <button onclick="closeModal('commentsModal')" type="button" class="w-9 h-9 rounded-full bg-white/[0.06] text-[#94A3B8] hover:text-white flex items-center justify-center"><i class="fa-solid fa-xmark text-sm"></i></button>
+      </div>
+      <div id="cmList" class="sheet-body p-4 space-y-3 min-h-[240px]"></div>
+      <div class="p-3.5 pb-safe border-t border-white/[0.08] bg-[#090A12] flex items-center gap-2">
+        <input id="cmInput" type="text" maxlength="350" placeholder="Add a comment..."
+          onkeydown="if(event.key==='Enter'){submitReelComment();}"
+          class="flex-1 min-h-[42px] px-3.5 rounded-xl bg-[#121422] border border-white/12 text-sm text-white outline-none focus:border-[#00F2FF]">
+        <button id="btnSendComment" onclick="submitReelComment()" type="button" class="btn-primary min-h-[42px] px-4 rounded-xl font-display text-xs uppercase">Post</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: UPLOAD CLUTCH REEL STUDIO -->
+  <div id="uploadReelModal" class="sheet-overlay" role="dialog" aria-modal="true" aria-label="Upload Clutch Reel">
+    <div class="sheet-card">
+      <div class="px-5 py-4 border-b border-white/[0.08] flex items-center justify-between gap-2">
+        <div>
+          <h3 class="font-display text-base font-extrabold text-white">Upload Clutch Reel</h3>
+          <p class="font-body text-xs text-[#94A3B8]">Vertical 9:16 video (≤ 25MB) or YouTube Shorts link</p>
+        </div>
+        <button onclick="closeModal('uploadReelModal')" type="button" class="w-9 h-9 rounded-full bg-white/[0.06] text-[#94A3B8] hover:text-white flex items-center justify-center"><i class="fa-solid fa-xmark text-sm"></i></button>
+      </div>
+
+      <div class="sheet-body p-5 space-y-4">
+        <div class="space-y-1.5">
+          <label for="urTitle" class="font-display text-xs font-semibold text-[#CBD5E1]">Reel Title *</label>
+          <input id="urTitle" type="text" maxlength="140" placeholder="e.g. One-Tap Desert Eagle Ace in Clash Squad"
+            class="w-full min-h-[44px] px-3.5 rounded-xl bg-[#080910] border border-white/12 focus:border-[#00F2FF] text-sm text-white outline-none">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div class="space-y-1.5">
+            <label for="urGame" class="font-display text-xs font-semibold text-[#CBD5E1]">Game</label>
+            <select id="urGame" class="w-full min-h-[44px] px-3 rounded-xl bg-[#080910] border border-white/12 text-sm text-white outline-none">
+              <option value="Free Fire MAX">Free Fire MAX</option>
+              <option value="BGMI">BGMI</option>
+              <option value="CODM">COD Mobile</option>
+              <option value="Valorant">Valorant</option>
+            </select>
+          </div>
+          <div class="space-y-1.5">
+            <label for="urTags" class="font-display text-xs font-semibold text-[#CBD5E1]">Hashtags</label>
+            <input id="urTags" type="text" placeholder="clutch, 1v4, headshot"
+              class="w-full min-h-[44px] px-3 rounded-xl bg-[#080910] border border-white/12 text-sm text-white outline-none">
+          </div>
+        </div>
+
+        <!-- Source Toggle -->
+        <div class="space-y-2.5">
+          <div class="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-[#080910] border border-white/10">
+            <button onclick="switchReelUploadSrc('file', this)" data-ursrc="file" type="button"
+              class="ur-src-btn min-h-[36px] rounded-lg bg-white/12 text-white font-display text-xs font-bold">Upload MP4/WebM</button>
+            <button onclick="switchReelUploadSrc('url', this)" data-ursrc="url" type="button"
+              class="ur-src-btn min-h-[36px] rounded-lg text-[#94A3B8] font-display text-xs font-semibold">Shorts / Video URL</button>
+          </div>
+
+          <div id="urFileBox" class="p-4 rounded-2xl border border-dashed border-white/20 bg-[#080910] text-center">
+            <label class="cursor-pointer block space-y-1.5">
+              <i class="fa-solid fa-clapperboard text-2xl text-[#D4FF00]"></i>
+              <div id="urFileLabel" class="font-display text-xs font-bold text-white">Tap to select vertical MP4 / WebM (≤ 25MB)</div>
+              <span class="font-mono text-[10px] text-[#64748B] block">Earn +25 TX PTS per 1,000 verified views</span>
+              <input id="urFileInp" type="file" accept="video/mp4,video/webm" onchange="onReelFilePicked(this)" class="hidden">
+            </label>
+          </div>
+
+          <div id="urUrlBox" class="hidden">
+            <input id="urUrlInp" type="url" placeholder="https://youtube.com/shorts/... or direct .mp4 / .m3u8 URL"
+              class="w-full min-h-[44px] px-3.5 rounded-xl bg-[#080910] border border-white/12 focus:border-[#00F2FF] text-sm text-white outline-none">
+          </div>
+        </div>
+
+        <!-- Optional Cover Thumbnail -->
+        <div class="flex items-center justify-between gap-2 p-3 rounded-xl glass-inset">
+          <span id="urThumbLabel" class="font-body text-xs text-[#94A3B8] truncate">Optional: Reel Cover Poster</span>
+          <label class="btn-ghost px-3 py-1.5 rounded-lg font-display text-xs cursor-pointer flex-shrink-0">
+            Choose <input id="urThumbInp" type="file" accept="image/*" onchange="onReelThumbPicked(this)" class="hidden">
+          </label>
+        </div>
+
+        <!-- Organizer Linked Tournament -->
+        <div id="urLinkedMatchWrap" class="hidden space-y-1.5">
+          <label for="urLinkedMatchSel" class="font-display text-xs font-semibold text-[#D4FF00]">Link Active Tournament (Organizer)</label>
+          <select id="urLinkedMatchSel" class="w-full min-h-[44px] px-3 rounded-xl bg-[#080910] border border-[#D4FF00]/35 text-sm text-white outline-none">
+            <option value="">No linked tournament</option>
+          </select>
+        </div>
+
+        <div class="space-y-1.5">
+          <label for="urCaption" class="font-display text-xs font-semibold text-[#CBD5E1]">Caption</label>
+          <textarea id="urCaption" rows="2" maxlength="400" placeholder="Add clan tag, HUD sensitivity, or shoutouts..."
+            class="w-full p-3 rounded-xl bg-[#080910] border border-white/12 focus:border-[#00F2FF] text-sm text-white outline-none resize-none"></textarea>
+        </div>
+
+        <div id="urProgWrap" class="hidden space-y-1.5">
+          <span id="urProgTxt" class="font-mono text-[11px] text-[#00F2FF] block">Uploading reel...</span>
+          <div class="w-full h-1.5 rounded-full bg-white/10 overflow-hidden"><div id="urProgBar" class="h-full bg-[#D4FF00] w-1/3 transition-all"></div></div>
+        </div>
+
+        <button id="btnPublishReel" onclick="submitNewReel()" type="button"
+          class="btn-primary w-full min-h-[48px] rounded-xl font-display text-sm uppercase flex items-center justify-center gap-2">
+          <i class="fa-solid fa-paper-plane"></i> Publish Reel Live
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: REPORT CONTENT SHEET -->
+  <div id="reportModal" class="sheet-overlay" style="z-index: 6700;" role="dialog" aria-modal="true" aria-label="Report Reel">
+    <div class="sheet-card p-5 space-y-4">
+      <div class="space-y-1">
+        <h3 class="font-display text-lg font-bold text-white">Report Reel</h3>
+        <p class="font-body text-xs text-[#94A3B8]">Reels with 3+ verified reports auto-hide for moderation review.</p>
+      </div>
+      <input type="hidden" id="repPostId">
+      <select id="repReasonSel" class="w-full min-h-[44px] px-3.5 rounded-xl bg-[#080910] border border-white/12 text-sm text-white outline-none">
+        <option value="Hacking / Cheats promotion">Hacking / Cheats promotion</option>
+        <option value="Spam or scam link">Spam or scam link</option>
+        <option value="Abusive or inappropriate content">Abusive or inappropriate content</option>
+        <option value="Stolen clip / Copyright">Stolen clip / Copyright</option>
+      </select>
+      <div class="grid grid-cols-2 gap-2.5">
+        <button onclick="closeModal('reportModal')" type="button" class="btn-ghost min-h-[44px] rounded-xl font-display text-xs">Cancel</button>
+        <button onclick="submitReelReport()" type="button" class="min-h-[44px] rounded-xl bg-[#FF4655] font-display text-xs font-bold text-white">Submit Report</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 4: GUEST AUTH PROMPT SHEET -->
+  <div id="authPromptModal" class="sheet-overlay" style="z-index: 7000;" role="dialog" aria-modal="true" aria-label="Sign In Required">
+    <div class="sheet-card p-6 text-center space-y-5">
+      <div class="w-16 h-16 mx-auto rounded-2xl bg-[#D4FF00]/15 border border-[#D4FF00]/45 flex items-center justify-center text-[#D4FF00] text-3xl">
+        <i class="fa-solid fa-user-shield"></i>
+      </div>
+      <div class="space-y-1.5">
+        <h3 class="font-display text-xl font-extrabold text-white">Sign In to Interact &amp; Upload</h3>
+        <p class="font-body text-sm text-[#94A3B8] leading-relaxed">
+          Log in to like reels, follow creators, drop comments, upload clutches, and earn Creator Milestone PTS.
+        </p>
+      </div>
+      <div class="space-y-2.5">
+        <a href="login.html" class="btn-primary w-full min-h-[48px] rounded-xl font-display text-sm uppercase flex items-center justify-center gap-2">
+          <i class="fa-solid fa-right-to-bracket"></i> Log In / Sign Up
+        </a>
+        <button onclick="closeModal('authPromptModal')" type="button" class="btn-ghost w-full min-h-[44px] rounded-xl font-display text-xs uppercase">Keep Watching</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOLID SLATE-GRAY HIGH-CONTRAST TOAST -->
+  <div id="toast" class="fixed bottom-6 right-4 left-4 sm:left-auto sm:w-96 z-[9999] transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none p-4 rounded-2xl flex items-center justify-between gap-3">
+    <div class="flex items-center gap-3 min-w-0">
+      <div id="toastBadge" class="w-9 h-9 rounded-xl bg-[#00FF7F]/18 border border-[#00FF7F]/45 flex items-center justify-center flex-shrink-0 text-[#00FF7F]">
+        <i id="toastIcon" class="fa-solid fa-check text-sm"></i>
+      </div>
+      <div class="min-w-0">
+        <span id="toastMsg" class="font-body text-sm text-white font-semibold leading-snug break-words">Ready</span>
+      </div>
+    </div>
+    <button onclick="hideToast()" type="button" aria-label="Dismiss" class="text-[#94A3B8] hover:text-white p-1.5 pointer-events-auto flex-shrink-0"><i class="fa-solid fa-xmark text-sm"></i></button>
+  </div>
+  <!-- =========================================================
+       4. TOURNYX ZERO-LAG VERTICAL REELS ENGINE
+          (PART 2 OF 2 — FINAL PART OF reels.html)
+       ========================================================= -->
+  <script>
+    (() => {
+      "use strict";
+
+      const CONFIG = {
+        DB_ENDPOINT: "https://zuatrwfrejnwfnldqqgy.supabase.co",
+        DB_PUBLIC_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1YXRyd2ZyZWpud2ZubGRxcWd5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNDE5NjEsImV4cCI6MjA5OTYxNzk2MX0.zcJO4Es-DnuUKR-L_Eu44xIwmz4PxsFVCgs-t492t1g",
+        SITE_ORIGIN: "https://tournyx.in",
+        STORAGE_BUCKET: "tournyx-media",
+        SESSION_KEY_STORAGE: "tournyx_anon_viewer_id",
+        HEX_REGEX: /^#[0-9A-Fa-f]{6}$/,
+        QUERY_TIMEOUT_MS: 12000,
+        PAGE_SIZE: 12,
+        AD_INTERVAL: 6 // Inject 1 native sponsored ad reel every 6th swipe
+      };
+
+      const GAME_FALLBACK_POSTERS = {
+        "free fire": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiJvPTY_y_XU-0Lwbnjwm7961lCDkSlQh2MtCWHunFVX6WS7WCprCtkPyB334BU_-4vGsP0NseDQf4NPBEOIxqjk7VZQqZUHpnLb4Bw-c1UeXQy2M9DzNrNdYt_aL0GEb1AlTPupC5zEjJiP3Ci0Oxk-wdg5TF5cs8_UNSe3uTT1BE884je3iXr8QlMjx8/s800/1000094210.jpg",
+        "bgmi": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj3MKUI87mMK4_3DltS3LQgqfrK1sESUIMMqlENdi0dPRtOFkeDbvPsTbSaCRaJOb17QZ5s9OO5dR6kFCYiCkgUCF2zBWwvGFSb3T-9Nz51XuIzMvIiOuqwcLzyzeFmn1orKbiETP4LrlaG-RidnWAAzBwUA3aL5_z62HP4_F7R02lAK_WSYdH0U_Gn7Es/s800/1000094211.jpg",
+        "cod": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg8vsDFFkLAXTA234WJzc3OqsLbmB3HBlKaXhiJo-JFVcTtYmMUI2DVdk5ljTPvGPKj-vtcejjFAxZO0sapDafr6xqN7VpHLGCcxqYWWY2LIZszXhrnnO1gcXFeJzY2EclP6G1bLoea5bshOtT7Dl3p4F_l0pGDuz1j5KJ78dEnI7cQixwAeDC1vKG89N4/s600/1000094209.jpg",
+        "valorant": "https://placehold.co/720x1280/0D0E16/FF4655?text=VALORANT+REELS"
+      };
+
+      // Core State
+      let dbClient = null;
+      let isDbReady = false;
+      let currentUser = null;
+
+      // Feed & Filter State
+      let reelsList = []; // Raw social_posts items
+      let renderedSlides = []; // Reels + interleaved native ad slides
+      let nativeReelAds = [];
+      let filterMode = "ALL"; // ALL | ORGANIZERS | FOLLOWING
+      let filterGame = "ALL";
+      let searchQuery = "";
+      let focusReelId = null;
+      let feedOffset = 0;
+      let feedHasMore = false;
+      let isLoadingMore = false;
+      let searchDebounce = null;
+
+      // Single-Active-Decoder Player State
+      let activeSlideIdx = -1;
+      let activeHlsInstance = null;
+      let isGlobalMuted = true; // Starts muted for instant mobile autoplay; unmutes cleanly on tap
+      let globalSpeedIdx = 1;
+      const PLAYBACK_SPEEDS = [0.5, 1.0, 1.5, 2.0];
+      let speedHoldTimer = null;
+      let preHoldRate = 1.0;
+      let lastTapSlideId = "";
+      let lastTapTs = 0;
+      let singleTapTimer = null;
+
+      // Anti-Bot Verified View State
+      let viewWatchSec = 0;
+      let viewTickInterval = null;
+      let reportedViewsMap = new Map(); // postId -> { initial: bool, monetized: bool }
+      let adImpressionsSent = new Set();
+
+      // Modals, Upload & Comments State
+      let activeCommentsPostId = null;
+      let reelUploadSrc = "file";
+      let modalStack = [];
+      let inFlight = new Set();
+      let slideObserver = null;
+
+      // ============================================================================
+      // 1. UTILITIES, EXTENSIONLESS LINKS & 3-TIER ADAPTIVE GRAPHICS
+      // ============================================================================
+      function doHaptic(style = "light") {
+        try {
+          if (window.Capacitor?.Plugins?.Haptics) {
+            window.Capacitor.Plugins.Haptics.impact({ style: style === "heavy" ? "HEAVY" : "LIGHT" });
+            return;
+          }
+          if (navigator.vibrate) navigator.vibrate(style === "heavy" ? 28 : 12);
+        } catch (e) {}
+      }
+
+      function escapeHtml(str) {
+        if (str === null || str === undefined) return "";
+        return String(str).replace(/[&<>"'`=/]/g, (s) => ({
+          "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;", "/": "&#x2F;", "`": "&#x60;", "=": "&#x3D;"
+        }[s]));
+      }
+
+      function safeExternalUrl(raw) {
+        if (!raw) return "";
+        const s = String(raw).trim();
+        return /^https?:\/\//i.test(s) ? s : "";
+      }
+
+      function safeLinkHref(raw, fallback = "/explore") {
+        if (!raw) return fallback;
+        const s = String(raw).trim();
+        if (/^https?:\/\//i.test(s)) return s;
+        if (/^[a-z0-9/_.-]+(\?[a-z0-9=&_%+-]+)?$/i.test(s) && !s.startsWith("//")) return s;
+        return fallback;
+      }
+
+      function normStr(val) { return String(val || "").trim().toLowerCase(); }
+
+      function safeNum(val, fallback = 0) {
+        if (val === null || val === undefined || val === "") return fallback;
+        const cleaned = typeof val === "string" ? val.replace(/[^0-9.-]/g, "") : val;
+        const n = Number(cleaned);
+        return Number.isFinite(n) ? n : fallback;
+      }
+
+      function isUuid(val) {
+        return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(val || "").trim());
+      }
+
+      function getViewerSessionKey() {
+        let key = localStorage.getItem(CONFIG.SESSION_KEY_STORAGE);
+        if (!key || key.length < 8) {
+          key = "txv_" + Math.random().toString(36).slice(2, 12) + Date.now().toString(36);
+          try { localStorage.setItem(CONFIG.SESSION_KEY_STORAGE, key); } catch (e) {}
+        }
+        return key;
+      }
+
+      function formatCompactNum(n) {
+        const num = safeNum(n, 0);
+        if (num >= 1000000) return `${(num / 1000000).toFixed(1).replace(/\.0$/, "")}M`;
+        if (num >= 1000) return `${(num / 1000).toFixed(1).replace(/\.0$/, "")}K`;
+        return String(num);
+      }
+
+      function formatRelativeTime(isoStr) {
+        if (!isoStr) return "Now";
+        const diffSec = Math.max(0, Math.floor((Date.now() - new Date(isoStr).getTime()) / 1000));
+        if (diffSec < 60) return "Now";
+        if (diffSec < 3600) return `${Math.floor(diffSec / 60)}m`;
+        if (diffSec < 86400) return `${Math.floor(diffSec / 3600)}h`;
+        return `${Math.floor(diffSec / 86400)}d`;
+      }
+
+      function extractYouTubeId(url) {
+        if (!url) return null;
+        const m = String(url).match(/(?:youtube\.com\/(?:watch\?v=|shorts\/|live\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+        return m ? m[1] : null;
+      }
+
+      function getFallbackPoster(gameName) {
+        const g = normStr(gameName);
+        if (g.includes("bgmi") || g.includes("pubg")) return GAME_FALLBACK_POSTERS["bgmi"];
+        if (g.includes("cod")) return GAME_FALLBACK_POSTERS["cod"];
+        if (g.includes("valorant")) return GAME_FALLBACK_POSTERS["valorant"];
+        return GAME_FALLBACK_POSTERS["free fire"];
+      }
+
+      function getReelPoster(r) {
+        const thumb = safeExternalUrl(r.thumbnail_url);
+        if (thumb) return thumb;
+        const ytId = extractYouTubeId(r.media_url);
+        if (ytId) return `https://i.ytimg.com/vi/${ytId}/hqdefault.jpg`;
+        return getFallbackPoster(r.game);
+      }
+
+      // 100% Extensionless Reel Deep-Link
+      function getCleanReelShareUrl(reelId) {
+        return `${CONFIG.SITE_ORIGIN}/reels?id=${encodeURIComponent(reelId)}`;
+      }
+
+      function detectHardwarePerfTier() {
+        const saved = localStorage.getItem("tournyx_perf_tier");
+        if (saved === "ultra" || saved === "balanced" || saved === "lite") return saved;
+        if (localStorage.getItem("tournyx_psm") === "true") return "lite";
+        if (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches) return "lite";
+        if (navigator.connection?.saveData) return "lite";
+        const ram = navigator.deviceMemory || 4;
+        const cores = navigator.hardwareConcurrency || 4;
+        if (ram <= 2 || cores <= 4) return "lite";
+        if (ram >= 6 && cores >= 8) return "ultra";
+        return "balanced";
+      }
+
+      function applyPerfTier(tier, notify = false) {
+        document.documentElement.setAttribute("data-perf-tier", tier);
+        const lbl = document.getElementById("perfTierLabel");
+        if (lbl) lbl.innerText = tier.toUpperCase();
+        if (notify) showToast(`Graphics set to ${tier.toUpperCase()}`);
+      }
+
+      function cyclePerfTier() {
+        doHaptic();
+        const cur = document.documentElement.getAttribute("data-perf-tier") || "balanced";
+        const next = cur === "ultra" ? "balanced" : cur === "balanced" ? "lite" : "ultra";
+        localStorage.setItem("tournyx_perf_tier", next);
+        applyPerfTier(next, true);
+      }
+
+      function applyGlobalAppearance() {
+        try {
+          const cfg = JSON.parse(localStorage.getItem("tournyx_theme_config") || "null");
+          const r = document.documentElement.style;
+          if (cfg) {
+            if (CONFIG.HEX_REGEX.test(cfg.volt || "")) r.setProperty("--accent-volt", cfg.volt);
+            if (CONFIG.HEX_REGEX.test(cfg.cyan || "")) r.setProperty("--accent-cyan", cfg.cyan);
+          }
+          const isVip = String(currentUser?.is_premium).toLowerCase() === "true";
+          document.body.classList.toggle("theme-vip", isVip && !cfg);
+          const psmOn = localStorage.getItem("tournyx_psm") === "true";
+          document.body.classList.toggle("power-save", psmOn);
+          if (psmOn) document.documentElement.setAttribute("data-perf-tier", "lite");
+          if (localStorage.getItem("tournyx_sidebar_collapsed") === "true") {
+            document.body.classList.add("sidebar-collapsed");
+            updateSidebarIcon();
+          }
+        } catch (e) {}
+      }
+
+      function toggleDesktopSidebar() {
+        doHaptic();
+        const collapsed = document.body.classList.toggle("sidebar-collapsed");
+        try { localStorage.setItem("tournyx_sidebar_collapsed", collapsed ? "true" : "false"); } catch (e) {}
+        updateSidebarIcon();
+      }
+
+      function updateSidebarIcon() {
+        const btn = document.getElementById("sidebarToggleBtn");
+        if (!btn) return;
+        const collapsed = document.body.classList.contains("sidebar-collapsed");
+        btn.innerHTML = `<i class="fa-solid ${collapsed ? "fa-angles-right" : "fa-angles-left"} text-xs"></i>`;
+      }
+
+      function toggleMobileSearchBar(forceState) {
+        doHaptic();
+        const wrap = document.getElementById("mobileSearchWrap");
+        if (!wrap) return;
+        const shouldShow = forceState !== undefined ? Boolean(forceState) : wrap.classList.contains("hidden");
+        wrap.classList.toggle("hidden", !shouldShow);
+        if (shouldShow) setTimeout(() => document.getElementById("mobileReelsSearch")?.focus(), 60);
+      }
+
+      let toastTimer = null;
+      function showToast(msg, isError = false) {
+        doHaptic();
+        const toast = document.getElementById("toast");
+        const badge = document.getElementById("toastBadge");
+        const icon = document.getElementById("toastIcon");
+        document.getElementById("toastMsg").innerText = msg;
+        badge.className = isError
+          ? "w-9 h-9 rounded-xl bg-red-500/20 border border-red-500/45 flex items-center justify-center flex-shrink-0 text-red-400"
+          : "w-9 h-9 rounded-xl bg-[#00FF7F]/18 border border-[#00FF7F]/45 flex items-center justify-center flex-shrink-0 text-[#00FF7F]";
+        icon.className = isError ? "fa-solid fa-triangle-exclamation text-sm" : "fa-solid fa-check text-sm";
+        toast.classList.remove("translate-y-24", "opacity-0");
+        toast.classList.add("translate-y-0", "opacity-100");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(hideToast, 3400);
+      }
+
+      function hideToast() {
+        const toast = document.getElementById("toast");
+        toast.classList.add("translate-y-24", "opacity-0");
+        toast.classList.remove("translate-y-0", "opacity-100");
+      }
+
+      async function copyText(val, label = "Link") {
+        doHaptic();
+        try {
+          if (navigator.clipboard?.writeText) { await navigator.clipboard.writeText(val); showToast(`${label} copied!`); return; }
+        } catch (e) {}
+        try {
+          const ta = document.createElement("textarea");
+          ta.value = val; ta.style.position = "fixed"; ta.style.opacity = "0";
+          document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove();
+          showToast(`${label} copied!`);
+        } catch (e) {}
+      }
+
+      function isLoggedIn() {
+        return Boolean(currentUser?.email && currentUser.email !== "guest@tournyx.com");
+      }
+
+      function isVerifiedHost() {
+        return ["organizer", "admin", "superadmin"].includes(normStr(currentUser?.role));
+      }
+
+      function requireAuthOrOpen(e) {
+        if (!isLoggedIn()) {
+          if (e) e.preventDefault();
+          openModal("authPromptModal");
+          return false;
+        }
+        return true;
+      }
+
+      function openModal(id) {
+        doHaptic();
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (!modalStack.includes(id)) modalStack.push(id);
+        el.classList.add("active");
+        pauseActiveReelForModal();
+      }
+
+      function closeModal(id) {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove("active");
+        modalStack = modalStack.filter((m) => m !== id);
+        if (modalStack.length === 0) resumeActiveReelAfterModal();
+      }
+
+      function initDatabase() {
+        if (window.supabase && CONFIG.DB_ENDPOINT && CONFIG.DB_PUBLIC_KEY) {
+          dbClient = window.supabase.createClient(CONFIG.DB_ENDPOINT, CONFIG.DB_PUBLIC_KEY, {
+            auth: { persistSession: true, autoRefreshToken: true }
+          });
+          isDbReady = true;
+        }
+      }
+
+      async function safeQuery(executor, fallback = null) {
+        if (!isDbReady || !dbClient) return { data: fallback, error: new Error("Offline") };
+        try {
+          const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), CONFIG.QUERY_TIMEOUT_MS));
+          const res = await Promise.race([Promise.resolve().then(executor), timeout]);
+          if (res?.error) return { data: fallback, error: res.error };
+          return { data: res?.data ?? fallback, error: null };
+        } catch (err) {
+          return { data: fallback, error: err };
+        }
+      }
+
+      // ============================================================================
+      // 2. FILTERING, SEARCH & LIVE SUPABASE REELS FETCH (ZERO DEMO DATA)
+      // ============================================================================
+      function setReelsFilter(mode, game, btnEl) {
+        doHaptic();
+        if (mode === "FOLLOWING" && !requireAuthOrOpen()) return;
+        filterMode = mode || "ALL";
+        filterGame = game || "ALL";
+        const activeKey = mode !== "ALL" ? mode : game;
+
+        document.querySelectorAll(".rf-pill").forEach((b) => {
+          const isActive = b.dataset.rf === activeKey;
+          const isMobileChip = b.classList.contains("rounded-full");
+          if (isMobileChip) {
+            b.className = isActive
+              ? "rf-pill whitespace-nowrap px-3 py-1 rounded-full bg-[#D4FF00] text-[#050508] font-display text-[11px] font-extrabold"
+              : "rf-pill whitespace-nowrap px-3 py-1 rounded-full glass-pill text-white font-display text-[11px] font-semibold";
+          } else {
+            b.className = isActive
+              ? "rf-pill whitespace-nowrap h-9 px-3.5 rounded-xl bg-[#D4FF00] text-[#050508] font-display text-xs font-extrabold transition-colors"
+              : "rf-pill whitespace-nowrap h-9 px-3.5 rounded-xl bg-white/[0.06] border border-white/10 text-[#CBD5E1] hover:text-white font-display text-xs font-semibold transition-colors";
+          }
+        });
+
+        focusReelId = null;
+        fetchReelsFeed(true);
+      }
+
+      function onReelsSearchInput(val) {
+        const dInp = document.getElementById("desktopReelsSearch");
+        const mInp = document.getElementById("mobileReelsSearch");
+        const clean = String(val || "");
+        if (dInp && dInp.value !== clean) dInp.value = clean;
+        if (mInp && mInp.value !== clean) mInp.value = clean;
+        searchQuery = clean.trim();
+        clearTimeout(searchDebounce);
+        searchDebounce = setTimeout(() => {
+          focusReelId = null;
+          fetchReelsFeed(true);
+        }, 280);
+      }
+
+      function resetAllReelsFilters() {
+        onReelsSearchInput("");
+        const firstBtn = document.querySelector('.rf-pill[data-rf="ALL"]');
+        setReelsFilter("ALL", "ALL", firstBtn);
+      }
+
+      async function fetchReelsFeed(reset = true) {
+        if (isLoadingMore && !reset) return;
+        isLoadingMore = true;
+
+        if (reset) {
+          feedOffset = 0;
+          reelsList = [];
+          cleanupAllMediaDecoders();
+          const box = document.getElementById("reelsSnapContainer");
+          if (box) {
+            box.innerHTML = `<div class="reel-slide flex flex-col justify-end p-5 space-y-4"><div class="w-44 h-4 skel"></div><div class="w-3/4 h-6 skel"></div><div class="w-1/2 h-4 skel"></div></div>`;
+          }
+        }
+
+        const rpcFilter = filterMode === "ORGANIZERS" ? "ORGANIZERS" : filterMode === "FOLLOWING" ? "FOLLOWING" : "REELS";
+        const viewer = isLoggedIn() ? normStr(currentUser.email) : null;
+
+        try {
+          const res = await safeQuery(() => dbClient.rpc("get_social_feed", {
+            p_viewer_email: viewer,
+            p_filter: rpcFilter,
+            p_game: filterGame,
+            p_search: searchQuery,
+            p_limit: CONFIG.PAGE_SIZE,
+            p_offset: feedOffset,
+            p_focus_id: reset && isUuid(focusReelId) ? focusReelId : null
+          }), null);
+
+          if (res.data?.ok && Array.isArray(res.data.posts)) {
+            // Keep reels (and video highlights when filtering by Orgs/Following so organizers' videos appear too)
+            const incoming = res.data.posts.filter((p) => rpcFilter === "REELS" ? p.post_type === "reel" : p.post_type !== "poster");
+            feedHasMore = res.data.posts.length >= CONFIG.PAGE_SIZE;
+            const existingIds = new Set(reelsList.map((r) => r.id));
+            const uniqueNew = incoming.filter((r) => !existingIds.has(r.id));
+            reelsList = reset ? uniqueNew : [...reelsList, ...uniqueNew];
+            feedOffset += res.data.posts.length;
+          } else {
+            feedHasMore = false;
+          }
+        } finally {
+          isLoadingMore = false;
+          renderReelsStream(reset);
+        }
+      }
+
+      // ============================================================================
+      // 3. VERTICAL SLIDES BUILDER (CREATOR IDENTITY + NATIVE SPONSORED AD REELS)
+      // ============================================================================
+      function buildIdentityBadgeHtml(r) {
+        const role = normStr(r.author_role);
+        if (["admin", "superadmin"].includes(role)) {
+          return `<span class="px-2 py-0.5 rounded bg-[#D4FF00] font-mono text-[9px] font-black text-[#050508] uppercase">OFFICIAL</span>`;
+        }
+        if (role === "organizer") {
+          return `<span class="px-2 py-0.5 rounded bg-[#00F2FF]/22 border border-[#00F2FF]/45 font-mono text-[9px] font-bold text-[#00F2FF] uppercase">VERIFIED ORG</span>`;
+        }
+        if (r.is_verified_author) {
+          return `<span class="px-2 py-0.5 rounded bg-[#FFB020]/22 border border-[#FFB020]/45 font-mono text-[9px] font-bold text-[#FFB020] uppercase">VIP PRO</span>`;
+        }
+        return `<span class="px-2 py-0.5 rounded bg-white/12 font-mono text-[9px] font-semibold text-[#E2E8F0] uppercase">PLAYER</span>`;
+      }
+
+      function buildReelSlideHtml(r, slideIdx) {
+        const poster = getReelPoster(r);
+        const av = safeExternalUrl(r.author_avatar) || `https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(r.author_name || "TX")}`;
+        const ytId = extractYouTubeId(r.media_url);
+        const tagsArr = Array.isArray(r.tags) ? r.tags.slice(0, 3) : [];
+        const curRate = PLAYBACK_SPEEDS[globalSpeedIdx];
+
+        return `
+          <section class="reel-slide" data-slide-idx="${slideIdx}" data-slide-type="reel" data-post-id="${escapeHtml(r.id)}">
+            <!-- Media Layer (Populated Lazily Only When Active / Next) -->
+            <div class="absolute inset-0 bg-black">
+              ${ytId
+                ? `<img src="${escapeHtml(poster)}" alt="${escapeHtml(r.title)}" class="w-full h-full object-cover opacity-80">
+                   <div id="reel-yt-slot-${slideIdx}" class="absolute inset-0 z-[2]"></div>`
+                : `<video id="reel-vid-${slideIdx}" class="reel-media-video" poster="${escapeHtml(poster)}" loop playsinline webkit-playsinline preload="none" muted></video>`
+              }
+            </div>
+
+            <!-- Subtle Top & Bottom Contrast Vignettes -->
+            <div class="reel-gradient-top"></div>
+            <div class="reel-gradient-bottom"></div>
+
+            <!-- Interactive Gesture Surface (Tap Pause / Double-Tap Like / Long-Press Right Edge 2x Speed) -->
+            <div class="absolute inset-0 z-10 grid grid-cols-3"
+              onclick="handleReelStageTap(${slideIdx}, '${escapeHtml(r.id)}', event)">
+              <div></div>
+              <div></div>
+              <div onpointerdown="startReelSpeedHold(${slideIdx})" onpointerup="endReelSpeedHold(${slideIdx})" onpointerleave="endReelSpeedHold(${slideIdx})"></div>
+            </div>
+
+            <!-- Center Play/Pause Flash Icon -->
+            <div id="reel-pause-icon-${slideIdx}" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-16 h-16 rounded-full bg-black/65 border border-white/20 text-white items-center justify-center text-2xl pointer-events-none">
+              <i class="fa-solid fa-play ml-1"></i>
+            </div>
+
+            <!-- RIGHT ACTION RAIL (LIKE, COMMENT, SAVE, SHARE, MUTE, SPEED, REPORT) -->
+            <div class="absolute right-3 bottom-20 sm:bottom-16 z-20 flex flex-col items-center gap-3.5">
+              <div class="flex flex-col items-center gap-1">
+                <button onclick="toggleReelLike('${escapeHtml(r.id)}', ${slideIdx}, event)" data-rlike-btn="${escapeHtml(r.id)}" type="button" aria-label="Like"
+                  class="reel-action-btn ${r.liked_by_me ? "text-[#FF4655] border-[#FF4655]/60 bg-[#FF4655]/20" : ""}">
+                  <i class="${r.liked_by_me ? "fa-solid" : "fa-regular"} fa-heart text-lg"></i>
+                </button>
+                <span data-rlike-cnt="${escapeHtml(r.id)}" class="font-mono text-[11px] font-bold text-white drop-shadow">${formatCompactNum(r.likes_count)}</span>
+              </div>
+
+              <div class="flex flex-col items-center gap-1">
+                <button onclick="openReelComments('${escapeHtml(r.id)}', event)" type="button" aria-label="Comments" class="reel-action-btn">
+                  <i class="fa-regular fa-comment text-lg text-[#00F2FF]"></i>
+                </button>
+                <span data-rcmt-cnt="${escapeHtml(r.id)}" class="font-mono text-[11px] font-bold text-white drop-shadow">${formatCompactNum(r.comments_count)}</span>
+              </div>
+
+              <button onclick="toggleReelBookmark('${escapeHtml(r.id)}', event)" data-rsave-btn="${escapeHtml(r.id)}" type="button" aria-label="Save Reel"
+                class="reel-action-btn ${r.bookmarked_by_me ? "text-[#D4FF00] border-[#D4FF00]/60" : ""}">
+                <i class="${r.bookmarked_by_me ? "fa-solid" : "fa-regular"} fa-bookmark text-base"></i>
+              </button>
+
+              <button onclick="shareReelExtensionless('${escapeHtml(r.id)}', event)" type="button" aria-label="Share Reel" class="reel-action-btn">
+                <i class="fa-solid fa-share-nodes text-base text-[#D4FF00]"></i>
+              </button>
+
+              ${!ytId ? `
+                <button onclick="toggleGlobalReelMute(event)" type="button" aria-label="Mute or Unmute" class="reel-action-btn reel-mute-sync-btn">
+                  <i class="fa-solid ${isGlobalMuted ? "fa-volume-xmark text-[#FF8A93]" : "fa-volume-high text-[#00FF7F]"} text-sm"></i>
+                </button>
+                <button onclick="cycleGlobalReelSpeed(event)" type="button" aria-label="Playback Speed"
+                  class="reel-action-btn reel-speed-sync-btn font-mono text-[11px] font-extrabold text-[#D4FF00]">
+                  ${curRate}×
+                </button>
+              ` : ""}
+
+              <button onclick="openReelReport('${escapeHtml(r.id)}', event)" type="button" aria-label="Report Reel"
+                class="w-9 h-9 rounded-full bg-black/50 border border-white/12 text-[#94A3B8] hover:text-[#FF8A93] flex items-center justify-center text-xs">
+                <i class="fa-regular fa-flag"></i>
+              </button>
+            </div>
+
+            <!-- BOTTOM-LEFT CREATOR IDENTITY, TITLE, TAGS & LINKED TOURNAMENT CTA -->
+            <div class="absolute left-4 right-20 bottom-6 pb-safe z-20 space-y-2.5">
+              <!-- Game & Views Chip -->
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="px-2.5 py-0.5 rounded-full glass-pill font-mono text-[10px] font-bold text-[#00F2FF]">${escapeHtml(r.game)}</span>
+                <span class="px-2.5 py-0.5 rounded-full glass-pill font-mono text-[10px] text-[#CBD5E1]">
+                  <i class="fa-solid fa-eye text-[9px] mr-1 text-[#D4FF00]"></i>${formatCompactNum(r.views_count)}
+                </span>
+                <span class="font-mono text-[10px] text-[#94A3B8]">${formatRelativeTime(r.created_at)}</span>
+              </div>
+
+              <!-- Exact Uploader Identity Row -->
+              <div class="flex items-center gap-2.5 flex-wrap">
+                <img src="${escapeHtml(av)}" alt="${escapeHtml(r.author_name)}" class="w-10 h-10 rounded-full object-cover border-2 border-[#D4FF00]/65 bg-[#0D0E16] flex-shrink-0">
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <span class="font-display text-sm font-extrabold text-white drop-shadow truncate max-w-[160px]">${escapeHtml(r.author_name)}</span>
+                    ${buildIdentityBadgeHtml(r)}
+                  </div>
+                  <div class="font-mono text-[10.5px] text-[#CBD5E1] truncate">
+                    ${r.author_clan ? `${escapeHtml(r.author_clan)} • ` : ""}${formatCompactNum(r.author_followers)} Followers
+                  </div>
+                </div>
+                ${!r.is_mine ? `
+                  <button onclick="toggleReelFollow('${escapeHtml(r.id)}', event)" data-rfollow-creator="${escapeHtml(r.creator_uid)}" type="button"
+                    class="${r.following_author ? "bg-white/15 border border-[#00FF7F]/50 text-[#00FF7F]" : "btn-primary"} min-h-[32px] px-3 rounded-lg font-display text-[11px] font-bold flex-shrink-0">
+                    ${r.following_author ? "Following" : "Follow"}
+                  </button>
+                ` : ""}
+              </div>
+
+              <!-- Title, Caption & Hashtags -->
+              <div class="space-y-1">
+                <h2 class="font-display text-sm sm:text-[15px] font-bold text-white leading-snug line-clamp-2 drop-shadow">${escapeHtml(r.title)}</h2>
+                ${r.caption ? `<p class="font-body text-xs text-[#E2E8F0]/90 line-clamp-2 leading-relaxed">${escapeHtml(r.caption)}</p>` : ""}
+                ${tagsArr.length ? `<div class="flex items-center gap-1.5 flex-wrap pt-0.5">${tagsArr.map((t) => `<span class="font-mono text-[10.5px] text-[#D4FF00]">#${escapeHtml(t)}</span>`).join("")}</div>` : ""}
+              </div>
+
+              <!-- Linked Tournament Registration Bar (If Tagged by Organizer) -->
+              ${r.linked_match_id ? `
+                <a href="explore.html?tournament=${encodeURIComponent(r.linked_match_id)}"
+                  class="px-3.5 py-2.5 rounded-xl bg-[#D4FF00]/16 backdrop-blur-md border border-[#D4FF00]/55 flex items-center justify-between gap-2">
+                  <div class="min-w-0">
+                    <span class="font-mono text-[9px] font-black text-[#D4FF00] uppercase block">Featured Tournament</span>
+                    <strong class="font-display text-xs font-bold text-white truncate block">${escapeHtml(r.linked_match_title || r.linked_match_id)}</strong>
+                  </div>
+                  <span class="px-2.5 py-1 rounded-lg bg-[#D4FF00] text-[#050508] font-display text-[11px] font-extrabold flex-shrink-0">Join ↗</span>
+                </a>
+              ` : ""}
+            </div>
+
+            <!-- Bottom Playback Progress Rail -->
+            <div class="reel-progress-track"><div id="reel-prog-${slideIdx}" class="reel-progress-fill"></div></div>
+          </section>
+        `;
+      }
+
+      // Native Vertical Sponsored Reel Slide (Injected Every 6th Swipe — Zero Friction, Fully Swipeable)
+      function buildSponsoredReelSlideHtml(ad, slideIdx) {
+        const poster = safeExternalUrl(ad.poster_url) || GAME_FALLBACK_POSTERS["free fire"];
+        const isVideo = /\.(mp4|webm|m3u8)(\?|$)/i.test(String(ad.media_url || ""));
+
+        return `
+          <section class="reel-slide" data-slide-idx="${slideIdx}" data-slide-type="ad" data-ad-id="${escapeHtml(ad.id)}">
+            <div class="absolute inset-0 bg-black">
+              ${isVideo
+                ? `<video id="reel-vid-${slideIdx}" class="reel-media-video" poster="${escapeHtml(poster)}" loop playsinline webkit-playsinline preload="none" muted></video>`
+                : `<img src="${escapeHtml(safeExternalUrl(ad.media_url) || poster)}" alt="${escapeHtml(ad.headline)}" class="w-full h-full object-cover">`
+              }
+            </div>
+            <div class="reel-gradient-top"></div>
+            <div class="reel-gradient-bottom"></div>
+
+            <div class="absolute left-4 right-4 bottom-8 pb-safe z-20 space-y-3.5">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFB020]/20 border border-[#FFB020]/55 font-mono text-[10.5px] font-bold text-[#FFB020] uppercase">
+                <i class="fa-solid fa-bullhorn"></i> Sponsored • ${escapeHtml(ad.sponsor_name)}
+              </div>
+              <h2 class="font-display text-xl font-extrabold text-white leading-tight drop-shadow">${escapeHtml(ad.headline)}</h2>
+              <p class="font-body text-xs text-[#CBD5E1]">${escapeHtml(ad.campaign_name)} • Swipe up anytime to continue watching reels.</p>
+              <a href="${escapeHtml(safeLinkHref(ad.cta_url, "/explore"))}" target="_blank" rel="noopener noreferrer"
+                onclick="trackReelAdClick('${escapeHtml(ad.id)}')"
+                class="btn-primary w-full min-h-[48px] rounded-2xl font-display text-sm uppercase flex items-center justify-center gap-2 shadow-xl">
+                <span>${escapeHtml(ad.cta_text || "Learn More")}</span>
+                <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+              </a>
+            </div>
+          </section>
+        `;
+      }
+
+      function renderReelsStream(reset = true) {
+        const container = document.getElementById("reelsSnapContainer");
+        if (!container) return;
+
+        if (!reelsList.length) {
+          renderedSlides = [];
+          document.getElementById("desktopReelCounter").innerText = "0/0";
+          container.innerHTML = `
+            <div class="reel-slide flex flex-col items-center justify-center text-center p-8 space-y-5 bg-[#07080F]">
+              <div class="w-16 h-16 rounded-2xl bg-[#FF4655]/15 border border-[#FF4655]/40 text-[#FF4655] flex items-center justify-center text-3xl">
+                <i class="fa-solid fa-clapperboard"></i>
+              </div>
+              <div class="space-y-1.5 max-w-xs">
+                <h2 class="font-display text-lg font-extrabold text-white">${searchQuery || filterGame !== "ALL" || filterMode !== "ALL" ? "No Matching Reels Found" : "No Clutch Reels Yet"}</h2>
+                <p class="font-body text-xs sm:text-sm text-[#94A3B8] leading-relaxed">
+                  ${searchQuery || filterGame !== "ALL" || filterMode !== "ALL"
+                    ? "Try a different search keyword or reset your filters."
+                    : "Upload the first 15–60s vertical clutch clip on Tournyx Esports and start earning Creator PTS!"}
+                </p>
+              </div>
+              <div class="flex flex-col w-full max-w-xs gap-2.5">
+                <button onclick="openUploadReelModal()" type="button" class="btn-primary min-h-[46px] rounded-xl font-display text-xs uppercase flex items-center justify-center gap-2">
+                  <i class="fa-solid fa-cloud-arrow-up"></i> Upload Clutch Reel
+                </button>
+                ${searchQuery || filterGame !== "ALL" || filterMode !== "ALL"
+                  ? `<button onclick="resetAllReelsFilters()" type="button" class="btn-ghost min-h-[44px] rounded-xl font-display text-xs uppercase">Show All Reels</button>`
+                  : `<a href="index.html" class="btn-ghost min-h-[44px] rounded-xl font-display text-xs uppercase flex items-center justify-center">Back to Home Feed</a>`
+                }
+              </div>
+            </div>
+          `;
+          return;
+        }
+
+        // Assemble slide stream interleaving 1 native sponsor reel every 6th organic reel
+        const nextSlides = [];
+        let adCursor = 0;
+        reelsList.forEach((r, idx) => {
+          nextSlides.push({ type: "reel", data: r });
+          if (nativeReelAds.length > 0 && (idx + 1) % CONFIG.AD_INTERVAL === 0) {
+            nextSlides.push({ type: "ad", data: nativeReelAds[adCursor % nativeReelAds.length] });
+            adCursor++;
+          }
+        });
+
+        const startRenderIdx = reset ? 0 : renderedSlides.length;
+        renderedSlides = nextSlides;
+
+        const htmlChunk = nextSlides.slice(startRenderIdx).map((item, offset) => {
+          const slideIdx = startRenderIdx + offset;
+          return item.type === "ad" ? buildSponsoredReelSlideHtml(item.data, slideIdx) : buildReelSlideHtml(item.data, slideIdx);
+        }).join("");
+
+        if (reset) {
+          container.innerHTML = htmlChunk;
+          container.scrollTop = 0;
+          activeSlideIdx = -1;
+        } else if (htmlChunk) {
+          container.insertAdjacentHTML("beforeend", htmlChunk);
+        }
+
+        attachSlideObserver();
+        if (reset && renderedSlides.length > 0) {
+          activateSlide(0);
+        }
+      }
+
+      // ============================================================================
+      // 4. SINGLE-ACTIVE-DECODER PLAYBACK ENGINE (ZERO LAG + ANTI-BOT VIEWS)
+      // ============================================================================
+      function destroyActiveHls() {
+        if (activeHlsInstance) {
+          try { activeHlsInstance.destroy(); } catch (e) {}
+          activeHlsInstance = null;
+        }
+      }
+
+      function stopViewTracker() {
+        clearInterval(viewTickInterval);
+        viewTickInterval = null;
+      }
+
+      function cleanupAllMediaDecoders() {
+        stopViewTracker();
+        destroyActiveHls();
+        document.querySelectorAll(".reel-media-video").forEach((v) => {
+          v.pause();
+          v.removeAttribute("src");
+          v.load();
+        });
+        document.querySelectorAll('[id^="reel-yt-slot-"]').forEach((slot) => { slot.innerHTML = ""; });
+      }
+
+      function deactivateSlide(idx) {
+        if (idx < 0 || idx >= renderedSlides.length) return;
+        const vid = document.getElementById(`reel-vid-${idx}`);
+        if (vid) {
+          vid.pause();
+          vid.ontimeupdate = null;
+        }
+        const ytSlot = document.getElementById(`reel-yt-slot-${idx}`);
+        if (ytSlot) ytSlot.innerHTML = "";
+        const pauseIcon = document.getElementById(`reel-pause-icon-${idx}`);
+        if (pauseIcon) { pauseIcon.classList.add("hidden"); pauseIcon.classList.remove("flex"); }
+      }
+
+      function preloadNextSlideMetadata(nextIdx) {
+        if (nextIdx < 0 || nextIdx >= renderedSlides.length) return;
+        const nextItem = renderedSlides[nextIdx];
+        const url = safeExternalUrl(nextItem?.data?.media_url);
+        if (!url || extractYouTubeId(url) || /\.m3u8(\?|$)/i.test(url)) return;
+        const vid = document.getElementById(`reel-vid-${nextIdx}`);
+        if (vid && !vid.getAttribute("src")) {
+          vid.preload = "metadata";
+          vid.src = url;
+        }
+      }
+
+      function startVerifiedReelViewTracker(post) {
+        stopViewTracker();
+        viewWatchSec = 0;
+        const state = reportedViewsMap.get(post.id) || { initial: false, monetized: false };
+        reportedViewsMap.set(post.id, state);
+
+        viewTickInterval = setInterval(() => {
+          if (document.hidden || modalStack.length > 0) return;
+          const activeItem = renderedSlides[activeSlideIdx];
+          if (!activeItem || activeItem.type !== "reel" || activeItem.data.id !== post.id) return;
+
+          const vid = document.getElementById(`reel-vid-${activeSlideIdx}`);
+          if (vid && vid.paused) return;
+
+          viewWatchSec++;
+          const email = isLoggedIn() ? normStr(currentUser.email) : null;
+          const sessKey = getViewerSessionKey();
+
+          if (!state.initial && viewWatchSec >= 3) {
+            state.initial = true;
+            safeQuery(() => dbClient.rpc("record_verified_video_view", {
+              p_post_id: post.id, p_viewer_email: email, p_session_key: sessKey, p_watch_sec: viewWatchSec
+            }), null);
+          }
+
+          const minMonetized = post.duration_sec > 0 && post.duration_sec < 20
+            ? Math.max(4, Math.floor(post.duration_sec / 2))
+            : 10;
+          if (!state.monetized && viewWatchSec >= minMonetized) {
+            state.monetized = true;
+            safeQuery(() => dbClient.rpc("record_verified_video_view", {
+              p_post_id: post.id, p_viewer_email: email, p_session_key: sessKey, p_watch_sec: viewWatchSec
+            }), null);
+          }
+        }, 1000);
+      }
+
+      function activateSlide(idx) {
+        if (idx === activeSlideIdx || idx < 0 || idx >= renderedSlides.length) return;
+
+        // Immediately silence & release previous decoder
+        deactivateSlide(activeSlideIdx);
+        destroyActiveHls();
+        stopViewTracker();
+
+        activeSlideIdx = idx;
+        const item = renderedSlides[idx];
+        const counter = document.getElementById("desktopReelCounter");
+        if (counter) counter.innerText = `${idx + 1}/${renderedSlides.length}`;
+
+        // Update browser URL cleanly to extensionless /reels?id=...
+        if (item.type === "reel" && item.data?.id) {
+          try { window.history.replaceState(null, "", `/reels?id=${encodeURIComponent(item.data.id)}`); } catch (e) {}
+          startVerifiedReelViewTracker(item.data);
+        } else if (item.type === "ad" && item.data?.id && !adImpressionsSent.has(item.data.id)) {
+          adImpressionsSent.add(item.data.id);
+          safeQuery(() => dbClient.rpc("track_ad_event", { p_campaign_id: item.data.id, p_event_type: "IMPRESSION" }), null);
+        }
+
+        const mediaUrl = safeExternalUrl(item.data?.media_url);
+        const ytId = extractYouTubeId(mediaUrl);
+
+        if (ytId) {
+          const slot = document.getElementById(`reel-yt-slot-${idx}`);
+          if (slot) {
+            slot.innerHTML = `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${ytId}?autoplay=1&mute=${isGlobalMuted ? 1 : 0}&playsinline=1&rel=0&loop=1&playlist=${ytId}" title="${escapeHtml(item.data.title || "Reel")}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+          }
+        } else {
+          const vid = document.getElementById(`reel-vid-${idx}`);
+          if (vid && mediaUrl) {
+            vid.muted = isGlobalMuted;
+            vid.playbackRate = PLAYBACK_SPEEDS[globalSpeedIdx];
+
+            if (/\.m3u8(\?|$)/i.test(mediaUrl) && window.Hls?.isSupported()) {
+              activeHlsInstance = new window.Hls({ maxBufferLength: 12, maxMaxBufferLength: 20 });
+              activeHlsInstance.loadSource(mediaUrl);
+              activeHlsInstance.attachMedia(vid);
+              activeHlsInstance.on(window.Hls.Events.MANIFEST_PARSED, () => { vid.play().catch(() => {}); });
+            } else {
+              if (vid.getAttribute("src") !== mediaUrl) vid.src = mediaUrl;
+              vid.play().catch(() => {});
+            }
+
+            const progEl = document.getElementById(`reel-prog-${idx}`);
+            vid.ontimeupdate = () => {
+              if (progEl && Number.isFinite(vid.duration) && vid.duration > 0) {
+                progEl.style.width = `${Math.min(100, (vid.currentTime / vid.duration) * 100)}%`;
+              }
+            };
+          }
+        }
+
+        // Preload metadata for 1 slide ahead + trigger infinite load near bottom
+        preloadNextSlideMetadata(idx + 1);
+        if (feedHasMore && !isLoadingMore && idx >= renderedSlides.length - 3) {
+          fetchReelsFeed(false);
+        }
+      }
+
+      function attachSlideObserver() {
+        const container = document.getElementById("reelsSnapContainer");
+        if (!container) return;
+        if (slideObserver) slideObserver.disconnect();
+
+        slideObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && entry.intersectionRatio >= 0.65) {
+              const idx = Number(entry.target.dataset.slideIdx);
+              if (Number.isFinite(idx)) activateSlide(idx);
+            }
+          });
+        }, { root: container, threshold: 0.65 });
+
+        container.querySelectorAll(".reel-slide[data-slide-idx]").forEach((el) => slideObserver.observe(el));
+      }
+
+      function scrollReelStep(delta) {
+        const container = document.getElementById("reelsSnapContainer");
+        if (!container || !renderedSlides.length) return;
+        const targetIdx = Math.max(0, Math.min(renderedSlides.length - 1, activeSlideIdx + delta));
+        const targetEl = container.querySelector(`.reel-slide[data-slide-idx="${targetIdx}"]`);
+        if (targetEl) {
+          doHaptic();
+          targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
+
+      function pauseActiveReelForModal() {
+        const vid = document.getElementById(`reel-vid-${activeSlideIdx}`);
+        if (vid && !vid.paused) vid.pause();
+      }
+
+      function resumeActiveReelAfterModal() {
+        const vid = document.getElementById(`reel-vid-${activeSlideIdx}`);
+        if (vid && vid.paused) vid.play().catch(() => {});
+      }
+
+      // ============================================================================
+      // 5. GESTURES (TAP PAUSE, DOUBLE-TAP LIKE BURST, 2x HOLD, MUTE & SPEED)
+      // ============================================================================
+      function handleReelStageTap(slideIdx, postId, ev) {
+        const now = Date.now();
+        const isDouble = lastTapSlideId === postId && (now - lastTapTs) < 280;
+        lastTapSlideId = postId;
+        lastTapTs = now;
+
+        if (isDouble) {
+          clearTimeout(singleTapTimer);
+          spawnHeartBurstOnSlide(slideIdx);
+          doHaptic("heavy");
+          const item = renderedSlides[slideIdx]?.data;
+          if (item && !item.liked_by_me) toggleReelLike(postId, slideIdx);
+          return;
+        }
+
+        clearTimeout(singleTapTimer);
+        singleTapTimer = setTimeout(() => {
+          const vid = document.getElementById(`reel-vid-${slideIdx}`);
+          const icon = document.getElementById(`reel-pause-icon-${slideIdx}`);
+          if (!vid) return;
+          if (vid.paused) {
+            vid.play().catch(() => {});
+            if (icon) { icon.classList.add("hidden"); icon.classList.remove("flex"); }
+          } else {
+            vid.pause();
+            if (icon) { icon.classList.remove("hidden"); icon.classList.add("flex"); }
+          }
+        }, 230);
+      }
+
+      function spawnHeartBurstOnSlide(slideIdx) {
+        const slide = document.querySelector(`.reel-slide[data-slide-idx="${slideIdx}"]`);
+        if (!slide) return;
+        const heart = document.createElement("i");
+        heart.className = "fa-solid fa-heart text-7xl text-[#FF4655] drop-shadow-[0_0_24px_rgba(255,70,85,0.85)] reel-heart-burst";
+        slide.appendChild(heart);
+        setTimeout(() => heart.remove(), 800);
+      }
+
+      function startReelSpeedHold(slideIdx) {
+        const vid = document.getElementById(`reel-vid-${slideIdx}`);
+        if (!vid || vid.paused) return;
+        clearTimeout(speedHoldTimer);
+        speedHoldTimer = setTimeout(() => {
+          preHoldRate = vid.playbackRate || 1.0;
+          vid.playbackRate = 2.0;
+          document.getElementById("reelSpeedHoldPill")?.classList.remove("hidden");
+        }, 320);
+      }
+
+      function endReelSpeedHold(slideIdx) {
+        clearTimeout(speedHoldTimer);
+        const pill = document.getElementById("reelSpeedHoldPill");
+        if (pill && !pill.classList.contains("hidden")) {
+          pill.classList.add("hidden");
+          const vid = document.getElementById(`reel-vid-${slideIdx}`);
+          if (vid) vid.playbackRate = preHoldRate;
+        }
+      }
+
+      function toggleGlobalReelMute(ev) {
+        if (ev) ev.stopPropagation();
+        doHaptic();
+        isGlobalMuted = !isGlobalMuted;
+        const vid = document.getElementById(`reel-vid-${activeSlideIdx}`);
+        if (vid) vid.muted = isGlobalMuted;
+        document.querySelectorAll(".reel-mute-sync-btn").forEach((b) => {
+          b.innerHTML = `<i class="fa-solid ${isGlobalMuted ? "fa-volume-xmark text-[#FF8A93]" : "fa-volume-high text-[#00FF7F]"} text-sm"></i>`;
+        });
+        showToast(isGlobalMuted ? "Sound Muted" : "Sound On");
+      }
+
+      function cycleGlobalReelSpeed(ev) {
+        if (ev) ev.stopPropagation();
+        doHaptic();
+        globalSpeedIdx = (globalSpeedIdx + 1) % PLAYBACK_SPEEDS.length;
+        const rate = PLAYBACK_SPEEDS[globalSpeedIdx];
+        const vid = document.getElementById(`reel-vid-${activeSlideIdx}`);
+        if (vid) vid.playbackRate = rate;
+        document.querySelectorAll(".reel-speed-sync-btn").forEach((b) => { b.innerText = `${rate}×`; });
+        showToast(`Speed: ${rate}×`);
+      }
+
+      function trackReelAdClick(adId) {
+        safeQuery(() => dbClient.rpc("track_ad_event", { p_campaign_id: adId, p_event_type: "CLICK" }), null);
+      }
+
+      // ============================================================================
+      // 6. SOCIAL ENGAGEMENT (LIKE, SAVE, FOLLOW, COMMENTS, SHARE, REPORT & UPLOAD)
+      // ============================================================================
+      async function toggleReelLike(postId, slideIdx, ev) {
+        if (ev) ev.stopPropagation();
+        if (!requireAuthOrOpen() || inFlight.has(`lk_${postId}`)) return;
+        inFlight.add(`lk_${postId}`);
+
+        try {
+          const { data: res, error: err } = await dbClient.rpc("toggle_social_like", {
+            p_user_email: normStr(currentUser.email),
+            p_post_id: postId
+          });
+          if (err || !res?.ok) throw new Error(res?.error || "Like failed");
+          reelsList.forEach((r) => { if (r.id === postId) { r.liked_by_me = res.liked; r.likes_count = res.likes_count; } });
+
+          const btn = document.querySelector(`[data-rlike-btn="${postId}"]`);
+          const cnt = document.querySelector(`[data-rlike-cnt="${postId}"]`);
+          if (btn) {
+            btn.className = `reel-action-btn ${res.liked ? "text-[#FF4655] border-[#FF4655]/60 bg-[#FF4655]/20" : ""}`;
+            btn.innerHTML = `<i class="${res.liked ? "fa-solid" : "fa-regular"} fa-heart text-lg"></i>`;
+          }
+          if (cnt) cnt.innerText = formatCompactNum(res.likes_count);
+        } catch (e) { showToast(e?.message || "Could not like reel", true); }
+        finally { inFlight.delete(`lk_${postId}`); }
+      }
+
+      async function toggleReelBookmark(postId, ev) {
+        if (ev) ev.stopPropagation();
+        if (!requireAuthOrOpen() || inFlight.has(`sv_${postId}`)) return;
+        inFlight.add(`sv_${postId}`);
+
+        try {
+          const { data: res, error: err } = await dbClient.rpc("toggle_social_bookmark", {
+            p_user_email: normStr(currentUser.email),
+            p_post_id: postId
+          });
+          if (err || !res?.ok) throw new Error(res?.error || "Save failed");
+          reelsList.forEach((r) => { if (r.id === postId) r.bookmarked_by_me = res.bookmarked; });
+          const btn = document.querySelector(`[data-rsave-btn="${postId}"]`);
+          if (btn) {
+            btn.className = `reel-action-btn ${res.bookmarked ? "text-[#D4FF00] border-[#D4FF00]/60" : ""}`;
+            btn.innerHTML = `<i class="${res.bookmarked ? "fa-solid" : "fa-regular"} fa-bookmark text-base"></i>`;
+          }
+          showToast(res.bookmarked ? "Saved to your reels" : "Removed from Saved");
+        } catch (e) { showToast(e?.message || "Save failed", true); }
+        finally { inFlight.delete(`sv_${postId}`); }
+      }
+
+      async function toggleReelFollow(postId, ev) {
+        if (ev) ev.stopPropagation();
+        if (!requireAuthOrOpen() || inFlight.has(`fl_${postId}`)) return;
+        inFlight.add(`fl_${postId}`);
+
+        try {
+          const { data: res, error: err } = await dbClient.rpc("toggle_social_follow_by_post", {
+            p_follower_email: normStr(currentUser.email),
+            p_post_id: postId
+          });
+          if (err || !res?.ok) throw new Error(res?.error || "Follow failed");
+          reelsList.forEach((r) => { if (r.creator_uid === res.creator_uid) r.following_author = res.following; });
+          document.querySelectorAll(`[data-rfollow-creator="${res.creator_uid}"]`).forEach((b) => {
+            b.className = `${res.following ? "bg-white/15 border border-[#00FF7F]/50 text-[#00FF7F]" : "btn-primary"} min-h-[32px] px-3 rounded-lg font-display text-[11px] font-bold flex-shrink-0`;
+            b.innerText = res.following ? "Following" : "Follow";
+          });
+          showToast(res.following ? "Following creator!" : "Unfollowed creator");
+        } catch (e) { showToast(e?.message || "Follow failed", true); }
+        finally { inFlight.delete(`fl_${postId}`); }
+      }
+
+      function shareReelExtensionless(postId, ev) {
+        if (ev) ev.stopPropagation();
+        const r = reelsList.find((x) => x.id === postId);
+        const url = getCleanReelShareUrl(postId);
+        const title = r?.title || "Tournyx Clutch Reel";
+        if (navigator.share) {
+          navigator.share({ title, text: `🔥 Watch "${title}" on Tournyx Esports Reels!`, url }).catch(() => {});
+        } else {
+          copyText(url, "Reel Link");
+        }
+      }
+
+      async function openReelComments(postId, ev) {
+        if (ev) ev.stopPropagation();
+        const r = reelsList.find((x) => x.id === postId);
+        activeCommentsPostId = postId;
+        document.getElementById("cmPostTitle").innerText = r ? r.title : "Reel Comments";
+        document.getElementById("cmInput").value = "";
+        const list = document.getElementById("cmList");
+        list.innerHTML = `<div class="py-10 text-center font-mono text-xs text-[#00F2FF]"><i class="fa-solid fa-spinner fa-spin mr-1.5"></i>Loading comments...</div>`;
+        openModal("commentsModal");
+
+        const { data: rows } = await safeQuery(() => dbClient
+          .from("social_comments")
+          .select("id, username, user_avatar, user_role, body, created_at")
+          .eq("post_id", postId)
+          .order("created_at", { ascending: false })
+          .limit(40), []);
+
+        if (!rows || !rows.length) {
+          list.innerHTML = `<div class="py-10 text-center font-body text-xs text-[#94A3B8]">No comments yet — be the first to react!</div>`;
+          return;
+        }
+        list.innerHTML = rows.map(buildCommentRowHtml).join("");
+      }
+
+      function buildCommentRowHtml(c) {
+        const av = safeExternalUrl(c.user_avatar) || `https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(c.username || "P")}`;
+        return `
+          <div class="p-3 rounded-2xl glass-inset flex items-start gap-2.5">
+            <img src="${escapeHtml(av)}" alt="" class="w-8 h-8 rounded-full object-cover border border-white/15 flex-shrink-0">
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-2">
+                <span class="font-display text-xs font-bold text-white truncate">${escapeHtml(c.username)}</span>
+                <span class="font-mono text-[10px] text-[#64748B]">${formatRelativeTime(c.created_at)}</span>
+              </div>
+              <p class="font-body text-xs sm:text-sm text-[#CBD5E1] mt-0.5 break-words">${escapeHtml(c.body)}</p>
+            </div>
+          </div>
+        `;
+      }
+
+      async function submitReelComment() {
+        if (!requireAuthOrOpen() || !activeCommentsPostId || inFlight.has("rcmt")) return;
+        const inp = document.getElementById("cmInput");
+        const body = inp.value.trim();
+        if (!body) return;
+
+        inFlight.add("rcmt");
+        const btn = document.getElementById("btnSendComment");
+        btn.disabled = true;
+
+        try {
+          const { data: res, error: err } = await dbClient.rpc("add_social_comment", {
+            p_user_email: normStr(currentUser.email),
+            p_post_id: activeCommentsPostId,
+            p_body: body
+          });
+          if (err || !res?.ok) throw new Error(res?.error || "Comment failed");
+          inp.value = "";
+          const list = document.getElementById("cmList");
+          if (list.innerText.includes("No comments yet")) list.innerHTML = "";
+          list.insertAdjacentHTML("afterbegin", buildCommentRowHtml(res.comment));
+          reelsList.forEach((r) => { if (r.id === activeCommentsPostId) r.comments_count = res.comments_count; });
+          const cnt = document.querySelector(`[data-rcmt-cnt="${activeCommentsPostId}"]`);
+          if (cnt) cnt.innerText = formatCompactNum(res.comments_count);
+        } catch (e) { showToast(e?.message || "Could not post comment", true); }
+        finally { inFlight.delete("rcmt"); btn.disabled = false; }
+      }
+
+      function openReelReport(postId, ev) {
+        if (ev) ev.stopPropagation();
+        if (!requireAuthOrOpen()) return;
+        document.getElementById("repPostId").value = postId;
+        openModal("reportModal");
+      }
+
+      async function submitReelReport() {
+        const postId = document.getElementById("repPostId").value;
+        const reason = document.getElementById("repReasonSel").value;
+        if (!postId || inFlight.has("rrep")) return;
+        inFlight.add("rrep");
+        try {
+          const { data: res, error: err } = await dbClient.rpc("report_social_post", {
+            p_reporter_email: normStr(currentUser.email),
+            p_post_id: postId,
+            p_reason: reason
+          });
+          if (err || !res?.ok) throw new Error(res?.error || "Report failed");
+          closeModal("reportModal");
+          showToast(res.auto_hidden ? "Reel hidden for moderation review." : "Report submitted to Tournyx Moderators.");
+          if (res.auto_hidden) fetchReelsFeed(true);
+        } catch (e) { showToast(e?.message || "Report failed", true); }
+        finally { inFlight.delete("rrep"); }
+      }
+
+      // Upload Clutch Reel Studio
+      async function openUploadReelModal() {
+        if (!requireAuthOrOpen()) return;
+        document.getElementById("urTitle").value = "";
+        document.getElementById("urTags").value = "";
+        document.getElementById("urCaption").value = "";
+        document.getElementById("urUrlInp").value = "";
+        document.getElementById("urFileInp").value = "";
+        document.getElementById("urThumbInp").value = "";
+        document.getElementById("urFileLabel").innerText = "Tap to select vertical MP4 / WebM (≤ 25MB)";
+        document.getElementById("urThumbLabel").innerText = "Optional: Reel Cover Poster";
+        document.getElementById("urProgWrap").classList.add("hidden");
+
+        const host = isVerifiedHost();
+        const wrap = document.getElementById("urLinkedMatchWrap");
+        wrap.classList.toggle("hidden", !host);
+        if (host) {
+          const { data: tList } = await safeQuery(() => dbClient
+            .from("Tournaments")
+            .select("match_id, title, status")
+            .order("created_at", { ascending: false })
+            .limit(18), []);
+          const openOnes = (tList || []).filter((t) => !["completed", "resolved", "cancelled", "deleted"].includes(normStr(t.status)));
+          document.getElementById("urLinkedMatchSel").innerHTML = `<option value="">No linked tournament</option>` +
+            openOnes.map((t) => `<option value="${escapeHtml(t.match_id)}">${escapeHtml(t.title)} (${escapeHtml(t.match_id)})</option>`).join("");
+        }
+
+        openModal("uploadReelModal");
+      }
+
+      function switchReelUploadSrc(mode, btnEl) {
+        doHaptic();
+        reelUploadSrc = mode;
+        document.querySelectorAll(".ur-src-btn").forEach((b) => {
+          const active = b.dataset.ursrc === mode;
+          b.className = active
+            ? "ur-src-btn min-h-[36px] rounded-lg bg-white/12 text-white font-display text-xs font-bold"
+            : "ur-src-btn min-h-[36px] rounded-lg text-[#94A3B8] font-display text-xs font-semibold";
+        });
+        document.getElementById("urFileBox")?.classList.toggle("hidden", mode !== "file");
+        document.getElementById("urUrlBox")?.classList.toggle("hidden", mode !== "url");
+      }
+
+      function onReelFilePicked(inp) {
+        const f = inp.files?.[0];
+        if (!f) return;
+        if (f.size > 25 * 1024 * 1024) { inp.value = ""; showToast("Reel video must be under 25MB.", true); return; }
+        document.getElementById("urFileLabel").innerText = `Selected: ${f.name} (${(f.size / (1024 * 1024)).toFixed(1)} MB)`;
+      }
+
+      function onReelThumbPicked(inp) {
+        const f = inp.files?.[0];
+        if (!f) return;
+        if (f.size > 4 * 1024 * 1024) { inp.value = ""; showToast("Cover image must be under 4MB.", true); return; }
+        document.getElementById("urThumbLabel").innerText = `Cover: ${f.name}`;
+      }
+
+      async function submitNewReel() {
+        if (!requireAuthOrOpen() || inFlight.has("pubReel")) return;
+        const title = document.getElementById("urTitle").value.trim();
+        const game = document.getElementById("urGame").value || "Free Fire MAX";
+        const caption = document.getElementById("urCaption").value.trim();
+        const tags = document.getElementById("urTags").value.split(",").map((s) => s.trim().replace(/^#/, "")).filter(Boolean).slice(0, 6);
+        const linkedMatchId = isVerifiedHost() ? (document.getElementById("urLinkedMatchSel")?.value || null) : null;
+        const file = document.getElementById("urFileInp").files?.[0];
+        const thumbFile = document.getElementById("urThumbInp").files?.[0];
+        let mediaUrl = document.getElementById("urUrlInp").value.trim();
+        let thumbUrl = null;
+
+        if (title.length < 2) { showToast("Enter a reel title (min 2 characters).", true); return; }
+        if (reelUploadSrc === "file" && !file) { showToast("Select an MP4 or WebM video to upload.", true); return; }
+        if (reelUploadSrc === "url" && !/^https?:\/\//i.test(mediaUrl)) { showToast("Paste a valid YouTube Shorts or direct video URL.", true); return; }
+
+        inFlight.add("pubReel");
+        const btn = document.getElementById("btnPublishReel");
+        const progWrap = document.getElementById("urProgWrap");
+        const progTxt = document.getElementById("urProgTxt");
+        const progBar = document.getElementById("urProgBar");
+        btn.disabled = true;
+        progWrap.classList.remove("hidden");
+
+        try {
+          if (reelUploadSrc === "file" && file) {
+            progTxt.innerText = "Uploading clutch reel to Tournyx Cloud...";
+            progBar.style.width = "48%";
+            const ext = (file.name.split(".").pop() || "mp4").replace(/[^a-z0-9]/gi, "").slice(0, 5);
+            const path = `reels/${Date.now()}_${Math.random().toString(36).slice(2, 7)}.${ext}`;
+            const up = await safeQuery(() => dbClient.storage.from(CONFIG.STORAGE_BUCKET).upload(path, file, { upsert: true }), null);
+            if (up.error) throw up.error;
+            mediaUrl = dbClient.storage.from(CONFIG.STORAGE_BUCKET).getPublicUrl(path).data?.publicUrl || "";
+            if (!mediaUrl) throw new Error("Upload succeeded but video URL was unavailable.");
+          }
+
+          if (thumbFile) {
+            progTxt.innerText = "Uploading cover poster...";
+            progBar.style.width = "74%";
+            const ext = (thumbFile.name.split(".").pop() || "jpg").replace(/[^a-z0-9]/gi, "").slice(0, 5);
+            const tPath = `thumbs/${Date.now()}_${Math.random().toString(36).slice(2, 7)}.${ext}`;
+            const tup = await safeQuery(() => dbClient.storage.from(CONFIG.STORAGE_BUCKET).upload(tPath, thumbFile, { upsert: true }), null);
+            if (!tup.error) thumbUrl = dbClient.storage.from(CONFIG.STORAGE_BUCKET).getPublicUrl(tPath).data?.publicUrl || null;
+          }
+
+          progTxt.innerText = "Publishing reel...";
+          progBar.style.width = "92%";
+
+          const { data: res, error: err } = await dbClient.rpc("publish_social_post", {
+            p_user_email: normStr(currentUser.email),
+            p_post_type: "reel",
+            p_title: title,
+            p_caption: caption,
+            p_game: game,
+            p_media_url: mediaUrl,
+            p_thumbnail_url: thumbUrl,
+            p_duration_sec: 0,
+            p_linked_match_id: linkedMatchId || null,
+            p_tags: tags,
+            p_is_live_now: false
+          });
+
+          if (err || !res?.ok) throw new Error(res?.error || err?.message || "Publish failed");
+
+          closeModal("uploadReelModal");
+          doHaptic("heavy");
+          showToast("Clutch Reel is now live!");
+          focusReelId = res.post_id || null;
+          await fetchReelsFeed(true);
+        } catch (e) {
+          showToast(e?.message || "Upload failed.", true);
+        } finally {
+          inFlight.delete("pubReel");
+          btn.disabled = false;
+          progWrap.classList.add("hidden");
+        }
+      }
+
+      // ============================================================================
+      // 7. KEYBOARD SHORTCUTS, VISIBILITY GUARD & BOOT SEQUENCE
+      // ============================================================================
+      document.addEventListener("click", (e) => {
+        if (e.target.classList.contains("sheet-overlay") && e.target.id) closeModal(e.target.id);
+      });
+
+      document.addEventListener("keydown", (e) => {
+        const activeTag = document.activeElement?.tagName;
+        const typing = activeTag === "INPUT" || activeTag === "TEXTAREA" || activeTag === "SELECT";
+        if (e.key === "Escape" && modalStack.length > 0) {
+          closeModal(modalStack[modalStack.length - 1]);
+          return;
+        }
+        if (typing || modalStack.length > 0) return;
+
+        if (e.key === "ArrowDown") { e.preventDefault(); scrollReelStep(1); }
+        else if (e.key === "ArrowUp") { e.preventDefault(); scrollReelStep(-1); }
+        else if (e.key === "m" || e.key === "M") { toggleGlobalReelMute(); }
+        else if (e.key === " ") {
+          e.preventDefault();
+          const vid = document.getElementById(`reel-vid-${activeSlideIdx}`);
+          if (vid) { if (vid.paused) vid.play().catch(() => {}); else vid.pause(); }
+        }
+      });
+
+      document.addEventListener("visibilitychange", () => {
+        const vid = document.getElementById(`reel-vid-${activeSlideIdx}`);
+        if (!vid) return;
+        if (document.hidden) vid.pause();
+        else if (modalStack.length === 0) vid.play().catch(() => {});
+      });
+
+      window.addEventListener("pagehide", () => {
+        clearTimeout(speedHoldTimer);
+        clearTimeout(singleTapTimer);
+        if (slideObserver) slideObserver.disconnect();
+        cleanupAllMediaDecoders();
+      });
+
+      // Expose Every Verified Global Handler
+      Object.assign(window, {
+        doHaptic, openModal, closeModal, hideToast, cyclePerfTier,
+        toggleDesktopSidebar, toggleMobileSearchBar, requireAuthOrOpen,
+        setReelsFilter, onReelsSearchInput, resetAllReelsFilters,
+        scrollReelStep, handleReelStageTap, startReelSpeedHold, endReelSpeedHold,
+        toggleGlobalReelMute, cycleGlobalReelSpeed, trackReelAdClick,
+        toggleReelLike, toggleReelBookmark, toggleReelFollow, shareReelExtensionless,
+        openReelComments, submitReelComment, openReelReport, submitReelReport,
+        openUploadReelModal, switchReelUploadSrc, onReelFilePicked, onReelThumbPicked, submitNewReel
+      });
+
+      // Boot Sequence
+      window.addEventListener("DOMContentLoaded", async () => {
+        initDatabase();
+        applyPerfTier(detectHardwarePerfTier(), false);
+
+        try {
+          const raw = localStorage.getItem("tournyx_user");
+          currentUser = raw && raw !== "undefined" ? JSON.parse(raw) : null;
+        } catch (e) { currentUser = null; }
+
+        applyGlobalAppearance();
+
+        const params = new URLSearchParams(window.location.search);
+        focusReelId = params.get("id") || null;
+
+        // Fetch active native ad reels first, then load live reels feed
+        const { data: ads } = await safeQuery(() => dbClient
+          .from("tournyx_ad_campaigns")
+          .select("*")
+          .eq("is_active", true)
+          .eq("placement", "REEL_NATIVE")
+          .order("priority", { ascending: true })
+          .limit(10), []);
+        nativeReelAds = Array.isArray(ads) ? ads : [];
+
+        await fetchReelsFeed(true);
+      });
+    })();
+  </script>
+
+  <!-- Persistent Cross-Page Squad Voice Bar -->
+  <script src="tournyx-voice.js" defer></script>
+</body>
+</html>
