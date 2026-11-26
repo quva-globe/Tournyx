@@ -1,0 +1,269 @@
+name: Build Tournyx All Platforms (Android, Windows, macOS, iOS)
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_android:
+        description: "Build Android (.apk + signed .aab if keystore secrets exist)"
+        type: boolean
+        default: true
+      build_windows:
+        description: "Build Windows (.exe & .msi installer)"
+        type: boolean
+        default: true
+      build_macos:
+        description: "Build macOS (.dmg installer)"
+        type: boolean
+        default: true
+      build_ios:
+        description: "Build iOS (unsigned .ipa for sideloading)"
+        type: boolean
+        default: true
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  # ==========================================================
+  # 1. ANDROID (.apk + optional Play Store signed .aab)
+  # ==========================================================
+  build-android:
+    name: Android APK / AAB
+    if: ${{ github.event_name == 'push' || inputs.build_android }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Tournyx Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Setup Java 17 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Dependencies & Prepare www/
+        run: |
+          npm install
+          npm run prep:www
+
+      - name: Initialize & Patch Android Project
+        run: |
+          npx cap add android
+          node scripts/patch-native.mjs android
+          npx cap sync android
+
+      - name: Generate Android App Icons (If favicon.png Present)
+        run: |
+          if [ -f "favicon.png" ]; then
+            mkdir -p assets
+            cp favicon.png assets/icon-only.png
+            cp favicon.png assets/icon-foreground.png
+            cp favicon.png assets/splash.png
+            npx --yes @capacitor/assets generate --android --iconBackgroundColor "#050508" --splashBackgroundColor "#050508" || true
+          fi
+
+      - name: Build Installable Android APK
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Build Signed Play Store Release (When Keystore Secrets Are Set)
+        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+        working-directory: android
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASS: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          echo "$KEYSTORE_B64" | base64 --decode > app/release-keystore.jks
+          ./gradlew assembleRelease bundleRelease \
+            -Pandroid.injected.signing.store.file="$(pwd)/app/release-keystore.jks" \
+            -Pandroid.injected.signing.store.password="$KEYSTORE_PASS" \
+            -Pandroid.injected.signing.key.alias="$KEY_ALIAS" \
+            -Pandroid.injected.signing.key.password="$KEY_PASS"
+          rm -f app/release-keystore.jks
+
+      - name: Rename Output APK
+        run: |
+          mkdir -p release-out
+          cp android/app/build/outputs/apk/debug/app-debug.apk release-out/Tournyx-Esports-Android.apk
+          if [ -f "android/app/build/outputs/apk/release/app-release.apk" ]; then
+            cp android/app/build/outputs/apk/release/app-release.apk release-out/Tournyx-Esports-Android-Signed.apk
+          fi
+          if [ -f "android/app/build/outputs/bundle/release/app-release.aab" ]; then
+            cp android/app/build/outputs/bundle/release/app-release.aab release-out/Tournyx-Esports-PlayStore.aab
+          fi
+
+      - name: Upload Android APK / AAB Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Tournyx-Android-Package
+          path: release-out/*
+          retention-days: 30
+
+  # ==========================================================
+  # 2. WINDOWS (.exe NSIS & .msi via Tauri v2)
+  # ==========================================================
+  build-windows:
+    name: Windows Installer (.exe / .msi)
+    if: ${{ github.event_name == 'push' || inputs.build_windows }}
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Tournyx Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Setup Rust Stable
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust Cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: "./src-tauri -> target"
+
+      - name: Install Dependencies & Prepare www/
+        run: |
+          npm install
+          npm run prep:www
+
+      - name: Generate Windows App Icons & Build Installer
+        shell: pwsh
+        run: |
+          if (!(Test-Path "favicon.png")) {
+            Invoke-WebRequest -Uri "https://tournyx.in/favicon.png" -OutFile "favicon.png"
+          }
+          npx tauri icon favicon.png
+          npx tauri build
+
+      - name: Upload Windows Installers
+        uses: actions/upload-artifact@v4
+        with:
+          name: Tournyx-Windows-Installers
+          path: |
+            src-tauri/target/release/bundle/nsis/*.exe
+            src-tauri/target/release/bundle/msi/*.msi
+          retention-days: 30
+
+  # ==========================================================
+  # 3. macOS (.dmg via Tauri v2)
+  # ==========================================================
+  build-macos:
+    name: macOS Installer (.dmg)
+    if: ${{ github.event_name == 'push' || inputs.build_macos }}
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Tournyx Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Setup Rust Stable
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust Cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: "./src-tauri -> target"
+
+      - name: Install Dependencies & Prepare www/
+        run: |
+          npm install
+          npm run prep:www
+
+      - name: Generate macOS App Icons & Build DMG
+        run: |
+          if [ ! -f "favicon.png" ]; then
+            curl -fsSL "https://tournyx.in/favicon.png" -o favicon.png
+          fi
+          npx tauri icon favicon.png
+          npx tauri build
+
+      - name: Upload macOS DMG
+        uses: actions/upload-artifact@v4
+        with:
+          name: Tournyx-macOS-DMG
+          path: src-tauri/target/release/bundle/dmg/*.dmg
+          retention-days: 30
+
+  # ==========================================================
+  # 4. iOS (Unsigned .ipa via Capacitor 6 + Xcode CLI)
+  # ==========================================================
+  build-ios:
+    name: iOS Package (.ipa)
+    if: ${{ github.event_name == 'push' || inputs.build_ios }}
+    runs-on: macos-latest
+    env:
+      LANG: en_US.UTF-8
+    steps:
+      - name: Checkout Tournyx Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Dependencies & Prepare www/
+        run: |
+          npm install
+          npm run prep:www
+
+      - name: Initialize & Patch iOS Project
+        run: |
+          npx cap add ios
+          node scripts/patch-native.mjs ios
+          npx cap sync ios
+
+      - name: Generate iOS App Icons (If favicon.png Present)
+        run: |
+          if [ -f "favicon.png" ]; then
+            mkdir -p assets
+            cp favicon.png assets/icon-only.png
+            cp favicon.png assets/splash.png
+            npx --yes @capacitor/assets generate --ios --iconBackgroundColor "#050508" --splashBackgroundColor "#050508" || true
+          fi
+
+      - name: Build Unsigned iOS App & Package IPA
+        run: |
+          xcodebuild \
+            -workspace ios/App/App.xcworkspace \
+            -scheme App \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath ios/build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            build
+
+          mkdir -p ios-out/Payload
+          cp -R ios/build/Build/Products/Release-iphoneos/App.app ios-out/Payload/
+          cd ios-out
+          zip -r Tournyx-Esports-iOS-Unsigned.ipa Payload
+
+      - name: Upload iOS Unsigned IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: Tournyx-iOS-Unsigned-IPA
+          path: ios-out/Tournyx-Esports-iOS-Unsigned.ipa
+          retention-days: 30
