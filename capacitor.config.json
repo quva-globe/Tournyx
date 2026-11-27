@@ -11,8 +11,6 @@
       "tournyx.in",
       "*.tournyx.in",
       "*.supabase.co",
-      "accounts.google.com",
-      "discord.com",
       "api.bigdatacloud.net",
       "*.youtube.com",
       "youtu.be"
@@ -33,7 +31,7 @@
   },
   "plugins": {
     "SplashScreen": {
-      "launchShowDuration": 350,
+      "launchShowDuration": 300,
       "launchAutoHide": true,
       "backgroundColor": "#050508",
       "showSpinner": false,
