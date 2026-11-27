@@ -1,0 +1,20 @@
+{
+  "latest_version": "6.0.0",
+  "download_url": "https://tournyx.in/",
+  "android": {
+    "version": "6.0.0",
+    "download_url": "https://tournyx.in/"
+  },
+  "windows": {
+    "version": "6.0.0",
+    "download_url": "https://tournyx.in/"
+  },
+  "macos": {
+    "version": "6.0.0",
+    "download_url": "https://tournyx.in/"
+  },
+  "ios": {
+    "version": "6.0.0",
+    "download_url": "https://tournyx.in/"
+  }
+}
