@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html class="dark" lang="en" style="color-scheme: dark; background-color: #050508;">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#050508">
+  <title>Tournyx Esports</title>
+  <link rel="stylesheet" href="vendor/fa/css/all.min.css" onerror="this.href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'">
+  <link rel="stylesheet" href="vendor/native-app-shell.css" onerror="this.href='styles/native-app-shell.css'">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      background-color: #050508;
+      color: #F8FAFC;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+    }
+
+    /* Stacked Persistent Frame Stage (Zero Unload for Active Voice Rooms) */
+    #tx-shell-stage {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100dvh;
+      background: #050508;
+      overflow: hidden;
+    }
+
+    .tx-stage-frame {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #050508;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      z-index: 1;
+      transition: opacity 0.14s ease;
+    }
+
+    .tx-stage-frame.is-visible {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      z-index: 5;
+    }
+
+    /* Floating Discord-Style Liquid Glass Voice Bar (Visible on Other Pages While in Room) */
+    #tx-floating-voice-pill {
+      position: fixed;
+      left: 50%;
+      bottom: calc(74px + env(safe-area-inset-bottom, 0px));
+      transform: translate3d(-50%, 16px, 0);
+      width: min(calc(100vw - 24px), 420px);
+      z-index: 4900;
+      padding: 8px 10px 8px 14px;
+      border-radius: 9999px;
+      background: linear-gradient(145deg, rgba(16, 46, 36, 0.88) 0%, rgba(12, 16, 28, 0.94) 100%);
+      backdrop-filter: saturate(190%) blur(22px);
+      -webkit-backdrop-filter: saturate(190%) blur(22px);
+      border: 1px solid rgba(0, 255, 127, 0.42);
+      box-shadow: 0 16px 38px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      opacity: 0;
+      transition: opacity 0.2s ease, transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @media (min-width: 1024px) {
+      #tx-floating-voice-pill {
+        left: auto;
+        right: 22px;
+        bottom: 22px;
+        transform: translate3d(0, 16px, 0);
+        width: 340px;
+      }
+      #tx-floating-voice-pill.is-active {
+        transform: translate3d(0, 0, 0);
+      }
+    }
+
+    #tx-floating-voice-pill.is-active {
+      display: flex;
+      opacity: 1;
+      transform: translate3d(-50%, 0, 0);
+    }
+
+    .tx-fv-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 9999px;
+      background: #00FF7F;
+      box-shadow: 0 0 10px #00FF7F;
+      flex-shrink: 0;
+      animation: txPulseDot 1.6s infinite ease-in-out;
+    }
+
+    @keyframes txPulseDot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.32); opacity: 0.65; }
+    }
+
+    .tx-fv-info {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+      flex: 1;
+      background: none;
+      border: none;
+      padding: 4px 0;
+      text-align: left;
+      color: #FFFFFF;
+      cursor: pointer;
+    }
+
+    .tx-fv-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .tx-fv-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 9999px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.08);
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .tx-fv-btn.is-muted {
+      background: rgba(255, 70, 85, 0.25);
+      border-color: rgba(255, 70, 85, 0.55);
+      color: #FF8A93;
+    }
+
+    .tx-fv-btn.is-speaker-on {
+      background: rgba(0, 242, 255, 0.22);
+      border-color: rgba(0, 242, 255, 0.55);
+      color: #00F2FF;
+    }
+
+    .tx-fv-btn.is-hangup {
+      background: #FF4655;
+      border-color: #FF4655;
+      color: #FFFFFF;
+    }
+  </style>
+</head>
+<body class="is-native-app">
+  <!-- Top Progress Rail -->
+  <div id="tx-loader-rail"><div id="tx-loader-rail-fill"></div></div>
+
+  <!-- Stacked Native Frames: Main Content + Persistent Clan Voice Host -->
+  <div id="tx-shell-stage">
+    <iframe id="tx-main-frame" class="tx-stage-frame is-visible"
+      allow="geolocation; microphone; camera; display-capture; autoplay; clipboard-write; fullscreen"
+      title="Tournyx Arena"></iframe>
+    <iframe id="tx-clans-frame" class="tx-stage-frame"
+      allow="geolocation; microphone; camera; display-capture; autoplay; clipboard-write; fullscreen"
+      title="Tournyx Clans & Voice"></iframe>
+  </div>
+
+  <!-- Floating Discord-Style Liquid Glass Voice Bar -->
+  <div id="tx-floating-voice-pill" role="region" aria-label="Active Squad Voice Room">
+    <button id="txFvReturnBtn" class="tx-fv-info" type="button" title="Return to Voice Room">
+      <span class="tx-fv-dot"></span>
+      <div style="min-width:0;">
+        <div id="txFvTitle" style="font-size:12.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Clan Voice Connected</div>
+        <div style="font-size:10px;color:#00FF7F;font-family:monospace;">Tap to return to room</div>
+      </div>
+    </button>
+    <div class="tx-fv-actions">
+      <button id="txFvMuteBtn" class="tx-fv-btn" type="button" aria-label="Toggle Mute"><i class="fa-solid fa-microphone"></i></button>
+      <button id="txFvSpeakerBtn" class="tx-fv-btn is-speaker-on" type="button" aria-label="Toggle Speaker"><i class="fa-solid fa-volume-high"></i></button>
+      <button id="txFvLeaveBtn" class="tx-fv-btn is-hangup" type="button" aria-label="Leave Voice Room"><i class="fa-solid fa-phone-slash"></i></button>
+    </div>
+  </div>
+
+  <!-- Unified Floating Liquid Glass Capsule Dock (Mobile < 1024px) -->
+  <nav id="tx-native-dock" aria-label="Tournyx Primary Navigation" style="display:none;">
+    <button type="button" class="tx-dock-item is-active" data-dock-tab="index.html"><i class="fa-solid fa-house"></i><span>Home</span></button>
+    <button type="button" class="tx-dock-item" data-dock-tab="explore.html"><i class="fa-solid fa-compass"></i><span>Explore</span></button>
+    <button type="button" class="tx-dock-item" data-dock-tab="matches.html"><i class="fa-solid fa-trophy"></i><span>Matches</span></button>
+    <button type="button" class="tx-dock-item" data-dock-tab="reels.html"><i class="fa-solid fa-clapperboard"></i><span>Reels</span></button>
+    <button type="button" class="tx-dock-item" data-dock-tab="clans.html"><i class="fa-solid fa-shield-halved"></i><span>Clans</span></button>
+    <button type="button" class="tx-dock-item" data-dock-tab="profile.html"><i class="fa-solid fa-user"></i><span>Profile</span></button>
+  </nav>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const OAUTH_CALLBACK_URI = "in.tournyx.app://auth/callback";
+      const SUPABASE_HOST = "zuatrwfrejnwfnldqqgy.supabase.co";
+      const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1YXRyd2ZyZWpud2ZubGRxcWd5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNDE5NjEsImV4cCI6MjA5OTYxNzk2MX0.zcJO4Es-DnuUKR-L_Eu44xIwmz4PxsFVCgs-t492t1g";
+      const SUPABASE_AUTH_STORAGE_KEY = "sb-zuatrwfrejnwfnldqqgy-auth-token";
+
+      const KNOWN_PAGES = new Set([
+        "index", "explore", "matches", "reels", "clans", "tournament",
+        "resolve", "tickets", "profile", "login", "giveaway", "offer",
+        "refer", "premium", "settings", "notifications", "support",
+        "about", "contact", "feedback", "leaderboard", "blogs",
+        "discord", "instagram", "youtube", "privacy", "terms", "refund",
+        "Globe-support", "maintenance"
+      ]);
+
+      const AUTH_EXEMPT_PAGES = new Set([
+        "login.html", "privacy.html", "terms.html", "refund.html", "support.html", "about.html"
+      ]);
+
+      const PERSISTED_KEYS = [
+        "tournyx_user",
+        SUPABASE_AUTH_STORAGE_KEY,
+        "tournyx_perf_tier",
+        "tournyx_theme_config",
+        "tournyx_psm",
+        "tx_onboard_v6_done"
+      ];
+
+      const isCapacitor = Boolean(window.Capacitor?.isNativePlatform?.());
+      const isTauri = Boolean(window.__TAURI_INTERNALS__ || window.__TAURI__);
+      const platform = isCapacitor
+        ? (window.Capacitor.getPlatform?.() || "android").toLowerCase()
+        : (isTauri ? (/Mac/i.test(navigator.userAgent) ? "macos" : "windows") : "web");
+
+      document.documentElement.dataset.txPlatform = platform;
+      document.documentElement.dataset.txNative = "true";
+      document.body.classList.add(`platform-${platform}`);
+
+      const mainFrame = document.getElementById("tx-main-frame");
+      const clansFrame = document.getElementById("tx-clans-frame");
+      const dockEl = document.getElementById("tx-native-dock");
+      const voicePill = document.getElementById("tx-floating-voice-pill");
+      const railEl = document.getElementById("tx-loader-rail");
+      const railFill = document.getElementById("tx-loader-rail-fill");
+
+      let activeLayer = "main"; // "main" | "clans"
+      let currentPage = "index.html";
+      let clansLoaded = false;
+      let isNavigating = false;
+      let navLockTimer = null;
+      let voiceState = { active: false, roomName: "Clan Voice", muted: false, speaker: true };
+
+      function doHaptic(style = "light") {
+        try {
+          if (window.Capacitor?.Plugins?.Haptics?.impact) {
+            window.Capacitor.Plugins.Haptics.impact({ style: style === "heavy" ? "HEAVY" : "LIGHT" });
+            return;
+          }
+          if (navigator.vibrate) navigator.vibrate(style === "heavy" ? 22 : 10);
+        } catch (e) {}
+      }
+
+      function setRail(pct) {
+        if (!railEl || !railFill) return;
+        railEl.classList.add("is-active");
+        railFill.style.width = `${Math.max(8, Math.min(100, pct))}%`;
+        if (pct >= 100) {
+          setTimeout(() => {
+            railEl.classList.remove("is-active");
+            railFill.style.width = "0%";
+          }, 200);
+        }
+      }
+
+      function hasValidUser() {
+        try {
+          const raw = localStorage.getItem("tournyx_user");
+          if (!raw || raw === "undefined" || raw === "null") return false;
+          const u = JSON.parse(raw);
+          return Boolean(u?.email && String(u.email).toLowerCase() !== "guest@tournyx.com");
+        } catch (e) {
+          return false;
+        }
+      }
+
+      async function hydrateNativePreferences() {
+        if (!isCapacitor) return;
+        const prefs = window.Capacitor?.Plugins?.Preferences;
+        if (!prefs?.get) return;
+        for (const key of PERSISTED_KEYS) {
+          try {
+            const cur = localStorage.getItem(key);
+            if (!cur || cur === "undefined" || cur === "null") {
+              const res = await prefs.get({ key });
+              if (res?.value && res.value !== "undefined" && res.value !== "null") {
+                localStorage.setItem(key, res.value);
+              }
+            }
+          } catch (e) {}
+        }
+      }
+
+      function resolvePageUrl(raw) {
+        const s = String(raw || "index.html").trim();
+        let candidate = s;
+        try {
+          const u = new URL(s, window.location.origin);
+          const h = u.hostname.toLowerCase();
+          if (h === "tournyx.in" || h === "www.tournyx.in" || h === "app.tournyx.in" || h === "localhost" || h === "tauri.localhost") {
+            candidate = u.pathname + u.search + u.hash;
+          } else if (/^https?:\/\//i.test(s)) {
+            return null;
+          }
+        } catch (e) {
+          return null;
+        }
+        if (candidate === "/" || candidate === "") return "index.html";
+        const m = candidate.match(/^\/?([A-Za-z0-9_-]+)(?:\.html)?(\?[^#]*)?(#.*)?$/);
+        if (m && KNOWN_PAGES.has(m[1])) {
+          return `${m[1]}.html${m[2] || ""}${m[3] || ""}`;
+        }
+        return null;
+      }
+
+      function updateDockAndPillVisibility() {
+        const pageFile = (currentPage.split("?")[0].split("#")[0] || "index.html").toLowerCase();
+        const hideDock = pageFile === "login.html" || pageFile === "reels.html";
+        if (dockEl) {
+          dockEl.style.display = hideDock ? "none" : "";
+          dockEl.querySelectorAll("[data-dock-tab]").forEach((btn) => {
+            const tabFile = btn.dataset.dockTab.toLowerCase();
+            const active = activeLayer === "clans" ? tabFile === "clans.html" : tabFile === pageFile;
+            btn.classList.toggle("is-active", active);
+          });
+        }
+
+        // Show Floating Discord Voice Pill whenever user is in an active voice room & NOT currently viewing Clans
+        const showPill = voiceState.active && activeLayer !== "clans" && pageFile !== "login.html";
+        if (voicePill) {
+          voicePill.classList.toggle("is-active", showPill);
+          voicePill.style.bottom = pageFile === "reels.html"
+            ? "calc(16px + env(safe-area-inset-bottom, 0px))"
+            : "calc(74px + env(safe-area-inset-bottom, 0px))";
+        }
+        const titleEl = document.getElementById("txFvTitle");
+        if (titleEl) titleEl.textContent = voiceState.roomName || "Clan Voice Connected";
+        const muteBtn = document.getElementById("txFvMuteBtn");
+        if (muteBtn) {
+          muteBtn.classList.toggle("is-muted", Boolean(voiceState.muted));
+          muteBtn.innerHTML = `<i class="fa-solid ${voiceState.muted ? "fa-microphone-slash" : "fa-microphone"}"></i>`;
+        }
+        const spkBtn = document.getElementById("txFvSpeakerBtn");
+        if (spkBtn) {
+          spkBtn.classList.toggle("is-speaker-on", Boolean(voiceState.speaker));
+          spkBtn.innerHTML = `<i class="fa-solid ${voiceState.speaker ? "fa-volume-high" : "fa-phone-volume"}"></i>`;
+        }
+      }
+
+      function navigate(rawHref, options = {}) {
+        const resolved = resolvePageUrl(rawHref) || "index.html";
+        const fileOnly = resolved.split("?")[0].split("#")[0].toLowerCase();
+
+        // Enforce first-time Login Gate across all 4 dedicated apps
+        if (!AUTH_EXEMPT_PAGES.has(fileOnly) && !hasValidUser()) {
+          return navigate("login.html", { force: true });
+        }
+
+        if (!options.force && isNavigating) return;
+        isNavigating = true;
+        clearTimeout(navLockTimer);
+        navLockTimer = setTimeout(() => { isNavigating = false; }, 1200);
+
+        if (!options.silent) doHaptic("light");
+
+        // Switch cleanly to persistent Clan Voice frame without tearing down live WebRTC audio
+        if (fileOnly === "clans.html") {
+          activeLayer = "clans";
+          currentPage = resolved;
+          if (!clansLoaded || (resolved.includes("?") && !voiceState.active)) {
+            setRail(75);
+            clansFrame.src = resolved;
+            clansLoaded = true;
+          } else {
+            isNavigating = false;
+            setRail(100);
+          }
+          mainFrame.classList.remove("is-visible");
+          clansFrame.classList.add("is-visible");
+          updateDockAndPillVisibility();
+          return;
+        }
+
+        // Switch to Main content frame (keeping #tx-clans-frame alive in background if voiceState.active)
+        activeLayer = "main";
+        const prevMain = mainFrame.getAttribute("data-loaded-url") || "";
+        currentPage = resolved;
+        clansFrame.classList.remove("is-visible");
+        mainFrame.classList.add("is-visible");
+
+        if (prevMain !== resolved || options.force) {
+          setRail(75);
+          mainFrame.setAttribute("data-loaded-url", resolved);
+          mainFrame.src = resolved;
+        } else {
+          isNavigating = false;
+          setRail(100);
+        }
+        updateDockAndPillVisibility();
+      }
+
+      mainFrame.addEventListener("load", () => {
+        isNavigating = false;
+        setRail(100);
+        try {
+          const p = (mainFrame.contentWindow?.location?.pathname?.split("/").pop() || "index.html");
+          const s = mainFrame.contentWindow?.location?.search || "";
+          if (p.toLowerCase() === "clans.html") {
+            navigate(`clans.html${s}`, { force: true, silent: true });
+            return;
+          }
+          currentPage = `${p}${s}`;
+          mainFrame.setAttribute("data-loaded-url", currentPage);
+        } catch (e) {}
+        updateDockAndPillVisibility();
+      });
+
+      clansFrame.addEventListener("load", () => {
+        isNavigating = false;
+        setRail(100);
+        updateDockAndPillVisibility();
+      });
+
+      // Sync Voice Room State with Android Foreground Service & Floating Pill
+      function setVoiceState(patch) {
+        const wasActive = voiceState.active;
+        voiceState = Object.assign({}, voiceState, patch || {});
+        updateDockAndPillVisibility();
+
+        try {
+          const ab = window.TournyxAndroidBridge;
+          if (ab) {
+            if (voiceState.active && !wasActive) {
+              ab.startVoiceService(String(voiceState.roomName || "Tournyx Squad Voice"));
+            } else if (voiceState.active) {
+              ab.updateVoiceService(
+                String(voiceState.roomName || "Tournyx Squad Voice"),
+                Boolean(voiceState.muted),
+                Boolean(voiceState.speaker)
+              );
+            } else if (!voiceState.active && wasActive) {
+              ab.stopVoiceService();
+            }
+          }
+        } catch (e) {}
+      }
+
+      function forwardVoiceActionToClans(action) {
+        doHaptic("light");
+        if (action === "mute") {
+          voiceState.muted = !voiceState.muted;
+        } else if (action === "speaker") {
+          voiceState.speaker = !voiceState.speaker;
+          try { window.TournyxAndroidBridge?.setSpeakerphone?.(voiceState.speaker); } catch (e) {}
+        } else if (action === "leave") {
+          setVoiceState({ active: false, muted: false });
+        }
+        updateDockAndPillVisibility();
+        try {
+          clansFrame.contentWindow?.postMessage({ type: "TX_SHELL_VOICE_ACTION", action, state: voiceState }, "*");
+        } catch (e) {}
+      }
+
+      // Wire Floating Pill & Dock Controls
+      document.getElementById("txFvReturnBtn")?.addEventListener("click", () => navigate("clans.html", { force: true }));
+      document.getElementById("txFvMuteBtn")?.addEventListener("click", () => forwardVoiceActionToClans("mute"));
+      document.getElementById("txFvSpeakerBtn")?.addEventListener("click", () => forwardVoiceActionToClans("speaker"));
+      document.getElementById("txFvLeaveBtn")?.addEventListener("click", () => forwardVoiceActionToClans("leave"));
+
+      dockEl?.querySelectorAll("[data-dock-tab]").forEach((btn) => {
+        btn.addEventListener("click", () => navigate(btn.dataset.dockTab));
+      });
+
+      // Receive Native Android Notification Shade Actions (Mute / Speaker / Hang Up) & Screen Frames
+      window.addEventListener("tournyx:native-voice-action", (e) => {
+        const d = e?.detail || {};
+        if (d.action === "mute") {
+          voiceState.muted = typeof d.muted === "boolean" ? d.muted : !voiceState.muted;
+          updateDockAndPillVisibility();
+          clansFrame.contentWindow?.postMessage({ type: "TX_SHELL_VOICE_ACTION", action: "mute", state: voiceState }, "*");
+        } else if (d.action === "speaker") {
+          voiceState.speaker = typeof d.speaker === "boolean" ? d.speaker : !voiceState.speaker;
+          updateDockAndPillVisibility();
+          clansFrame.contentWindow?.postMessage({ type: "TX_SHELL_VOICE_ACTION", action: "speaker", state: voiceState }, "*");
+        } else if (d.action === "leave") {
+          setVoiceState({ active: false, muted: false });
+          clansFrame.contentWindow?.postMessage({ type: "TX_SHELL_VOICE_ACTION", action: "leave", state: voiceState }, "*");
+        } else if (d.action === "open_room") {
+          navigate("clans.html", { force: true, silent: true });
+        }
+      });
+
+      // Forward native screen-share frames from MainActivity into active iframe
+      window.addEventListener("tournyx:screen-frame", (e) => {
+        try {
+          clansFrame.contentWindow?.dispatchEvent(new CustomEvent("tournyx:screen-frame", { detail: e.detail }));
+        } catch (err) {}
+      });
+      window.addEventListener("tournyx:screen-share-ready", (e) => {
+        try {
+          clansFrame.contentWindow?.dispatchEvent(new CustomEvent("tournyx:screen-share-ready", { detail: e.detail }));
+        } catch (err) {}
+      });
+      window.addEventListener("tournyx:screen-share-denied", () => {
+        try {
+          clansFrame.contentWindow?.dispatchEvent(new CustomEvent("tournyx:screen-share-denied"));
+        } catch (err) {}
+      });
+
+      // Listen to messages from child frames
+      window.addEventListener("message", (e) => {
+        const msg = e?.data;
+        if (!msg || typeof msg !== "object") return;
+        if (msg.type === "TX_NAVIGATE" && msg.href) navigate(msg.href, msg.options);
+        else if (msg.type === "TX_VOICE_STATE") setVoiceState(msg.state);
+        else if (msg.type === "TX_DOCK_CONDENSE" && dockEl) dockEl.classList.toggle("is-condensed", Boolean(msg.condensed));
+      });
+
+      // Expose Global Shell Controller for Child Frames (Same-Origin Instant Access)
+      window.TournyxShell = {
+        navigate,
+        setVoiceState,
+        getVoiceState: () => Object.assign({}, voiceState),
+        forwardVoiceAction: forwardVoiceActionToClans
+      };
+
+      // Handle Native OAuth Callback (in.tournyx.app://auth/callback)
+      async function handleOAuthReturn(urlStr) {
+        try { await window.Capacitor?.Plugins?.Browser?.close?.(); } catch (e) {}
+        setRail(80);
+        try {
+          const parsed = new URL(urlStr);
+          const q = new URLSearchParams(parsed.search || "");
+          const h = new URLSearchParams((parsed.hash || "").replace(/^#/, ""));
+          const code = q.get("code");
+          const accessToken = h.get("access_token") || q.get("access_token");
+          const refreshToken = h.get("refresh_token") || q.get("refresh_token");
+
+          // Pass tokens into login.html so login.html's existing Supabase client completes public.Users sync
+          if (code) {
+            navigate(`login.html?code=${encodeURIComponent(code)}&native_oauth=1`, { force: true, silent: true });
+          } else if (accessToken && refreshToken) {
+            navigate(`login.html?native_oauth=1#access_token=${encodeURIComponent(accessToken)}&refresh_token=${encodeURIComponent(refreshToken)}`, { force: true, silent: true });
+          } else {
+            navigate("login.html?native_oauth=1", { force: true, silent: true });
+          }
+        } catch (e) {
+          navigate("login.html", { force: true, silent: true });
+        }
+      }
+
+      // 2-Stage TX Dragon Kinetic Splash (Runs Once on Cold Boot)
+      function runColdSplash(onComplete) {
+        const splash = document.createElement("div");
+        splash.id = "tx-animated-splash";
+        splash.innerHTML = `
+          <div class="tx-splash-aura" aria-hidden="true"></div>
+          <div class="tx-splash-crest-wrap">
+            <div class="tx-splash-arc-outer"></div>
+            <div class="tx-splash-arc-inner"></div>
+            <div class="tx-splash-logo-frame">
+              <img class="tx-splash-logo" src="favicon.png" alt="Tournyx Esports">
+            </div>
+          </div>
+          <div style="text-align:center;position:relative;z-index:2;">
+            <div style="font-family:Orbitron,Plus Jakarta Sans,sans-serif;font-size:21px;font-weight:900;letter-spacing:0.14em;color:#FFFFFF;">
+              TOURNYX<span style="color:#D4FF00;">.</span>
+            </div>
+            <div style="font-family:JetBrains Mono,monospace;font-size:10px;letter-spacing:0.20em;color:#C4B5FD;margin-top:5px;text-transform:uppercase;">
+              ESPORTS ARENA
+            </div>
+          </div>
+        `;
+        document.body.appendChild(splash);
+        try { window.Capacitor?.Plugins?.SplashScreen?.hide?.(); } catch (e) {}
+
+        const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+        setTimeout(() => {
+          splash.classList.add("is-hiding");
+          setTimeout(() => {
+            splash.remove();
+            onComplete();
+          }, 320);
+        }, reduce ? 250 : 1250);
+      }
+
+      // Capacitor System Hooks (StatusBar, Deep Links, Hardware Back Button)
+      function initNativeHooks() {
+        if (!isCapacitor) return;
+        const plugins = window.Capacitor?.Plugins || {};
+        try {
+          plugins.StatusBar?.setBackgroundColor?.({ color: "#050508" });
+          plugins.StatusBar?.setStyle?.({ style: "DARK" });
+
+          plugins.App?.addListener?.("appUrlOpen", (event) => {
+            const url = event?.url || "";
+            if (!url) return;
+            if (url.toLowerCase().startsWith(OAUTH_CALLBACK_URI)) {
+              handleOAuthReturn(url);
+              return;
+            }
+            const resolved = resolvePageUrl(url);
+            if (resolved) navigate(resolved, { force: true });
+          });
+
+          let lastBack = 0;
+          plugins.App?.addListener?.("backButton", () => {
+            const activeWin = activeLayer === "clans" ? clansFrame.contentWindow : mainFrame.contentWindow;
+            try {
+              const doc = activeWin?.document;
+              const drawer = doc?.getElementById("commandDrawer");
+              if (drawer?.classList.contains("active") && typeof activeWin.toggleCommandDrawer === "function") {
+                activeWin.toggleCommandDrawer(false);
+                return;
+              }
+              const sheets = doc?.querySelectorAll(".sheet-overlay.active");
+              if (sheets && sheets.length > 0) {
+                const top = sheets[sheets.length - 1];
+                if (top.id === "theaterPlayerModal" && typeof activeWin.closeTheaterPlayer === "function") {
+                  activeWin.closeTheaterPlayer();
+                  return;
+                }
+                if (top.id && typeof activeWin.closeModal === "function") {
+                  activeWin.closeModal(top.id);
+                  return;
+                }
+                top.classList.remove("active");
+                doc.body.classList.remove("modal-open");
+                return;
+              }
+            } catch (e) {}
+
+            const pageFile = (currentPage.split("?")[0] || "index.html").toLowerCase();
+            if (pageFile !== "index.html" && pageFile !== "login.html") {
+              navigate("index.html", { force: true });
+              return;
+            }
+
+            // If in an active Voice Room, minimize to background cleanly instead of killing the call!
+            if (voiceState.active && window.TournyxAndroidBridge?.moveToBackground) {
+              window.TournyxAndroidBridge.moveToBackground();
+              return;
+            }
+
+            const now = Date.now();
+            if (now - lastBack < 2000) {
+              plugins.App?.exitApp?.();
+            } else {
+              lastBack = now;
+              try { activeWin?.showToast?.("Press back again to exit Tournyx"); } catch (e) {}
+            }
+          });
+        } catch (e) {}
+      }
+
+      // Shell Boot
+      window.addEventListener("DOMContentLoaded", async () => {
+        initNativeHooks();
+        await hydrateNativePreferences();
+
+        const params = new URLSearchParams(window.location.search);
+        const requested = resolvePageUrl(params.get("page") || "index.html") || "index.html";
+        const initialTarget = hasValidUser() ? requested : "login.html";
+
+        // Start loading initial page immediately behind the 2-stage splash so it's 100% painted on reveal
+        navigate(initialTarget, { force: true, silent: true });
+        runColdSplash(() => {
+          updateDockAndPillVisibility();
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
