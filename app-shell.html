@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#050508">
   <title>Tournyx Esports</title>
   <link rel="stylesheet" href="vendor/fa/css/all.min.css" onerror="this.href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'">
+  <link rel="stylesheet" href="vendor/tournyx-theme.css" onerror="this.href='styles/tournyx-theme.css'">
   <link rel="stylesheet" href="vendor/native-app-shell.css" onerror="this.href='styles/native-app-shell.css'">
   <style>
     *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -50,7 +51,7 @@
       z-index: 5;
     }
 
-    /* Floating Liquid Glass Voice Pill (3-Color Theme + Live Status Dot) */
+    /* Floating Liquid Glass Voice Pill (Visible on Other Pages While Connected in Voice) */
     #tx-floating-voice-pill {
       position: fixed;
       left: 50%;
@@ -60,7 +61,7 @@
       z-index: 4900;
       padding: 8px 10px 8px 14px;
       border-radius: 9999px;
-      background: linear-gradient(145deg, rgba(24, 22, 48, 0.88) 0%, rgba(10, 12, 24, 0.94) 100%);
+      background: linear-gradient(145deg, rgba(24, 22, 48, 0.90) 0%, rgba(10, 12, 24, 0.95) 100%);
       backdrop-filter: saturate(195%) blur(24px);
       -webkit-backdrop-filter: saturate(195%) blur(24px);
       border: 1px solid rgba(139, 92, 246, 0.48);
@@ -151,26 +152,48 @@
       title="Tournyx Clans & Voice"></iframe>
   </div>
 
-  <!-- Unified 16-Ray Radial Energy Burst Loader (Replaces Top Progress Rail Completely) -->
+  <!-- 360° Inward-Absorbing Energy Loader (24 Streams Pulling Inward Behind Frameless TX Logo) -->
   <div id="tx-common-loader" role="status" aria-live="polite">
-    <div class="tx-burst-stage">
-      <div class="tx-burst-core-glow" aria-hidden="true"></div>
-      <div class="tx-burst-rays" aria-hidden="true">
-        <span class="tx-burst-ray" style="--i:0"></span><span class="tx-burst-ray" style="--i:1"></span>
-        <span class="tx-burst-ray" style="--i:2"></span><span class="tx-burst-ray" style="--i:3"></span>
-        <span class="tx-burst-ray" style="--i:4"></span><span class="tx-burst-ray" style="--i:5"></span>
-        <span class="tx-burst-ray" style="--i:6"></span><span class="tx-burst-ray" style="--i:7"></span>
-        <span class="tx-burst-ray" style="--i:8"></span><span class="tx-burst-ray" style="--i:9"></span>
-        <span class="tx-burst-ray" style="--i:10"></span><span class="tx-burst-ray" style="--i:11"></span>
-        <span class="tx-burst-ray" style="--i:12"></span><span class="tx-burst-ray" style="--i:13"></span>
-        <span class="tx-burst-ray" style="--i:14"></span><span class="tx-burst-ray" style="--i:15"></span>
+    <div class="tx-absorb-stage">
+      <div class="tx-absorb-core-glow" aria-hidden="true"></div>
+      <div class="tx-absorb-ring" aria-hidden="true"></div>
+      <div class="tx-absorb-ring is-second" aria-hidden="true"></div>
+      <div class="tx-absorb-streams" aria-hidden="true">
+        <span class="tx-absorb-ray" style="--i:0"></span><span class="tx-absorb-ray" style="--i:1"></span>
+        <span class="tx-absorb-ray" style="--i:2"></span><span class="tx-absorb-ray" style="--i:3"></span>
+        <span class="tx-absorb-ray" style="--i:4"></span><span class="tx-absorb-ray" style="--i:5"></span>
+        <span class="tx-absorb-ray" style="--i:6"></span><span class="tx-absorb-ray" style="--i:7"></span>
+        <span class="tx-absorb-ray" style="--i:8"></span><span class="tx-absorb-ray" style="--i:9"></span>
+        <span class="tx-absorb-ray" style="--i:10"></span><span class="tx-absorb-ray" style="--i:11"></span>
+        <span class="tx-absorb-ray" style="--i:12"></span><span class="tx-absorb-ray" style="--i:13"></span>
+        <span class="tx-absorb-ray" style="--i:14"></span><span class="tx-absorb-ray" style="--i:15"></span>
+        <span class="tx-absorb-ray" style="--i:16"></span><span class="tx-absorb-ray" style="--i:17"></span>
+        <span class="tx-absorb-ray" style="--i:18"></span><span class="tx-absorb-ray" style="--i:19"></span>
+        <span class="tx-absorb-ray" style="--i:20"></span><span class="tx-absorb-ray" style="--i:21"></span>
+        <span class="tx-absorb-ray" style="--i:22"></span><span class="tx-absorb-ray" style="--i:23"></span>
       </div>
-      <img class="tx-burst-logo" src="logo-transparent.png" onerror="this.onerror=null;this.src='favicon.png'" alt="Tournyx">
+      <img class="tx-absorb-logo" src="logo-transparent.png" onerror="this.onerror=null;this.src='favicon.png'" alt="Tournyx">
     </div>
     <div id="tx-loader-label" class="tx-burst-label">Syncing Arena</div>
   </div>
 
-  <!-- Floating Liquid Glass Voice Pill (Visible Only When Actively Connected in Clan Voice Room) -->
+  <!-- Continuous-Back Exit Confirmation Modal -->
+  <div id="tx-exit-confirm" role="dialog" aria-modal="true" aria-labelledby="txExitTitle">
+    <div class="tx-exit-card">
+      <img src="logo-transparent.png" onerror="this.onerror=null;this.src='favicon.png'" alt="Tournyx"
+        style="width:52px;height:52px;object-fit:contain;background:transparent;">
+      <div id="txExitTitle" style="font-size:16px;font-weight:800;color:#FFFFFF;">Exit Tournyx Esports?</div>
+      <div style="font-size:12px;color:#94A3B8;line-height:1.45;">
+        Press Back again to exit immediately, or stay in the arena.
+      </div>
+      <div class="tx-exit-actions">
+        <button id="txExitStayBtn" type="button" class="tx-btn-glass" style="min-height:44px;">Stay</button>
+        <button id="txExitNowBtn" type="button" class="tx-btn-primary" style="min-height:44px;background:linear-gradient(135deg,#EF4444,#B91C1C);">Exit App</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Liquid Glass Voice Pill -->
   <div id="tx-floating-voice-pill" role="region" aria-label="Active Squad Voice Room">
     <button id="txFvReturnBtn" class="tx-fv-info" type="button" title="Return to Voice Room">
       <span class="tx-fv-dot"></span>
@@ -186,7 +209,7 @@
     </div>
   </div>
 
-  <!-- iOS 26 Liquid Glass Scrubbing Capsule Dock (Slide Across Tabs + Auto-Hide Overlays) -->
+  <!-- YouTube + Instagram Hybrid Liquid Glass Scrubbing Capsule Dock -->
   <nav id="tx-native-dock" aria-label="Tournyx Primary Navigation" style="display:none;">
     <div id="tx-dock-lens" aria-hidden="true"></div>
     <button type="button" class="tx-dock-item is-active" data-dock-idx="0" data-dock-tab="index.html"><i class="fa-solid fa-house"></i><span>Home</span></button>
@@ -204,7 +227,6 @@
       const OAUTH_CALLBACK_URI = "in.tournyx.app://auth/callback";
       const APP_OPEN_URI = "in.tournyx.app://open";
       const SUPABASE_AUTH_STORAGE_KEY = "sb-zuatrwfrejnwfnldqqgy-auth-token";
-
       const DOCK_ORDER = ["index.html", "explore.html", "matches.html", "reels.html", "clans.html", "profile.html"];
 
       const KNOWN_PAGES = new Set([
@@ -240,7 +262,7 @@
       document.documentElement.dataset.txNative = "true";
       document.body.classList.add(`platform-${platform}`);
 
-      // Automatic 3-Tier Adaptive Performance Detection (Ultra / Balanced / Lite)
+      // 3-Tier Adaptive Performance Engine (Ultra / Balanced / Lite)
       function applyAdaptivePerfTier(manualTier) {
         let tier = manualTier || localStorage.getItem("tournyx_perf_tier") || "";
         if (!tier) {
@@ -265,6 +287,7 @@
       const voicePill = document.getElementById("tx-floating-voice-pill");
       const loaderEl = document.getElementById("tx-common-loader");
       const loaderLabelEl = document.getElementById("tx-loader-label");
+      const exitConfirmEl = document.getElementById("tx-exit-confirm");
 
       let activeLayer = "main";
       let currentPage = "index.html";
@@ -274,8 +297,20 @@
       let loaderDelayTimer = null;
       let loaderFailsafeTimer = null;
       let overlayHidesDock = false;
+      let scrollHidesDock = false;
       let hangupCooldownUntil = 0;
-      let voiceState = { active: false, roomName: "Clan Voice", muted: false, speaker: true };
+      let exitPromptOpenedAt = 0;
+      let voiceState = { active: false, roomName: "Tournyx Squad Voice", muted: false, speaker: true };
+
+      function isTrustedMessageOrigin(origin) {
+        if (!origin || origin === "null" || origin === window.location.origin) return true;
+        try {
+          const h = new URL(origin).hostname.toLowerCase();
+          return h === "app.tournyx.in" || h === "tournyx.in" || h === "www.tournyx.in" || h === "localhost" || h === "tauri.localhost";
+        } catch (e) {
+          return false;
+        }
+      }
 
       function doHaptic(style = "light") {
         try {
@@ -293,7 +328,7 @@
         const activate = () => {
           if (loaderLabelEl) loaderLabelEl.textContent = String(label || "Syncing Arena");
           loaderEl?.classList.add("is-active");
-          loaderFailsafeTimer = setTimeout(() => hideLoader(), 7000);
+          loaderFailsafeTimer = setTimeout(() => hideLoader(), 6500);
         };
         if (delayMs > 0) loaderDelayTimer = setTimeout(activate, delayMs);
         else activate();
@@ -304,6 +339,25 @@
         clearTimeout(loaderFailsafeTimer);
         loaderEl?.classList.remove("is-active");
       }
+
+      function toggleExitConfirm(show) {
+        if (!exitConfirmEl) return;
+        const open = Boolean(show);
+        exitConfirmEl.classList.toggle("is-active", open);
+        if (open) {
+          exitPromptOpenedAt = Date.now();
+          doHaptic("light");
+        }
+      }
+
+      document.getElementById("txExitStayBtn")?.addEventListener("click", () => toggleExitConfirm(false));
+      document.getElementById("txExitNowBtn")?.addEventListener("click", () => {
+        toggleExitConfirm(false);
+        window.Capacitor?.Plugins?.App?.exitApp?.();
+      });
+      exitConfirmEl?.addEventListener("click", (e) => {
+        if (e.target === exitConfirmEl) toggleExitConfirm(false);
+      });
 
       function hasValidUser() {
         try {
@@ -376,26 +430,26 @@
 
       function updateDockAndPillVisibility() {
         const pageFile = (currentPage.split("?")[0].split("#")[0] || "index.html").toLowerCase();
-        const hideDock = pageFile === "login.html" || pageFile === "reels.html";
+        const hideDockPermanent = pageFile === "login.html" || pageFile === "reels.html";
         const activeIdx = getCurrentTabIndex();
 
         if (dockEl) {
-          dockEl.style.display = hideDock ? "none" : "";
-          dockEl.classList.toggle("is-hidden-for-overlay", !hideDock && overlayHidesDock);
-          dockItems.forEach((btn, i) => {
-            btn.classList.toggle("is-active", i === activeIdx);
-          });
-          if (!hideDock) requestAnimationFrame(() => positionDockLens(activeIdx));
+          dockEl.style.display = hideDockPermanent ? "none" : "";
+          dockEl.classList.toggle("is-hidden-for-overlay", !hideDockPermanent && overlayHidesDock);
+          dockEl.classList.toggle("is-scroll-hidden", !hideDockPermanent && !overlayHidesDock && scrollHidesDock);
+          dockItems.forEach((btn, i) => btn.classList.toggle("is-active", i === activeIdx));
+          if (!hideDockPermanent) requestAnimationFrame(() => positionDockLens(activeIdx));
         }
 
         const showPill = voiceState.active && activeLayer !== "clans" && pageFile !== "login.html";
         if (voicePill) {
           voicePill.classList.toggle("is-active", showPill);
-          const dockVisible = !hideDock && !overlayHidesDock;
-          voicePill.style.bottom = dockVisible
+          const dockCurrentlyVisible = !hideDockPermanent && !overlayHidesDock && !scrollHidesDock;
+          voicePill.style.bottom = dockCurrentlyVisible
             ? "calc(78px + env(safe-area-inset-bottom, 0px))"
             : "calc(16px + env(safe-area-inset-bottom, 0px))";
         }
+
         const titleEl = document.getElementById("txFvTitle");
         if (titleEl) titleEl.textContent = voiceState.roomName || "Clan Voice Connected";
         const muteBtn = document.getElementById("txFvMuteBtn");
@@ -410,7 +464,7 @@
         }
       }
 
-      // iOS 26 Liquid Glass Horizontal Finger Scrubbing on Bottom Capsule Dock
+      // iOS 26 Horizontal Scrubbing Lens on Bottom Capsule Dock
       function initLiquidDockScrubbing() {
         if (!dockEl) return;
         let activePointer = null;
@@ -494,13 +548,15 @@
         navLockTimer = setTimeout(() => { isNavigating = false; hideLoader(); }, 2200);
 
         overlayHidesDock = false;
+        scrollHidesDock = false;
+        toggleExitConfirm(false);
         if (!options.silent) doHaptic("light");
 
         if (fileOnly === "clans.html") {
           activeLayer = "clans";
           currentPage = resolved;
           if (!clansLoaded || (resolved.includes("?") && !voiceState.active)) {
-            if (!options.silent) showLoader("Loading Clans", 140);
+            if (!options.silent) showLoader("Loading Clans", 150);
             clansFrame.src = resolved;
             clansLoaded = true;
           } else {
@@ -520,7 +576,7 @@
         mainFrame.classList.add("is-visible");
 
         if (prevMain !== resolved || options.force) {
-          if (!options.silent) showLoader("Loading Arena", 140);
+          if (!options.silent) showLoader("Loading Arena", 150);
           mainFrame.setAttribute("data-loaded-url", resolved);
           mainFrame.src = resolved;
         } else {
@@ -540,6 +596,7 @@
       mainFrame.addEventListener("load", () => {
         isNavigating = false;
         overlayHidesDock = false;
+        scrollHidesDock = false;
         hideLoader();
         try {
           const p = (mainFrame.contentWindow?.location?.pathname?.split("/").pop() || "index.html");
@@ -557,26 +614,38 @@
       clansFrame.addEventListener("load", () => {
         isNavigating = false;
         overlayHidesDock = false;
+        scrollHidesDock = false;
         hideLoader();
         updateDockAndPillVisibility();
       });
 
-      // Strict Anti-Ghost Voice State Controller
-      function setVoiceState(patch) {
+      // Strict Two-Way Anti-Ghost Voice State Sync
+      function setVoiceState(patch, source = "page") {
         const nextActive = patch?.active !== undefined ? Boolean(patch.active) : voiceState.active;
-
-        // Block stale re-activation right after user tapped Hang Up
         if (nextActive && Date.now() < hangupCooldownUntil) return;
 
         const wasActive = voiceState.active;
         voiceState = Object.assign({}, voiceState, patch || {}, { active: nextActive });
         updateDockAndPillVisibility();
 
+        if (source === "native") return; // Already updated inside TournyxVoiceService
+
         try {
           const ab = window.TournyxAndroidBridge;
           if (!ab) return;
           if (voiceState.active && !wasActive) {
             ab.startVoiceService(String(voiceState.roomName || "Tournyx Squad Voice"));
+            setTimeout(() => {
+              try {
+                if (voiceState.active && ab.isVoiceServiceActive?.()) {
+                  ab.updateVoiceService(
+                    String(voiceState.roomName || "Tournyx Squad Voice"),
+                    Boolean(voiceState.muted),
+                    Boolean(voiceState.speaker)
+                  );
+                }
+              } catch (e) {}
+            }, 220);
           } else if (voiceState.active && wasActive) {
             if (ab.isVoiceServiceActive?.()) {
               ab.updateVoiceService(
@@ -592,31 +661,41 @@
         } catch (e) {}
       }
 
-      function forwardVoiceActionToClans(action) {
-        doHaptic("light");
+      function forwardVoiceActionToClans(action, explicitState = null, fromNative = false) {
+        if (!fromNative) doHaptic("light");
+
         if (action === "mute") {
-          voiceState.muted = !voiceState.muted;
-          setVoiceState({ active: voiceState.active, muted: voiceState.muted });
+          const nextMuted = explicitState && typeof explicitState.muted === "boolean"
+            ? explicitState.muted
+            : !voiceState.muted;
+          setVoiceState({ active: voiceState.active, muted: nextMuted }, fromNative ? "native" : "shell");
         } else if (action === "speaker") {
-          voiceState.speaker = !voiceState.speaker;
-          try { window.TournyxAndroidBridge?.setSpeakerphone?.(voiceState.speaker); } catch (e) {}
-          setVoiceState({ active: voiceState.active, speaker: voiceState.speaker });
+          const nextSpeaker = explicitState && typeof explicitState.speaker === "boolean"
+            ? explicitState.speaker
+            : !voiceState.speaker;
+          if (!fromNative) {
+            try { window.TournyxAndroidBridge?.setSpeakerphone?.(nextSpeaker); } catch (e) {}
+          }
+          setVoiceState({ active: voiceState.active, speaker: nextSpeaker }, fromNative ? "native" : "shell");
         } else if (action === "leave") {
           hangupCooldownUntil = Date.now() + 5000;
-          setVoiceState({ active: false, muted: false });
+          setVoiceState({ active: false, muted: false }, fromNative ? "native" : "shell");
         }
+
         try {
-          clansFrame.contentWindow?.postMessage({ type: "TX_SHELL_VOICE_ACTION", action, state: voiceState }, "*");
+          clansFrame.contentWindow?.postMessage(
+            { type: "TX_SHELL_VOICE_ACTION", action, state: Object.assign({}, voiceState) },
+            window.location.origin
+          );
         } catch (e) {}
       }
 
-      // Direct Top-Level Native OAuth Launcher (Fixes Iframe Freeze on Google / Discord / Facebook)
+      // Direct Top-Level Native OAuth Launcher (Fixes Iframe Freeze Across Android/iOS/Desktop)
       async function openNativeOAuth(url) {
         if (!url || !/^https?:\/\//i.test(url)) return false;
-        showLoader("Opening Sign-In");
-        setTimeout(() => hideLoader(), 1400);
+        showLoader("Opening Account Picker");
+        setTimeout(() => hideLoader(), 1200);
 
-        // 1. Android: Direct Chrome Custom Tabs via MainActivity.java (100% reliable from any iframe)
         if (platform === "android" && window.TournyxAndroidBridge?.openOAuthUrl) {
           try {
             window.TournyxAndroidBridge.openOAuthUrl(url);
@@ -624,7 +703,6 @@
           } catch (e) {}
         }
 
-        // 2. iOS: Top-level ASWebAuthenticationSession / SFSafariViewController via Capacitor Browser
         if (isCapacitor && window.Capacitor?.Plugins?.Browser?.open) {
           try {
             await window.Capacitor.Plugins.Browser.open({
@@ -636,7 +714,6 @@
           } catch (e) {}
         }
 
-        // 3. Desktop Fallback
         if (isTauri && window.__TAURI_INTERNALS__?.invoke) {
           try {
             await window.__TAURI_INTERNALS__.invoke("plugin:opener|open_url", { url });
@@ -666,37 +743,27 @@
 
       window.addEventListener("tournyx:native-voice-action", (e) => {
         const d = e?.detail || {};
-        if (d.action === "mute") {
-          voiceState.muted = typeof d.muted === "boolean" ? d.muted : !voiceState.muted;
-          updateDockAndPillVisibility();
-          clansFrame.contentWindow?.postMessage({ type: "TX_SHELL_VOICE_ACTION", action: "mute", state: voiceState }, "*");
-        } else if (d.action === "speaker") {
-          voiceState.speaker = typeof d.speaker === "boolean" ? d.speaker : !voiceState.speaker;
-          updateDockAndPillVisibility();
-          clansFrame.contentWindow?.postMessage({ type: "TX_SHELL_VOICE_ACTION", action: "speaker", state: voiceState }, "*");
-        } else if (d.action === "leave") {
-          hangupCooldownUntil = Date.now() + 5000;
-          voiceState.active = false;
-          voiceState.muted = false;
-          updateDockAndPillVisibility();
-          clansFrame.contentWindow?.postMessage({ type: "TX_SHELL_VOICE_ACTION", action: "leave", state: voiceState }, "*");
+        if (d.action === "mute" || d.action === "speaker" || d.action === "leave") {
+          forwardVoiceActionToClans(d.action, d, true);
         } else if (d.action === "open_room") {
           navigate("clans.html", { force: true, silent: true });
         }
       });
 
       window.addEventListener("message", (e) => {
+        if (!isTrustedMessageOrigin(e.origin)) return;
         const msg = e?.data;
         if (!msg || typeof msg !== "object") return;
         if (msg.type === "TX_NAVIGATE" && msg.href) navigate(msg.href, msg.options);
         else if (msg.type === "TX_STEP_TAB") stepTab(Number(msg.delta) || 0);
-        else if (msg.type === "TX_VOICE_STATE") setVoiceState(msg.state);
+        else if (msg.type === "TX_VOICE_STATE") setVoiceState(msg.state, "page");
         else if (msg.type === "TX_OPEN_OAUTH" && msg.url) openNativeOAuth(msg.url);
         else if (msg.type === "TX_OVERLAY_STATE") {
           overlayHidesDock = Boolean(msg.hidden);
           updateDockAndPillVisibility();
-        } else if (msg.type === "TX_DOCK_CONDENSE" && dockEl) {
-          dockEl.classList.toggle("is-condensed", Boolean(msg.condensed));
+        } else if (msg.type === "TX_DOCK_SCROLL") {
+          scrollHidesDock = Boolean(msg.hidden);
+          updateDockAndPillVisibility();
         } else if (msg.type === "TX_LOADER") {
           if (msg.active) showLoader(msg.label || "Syncing Arena", 0);
           else hideLoader();
@@ -706,9 +773,9 @@
       window.TournyxShell = {
         navigate,
         stepTab,
-        setVoiceState,
+        setVoiceState: (st) => setVoiceState(st, "page"),
         getVoiceState: () => Object.assign({}, voiceState),
-        forwardVoiceAction: forwardVoiceActionToClans,
+        forwardVoiceAction: (act) => forwardVoiceActionToClans(act),
         openNativeOAuth,
         showLoader,
         hideLoader,
@@ -743,7 +810,6 @@
         }
       }
 
-      // Live Offline / Online Telemetry Banner
       function initNetworkTelemetry() {
         const update = (online) => {
           let pill = document.getElementById("tx-offline-pill");
@@ -763,7 +829,6 @@
         if (!navigator.onLine) update(false);
       }
 
-      // Sequential First-Launch Permissions (Location, Mic, Camera, Notifications)
       function triggerStartupNativePermissions() {
         if (platform === "android" && window.TournyxAndroidBridge) {
           try {
@@ -782,7 +847,7 @@
         }
       }
 
-      // Frameless 3.5-Second Metallic TX Dragon Splash (Zero Box/Circle Frame)
+      // Frameless 3.5-Second Metallic TX Dragon Splash
       function runColdSplash(onComplete) {
         const splash = document.createElement("div");
         splash.id = "tx-animated-splash";
@@ -831,19 +896,33 @@
             if (resolved) navigate(resolved, { force: true });
           });
 
-          // Smart Multi-Level Android Hardware Back Button Stack
-          let lastBack = 0;
+          // Multi-Level Smart Hardware Back Stack + Continuous-Back Exit Permission
           plugins.App?.addListener?.("backButton", () => {
+            // 1. If Exit Confirmation Dialog is already showing, continuous Back exits immediately
+            if (exitConfirmEl?.classList.contains("is-active")) {
+              if (Date.now() - exitPromptOpenedAt > 250) {
+                toggleExitConfirm(false);
+                plugins.App?.exitApp?.();
+              }
+              return;
+            }
+
             const activeWin = activeLayer === "clans" ? clansFrame.contentWindow : mainFrame.contentWindow;
             try {
               const doc = activeWin?.document;
-              // 1. Close Sidebar Drawer first
+              // 2. Close Fullscreen YouTube Player first if open
+              const ytPlayer = doc?.getElementById("tx-yt-player-overlay");
+              if (ytPlayer?.classList.contains("is-active") && typeof activeWin.TournyxVideoEngine?.close === "function") {
+                activeWin.TournyxVideoEngine.close();
+                return;
+              }
+              // 3. Close Sidebar Drawer
               const drawer = doc?.getElementById("commandDrawer");
               if (drawer?.classList.contains("active") && typeof activeWin.toggleCommandDrawer === "function") {
                 activeWin.toggleCommandDrawer(false);
                 return;
               }
-              // 2. Close Open Modals / Video Theater / Bottom Sheets
+              // 4. Close Active Modals / Video Theater / Bottom Sheets
               const sheets = doc?.querySelectorAll(".sheet-overlay.active, .modal.active, .modal.show");
               if (sheets && sheets.length > 0) {
                 const top = sheets[sheets.length - 1];
@@ -859,7 +938,7 @@
                 doc.body.classList.remove("modal-open");
                 return;
               }
-              // 3. My Clan Dashboard -> Back to All Clans (Never kick user straight out of Clans tab!)
+              // 5. My Clan Dashboard -> Return to My Clans / All Clans List FIRST
               if (activeLayer === "clans" && typeof activeWin.__txHandleClanBack === "function") {
                 if (activeWin.__txHandleClanBack() === true) {
                   return;
@@ -867,26 +946,21 @@
               }
             } catch (e) {}
 
-            // 4. Non-Home Tabs -> Return to Home
+            // 6. Non-Home Tabs -> Return to Home
             const pageFile = (currentPage.split("?")[0] || "index.html").toLowerCase();
             if (pageFile !== "index.html" && pageFile !== "login.html") {
               navigate("index.html", { force: true });
               return;
             }
 
-            // 5. Active Voice Room -> Minimize to Background Cleanly (Keep Call Live!)
+            // 7. If Connected in Active Squad Voice -> Minimize Cleanly to Background (Never Drop Call)
             if (voiceState.active && window.TournyxAndroidBridge?.moveToBackground) {
               window.TournyxAndroidBridge.moveToBackground();
               return;
             }
 
-            // 6. Double-Tap Back on Home -> Exit App
-            const now = Date.now();
-            if (now - lastBack < 2000) plugins.App?.exitApp?.();
-            else {
-              lastBack = now;
-              try { activeWin?.showToast?.("Press back again to exit Tournyx"); } catch (e) {}
-            }
+            // 8. Ask User Permission Before Exiting (Continuous Back Confirms Instantly)
+            toggleExitConfirm(true);
           });
         } catch (e) {}
       }
@@ -897,7 +971,6 @@
         initNetworkTelemetry();
         await hydrateNativePreferences();
 
-        // Ensure zero ghost notification lingers from an older build on cold boot
         try {
           if (platform === "android" && window.TournyxAndroidBridge && !voiceState.active) {
             window.TournyxAndroidBridge.stopVoiceService();
@@ -908,7 +981,6 @@
         const requested = resolvePageUrl(params.get("page") || "index.html") || "index.html";
         const initialTarget = hasValidUser() ? requested : "login.html";
 
-        // Preload initial screen silently behind the 3.5s metallic dragon splash
         navigate(initialTarget, { force: true, silent: true });
         runColdSplash(() => {
           updateDockAndPillVisibility();
