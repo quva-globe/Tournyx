@@ -26,10 +26,11 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Install Sharp & Generate All Website Logo Sizes
+      - name: Install Sharp & Generate All Website Logo Sizes + Transparent Cutout
         run: |
           npm install
           node scripts/build-icons.mjs web
+          test -f logo-transparent.png
           test -f favicon.png
           test -f favicon.ico
           test -f apple-touch-icon.png
@@ -54,15 +55,15 @@ jobs:
             }
           '
 
-      - name: Commit & Push Updated Icons + OG Banner to main
+      - name: Commit & Push Updated Icons + Transparent Logo + OG Banner to main
         run: |
           git config user.name "Tournyx Brand Bot"
           git config user.email "actions@users.noreply.github.com"
-          git add favicon.png favicon.ico apple-touch-icon.png og-banner.png *.html
+          git add logo-transparent.png favicon.png favicon.ico apple-touch-icon.png og-banner.png *.html
           if git diff --cached --quiet; then
             echo "No brand icon changes to commit."
           else
-            git commit -m "Update Tournyx gradient brand icons & og-banner.png"
+            git commit -m "Update Tournyx transparent cutout, brand icons & og-banner.png"
             git push origin main
           fi
 
@@ -71,6 +72,7 @@ jobs:
         with:
           name: Tournyx-Brand-Icons-Pack
           path: |
+            logo-transparent.png
             favicon.png
             favicon.ico
             apple-touch-icon.png
