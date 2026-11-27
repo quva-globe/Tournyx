@@ -3,7 +3,7 @@
 
   if (window.location.pathname.toLowerCase().endsWith("app-shell.html")) return;
 
-  const APP_VERSION = "6.1.1";
+  const APP_VERSION = "7.0.0";
   const PUBLIC_ORIGIN = "https://tournyx.in";
   const OAUTH_CALLBACK_URI = "in.tournyx.app://auth/callback";
   const VERSION_CHECK_URL = "https://tournyx.in/app-version.json";
@@ -25,13 +25,14 @@
     "tournyx_perf_tier",
     "tournyx_theme_config",
     "tournyx_psm",
-    "tx_onboard_v6_done"
+    "tx_onboard_v6_done",
+    "tx_perms_boot_v2"
   ];
 
   const DEFAULT_EVENT_BANNERS = [
     {
       id: "mega-weekend-drop",
-      badge: "LIVE EVENT • SEASON 6",
+      badge: "LIVE EVENT • SEASON 7",
       title: "THE GRAND CLUTCH FEST",
       subtitle: "Zero-lag Free Fire MAX & BGMI rooms with instant TX Pass rewards.",
       cta_text: "Explore Cups",
@@ -95,6 +96,7 @@
   const isMobileNative = platform === "android" || platform === "ios";
   const isDesktopNative = platform === "windows" || platform === "macos" || platform === "linux";
 
+  // Boot top-level native launches inside persistent app-shell.html
   if (isNative && window.self === window.top && !sessionStorage.getItem("tx_shell_bypass")) {
     const file = window.location.pathname.split("/").pop() || "index.html";
     const target = `${file}${window.location.search || ""}${window.location.hash || ""}`;
@@ -104,6 +106,15 @@
 
   document.documentElement.dataset.txPlatform = platform;
   document.documentElement.dataset.txNative = isNative ? "true" : "false";
+
+  // Sync adaptive performance tier from top shell or device capability
+  function syncPerfTier(tierOverride) {
+    const t = tierOverride || localStorage.getItem("tournyx_perf_tier") ||
+      (topWin?.document?.documentElement?.getAttribute("data-perf-tier")) || "balanced";
+    document.documentElement.setAttribute("data-perf-tier", t);
+  }
+  syncPerfTier();
+  window.addEventListener("tournyx:perf-tier-change", (e) => syncPerfTier(e?.detail?.tier));
 
   function escapeHtml(str) {
     return String(str ?? "").replace(/[&<>"'`=/]/g, (s) => ({
@@ -126,7 +137,7 @@
     try {
       const h = capObj?.Plugins?.Haptics;
       if (h?.impact) { h.impact({ style: style === "heavy" ? "HEAVY" : "LIGHT" }); return; }
-      if (navigator.vibrate) navigator.vibrate(style === "heavy" ? 22 : 10);
+      if (navigator.vibrate) navigator.vibrate(style === "heavy" ? 22 : 9);
     } catch (e) {}
   }
 
@@ -152,7 +163,58 @@
   }
 
   // =========================================================================
-  // 2. DIRECT NATIVE ANDROID & iOS GEOLOCATION ENGINE (GUARANTEED LOGIN FIX)
+  // 2. UNIFIED RADIAL ENERGY BURST LOADER (ZERO TOP LOADING LINE)
+  // =========================================================================
+  let loaderAutoHideTimer = null;
+
+  function ensureLocalBurstLoader() {
+    if (!document.body || isInShell) return;
+    if (!document.getElementById("tx-common-loader")) {
+      const ov = document.createElement("div");
+      ov.id = "tx-common-loader";
+      ov.setAttribute("role", "status");
+      const rays = Array.from({ length: 16 }, (_, i) => `<span class="tx-burst-ray" style="--i:${i}"></span>`).join("");
+      ov.innerHTML = `
+        <div class="tx-burst-stage">
+          <div class="tx-burst-core-glow" aria-hidden="true"></div>
+          <div class="tx-burst-rays" aria-hidden="true">${rays}</div>
+          <img class="tx-burst-logo" src="logo-transparent.png" onerror="this.onerror=null;this.src='favicon.png'" alt="Tournyx">
+        </div>
+        <div id="tx-loader-label" class="tx-burst-label">Syncing Arena</div>
+      `;
+      document.body.appendChild(ov);
+    }
+  }
+
+  const TournyxLoader = {
+    bar() { /* Top progress rail permanently removed per v7 spec */ },
+    show(label = "Syncing Arena") {
+      if (isInShell) {
+        window.parent.postMessage({ type: "TX_LOADER", active: true, label: String(label || "Syncing Arena") }, "*");
+        return;
+      }
+      ensureLocalBurstLoader();
+      const ov = document.getElementById("tx-common-loader");
+      const lbl = document.getElementById("tx-loader-label");
+      if (lbl) lbl.textContent = String(label || "Syncing Arena");
+      if (ov) ov.classList.add("is-active");
+      clearTimeout(loaderAutoHideTimer);
+      loaderAutoHideTimer = setTimeout(() => this.hide(), 8000);
+    },
+    hide() {
+      if (isInShell) {
+        window.parent.postMessage({ type: "TX_LOADER", active: false }, "*");
+        return;
+      }
+      clearTimeout(loaderAutoHideTimer);
+      document.getElementById("tx-common-loader")?.classList.remove("is-active");
+    }
+  };
+
+  window.TournyxLoader = TournyxLoader;
+
+  // =========================================================================
+  // 3. DIRECT NATIVE ANDROID & iOS GEOLOCATION ENGINE
   // =========================================================================
   const pendingLocationQueue = [];
 
@@ -181,9 +243,7 @@
     window.addEventListener("tournyx:native-location-error", (e) => {
       const d = e?.detail || {};
       const errObj = { code: Number(d.code) || 1, message: String(d.message || "Location permission required.") };
-      if (typeof window.showToast === "function" && d.message) {
-        window.showToast(d.message, true);
-      }
+      if (typeof window.showToast === "function" && d.message) window.showToast(d.message, true);
       while (pendingLocationQueue.length > 0) {
         const item = pendingLocationQueue.shift();
         clearTimeout(item.timer);
@@ -199,9 +259,7 @@
         timer: setTimeout(() => {
           const idx = pendingLocationQueue.indexOf(entry);
           if (idx >= 0) pendingLocationQueue.splice(idx, 1);
-          if (typeof errorCb === "function") {
-            errorCb({ code: 3, message: "Location request timed out. Please try again." });
-          }
+          if (typeof errorCb === "function") errorCb({ code: 3, message: "Location request timed out. Please retry." });
         }, timeoutMs)
       };
       pendingLocationQueue.push(entry);
@@ -218,23 +276,17 @@
     try {
       if (window.Geolocation?.prototype) {
         Object.defineProperty(window.Geolocation.prototype, "getCurrentPosition", {
-          configurable: true,
-          writable: true,
-          value: nativeAndroidGetCurrentPosition
+          configurable: true, writable: true, value: nativeAndroidGetCurrentPosition
         });
       }
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition = nativeAndroidGetCurrentPosition;
-      }
+      if (navigator.geolocation) navigator.geolocation.getCurrentPosition = nativeAndroidGetCurrentPosition;
     } catch (e) {}
 
-    // Also report accurate permission status to login.html if it inspects navigator.permissions.query
     if (navigator.permissions?.query) {
       const origPermQuery = navigator.permissions.query.bind(navigator.permissions);
       navigator.permissions.query = function(desc) {
         if (desc?.name === "geolocation") {
-          const granted = Boolean(androidBridge.hasLocationAccess?.());
-          return Promise.resolve({ state: granted ? "granted" : "prompt", onchange: null });
+          return Promise.resolve({ state: androidBridge.hasLocationAccess?.() ? "granted" : "prompt", onchange: null });
         }
         return origPermQuery(desc);
       };
@@ -246,9 +298,7 @@
       navigator.geolocation.getCurrentPosition = async function(successCb, errorCb, options) {
         try {
           let perm = await nativeGeo.checkPermissions?.();
-          if ((perm?.location || perm?.coarseLocation) !== "granted") {
-            perm = await nativeGeo.requestPermissions?.();
-          }
+          if ((perm?.location || perm?.coarseLocation) !== "granted") perm = await nativeGeo.requestPermissions?.();
           if ((perm?.location || perm?.coarseLocation) === "denied") {
             if (typeof errorCb === "function") errorCb({ code: 1, message: "Location permission denied." });
             return;
@@ -267,9 +317,9 @@
   }
 
   // =========================================================================
-  // 3. TRANSPARENT SUPABASE SWR CACHE
+  // 4. TRANSPARENT SUPABASE SWR CACHE (ZERO BLANK SCREENS ON TAB SWITCH)
   // =========================================================================
-  const SWR_PREFIX = "tx_swr_v6:";
+  const SWR_PREFIX = "tx_swr_v7:";
   const SWR_TTL_MS = 90 * 1000;
   const SWR_MAX_ENTRIES = 28;
   const SWR_MAX_BYTES = 160000;
@@ -360,10 +410,10 @@
   }
 
   // =========================================================================
-  // 4. NATIVE 1-TAP OAUTH BRIDGE (CHROME CUSTOM TABS / ASWebAuthenticationSession)
+  // 5. BULLETPROOF 1-TAP NATIVE OAUTH (FIXES GOOGLE/DISCORD FREEZE ON ALL OSes)
   // =========================================================================
   function installSupabaseOAuthHook() {
-    if (!isCapacitor) return;
+    if (!isNative) return;
 
     const wrapCreateClient = (sbObj) => {
       if (!sbObj || typeof sbObj.createClient !== "function" || sbObj.__txWrapped) return;
@@ -377,33 +427,74 @@
           client.auth.__txOAuthWrapped = true;
 
           client.auth.signInWithOAuth = async function(credentials) {
-            try {
-              const opts = Object.assign({}, credentials?.options || {}, {
-                redirectTo: OAUTH_CALLBACK_URI,
-                skipBrowserRedirect: true
-              });
-              const res = await origOAuth(Object.assign({}, credentials, { options: opts }));
-              if (res?.data?.url && capObj?.Plugins?.Browser?.open) {
-                TournyxLoader.show("Opening Secure Sign-In...");
-                await capObj.Plugins.Browser.open({
-                  url: res.data.url,
-                  toolbarColor: "#050508",
-                  presentationStyle: "popover"
+            // Mobile Apps (Android & iOS): Chrome Custom Tabs / ASWebAuthenticationSession -> in.tournyx.app://auth/callback
+            if (isCapacitor) {
+              try {
+                TournyxLoader.show("Opening Account Picker");
+                const opts = Object.assign({}, credentials?.options || {}, {
+                  redirectTo: OAUTH_CALLBACK_URI,
+                  skipBrowserRedirect: true
                 });
-                setTimeout(() => TournyxLoader.hide(), 1200);
+                const res = await origOAuth(Object.assign({}, credentials, { options: opts }));
+                if (res?.data?.url) {
+                  if (platform === "android" && androidBridge?.openOAuthUrl) {
+                    androidBridge.openOAuthUrl(res.data.url);
+                    setTimeout(() => TournyxLoader.hide(), 1000);
+                  } else if (isInShell) {
+                    window.parent.postMessage({ type: "TX_OPEN_OAUTH", url: res.data.url }, "*");
+                  } else if (capObj?.Plugins?.Browser?.open) {
+                    await capObj.Plugins.Browser.open({ url: res.data.url, toolbarColor: "#050508" });
+                    setTimeout(() => TournyxLoader.hide(), 1000);
+                  }
+                } else {
+                  TournyxLoader.hide();
+                }
+                return res;
+              } catch (err) {
+                TournyxLoader.hide();
+                return origOAuth(credentials);
               }
-              return res;
-            } catch (err) {
-              TournyxLoader.hide();
-              return origOAuth(credentials);
             }
+
+            // Desktop Apps (Windows & macOS Tauri): Redirect back cleanly to desktop origin /login.html
+            if (isTauri) {
+              const opts = Object.assign({}, credentials?.options || {}, {
+                redirectTo: `${window.location.origin}/login.html?native_oauth=1`
+              });
+              return origOAuth(Object.assign({}, credentials, { options: opts }));
+            }
+
+            return origOAuth(credentials);
           };
 
+          // Automatically finalize PKCE ?code= OR #access_token= handoff when returning from Chrome Custom Tabs
           const urlParams = new URLSearchParams(window.location.search);
+          const hashParams = new URLSearchParams((window.location.hash || "").replace(/^#/, ""));
           const pkceCode = urlParams.get("code");
-          if (pkceCode && urlParams.get("native_oauth") === "1" && !client.auth.__txCodeExchanged) {
-            client.auth.__txCodeExchanged = true;
-            client.auth.exchangeCodeForSession?.(pkceCode).catch(() => {});
+          const accTok = hashParams.get("access_token");
+          const refTok = hashParams.get("refresh_token");
+
+          if (urlParams.get("native_oauth") === "1" && !client.auth.__txOAuthFinalized) {
+            client.auth.__txOAuthFinalized = true;
+            if (pkceCode && typeof client.auth.exchangeCodeForSession === "function") {
+              client.auth.exchangeCodeForSession(pkceCode)
+                .then(() => {
+                  const tok = localStorage.getItem(SUPABASE_AUTH_STORAGE_KEY);
+                  if (tok) capObj?.Plugins?.Preferences?.set?.({ key: SUPABASE_AUTH_STORAGE_KEY, value: tok });
+                  TournyxLoader.hide();
+                })
+                .catch(() => TournyxLoader.hide());
+            } else if (accTok && refTok && typeof client.auth.setSession === "function") {
+              client.auth.setSession({ access_token: accTok, refresh_token: refTok })
+                .then(() => {
+                  const tok = localStorage.getItem(SUPABASE_AUTH_STORAGE_KEY);
+                  if (tok) capObj?.Plugins?.Preferences?.set?.({ key: SUPABASE_AUTH_STORAGE_KEY, value: tok });
+                  TournyxLoader.hide();
+                })
+                .catch(() => TournyxLoader.hide());
+            } else {
+              TournyxLoader.hide();
+            }
           }
         }
         return client;
@@ -426,9 +517,12 @@
   installSupabaseOAuthHook();
 
   // =========================================================================
-  // 5. ANDROID SCREEN SHARING (getDisplayMedia) & CLAN VOICE SYNC
+  // 6. STRICT ANTI-GHOST CLAN VOICE SYNC & ANDROID SCREEN SHARING
+  //    - ONLY activates TournyxVoiceService when actually inside clans.html
+  //    - 5-Second Post-Hangup Cooldown prevents notification resurrection
   // =========================================================================
   const liveMicTracks = new Set();
+  let voiceHangupCooldownUntil = 0;
   let screenSharePending = null;
   let screenCanvas = null;
   let screenCtx = null;
@@ -444,9 +538,11 @@
   }
 
   function syncVoiceActiveToShell() {
+    if (currentPageFile() !== "clans.html") return;
     const alive = Array.from(liveMicTracks).filter((t) => t.readyState === "live");
-    const isActive = alive.length > 0;
+    const isActive = alive.length > 0 && Date.now() >= voiceHangupCooldownUntil;
     const isMuted = isActive ? alive.every((t) => !t.enabled) : false;
+
     if (shellApi) {
       shellApi.setVoiceState({ active: isActive, roomName: detectActiveRoomName(), muted: isMuted });
     } else if (androidBridge) {
@@ -457,16 +553,26 @@
     }
   }
 
+  function forceStopLocalVoiceTracks() {
+    voiceHangupCooldownUntil = Date.now() + 5000;
+    liveMicTracks.forEach((t) => { try { t.stop(); } catch (err) {} });
+    liveMicTracks.clear();
+    try { androidBridge?.stopScreenShare?.(); } catch (err) {}
+    try { androidBridge?.stopVoiceService?.(); } catch (err) {}
+    if (shellApi) shellApi.setVoiceState({ active: false, muted: false });
+  }
+
   function installNativeMediaAndVoiceBridge() {
     if (!isNative || !navigator.mediaDevices) return;
 
-    if (typeof navigator.mediaDevices.getUserMedia === "function" && !navigator.mediaDevices.__txGumWrapped) {
+    // A. ONLY activate OS Voice Foreground Service when joining voice inside clans.html
+    if (currentPageFile() === "clans.html" && typeof navigator.mediaDevices.getUserMedia === "function" && !navigator.mediaDevices.__txGumWrapped) {
       const origGum = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
       navigator.mediaDevices.__txGumWrapped = true;
 
       navigator.mediaDevices.getUserMedia = async function(constraints) {
         const stream = await origGum(constraints);
-        if (constraints?.audio && stream) {
+        if (constraints?.audio && stream && Date.now() >= voiceHangupCooldownUntil) {
           stream.getAudioTracks().forEach((track) => {
             liveMicTracks.add(track);
             const onEnd = () => { liveMicTracks.delete(track); syncVoiceActiveToShell(); };
@@ -480,6 +586,7 @@
       };
     }
 
+    // B. Android Native MediaProjection Screen Share Polyfill
     if (platform === "android" && androidBridge?.requestScreenShare) {
       navigator.mediaDevices.getDisplayMedia = function() {
         return new Promise((resolve, reject) => {
@@ -536,32 +643,238 @@
       });
     }
 
-    window.addEventListener("message", (e) => {
-      const msg = e?.data;
-      if (!msg || msg.type !== "TX_SHELL_VOICE_ACTION") return;
+    // C. Two-way Sync With Notification Shade & Floating Pill + In-Page LEAVE Button Detection
+    if (currentPageFile() === "clans.html") {
+      document.addEventListener("click", (e) => {
+        const btn = e.target?.closest?.("button");
+        if (!btn) return;
+        const txt = (btn.textContent || "").trim().toUpperCase();
+        if (txt === "LEAVE" || txt === "LEAVE ROOM" || txt === "HANG UP") {
+          forceStopLocalVoiceTracks();
+        }
+      }, true);
 
-      if (msg.action === "mute") {
-        const wantMuted = Boolean(msg.state?.muted);
-        liveMicTracks.forEach((t) => { if (t.readyState === "live") t.enabled = !wantMuted; });
-        document.querySelectorAll("button").forEach((btn) => {
-          const txt = (btn.textContent || "").trim().toLowerCase();
-          if (txt === "mute" || txt === "unmute" || txt === "muted") {
-            btn.classList.toggle("ring-2", wantMuted);
-            btn.classList.toggle("ring-red-500", wantMuted);
-          }
-        });
-      } else if (msg.action === "leave") {
-        liveMicTracks.forEach((t) => { try { t.stop(); } catch (err) {} });
-        liveMicTracks.clear();
-        try { androidBridge?.stopScreenShare?.(); } catch (err) {}
-        document.querySelectorAll("button").forEach((btn) => {
-          const txt = (btn.textContent || "").trim().toUpperCase();
-          if (txt === "LEAVE" || txt.includes("LEAVE ROOM")) btn.click();
-        });
-      }
-    });
+      window.addEventListener("message", (e) => {
+        const msg = e?.data;
+        if (!msg || msg.type !== "TX_SHELL_VOICE_ACTION") return;
+
+        if (msg.action === "mute") {
+          const wantMuted = Boolean(msg.state?.muted);
+          liveMicTracks.forEach((t) => { if (t.readyState === "live") t.enabled = !wantMuted; });
+        } else if (msg.action === "leave") {
+          forceStopLocalVoiceTracks();
+          document.querySelectorAll("button").forEach((btn) => {
+            const txt = (btn.textContent || "").trim().toUpperCase();
+            if (txt === "LEAVE" || txt.includes("LEAVE ROOM")) {
+              try { btn.click(); } catch (err) {}
+            }
+          });
+        }
+      });
+    }
   }
   installNativeMediaAndVoiceBridge();
+
+  // =========================================================================
+  // 7. SMART CONTEXT-AWARE OVERLAY & KEYBOARD OBSERVER
+  //    Automatically Hides Bottom Capsule Dock Whenever ANY Modal, Video Player,
+  //    Sidebar Drawer, Clan Voice Room, or Keyboard Is Open (Zero Blocked Buttons!)
+  // =========================================================================
+  function initSmartOverlayObserver() {
+    if (!isInShell || !isMobileNative) return;
+
+    let lastHidden = null;
+    let scanTimer = null;
+
+    const isElemVisible = (el) => {
+      if (!el || el.classList.contains("hidden")) return false;
+      const st = window.getComputedStyle(el);
+      if (st.display === "none" || st.visibility === "hidden" || Number(st.opacity) === 0) return false;
+      const r = el.getBoundingClientRect();
+      return r.width > 40 && r.height > 40;
+    };
+
+    const detectOverlayActive = () => {
+      // 1. Mobile keyboard open on form inputs
+      const activeEl = document.activeElement;
+      if (activeEl && /^(INPUT|TEXTAREA|SELECT)$/.test(activeEl.tagName) && !activeEl.readOnly && !activeEl.disabled) {
+        const t = String(activeEl.type || "").toLowerCase();
+        if (!["checkbox", "radio", "range", "button", "submit"].includes(t)) return true;
+      }
+
+      // 2. Explicit known drawers, video theater, modals, voice sheets
+      if (document.body.classList.contains("modal-open")) return true;
+      const explicitSelectors = [
+        "#commandDrawer.active", ".command-drawer.active",
+        ".sheet-overlay.active", ".modal.active", ".modal.show",
+        "#theaterPlayerModal.active", "#videoModal.active", "#postVideoModal.active",
+        "#voiceRoomModal.active", "#clanVoiceModal.active", "[role='dialog'].active"
+      ];
+      for (const sel of explicitSelectors) {
+        if (isElemVisible(document.querySelector(sel))) return true;
+      }
+
+      // 3. Any high-z-index fixed overlay / modal / voice room container (catches Tailwind `fixed inset-0` modals)
+      const vw = window.innerWidth || 360;
+      const vh = window.innerHeight || 640;
+      const fixedEls = document.querySelectorAll("div, section, aside");
+      for (let i = 0; i < fixedEls.length; i++) {
+        const el = fixedEls[i];
+        if (
+          el.id === "tx-common-loader" || el.id === "tx-animated-splash" ||
+          el.id === "tx-ptr-pill" || el.id === "tx-update-pill" ||
+          el.id === "tx-offline-pill" || el.id === "tx-festival-banner"
+        ) continue;
+
+        const cls = typeof el.className === "string" ? el.className : "";
+        if (!cls.includes("fixed") && !cls.includes("modal") && !cls.includes("drawer") && !cls.includes("sheet") && !cls.includes("voice")) {
+          continue;
+        }
+        const st = window.getComputedStyle(el);
+        if (st.position !== "fixed" || st.display === "none" || st.visibility === "hidden" || Number(st.opacity) === 0) continue;
+        const z = parseInt(st.zIndex, 10) || 0;
+        if (z < 30) continue;
+        const r = el.getBoundingClientRect();
+        // Covers lower half of viewport or is a slide-out sidebar drawer
+        if (r.height >= vh * 0.45 && (r.width >= vw * 0.55 || r.bottom >= vh - 90)) {
+          return true;
+        }
+      }
+      return false;
+    };
+
+    const scheduleScan = () => {
+      if (scanTimer) return;
+      scanTimer = setTimeout(() => {
+        scanTimer = null;
+        const hidden = detectOverlayActive();
+        if (hidden !== lastHidden) {
+          lastHidden = hidden;
+          window.parent.postMessage({ type: "TX_OVERLAY_STATE", hidden }, "*");
+        }
+      }, 70);
+    };
+
+    const obs = new MutationObserver(scheduleScan);
+    obs.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["class", "style", "hidden", "aria-hidden"]
+    });
+
+    document.addEventListener("focusin", scheduleScan, true);
+    document.addEventListener("focusout", () => setTimeout(scheduleScan, 120), true);
+    document.addEventListener("click", () => setTimeout(scheduleScan, 90), true);
+    scheduleScan();
+  }
+
+  // =========================================================================
+  // 8. INTRA-CLAN BACK HANDLER (MY CLAN DASHBOARD -> BACK TO ALL CLANS)
+  // =========================================================================
+  if (currentPageFile() === "clans.html") {
+    window.__txHandleClanBack = function() {
+      const isVisible = (el) => {
+        if (!el || el.classList.contains("hidden")) return false;
+        const st = window.getComputedStyle(el);
+        return st.display !== "none" && st.visibility !== "hidden" && Number(st.opacity) > 0 && el.getBoundingClientRect().height > 10;
+      };
+
+      // 1. If a Clan Voice Room sheet is currently expanded, minimize it first
+      const voiceCollapseBtn = document.querySelector("#voiceRoomModal .fa-chevron-down, #clanVoiceModal .fa-chevron-down");
+      const voiceBtn = voiceCollapseBtn?.closest?.("button");
+      if (voiceBtn && isVisible(voiceBtn)) {
+        voiceBtn.click();
+        return true;
+      }
+
+      // 2. Call known clan-view exit helpers if defined on clans.html
+      const fnCandidates = ["closeClanDashboard", "backToClans", "showAllClans", "exitClanView", "leaveClanDashboard", "closeClanDetail"];
+      for (const fn of fnCandidates) {
+        if (typeof window[fn] === "function") {
+          const detailVisible = Boolean(
+            document.querySelector("#clanDashboard, #clanDetailView, #activeClanView, #myClanWorkspace, [data-clan-dashboard]")
+          );
+          if (detailVisible) {
+            try { window[fn](); return true; } catch (e) {}
+          }
+        }
+      }
+
+      // 3. Click visible in-page "Back to Clans" / "All Clans" / arrow-left return button inside <main>
+      const directBtn = document.querySelector(
+        '#backToClansBtn, [data-action="back-to-clans"], [onclick*="showAllClans"], [onclick*="backToClans"], [onclick*="closeClan"], [onclick*="exitClan"]'
+      );
+      if (directBtn && isVisible(directBtn)) {
+        directBtn.click();
+        return true;
+      }
+
+      const mainButtons = document.querySelectorAll("main button, main a");
+      for (const btn of mainButtons) {
+        if (!isVisible(btn)) continue;
+        const txt = (btn.textContent || "").trim().toLowerCase();
+        const hasBackArrow = Boolean(btn.querySelector(".fa-arrow-left, .fa-chevron-left"));
+        if (
+          txt === "all clans" ||
+          txt.includes("back to clans") ||
+          txt.includes("all clans") && hasBackArrow ||
+          (hasBackArrow && (txt === "back" || txt === "clans" || txt === ""))
+        ) {
+          btn.click();
+          return true;
+        }
+      }
+
+      // 4. Fallback: If URL has ?clan= query parameter, reload clans.html overview cleanly
+      if (window.location.search && /clan/i.test(window.location.search)) {
+        window.location.href = "clans.html";
+        return true;
+      }
+
+      return false;
+    };
+  }
+
+  // =========================================================================
+  // 9. EDGE-SWIPE TAB SWITCHING, SHARE REWRITER, EVENT BANNER & CMD+K
+  // =========================================================================
+  function initEdgeSwipeTabs() {
+    if (!isInShell || !isMobileNative) return;
+    const page = currentPageFile();
+    if (page === "login.html" || page === "reels.html") return;
+
+    let sx = 0, sy = 0, eligible = false;
+
+    const insideHorizontalScroller = (node) => {
+      let el = node;
+      while (el && el !== document.body) {
+        if (el.id === "tx-festival-banner" || el.tagName === "INPUT" || el.tagName === "TEXTAREA") return true;
+        const st = window.getComputedStyle(el);
+        if ((st.overflowX === "auto" || st.overflowX === "scroll") && el.scrollWidth > el.clientWidth + 12) return true;
+        el = el.parentElement;
+      }
+      return false;
+    };
+
+    window.addEventListener("touchstart", (e) => {
+      if (e.touches.length !== 1 || document.body.classList.contains("modal-open")) { eligible = false; return; }
+      if (insideHorizontalScroller(e.target)) { eligible = false; return; }
+      sx = e.touches[0].clientX;
+      sy = e.touches[0].clientY;
+      eligible = true;
+    }, { passive: true });
+
+    window.addEventListener("touchend", (e) => {
+      if (!eligible) return;
+      eligible = false;
+      const dx = (e.changedTouches[0]?.clientX || 0) - sx;
+      const dy = Math.abs((e.changedTouches[0]?.clientY || 0) - sy);
+      if (Math.abs(dx) >= 88 && dy < 42) {
+        window.parent.postMessage({ type: "TX_STEP_TAB", delta: dx < 0 ? 1 : -1 }, "*");
+      }
+    }, { passive: true });
+  }
 
   function hideWebAppPromoCards() {
     if (!isNative) return;
@@ -577,9 +890,6 @@
     setTimeout(sweep, 1100);
   }
 
-  // =========================================================================
-  // 6. SHARE LINK REWRITER (app.tournyx.in -> tournyx.in) & COMMON LOADER
-  // =========================================================================
   function normalizePublicShareStr(val) {
     if (typeof val !== "string") return val;
     return val
@@ -604,60 +914,6 @@
     }
   }
 
-  let loaderAutoHideTimer = null;
-  function ensureLoaderDom() {
-    if (!document.body) return;
-    if (!document.getElementById("tx-loader-rail")) {
-      const rail = document.createElement("div");
-      rail.id = "tx-loader-rail";
-      rail.innerHTML = '<div id="tx-loader-rail-fill"></div>';
-      document.body.appendChild(rail);
-    }
-    if (!document.getElementById("tx-common-loader")) {
-      const ov = document.createElement("div");
-      ov.id = "tx-common-loader";
-      ov.setAttribute("role", "status");
-      ov.innerHTML = `
-        <div class="tx-loader-pill">
-          <div class="tx-loader-spinner" aria-hidden="true"></div>
-          <div>
-            <div style="font-size:13px;font-weight:700;color:#FFFFFF;" id="tx-loader-label">Syncing Arena...</div>
-            <div style="font-size:10px;color:#94A3B8;font-family:JetBrains Mono,monospace;margin-top:2px;">TOURNYX ESPORTS</div>
-          </div>
-        </div>`;
-      document.body.appendChild(ov);
-    }
-  }
-
-  const TournyxLoader = {
-    bar(pct = 65) {
-      ensureLoaderDom();
-      const rail = document.getElementById("tx-loader-rail");
-      const fill = document.getElementById("tx-loader-rail-fill");
-      if (!rail || !fill) return;
-      rail.classList.add("is-active");
-      fill.style.width = `${Math.max(8, Math.min(100, Number(pct) || 0))}%`;
-      if (pct >= 100) setTimeout(() => { rail.classList.remove("is-active"); fill.style.width = "0%"; }, 200);
-    },
-    show(label = "Syncing Arena...") {
-      ensureLoaderDom();
-      const ov = document.getElementById("tx-common-loader");
-      const lbl = document.getElementById("tx-loader-label");
-      if (lbl) lbl.textContent = String(label || "Syncing Arena...");
-      if (ov) ov.classList.add("is-active");
-      this.bar(75);
-      clearTimeout(loaderAutoHideTimer);
-      loaderAutoHideTimer = setTimeout(() => this.hide(), 10000);
-    },
-    hide() {
-      clearTimeout(loaderAutoHideTimer);
-      const ov = document.getElementById("tx-common-loader");
-      if (ov) ov.classList.remove("is-active");
-      this.bar(100);
-    }
-  };
-
-  window.TournyxLoader = TournyxLoader;
   window.TournyxNative = {
     version: APP_VERSION,
     isNative,
@@ -669,8 +925,18 @@
     loader: TournyxLoader,
     haptic: doNativeHaptic,
     clearCache: clearSwrCache,
+    setPerfTier(tier) {
+      if (!["ultra", "balanced", "lite"].includes(tier)) return;
+      localStorage.setItem("tournyx_perf_tier", tier);
+      syncPerfTier(tier);
+      shellApi?.setPerfTier?.(tier);
+    },
     openExternal(url) {
       if (!url || !/^https?:\/\//i.test(url)) return;
+      if (platform === "android" && androidBridge?.openExternalUrl) {
+        androidBridge.openExternalUrl(url);
+        return;
+      }
       if (isCapacitor && capObj?.Plugins?.Browser?.open) {
         capObj.Plugins.Browser.open({ url, toolbarColor: "#050508" }).catch(() => window.open(url, "_blank", "noopener,noreferrer"));
         return;
@@ -685,11 +951,8 @@
     openCommandPalette() { toggleCommandPalette(true); }
   };
 
-  // =========================================================================
-  // 7. ZOMATO-STYLE ANIMATED EVENT & FESTIVAL HERO BANNER (HOME PAGE)
-  // =========================================================================
+  // Animated Event & Festival Home Banner
   let bannerTimer = null;
-
   async function mountAnimatedEventBanner() {
     const page = currentPageFile();
     if (page !== "index.html" && page !== "") return;
@@ -738,7 +1001,7 @@
           <div class="tx-fb-footer">
             <a class="tx-fb-cta" href="${escapeHtml(ctaHref)}">
               <span>${escapeHtml(b.cta_text || "Explore")}</span>
-              <i class="fa-solid fa-arrow-right" style="font-size:10px;color:#D4FF00;"></i>
+              <i class="fa-solid fa-arrow-right" style="font-size:10px;color:#38BDF8;"></i>
             </a>
             <div class="tx-fb-dots">
               ${banners.map((_, i) => `<button type="button" class="tx-fb-dot ${i === activeIdx ? "is-active" : ""}" data-fb-dot="${i}" aria-label="Banner ${i + 1}"></button>`).join("")}
@@ -769,14 +1032,58 @@
     restartAutoplay();
   }
 
+  // Mobile Browser Visit on app.tournyx.in -> Smart Open in Installed Tournyx App
+  function maybeOfferInstalledAppRedirectOnWeb() {
+    const ua = navigator.userAgent || "";
+    const isAndroidWeb = /Android/i.test(ua);
+    const isIOSWeb = /iPhone|iPad|iPod/i.test(ua);
+    if (!isAndroidWeb && !isIOSWeb) return;
+
+    const host = window.location.hostname.toLowerCase();
+    const page = currentPageFile();
+    const fullTarget = `${page}${window.location.search || ""}${window.location.hash || ""}`;
+    const fallbackUrl = `${PUBLIC_ORIGIN}/${page === "index.html" ? "" : fullTarget}`;
+    const androidIntentUrl = `intent://open?page=${encodeURIComponent(fullTarget)}#Intent;scheme=in.tournyx.app;package=in.tournyx.app;S.browser_fallback_url=${encodeURIComponent(fallbackUrl)};end`;
+    const iosSchemeUrl = `in.tournyx.app://open?page=${encodeURIComponent(fullTarget)}`;
+    const launchUrl = isAndroidWeb ? androidIntentUrl : iosSchemeUrl;
+
+    if (host === "app.tournyx.in" && isAndroidWeb && sessionStorage.getItem("tx_intent_tried") !== "1") {
+      sessionStorage.setItem("tx_intent_tried", "1");
+      window.location.href = androidIntentUrl;
+    }
+
+    if (sessionStorage.getItem("tx_open_app_dismissed") === "1") return;
+    const bar = document.createElement("div");
+    bar.style.cssText = "position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:9999;width:min(calc(100vw - 24px),420px);padding:10px 12px;border-radius:18px;background:rgba(16,18,32,0.94);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(139,92,246,0.48);box-shadow:0 16px 36px rgba(0,0,0,0.75);display:flex;align-items:center;justify-content:space-between;gap:10px;color:#F8FAFC;font-family:-apple-system,Inter,sans-serif;";
+    bar.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;min-width:0;">
+        <img src="logo-transparent.png" onerror="this.onerror=null;this.src='favicon.png'" alt="Tournyx" style="width:32px;height:32px;object-fit:contain;flex-shrink:0;">
+        <div style="min-width:0;">
+          <div style="font-size:12.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Tournyx Esports App</div>
+          <div style="font-size:10.5px;color:#94A3B8;">Faster voice rooms &amp; Liquid Glass UI</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+        <a href="${escapeHtml(launchUrl)}" style="padding:7px 12px;border-radius:9999px;background:linear-gradient(135deg,#8B5CF6,#38BDF8);color:#FFFFFF;font-size:11.5px;font-weight:800;text-decoration:none;">Open App</a>
+        <button id="txCloseOpenBar" type="button" aria-label="Close" style="background:none;border:none;color:#94A3B8;font-size:15px;padding:4px 6px;cursor:pointer;">&times;</button>
+      </div>
+    `;
+    document.body.appendChild(bar);
+    bar.querySelector("#txCloseOpenBar")?.addEventListener("click", () => {
+      sessionStorage.setItem("tx_open_app_dismissed", "1");
+      bar.remove();
+    });
+  }
+
   if (!isNative) {
-    window.addEventListener("DOMContentLoaded", () => mountAnimatedEventBanner());
+    window.addEventListener("DOMContentLoaded", () => {
+      mountAnimatedEventBanner();
+      maybeOfferInstalledAppRedirectOnWeb();
+    });
     return;
   }
 
-  // =========================================================================
-  // 8. SHELL-AWARE FAST NAVIGATION, PULL-TO-REFRESH & DESKTOP CMD+K
-  // =========================================================================
+  // Shell-Aware Fast Navigation
   function resolveLocalNativeHref(rawHref) {
     if (!rawHref) return null;
     const trimmed = String(rawHref).trim();
@@ -804,7 +1111,7 @@
     }
     if (resolved.external) { window.TournyxNative.openExternal(resolved.url); return; }
     if (shellApi) shellApi.navigate(resolved.url);
-    else { doNativeHaptic("light"); TournyxLoader.bar(80); window.location.href = resolved.url; }
+    else { doNativeHaptic("light"); TournyxLoader.show("Loading Arena"); window.location.href = resolved.url; }
   }
 
   document.addEventListener("click", (e) => {
@@ -870,7 +1177,7 @@
 
     const pill = document.createElement("div");
     pill.id = "tx-ptr-pill";
-    pill.innerHTML = '<i class="fa-solid fa-rotate-right" style="color:#D4FF00;"></i><span>Pull to refresh</span>';
+    pill.innerHTML = '<i class="fa-solid fa-rotate-right" style="color:#38BDF8;"></i><span>Pull to refresh</span>';
     document.body.appendChild(pill);
 
     let startY = 0, startX = 0, pullDist = 0, tracking = false;
@@ -906,7 +1213,7 @@
         doNativeHaptic("heavy");
         clearSwrCache();
         sessionStorage.setItem("tx_force_fresh", "1");
-        TournyxLoader.show("Refreshing Arena...");
+        TournyxLoader.show("Refreshing Arena");
         pill.classList.remove("is-visible");
         setTimeout(() => window.location.reload(), 120);
       } else {
@@ -936,7 +1243,7 @@
       pal.innerHTML = `
         <div class="tx-native-dialog" style="max-width:520px;">
           <div style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.12);display:flex;align-items:center;gap:10px;">
-            <i class="fa-solid fa-magnifying-glass" style="color:#00F2FF;font-size:13px;"></i>
+            <i class="fa-solid fa-magnifying-glass" style="color:#38BDF8;font-size:13px;"></i>
             <input id="txCmdInput" type="text" placeholder="Jump to any Tournyx screen..."
               style="flex:1;background:transparent;border:none;outline:none;color:#FFFFFF;font-size:14px;">
             <span style="font-family:JetBrains Mono,monospace;font-size:10px;color:#64748B;padding:2px 6px;border-radius:6px;border:1px solid rgba(255,255,255,0.14);">ESC</span>
@@ -968,7 +1275,7 @@
     list.innerHTML = rows.map((r) => `
       <button type="button" data-cmd-href="${escapeHtml(r.href)}"
         style="width:100%;text-align:left;padding:10px 12px;border-radius:12px;border:none;background:transparent;color:#FFFFFF;display:flex;align-items:center;gap:12px;cursor:pointer;">
-        <i class="fa-solid ${escapeHtml(r.icon)}" style="width:20px;text-align:center;color:#D4FF00;"></i>
+        <i class="fa-solid ${escapeHtml(r.icon)}" style="width:20px;text-align:center;color:#38BDF8;"></i>
         <div style="min-width:0;flex:1;">
           <div style="font-size:13px;font-weight:700;">${escapeHtml(r.name)}</div>
           <div style="font-size:11px;color:#94A3B8;">${escapeHtml(r.sub)}</div>
@@ -977,7 +1284,7 @@
     `).join("") || '<div style="padding:18px;text-align:center;font-size:12px;color:#94A3B8;">No matching screens</div>';
 
     list.querySelectorAll("button[data-cmd-href]").forEach((btn) => {
-      btn.addEventListener("mouseenter", () => { btn.style.background = "rgba(255,255,255,0.08)"; });
+      btn.addEventListener("mouseenter", () => { btn.style.background = "rgba(139,92,246,0.16)"; });
       btn.addEventListener("mouseleave", () => { btn.style.background = "transparent"; });
       btn.addEventListener("click", () => { toggleCommandPalette(false); performSmoothNavigate(btn.dataset.cmdHref); });
     });
@@ -1001,9 +1308,9 @@
       const pill = document.createElement("div");
       pill.id = "tx-update-pill";
       pill.innerHTML = `
-        <i class="fa-solid fa-sparkles" style="color:#00FF7F;"></i>
+        <i class="fa-solid fa-sparkles" style="color:#38BDF8;"></i>
         <span>Update <strong>v${escapeHtml(latest)}</strong> ready</span>
-        <button id="txUpdateGo" type="button" style="padding:5px 10px;border-radius:8px;border:none;background:#D4FF00;color:#050508;font-weight:800;font-size:11px;cursor:pointer;">Update</button>
+        <button id="txUpdateGo" type="button" style="padding:5px 10px;border-radius:8px;border:none;background:linear-gradient(135deg,#8B5CF6,#38BDF8);color:#FFFFFF;font-weight:800;font-size:11px;cursor:pointer;">Update</button>
         <button id="txUpdateClose" type="button" aria-label="Dismiss" style="background:none;border:none;color:#94A3B8;cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
       `;
       document.body.appendChild(pill);
@@ -1023,9 +1330,10 @@
 
     suppressDuplicateLoginSplash();
     hideWebAppPromoCards();
-    ensureLoaderDom();
     mountAnimatedEventBanner();
     initPullToRefreshAndScrollCondense();
+    initSmartOverlayObserver();
+    initEdgeSwipeTabs();
 
     document.addEventListener("visibilitychange", () => {
       if (document.hidden && page !== "clans.html") {
