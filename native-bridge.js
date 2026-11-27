@@ -1,10 +1,9 @@
 (() => {
   "use strict";
 
-  // Never double-run inside the top-level persistent app-shell.html container
   if (window.location.pathname.toLowerCase().endsWith("app-shell.html")) return;
 
-  const APP_VERSION = "6.1.0";
+  const APP_VERSION = "6.1.1";
   const PUBLIC_ORIGIN = "https://tournyx.in";
   const OAUTH_CALLBACK_URI = "in.tournyx.app://auth/callback";
   const VERSION_CHECK_URL = "https://tournyx.in/app-version.json";
@@ -96,7 +95,6 @@
   const isMobileNative = platform === "android" || platform === "ios";
   const isDesktopNative = platform === "windows" || platform === "macos" || platform === "linux";
 
-  // Automatically boot top-level native launches inside persistent app-shell.html (keeps Clan Voice alive across pages)
   if (isNative && window.self === window.top && !sessionStorage.getItem("tx_shell_bypass")) {
     const file = window.location.pathname.split("/").pop() || "index.html";
     const target = `${file}${window.location.search || ""}${window.location.hash || ""}`;
@@ -127,10 +125,7 @@
   function doNativeHaptic(style = "light") {
     try {
       const h = capObj?.Plugins?.Haptics;
-      if (h?.impact) {
-        h.impact({ style: style === "heavy" ? "HEAVY" : "LIGHT" });
-        return;
-      }
+      if (h?.impact) { h.impact({ style: style === "heavy" ? "HEAVY" : "LIGHT" }); return; }
       if (navigator.vibrate) navigator.vibrate(style === "heavy" ? 22 : 10);
     } catch (e) {}
   }
@@ -157,7 +152,122 @@
   }
 
   // =========================================================================
-  // 2. TRANSPARENT SUPABASE SWR CACHE (ZERO BLANK SCREENS ON TAB SWITCH)
+  // 2. DIRECT NATIVE ANDROID & iOS GEOLOCATION ENGINE (GUARANTEED LOGIN FIX)
+  // =========================================================================
+  const pendingLocationQueue = [];
+
+  if (platform === "android" && androidBridge?.requestLocationAndFetch) {
+    window.addEventListener("tournyx:native-location", (e) => {
+      const d = e?.detail || {};
+      const pos = {
+        coords: {
+          latitude: Number(d.latitude),
+          longitude: Number(d.longitude),
+          accuracy: Number(d.accuracy) || 25,
+          altitude: null,
+          altitudeAccuracy: null,
+          heading: null,
+          speed: null
+        },
+        timestamp: Number(d.timestamp) || Date.now()
+      };
+      while (pendingLocationQueue.length > 0) {
+        const item = pendingLocationQueue.shift();
+        clearTimeout(item.timer);
+        try { if (typeof item.successCb === "function") item.successCb(pos); } catch (err) {}
+      }
+    });
+
+    window.addEventListener("tournyx:native-location-error", (e) => {
+      const d = e?.detail || {};
+      const errObj = { code: Number(d.code) || 1, message: String(d.message || "Location permission required.") };
+      if (typeof window.showToast === "function" && d.message) {
+        window.showToast(d.message, true);
+      }
+      while (pendingLocationQueue.length > 0) {
+        const item = pendingLocationQueue.shift();
+        clearTimeout(item.timer);
+        try { if (typeof item.errorCb === "function") item.errorCb(errObj); } catch (err) {}
+      }
+    });
+
+    const nativeAndroidGetCurrentPosition = function(successCb, errorCb, options) {
+      const timeoutMs = Math.min(20000, Math.max(9000, Number(options?.timeout) || 14000));
+      const entry = {
+        successCb,
+        errorCb,
+        timer: setTimeout(() => {
+          const idx = pendingLocationQueue.indexOf(entry);
+          if (idx >= 0) pendingLocationQueue.splice(idx, 1);
+          if (typeof errorCb === "function") {
+            errorCb({ code: 3, message: "Location request timed out. Please try again." });
+          }
+        }, timeoutMs)
+      };
+      pendingLocationQueue.push(entry);
+      try {
+        androidBridge.requestLocationAndFetch();
+      } catch (err) {
+        clearTimeout(entry.timer);
+        const idx = pendingLocationQueue.indexOf(entry);
+        if (idx >= 0) pendingLocationQueue.splice(idx, 1);
+        if (typeof errorCb === "function") errorCb({ code: 2, message: "Could not start native location." });
+      }
+    };
+
+    try {
+      if (window.Geolocation?.prototype) {
+        Object.defineProperty(window.Geolocation.prototype, "getCurrentPosition", {
+          configurable: true,
+          writable: true,
+          value: nativeAndroidGetCurrentPosition
+        });
+      }
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition = nativeAndroidGetCurrentPosition;
+      }
+    } catch (e) {}
+
+    // Also report accurate permission status to login.html if it inspects navigator.permissions.query
+    if (navigator.permissions?.query) {
+      const origPermQuery = navigator.permissions.query.bind(navigator.permissions);
+      navigator.permissions.query = function(desc) {
+        if (desc?.name === "geolocation") {
+          const granted = Boolean(androidBridge.hasLocationAccess?.());
+          return Promise.resolve({ state: granted ? "granted" : "prompt", onchange: null });
+        }
+        return origPermQuery(desc);
+      };
+    }
+  } else if (platform === "ios" && isCapacitor && navigator.geolocation) {
+    const nativeGeo = capObj?.Plugins?.Geolocation;
+    const origGetPos = navigator.geolocation.getCurrentPosition.bind(navigator.geolocation);
+    if (nativeGeo?.getCurrentPosition) {
+      navigator.geolocation.getCurrentPosition = async function(successCb, errorCb, options) {
+        try {
+          let perm = await nativeGeo.checkPermissions?.();
+          if ((perm?.location || perm?.coarseLocation) !== "granted") {
+            perm = await nativeGeo.requestPermissions?.();
+          }
+          if ((perm?.location || perm?.coarseLocation) === "denied") {
+            if (typeof errorCb === "function") errorCb({ code: 1, message: "Location permission denied." });
+            return;
+          }
+          const pos = await nativeGeo.getCurrentPosition({
+            enableHighAccuracy: Boolean(options?.enableHighAccuracy),
+            timeout: Math.min(18000, Math.max(6000, Number(options?.timeout) || 12000)),
+            maximumAge: Number(options?.maximumAge) || 60000
+          });
+          if (typeof successCb === "function") successCb(pos);
+        } catch (err) {
+          origGetPos(successCb, errorCb, options);
+        }
+      };
+    }
+  }
+
+  // =========================================================================
+  // 3. TRANSPARENT SUPABASE SWR CACHE
   // =========================================================================
   const SWR_PREFIX = "tx_swr_v6:";
   const SWR_TTL_MS = 90 * 1000;
@@ -214,9 +324,7 @@
       const urlStr = typeof input === "string" ? input : (input?.url || "");
       const method = String(init?.method || (typeof input !== "string" ? input?.method : "GET") || "GET").toUpperCase();
 
-      if (!urlStr.includes(SUPABASE_HOST) || !urlStr.includes("/rest/v1/")) {
-        return origFetch(input, init);
-      }
+      if (!urlStr.includes(SUPABASE_HOST) || !urlStr.includes("/rest/v1/")) return origFetch(input, init);
 
       const isReadGet = method === "GET";
       const isReadRpc = method === "POST" && /\/rest\/v1\/rpc\/get_[a-z0-9_]+/i.test(urlStr);
@@ -252,7 +360,7 @@
   }
 
   // =========================================================================
-  // 3. NATIVE 1-TAP OAUTH BRIDGE (GOOGLE, DISCORD, FACEBOOK DEVICE ACCOUNTS)
+  // 4. NATIVE 1-TAP OAUTH BRIDGE (CHROME CUSTOM TABS / ASWebAuthenticationSession)
   // =========================================================================
   function installSupabaseOAuthHook() {
     if (!isCapacitor) return;
@@ -291,7 +399,6 @@
             }
           };
 
-          // Complete PKCE ?code= exchange automatically when Chrome Custom Tabs returns to login.html
           const urlParams = new URLSearchParams(window.location.search);
           const pkceCode = urlParams.get("code");
           if (pkceCode && urlParams.get("native_oauth") === "1" && !client.auth.__txCodeExchanged) {
@@ -319,7 +426,7 @@
   installSupabaseOAuthHook();
 
   // =========================================================================
-  // 4. ANDROID NATIVE SCREEN SHARING (getDisplayMedia POLYFILL) & VOICE SYNC
+  // 5. ANDROID SCREEN SHARING (getDisplayMedia) & CLAN VOICE SYNC
   // =========================================================================
   const liveMicTracks = new Set();
   let screenSharePending = null;
@@ -341,11 +448,7 @@
     const isActive = alive.length > 0;
     const isMuted = isActive ? alive.every((t) => !t.enabled) : false;
     if (shellApi) {
-      shellApi.setVoiceState({
-        active: isActive,
-        roomName: detectActiveRoomName(),
-        muted: isMuted
-      });
+      shellApi.setVoiceState({ active: isActive, roomName: detectActiveRoomName(), muted: isMuted });
     } else if (androidBridge) {
       try {
         if (isActive) androidBridge.startVoiceService(detectActiveRoomName());
@@ -357,7 +460,6 @@
   function installNativeMediaAndVoiceBridge() {
     if (!isNative || !navigator.mediaDevices) return;
 
-    // A. Wrap getUserMedia to auto-activate Android Background Voice Service + Floating Pill
     if (typeof navigator.mediaDevices.getUserMedia === "function" && !navigator.mediaDevices.__txGumWrapped) {
       const origGum = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
       navigator.mediaDevices.__txGumWrapped = true;
@@ -367,16 +469,10 @@
         if (constraints?.audio && stream) {
           stream.getAudioTracks().forEach((track) => {
             liveMicTracks.add(track);
-            const onEnd = () => {
-              liveMicTracks.delete(track);
-              syncVoiceActiveToShell();
-            };
+            const onEnd = () => { liveMicTracks.delete(track); syncVoiceActiveToShell(); };
             track.addEventListener("ended", onEnd, { once: true });
             const origStop = track.stop.bind(track);
-            track.stop = function() {
-              origStop();
-              onEnd();
-            };
+            track.stop = function() { origStop(); onEnd(); };
           });
           syncVoiceActiveToShell();
         }
@@ -384,7 +480,6 @@
       };
     }
 
-    // B. Polyfill navigator.mediaDevices.getDisplayMedia on Android via MediaProjection
     if (platform === "android" && androidBridge?.requestScreenShare) {
       navigator.mediaDevices.getDisplayMedia = function() {
         return new Promise((resolve, reject) => {
@@ -417,15 +512,11 @@
             vt.stop = function() {
               origStop();
               try { androidBridge.stopScreenShare(); } catch (err) {}
-              screenStream = null;
-              screenCanvas = null;
-              screenCtx = null;
+              screenStream = null; screenCanvas = null; screenCtx = null;
             };
           });
           resolve(screenStream);
-        } catch (err) {
-          reject(err);
-        }
+        } catch (err) { reject(err); }
       });
 
       window.addEventListener("tournyx:screen-share-denied", () => {
@@ -445,17 +536,13 @@
       });
     }
 
-    // C. Receive Mute / Speaker / Hang Up controls from Floating Pill & Android Notification Shade
     window.addEventListener("message", (e) => {
       const msg = e?.data;
       if (!msg || msg.type !== "TX_SHELL_VOICE_ACTION") return;
 
       if (msg.action === "mute") {
         const wantMuted = Boolean(msg.state?.muted);
-        liveMicTracks.forEach((t) => {
-          if (t.readyState === "live") t.enabled = !wantMuted;
-        });
-        // Keep clans.html Mute button label visually synced if present
+        liveMicTracks.forEach((t) => { if (t.readyState === "live") t.enabled = !wantMuted; });
         document.querySelectorAll("button").forEach((btn) => {
           const txt = (btn.textContent || "").trim().toLowerCase();
           if (txt === "mute" || txt === "unmute" || txt === "muted") {
@@ -467,28 +554,22 @@
         liveMicTracks.forEach((t) => { try { t.stop(); } catch (err) {} });
         liveMicTracks.clear();
         try { androidBridge?.stopScreenShare?.(); } catch (err) {}
-        // Click clans.html Leave button cleanly so Supabase voice room presence updates immediately
         document.querySelectorAll("button").forEach((btn) => {
           const txt = (btn.textContent || "").trim().toUpperCase();
-          if (txt === "LEAVE" || txt.includes("LEAVE ROOM")) {
-            btn.click();
-          }
+          if (txt === "LEAVE" || txt.includes("LEAVE ROOM")) btn.click();
         });
       }
     });
   }
   installNativeMediaAndVoiceBridge();
 
-  // Hide Web-Only "Playing in Background? Download the dedicated Tournyx Mobile App / GET APP" Card Inside the App
   function hideWebAppPromoCards() {
     if (!isNative) return;
     const sweep = () => {
       document.querySelectorAll("div, section").forEach((el) => {
         if (el.id === "tx-festival-banner" || el.children.length > 5) return;
         const txt = (el.textContent || "");
-        if (txt.includes("Playing in Background?") && txt.includes("GET APP")) {
-          el.style.display = "none";
-        }
+        if (txt.includes("Playing in Background?") && txt.includes("GET APP")) el.style.display = "none";
       });
     };
     sweep();
@@ -497,7 +578,7 @@
   }
 
   // =========================================================================
-  // 5. AUTOMATIC WHATSAPP / SHARE LINK REWRITER (app.tournyx.in -> tournyx.in)
+  // 6. SHARE LINK REWRITER (app.tournyx.in -> tournyx.in) & COMMON LOADER
   // =========================================================================
   function normalizePublicShareStr(val) {
     if (typeof val !== "string") return val;
@@ -519,17 +600,11 @@
     }
     if (navigator.clipboard?.writeText) {
       const origWriteText = navigator.clipboard.writeText.bind(navigator.clipboard);
-      navigator.clipboard.writeText = function(text) {
-        return origWriteText(normalizePublicShareStr(text));
-      };
+      navigator.clipboard.writeText = function(text) { return origWriteText(normalizePublicShareStr(text)); };
     }
   }
 
-  // =========================================================================
-  // 6. UNIFIED COMMON APP LOADER & GEOLOCATION BRIDGE
-  // =========================================================================
   let loaderAutoHideTimer = null;
-
   function ensureLoaderDom() {
     if (!document.body) return;
     if (!document.getElementById("tx-loader-rail")) {
@@ -562,9 +637,7 @@
       if (!rail || !fill) return;
       rail.classList.add("is-active");
       fill.style.width = `${Math.max(8, Math.min(100, Number(pct) || 0))}%`;
-      if (pct >= 100) {
-        setTimeout(() => { rail.classList.remove("is-active"); fill.style.width = "0%"; }, 200);
-      }
+      if (pct >= 100) setTimeout(() => { rail.classList.remove("is-active"); fill.style.width = "0%"; }, 200);
     },
     show(label = "Syncing Arena...") {
       ensureLoaderDom();
@@ -599,15 +672,11 @@
     openExternal(url) {
       if (!url || !/^https?:\/\//i.test(url)) return;
       if (isCapacitor && capObj?.Plugins?.Browser?.open) {
-        capObj.Plugins.Browser.open({ url, toolbarColor: "#050508" }).catch(() => {
-          window.open(url, "_blank", "noopener,noreferrer");
-        });
+        capObj.Plugins.Browser.open({ url, toolbarColor: "#050508" }).catch(() => window.open(url, "_blank", "noopener,noreferrer"));
         return;
       }
       if (isTauri && (window.__TAURI_INTERNALS__ || topWin.__TAURI_INTERNALS__)?.invoke) {
-        (window.__TAURI_INTERNALS__ || topWin.__TAURI_INTERNALS__).invoke("plugin:opener|open_url", { url }).catch(() => {
-          window.open(url, "_blank", "noopener,noreferrer");
-        });
+        (window.__TAURI_INTERNALS__ || topWin.__TAURI_INTERNALS__).invoke("plugin:opener|open_url", { url }).catch(() => window.open(url, "_blank", "noopener,noreferrer"));
         return;
       }
       window.open(url, "_blank", "noopener,noreferrer");
@@ -615,34 +684,6 @@
     navigate(href) { performSmoothNavigate(href); },
     openCommandPalette() { toggleCommandPalette(true); }
   };
-
-  // Native Geolocation Bridge (Fixes Android/iOS Login Location Prompts)
-  if (isCapacitor && navigator.geolocation) {
-    const nativeGeo = capObj?.Plugins?.Geolocation;
-    const origGetPos = navigator.geolocation.getCurrentPosition.bind(navigator.geolocation);
-    if (nativeGeo?.getCurrentPosition) {
-      navigator.geolocation.getCurrentPosition = async function(successCb, errorCb, options) {
-        try {
-          let perm = await nativeGeo.checkPermissions?.();
-          if ((perm?.location || perm?.coarseLocation) !== "granted") {
-            perm = await nativeGeo.requestPermissions?.();
-          }
-          if ((perm?.location || perm?.coarseLocation) === "denied") {
-            if (typeof errorCb === "function") errorCb({ code: 1, message: "Location permission denied." });
-            return;
-          }
-          const pos = await nativeGeo.getCurrentPosition({
-            enableHighAccuracy: Boolean(options?.enableHighAccuracy),
-            timeout: Math.min(18000, Math.max(6000, Number(options?.timeout) || 12000)),
-            maximumAge: Number(options?.maximumAge) || 60000
-          });
-          if (typeof successCb === "function") successCb(pos);
-        } catch (err) {
-          origGetPos(successCb, errorCb, options);
-        }
-      };
-    }
-  }
 
   // =========================================================================
   // 7. ZOMATO-STYLE ANIMATED EVENT & FESTIVAL HERO BANNER (HOME PAGE)
@@ -707,30 +748,21 @@
       `;
 
       wrap.querySelectorAll("[data-fb-dot]").forEach((dot) => {
-        dot.addEventListener("click", () => {
-          doNativeHaptic("light");
-          renderSlide(Number(dot.dataset.fbDot));
-          restartAutoplay();
-        });
+        dot.addEventListener("click", () => { doNativeHaptic("light"); renderSlide(Number(dot.dataset.fbDot)); restartAutoplay(); });
       });
     };
 
     const restartAutoplay = () => {
       clearInterval(bannerTimer);
       if (banners.length <= 1) return;
-      bannerTimer = setInterval(() => {
-        if (!document.hidden) renderSlide(activeIdx + 1);
-      }, autoplayMs);
+      bannerTimer = setInterval(() => { if (!document.hidden) renderSlide(activeIdx + 1); }, autoplayMs);
     };
 
     let sx = 0;
     wrap.addEventListener("touchstart", (e) => { sx = e.touches[0]?.clientX || 0; }, { passive: true });
     wrap.addEventListener("touchend", (e) => {
       const dx = (e.changedTouches[0]?.clientX || 0) - sx;
-      if (Math.abs(dx) > 42) {
-        renderSlide(dx < 0 ? activeIdx + 1 : activeIdx - 1);
-        restartAutoplay();
-      }
+      if (Math.abs(dx) > 42) { renderSlide(dx < 0 ? activeIdx + 1 : activeIdx - 1); restartAutoplay(); }
     }, { passive: true });
 
     renderSlide(0);
@@ -748,25 +780,19 @@
   function resolveLocalNativeHref(rawHref) {
     if (!rawHref) return null;
     const trimmed = String(rawHref).trim();
-    if (!trimmed || trimmed.startsWith("#") || trimmed.startsWith("javascript:") || trimmed.startsWith("mailto:") || trimmed.startsWith("tel:")) {
-      return null;
-    }
+    if (!trimmed || trimmed.startsWith("#") || trimmed.startsWith("javascript:") || trimmed.startsWith("mailto:") || trimmed.startsWith("tel:")) return null;
     let candidate = trimmed;
     try {
       const parsed = new URL(trimmed, window.location.origin);
       const host = parsed.hostname.toLowerCase();
       if (host === "tournyx.in" || host === "www.tournyx.in" || host === "app.tournyx.in" || host === "localhost" || host === "tauri.localhost") {
         candidate = parsed.pathname + parsed.search + parsed.hash;
-      } else if (/^https?:\/\//i.test(trimmed)) {
-        return { external: true, url: trimmed };
-      }
+      } else if (/^https?:\/\//i.test(trimmed)) return { external: true, url: trimmed };
     } catch (e) { return null; }
 
     if (candidate === "/" || candidate === "") return { external: false, url: "index.html" };
     const m = candidate.match(/^\/?([A-Za-z0-9_-]+)(?:\.html)?(\?[^#]*)?(#.*)?$/);
-    if (m && KNOWN_PAGES.has(m[1])) {
-      return { external: false, url: `${m[1]}.html${m[2] || ""}${m[3] || ""}` };
-    }
+    if (m && KNOWN_PAGES.has(m[1])) return { external: false, url: `${m[1]}.html${m[2] || ""}${m[3] || ""}` };
     return null;
   }
 
@@ -776,17 +802,9 @@
       if (/^https?:\/\//i.test(String(targetHref || ""))) window.TournyxNative.openExternal(targetHref);
       return;
     }
-    if (resolved.external) {
-      window.TournyxNative.openExternal(resolved.url);
-      return;
-    }
-    if (shellApi) {
-      shellApi.navigate(resolved.url);
-    } else {
-      doNativeHaptic("light");
-      TournyxLoader.bar(80);
-      window.location.href = resolved.url;
-    }
+    if (resolved.external) { window.TournyxNative.openExternal(resolved.url); return; }
+    if (shellApi) shellApi.navigate(resolved.url);
+    else { doNativeHaptic("light"); TournyxLoader.bar(80); window.location.href = resolved.url; }
   }
 
   document.addEventListener("click", (e) => {
@@ -794,10 +812,8 @@
     if (!anchor || e.defaultPrevented) return;
     const rawHref = anchor.getAttribute("href") || "";
     if (/^(intent:|freefiremax:|freefireth:|pubg:|cod:|riotclient:|whatsapp:)/i.test(rawHref)) return;
-
     const resolved = resolveLocalNativeHref(rawHref);
     if (!resolved) return;
-
     e.preventDefault();
     if (resolved.external) window.TournyxNative.openExternal(resolved.url);
     else performSmoothNavigate(resolved.url);
@@ -822,9 +838,7 @@
         const txt = (el.textContent || "").toUpperCase();
         if (txt.includes("INITIALIZING TOURNYX") || txt.includes("SKIP INTRO")) {
           const st = window.getComputedStyle(el);
-          if (st.position === "fixed" || Number(st.zIndex) >= 50) {
-            el.classList.add("tx-login-intro-hidden");
-          }
+          if (st.position === "fixed" || Number(st.zIndex) >= 50) el.classList.add("tx-login-intro-hidden");
         }
       });
     };
@@ -845,9 +859,7 @@
         ticking = true;
         requestAnimationFrame(() => {
           const y = window.scrollY;
-          if (isInShell) {
-            window.parent.postMessage({ type: "TX_DOCK_CONDENSE", condensed: y > 90 && y > lastY + 14 }, "*");
-          }
+          if (isInShell) window.parent.postMessage({ type: "TX_DOCK_CONDENSE", condensed: y > 90 && y > lastY + 14 }, "*");
           lastY = y;
           ticking = false;
         });
@@ -905,7 +917,6 @@
     }, { passive: true });
   }
 
-  // Desktop Quick Command Palette (Cmd+K / Ctrl+K)
   const CMD_ROUTES = [
     { name: "Home Arena Feed", sub: "Event Banners, Tournaments & Feed", href: "index.html", icon: "fa-house" },
     { name: "Explore Cups & Scrims", sub: "Browse open lobbies", href: "explore.html", icon: "fa-compass" },
@@ -972,7 +983,6 @@
     });
   }
 
-  // Non-Blocking In-App Update Check
   async function checkAppUpdateSoft() {
     if (sessionStorage.getItem("tx_update_checked") === "1") return;
     sessionStorage.setItem("tx_update_checked", "1");
@@ -1002,7 +1012,6 @@
     } catch (e) {}
   }
 
-  // Boot Child Page Inside Shell
   window.addEventListener("DOMContentLoaded", () => {
     sessionStorage.removeItem("tx_force_fresh");
     const page = currentPageFile();
@@ -1018,7 +1027,6 @@
     mountAnimatedEventBanner();
     initPullToRefreshAndScrollCondense();
 
-    // Pause non-voice videos when app goes background (never touches live Clan Voice audio!)
     document.addEventListener("visibilitychange", () => {
       if (document.hidden && page !== "clans.html") {
         document.querySelectorAll("video").forEach((v) => { try { if (!v.paused) v.pause(); } catch (e) {} });
@@ -1036,7 +1044,5 @@
     setTimeout(checkAppUpdateSoft, 3500);
   });
 
-  window.addEventListener("pageshow", () => {
-    TournyxLoader.hide();
-  });
+  window.addEventListener("pageshow", () => TournyxLoader.hide());
 })();
