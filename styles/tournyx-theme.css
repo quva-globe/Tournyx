@@ -1,0 +1,439 @@
+/* =========================================================================
+   TOURNYX ESPORTS — UNIFIED 3-COLOR DESIGN SYSTEM (v8.0)
+   Palette:
+     1. Obsidian Carbon   (#050508 / #0C0E18)
+     2. Royal Violet      (#8B5CF6 / #A855F7)
+     3. Chrome & Ice Cyan (#E2E8F0 / #38BDF8)
+   Applies across Website + Windows + macOS + Android + iOS
+   ========================================================================= */
+
+:root {
+  --tx-obsidian: #050508;
+  --tx-surface: #0C0E18;
+  --tx-surface-elevated: #121526;
+  --tx-violet: #8B5CF6;
+  --tx-violet-bright: #A855F7;
+  --tx-violet-glow: rgba(139, 92, 246, 0.34);
+  --tx-cyan: #38BDF8;
+  --tx-cyan-glow: rgba(56, 189, 248, 0.24);
+  --tx-chrome: #E2E8F0;
+  --tx-text: #F8FAFC;
+  --tx-muted: #94A3B8;
+  --tx-glass-border: rgba(255, 255, 255, 0.14);
+  --tx-specular-top: rgba(255, 255, 255, 0.26);
+  --tx-specular-bot: rgba(255, 255, 255, 0.04);
+  --tx-live: #10B981;
+  --tx-danger: #EF4444;
+  --tx-sidebar-w: 244px;
+}
+
+html,
+body {
+  background-color: var(--tx-obsidian) !important;
+  color: var(--tx-text);
+  overflow-x: clip;
+}
+
+/* Accessible Keyboard Focus Ring (WCAG AA) */
+:focus-visible {
+  outline: 2px solid var(--tx-cyan);
+  outline-offset: 2px;
+}
+
+/* Harmonize Legacy Rainbow/Yellow/Lime Utility Classes Into Unified 3-Color Identity */
+.text-volt,
+.text-\[\#D4FF00\],
+.text-lime-400,
+.text-yellow-400 {
+  color: var(--tx-cyan) !important;
+}
+
+.bg-volt,
+.bg-\[\#D4FF00\],
+.bg-lime-400 {
+  background: linear-gradient(135deg, var(--tx-violet) 0%, var(--tx-cyan) 100%) !important;
+  color: #FFFFFF !important;
+  border-color: rgba(255, 255, 255, 0.24) !important;
+}
+
+.border-volt,
+.border-\[\#D4FF00\] {
+  border-color: rgba(139, 92, 246, 0.55) !important;
+}
+
+/* Sleek Primary & Glass Buttons */
+.tx-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: linear-gradient(135deg, var(--tx-violet) 0%, #6D28D9 52%, var(--tx-cyan) 100%);
+  color: #FFFFFF;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.01em;
+  box-shadow: 0 10px 26px -6px var(--tx-violet-glow), inset 0 1px 0 rgba(255, 255, 255, 0.32);
+  cursor: pointer;
+  transition: transform 0.14s ease, filter 0.18s ease;
+}
+
+.tx-btn-primary:active {
+  transform: scale(0.96);
+}
+
+.tx-btn-glass {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 14px;
+  border: 1px solid var(--tx-glass-border);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--tx-chrome);
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.16s ease, border-color 0.16s ease, transform 0.14s ease;
+}
+
+.tx-btn-glass:hover {
+  background: rgba(139, 92, 246, 0.16);
+  border-color: rgba(139, 92, 246, 0.45);
+}
+
+/* =========================================================================
+   DESKTOP PERSISTENT LEFT SIDEBAR (WINDOWS, macOS & WEB >= 1024px)
+   Removes Redundant Top Navigation Links on Desktop for Clean App Feel
+   ========================================================================= */
+#tx-desktop-sidebar {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  body.tx-has-desktop-sidebar {
+    padding-left: var(--tx-sidebar-w) !important;
+  }
+
+  /* Hide redundant top navigation link strips on desktop when persistent sidebar is mounted */
+  body.tx-has-desktop-sidebar header nav,
+  body.tx-has-desktop-sidebar .desktop-top-nav,
+  body.tx-has-desktop-sidebar .top-nav-links {
+    display: none !important;
+  }
+
+  body.tx-has-desktop-sidebar header {
+    left: var(--tx-sidebar-w) !important;
+    width: calc(100% - var(--tx-sidebar-w)) !important;
+  }
+
+  #tx-desktop-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: var(--tx-sidebar-w);
+    z-index: 4600;
+    display: flex;
+    flex-direction: column;
+    padding: 18px 14px 16px;
+    gap: 14px;
+    background: linear-gradient(180deg, rgba(14, 16, 29, 0.94) 0%, rgba(7, 8, 15, 0.98) 100%);
+    border-right: 1px solid rgba(255, 255, 255, 0.10);
+    box-shadow: 8px 0 36px rgba(0, 0, 0, 0.55);
+  }
+
+  html[data-tx-platform="macos"] #tx-desktop-sidebar {
+    padding-top: 38px;
+    background: rgba(12, 14, 26, 0.48);
+    backdrop-filter: saturate(195%) blur(32px);
+    -webkit-backdrop-filter: saturate(195%) blur(32px);
+  }
+
+  .tx-sb-brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 6px 8px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    text-decoration: none;
+  }
+
+  .tx-sb-brand img {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    background: transparent !important;
+    filter: drop-shadow(0 0 12px rgba(139, 92, 246, 0.45));
+  }
+
+  .tx-sb-brand-name {
+    font-family: "Orbitron", "Plus Jakarta Sans", sans-serif;
+    font-size: 16px;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    background: linear-gradient(180deg, #FFFFFF 0%, #E2E8F0 60%, #A78BFA 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .tx-sb-search-btn {
+    width: 100%;
+    min-height: 40px;
+    padding: 0 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--tx-muted);
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: border-color 0.16s ease, background-color 0.16s ease;
+  }
+
+  .tx-sb-search-btn:hover {
+    border-color: rgba(139, 92, 246, 0.48);
+    background: rgba(139, 92, 246, 0.10);
+    color: #FFFFFF;
+  }
+
+  .tx-sb-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .tx-sb-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 42px;
+    padding: 0 12px;
+    border-radius: 13px;
+    border: 1px solid transparent;
+    color: var(--tx-muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .tx-sb-link i {
+    width: 18px;
+    text-align: center;
+    font-size: 14px;
+  }
+
+  .tx-sb-link:hover {
+    color: #FFFFFF;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .tx-sb-link.is-active {
+    color: #FFFFFF;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.28) 0%, rgba(56, 189, 248, 0.16) 100%);
+    border-color: rgba(255, 255, 255, 0.18);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  }
+
+  .tx-sb-link.is-active i {
+    color: var(--tx-cyan);
+  }
+
+  .tx-sb-footer {
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .tx-sb-tier-pill {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    border-radius: 11px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 11px;
+    color: var(--tx-muted);
+  }
+}
+
+/* =========================================================================
+   INTEGRATED FULL-BLEED GAMING HERO STAGE + ATTACHED EVENT SLIDER
+   (Zomato-Style Native Top-of-Home — Seamlessly Blended Into Home Feed)
+   ========================================================================= */
+#tx-gaming-hero-stage {
+  position: relative;
+  width: 100%;
+  margin: -12px 0 22px;
+  border-radius: 0 0 28px 28px;
+  overflow: hidden;
+  background: #080914;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 24px 54px -18px rgba(0, 0, 0, 0.92);
+}
+
+@media (min-width: 1024px) {
+  #tx-gaming-hero-stage {
+    margin: 0 0 24px;
+    border-radius: 26px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+  }
+}
+
+.tx-hero-motion-viewport {
+  position: relative;
+  width: 100%;
+  min-height: clamp(210px, 34vh, 300px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 22px 18px 18px;
+  overflow: hidden;
+}
+
+.tx-hero-bg-media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.54;
+  transform: scale(1.03);
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.tx-hero-scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 80% 18%, rgba(139, 92, 246, 0.36) 0%, transparent 50%),
+    radial-gradient(circle at 18% 12%, rgba(56, 189, 248, 0.24) 0%, transparent 45%),
+    linear-gradient(180deg, rgba(5, 5, 8, 0.22) 0%, rgba(5, 5, 8, 0.65) 58%, #080914 100%);
+  pointer-events: none;
+}
+
+.tx-hero-copy {
+  position: relative;
+  z-index: 3;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tx-hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  width: fit-content;
+  padding: 4px 11px;
+  border-radius: 9999px;
+  background: rgba(5, 5, 8, 0.60);
+  border: 1px solid rgba(139, 92, 246, 0.55);
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--tx-cyan);
+  text-transform: uppercase;
+}
+
+.tx-hero-headline {
+  margin: 0;
+  font-family: "Orbitron", "Plus Jakarta Sans", sans-serif;
+  font-size: clamp(20px, 5.2vw, 30px);
+  font-weight: 900;
+  line-height: 1.12;
+  color: #FFFFFF;
+  text-shadow: 0 6px 24px rgba(0, 0, 0, 0.72);
+}
+
+.tx-hero-desc {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: rgba(226, 232, 240, 0.88);
+}
+
+.tx-hero-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+/* Attached Horizontal Latest Events Carousel Directly Anchored to Bottom of Hero Stage */
+.tx-hero-event-rail {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  gap: 10px;
+  padding: 12px 16px 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  background: linear-gradient(180deg, rgba(8, 9, 20, 0.92) 0%, rgba(5, 5, 8, 0.98) 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.tx-hero-event-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.tx-hero-event-card {
+  flex: 0 0 min(78vw, 260px);
+  scroll-snap-align: start;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: linear-gradient(145deg, rgba(139, 92, 246, 0.16) 0%, rgba(14, 16, 30, 0.92) 55%, rgba(9, 11, 20, 0.98) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  text-decoration: none;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: transform 0.16s ease, border-color 0.16s ease;
+}
+
+.tx-hero-event-card:active {
+  transform: scale(0.97);
+}
+
+.tx-hero-event-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  background: rgba(139, 92, 246, 0.22);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: var(--tx-cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+/* Lite Tier Fallbacks */
+html[data-perf-tier="lite"] #tx-desktop-sidebar,
+html[data-perf-tier="lite"] .tx-hero-event-card {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
