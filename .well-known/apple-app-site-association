@@ -3,8 +3,28 @@
     "apps": [],
     "details": [
       {
-        "appID": "TEAM_ID.in.tournyx.app",
-        "paths": ["*"]
+        "appIDs": [
+          "YOUR_APPLE_TEAM_ID.in.tournyx.app"
+        ],
+        "components": [
+          {
+            "/": "/*",
+            "exclude": false
+          },
+          {
+            "/": "/PayoutPortel*",
+            "exclude": true
+          },
+          {
+            "/": "/.well-known/*",
+            "exclude": true
+          }
+        ],
+        "paths": [
+          "NOT /PayoutPortel*",
+          "NOT /.well-known/*",
+          "*"
+        ]
       }
     ]
   }
