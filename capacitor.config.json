@@ -3,13 +3,17 @@
   "appName": "Tournyx Esports",
   "webDir": "www",
   "server": {
+    "hostname": "app.tournyx.in",
     "androidScheme": "https",
-    "iosScheme": "https",
+    "iosScheme": "capacitor",
     "allowNavigation": [
+      "app.tournyx.in",
       "tournyx.in",
       "*.tournyx.in",
       "*.supabase.co",
       "accounts.google.com",
+      "discord.com",
+      "api.bigdatacloud.net",
       "*.youtube.com",
       "youtu.be"
     ]
@@ -22,12 +26,14 @@
   },
   "ios": {
     "backgroundColor": "#050508",
-    "contentInset": "automatic",
-    "allowsLinkPreview": false
+    "contentInset": "never",
+    "scrollEnabled": true,
+    "allowsLinkPreview": false,
+    "preferredContentMode": "mobile"
   },
   "plugins": {
     "SplashScreen": {
-      "launchShowDuration": 900,
+      "launchShowDuration": 350,
       "launchAutoHide": true,
       "backgroundColor": "#050508",
       "showSpinner": false,
