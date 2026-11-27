@@ -63,7 +63,7 @@ function copyDirRecursive(src, dst) {
 }
 
 function bundleLocalVendors() {
-  const flags = { tailwind: false, supabase: false, hls: false, fa: false, themeCss: false, appShellCss: false };
+  const flags = { tailwind: false, supabase: false, hls: false, fa: false, themeCss: false, appShellCss: false, videoCss: false };
 
   // 1. Pre-compile Tailwind CSS into static www/vendor/tournyx.min.css (Zero CDN runtime lag)
   const twInput = path.join(ROOT, "styles", "tailwind-input.css");
@@ -122,6 +122,11 @@ function bundleLocalVendors() {
     fs.copyFileSync(shellCssSrc, path.join(VENDOR_DIR, "native-app-shell.css"));
     flags.appShellCss = true;
   }
+  const videoCssSrc = path.join(ROOT, "styles", "video-player.css");
+  if (fs.existsSync(videoCssSrc)) {
+    fs.copyFileSync(videoCssSrc, path.join(VENDOR_DIR, "video-player.css"));
+    flags.videoCss = true;
+  }
   return flags;
 }
 
@@ -161,6 +166,12 @@ function patchHtmlForNative(html, flags) {
   }
   if (!out.includes("native-bridge.js")) {
     injections.push('<script src="native-bridge.js"></script>');
+  }
+  if (flags.videoCss && !out.includes("video-player.css")) {
+    injections.push('<link rel="stylesheet" href="vendor/video-player.css">');
+  }
+  if (!out.includes("tournyx-video-engine.js")) {
+    injections.push('<script src="js/tournyx-video-engine.js" defer></script>');
   }
 
   if (/<\/head>/i.test(out)) {
