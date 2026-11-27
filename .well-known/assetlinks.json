@@ -1,11 +1,13 @@
 [
   {
-    "relation": ["delegate_permission/common.handle_all_urls"],
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
     "target": {
       "namespace": "android_app",
       "package_name": "in.tournyx.app",
       "sha256_cert_fingerprints": [
-        "14:6D:E9:7C:0F:86:02:AE:82:E6:E6:E6:E6:E6:E6:E6:E6:E6:E6:E6:E6:E6:E6:E6:E6:E6:E6:E6:E6:E6:E6:E6"
+        "REPLACE_WITH_YOUR_RELEASE_KEYSTORE_SHA256_FINGERPRINT"
       ]
     }
   }
