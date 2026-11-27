@@ -66,7 +66,6 @@ function patchAndroid() {
     );
   }
 
-  // Register Discord-Style Background Voice & Screen Share Foreground Service
   if (!xml.includes("TournyxVoiceService")) {
     const serviceDecl = `
         <service
@@ -77,7 +76,6 @@ function patchAndroid() {
     xml = xml.replace(/<\/application>/i, `${serviceDecl}\n    </application>`);
   }
 
-  // Android 11+ <queries> for direct game launching
   if (!xml.includes("com.dts.freefiremax")) {
     const queriesBlock = `
     <queries>
@@ -90,7 +88,6 @@ function patchAndroid() {
     xml = xml.replace(/<\/manifest>/i, `${queriesBlock}\n</manifest>`);
   }
 
-  // Deep Links (tournyx.in + app.tournyx.in) & Custom OAuth Callback Scheme (in.tournyx.app://auth/callback)
   if (!xml.includes('android:host="tournyx.in"')) {
     const deepLinkFilter = `
             <intent-filter android:autoVerify="true">
@@ -122,7 +119,7 @@ function patchAndroid() {
   fs.mkdirSync(javaDir, { recursive: true });
 
   // 2. Write TournyxVoiceService.java (Discord-Style Ongoing Notification + Background Mic + Speakerphone)
-  const voiceServiceSource = `package in.tournyx.app;
+  const voiceServiceSource = String.raw`package in.tournyx.app;
 
 import android.Manifest;
 import android.app.Notification;
@@ -227,7 +224,6 @@ public class TournyxVoiceService extends Service {
             return START_STICKY;
         }
 
-        // Default: ACTION_START
         acquireWakeLockAndAudio();
         applyAudioRouting(isSpeaker);
         promoteForeground(isProjectionActive);
@@ -243,7 +239,7 @@ public class TournyxVoiceService extends Service {
                 }
             }
             if (wakeLock != null && !wakeLock.isHeld()) {
-                wakeLock.acquire(4 * 60 * 60 * 1000L); // 4-hour fail-safe timeout
+                wakeLock.acquire(4 * 60 * 60 * 1000L);
             }
         } catch (Exception ignored) {}
 
@@ -385,9 +381,9 @@ public class TournyxVoiceService extends Service {
   fs.writeFileSync(path.join(javaDir, "TournyxVoiceService.java"), voiceServiceSource, "utf8");
   console.log("✅ Generated TournyxVoiceService.java (Background Mic + Discord Notification Controls).");
 
-  // 3. Patch MainActivity.java (Zero-White-Flash, Geolocation, Game Launcher, Voice Bridge & MediaProjection Screen Share)
+  // 3. Patch MainActivity.java (Uses org.json.JSONObject — Zero Escaped Quote Strings)
   const mainActPath = path.join(javaDir, "MainActivity.java");
-  const javaSource = `package in.tournyx.app;
+  const javaSource = String.raw`package in.tournyx.app;
 
 import android.Manifest;
 import android.app.Activity;
@@ -407,7 +403,6 @@ import android.media.ImageReader;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -430,6 +425,7 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import org.json.JSONObject;
 
 public class MainActivity extends BridgeActivity {
     private static final int REQ_LOCATION_PERM = 9041;
@@ -475,8 +471,13 @@ public class MainActivity extends BridgeActivity {
             if ("leave".equals(action)) {
                 stopScreenShareInternal();
             }
-            dispatchJsEvent("tournyx:native-voice-action",
-                "{\"action\":\"" + safeJs(action) + "\",\"muted\":" + muted + ",\"speaker\":" + speaker + "}");
+            JSONObject payload = new JSONObject();
+            try {
+                payload.put("action", action != null ? action : "");
+                payload.put("muted", muted);
+                payload.put("speaker", speaker);
+            } catch (Exception ignored) {}
+            dispatchJsEvent("tournyx:native-voice-action", payload.toString());
         }
     };
 
@@ -584,7 +585,9 @@ public class MainActivity extends BridgeActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         if (intent != null && intent.getBooleanExtra("open_room", false)) {
-            dispatchJsEvent("tournyx:native-voice-action", "{\"action\":\"open_room\"}");
+            JSONObject payload = new JSONObject();
+            try { payload.put("action", "open_room"); } catch (Exception ignored) {}
+            dispatchJsEvent("tournyx:native-voice-action", payload.toString());
         }
     }
 
@@ -667,7 +670,6 @@ public class MainActivity extends BridgeActivity {
                 Intent svc = new Intent(this, TournyxVoiceService.class);
                 svc.setAction(TournyxVoiceService.ACTION_ENABLE_PROJECTION);
                 ContextCompat.startForegroundService(this, svc);
-                // Short delay ensures Android 14+ registers mediaProjection FGS type before getMediaProjection()
                 mainHandler.postDelayed(() -> startMediaProjectionCapture(resultCode, data), 220);
             } else {
                 dispatchJsEvent("tournyx:screen-share-denied", "{}");
@@ -715,7 +717,7 @@ public class MainActivity extends BridgeActivity {
                     image = reader.acquireLatestImage();
                     if (image == null) return;
                     long now = System.currentTimeMillis();
-                    if (now - lastFrameSentMs < 115) return; // ~8.5 FPS smooth low-battery stream
+                    if (now - lastFrameSentMs < 115) return;
                     lastFrameSentMs = now;
 
                     Image.Plane[] planes = image.getPlanes();
@@ -738,7 +740,9 @@ public class MainActivity extends BridgeActivity {
                     cropped.recycle();
 
                     String b64 = Base64.encodeToString(baos.toByteArray(), Base64.NO_WRAP);
-                    dispatchJsEvent("tournyx:screen-frame", "{\"jpg\":\"" + b64 + "\"}");
+                    JSONObject framePayload = new JSONObject();
+                    framePayload.put("jpg", b64);
+                    dispatchJsEvent("tournyx:screen-frame", framePayload.toString());
                 } catch (Exception ignored) {
                 } finally {
                     if (image != null) image.close();
@@ -756,8 +760,10 @@ public class MainActivity extends BridgeActivity {
                 captureHandler
             );
 
-            dispatchJsEvent("tournyx:screen-share-ready",
-                "{\"width\":" + captureWidth + ",\"height\":" + captureHeight + "}");
+            JSONObject readyPayload = new JSONObject();
+            readyPayload.put("width", captureWidth);
+            readyPayload.put("height", captureHeight);
+            dispatchJsEvent("tournyx:screen-share-ready", readyPayload.toString());
         } catch (Exception e) {
             stopScreenShareInternal();
             dispatchJsEvent("tournyx:screen-share-denied", "{}");
@@ -784,13 +790,11 @@ public class MainActivity extends BridgeActivity {
     private void dispatchJsEvent(String eventName, String detailJson) {
         mainHandler.post(() -> {
             if (this.bridge == null || this.bridge.getWebView() == null) return;
-            String js = "window.dispatchEvent(new CustomEvent('" + safeJs(eventName) + "',{detail:" + detailJson + "}));";
+            String safeEvent = JSONObject.quote(eventName != null ? eventName : "");
+            String safeDetail = (detailJson != null && !detailJson.isEmpty()) ? detailJson : "{}";
+            String js = "window.dispatchEvent(new CustomEvent(" + safeEvent + ",{detail:" + safeDetail + "}));";
             this.bridge.getWebView().evaluateJavascript(js, null);
         });
-    }
-
-    private String safeJs(String s) {
-        return s == null ? "" : s.replace("\\\\", "\\\\\\\\").replace("'", "\\\\'").replace("\"", "\\\\\"");
     }
 
     private boolean isTrustedGeoOrigin(String origin) {
