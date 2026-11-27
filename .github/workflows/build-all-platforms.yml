@@ -28,7 +28,7 @@ permissions:
 
 jobs:
   # ==========================================================
-  # 1. ANDROID (Obsidian GPU-Safe .apk + optional signed .aab)
+  # 1. ANDROID (Liquid Glass + Voice Service + Screen Share)
   # ==========================================================
   build-android:
     name: Android APK / AAB
@@ -64,8 +64,10 @@ jobs:
           npm install
           npm run prep:www
           test -f www/vendor/tournyx.min.css
+          test -f www/vendor/tournyx-theme.css
           test -f www/vendor/native-app-shell.css
           test -f www/native-bridge.js
+          test -f www/app-shell.html
 
       - name: Initialize, Patch & Inject Official Tournyx Icons
         run: |
@@ -103,6 +105,20 @@ jobs:
             echo "No ANDROID_KEYSTORE_BASE64 secret set — skipping signed Play Store bundle."
           fi
 
+      - name: Print APK SHA-256 Fingerprints (Paste Into .well-known/assetlinks.json)
+        run: |
+          echo "## Android App Links SHA-256 Fingerprints" >> "$GITHUB_STEP_SUMMARY"
+          echo "Copy the fingerprint below into \`.well-known/assetlinks.json\` so \`tournyx.in\` & \`app.tournyx.in\` auto-open the installed APK:" >> "$GITHUB_STEP_SUMMARY"
+          echo '```text' >> "$GITHUB_STEP_SUMMARY"
+          for apk in android/app/build/outputs/apk/debug/app-debug.apk android/app/build/outputs/apk/release/app-release.apk; do
+            if [ -f "$apk" ]; then
+              echo "=== $apk ==="
+              echo "=== $apk ===" >> "$GITHUB_STEP_SUMMARY"
+              keytool -printcert -jarfile "$apk" \vert{} grep -E "SHA256:" \vert{} tee -a "$GITHUB_STEP_SUMMARY" || true
+            fi
+          done
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
       - name: Collect Android Output Files
         run: |
           mkdir -p release-out
@@ -122,7 +138,7 @@ jobs:
           retention-days: 30
 
   # ==========================================================
-  # 2. WINDOWS (Obsidian Mica + Tray .exe / .msi via Tauri v2)
+  # 2. WINDOWS (Obsidian Mica + Persistent Sidebar + Tray)
   # ==========================================================
   build-windows:
     name: Windows Installer (.exe / .msi)
@@ -168,7 +184,7 @@ jobs:
           retention-days: 30
 
   # ==========================================================
-  # 3. macOS (Apple Liquid Glass Vibrancy .dmg via Tauri v2)
+  # 3. macOS (Apple Liquid Glass Vibrancy + Persistent Sidebar)
   # ==========================================================
   build-macos:
     name: macOS Installer (.dmg)
@@ -211,7 +227,7 @@ jobs:
           retention-days: 30
 
   # ==========================================================
-  # 4. iOS (Apple Liquid Glass Unsigned .ipa via Capacitor 6)
+  # 4. iOS (Apple Liquid Glass Unsigned .ipa)
   # ==========================================================
   build-ios:
     name: iOS Package (.ipa)
@@ -233,6 +249,7 @@ jobs:
           npm install
           npm run prep:www
           test -f www/vendor/tournyx.min.css
+          test -f www/vendor/tournyx-theme.css
           test -f www/vendor/native-app-shell.css
 
       - name: Initialize, Patch & Inject Official Tournyx iOS Icons
