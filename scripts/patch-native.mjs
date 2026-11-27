@@ -20,7 +20,7 @@ function patchAndroid() {
     return;
   }
 
-  // 1. Patch AndroidManifest.xml (Permissions, Foreground Voice/Projection Service, OAuth Scheme & App Links)
+  // 1. Patch AndroidManifest.xml
   let xml = fs.readFileSync(manifestPath, "utf8");
 
   const requiredPermissions = [
@@ -113,12 +113,12 @@ function patchAndroid() {
   }
 
   fs.writeFileSync(manifestPath, xml, "utf8");
-  console.log("✅ Patched AndroidManifest.xml (Voice FGS, MediaProjection, OAuth Scheme & App Links).");
+  console.log("✅ Patched AndroidManifest.xml.");
 
   const javaDir = path.join(ROOT, "android", "app", "src", "main", "java", "in", "tournyx", "app");
   fs.mkdirSync(javaDir, { recursive: true });
 
-  // 2. Write TournyxVoiceService.java (Discord-Style Ongoing Notification + Background Mic + Speakerphone)
+  // 2. Write TournyxVoiceService.java
   const voiceServiceSource = String.raw`package in.tournyx.app;
 
 import android.Manifest;
@@ -179,20 +179,17 @@ public class TournyxVoiceService extends Service {
             teardownAndStop();
             return START_NOT_STICKY;
         }
-
         if (ACTION_HANGUP.equals(action)) {
             sendEventToApp("leave", isMuted, isSpeaker);
             teardownAndStop();
             return START_NOT_STICKY;
         }
-
         if (ACTION_TOGGLE_MUTE.equals(action)) {
             isMuted = !isMuted;
             updateNotification();
             sendEventToApp("mute", isMuted, isSpeaker);
             return START_STICKY;
         }
-
         if (ACTION_TOGGLE_SPEAKER.equals(action)) {
             isSpeaker = !isSpeaker;
             applyAudioRouting(isSpeaker);
@@ -200,7 +197,6 @@ public class TournyxVoiceService extends Service {
             sendEventToApp("speaker", isMuted, isSpeaker);
             return START_STICKY;
         }
-
         if (ACTION_UPDATE.equals(action)) {
             if (intent != null) {
                 isMuted = intent.getBooleanExtra("muted", isMuted);
@@ -210,14 +206,12 @@ public class TournyxVoiceService extends Service {
             updateNotification();
             return START_STICKY;
         }
-
         if (ACTION_ENABLE_PROJECTION.equals(action)) {
             isProjectionActive = true;
             acquireWakeLockAndAudio();
             promoteForeground(true);
             return START_STICKY;
         }
-
         if (ACTION_DISABLE_PROJECTION.equals(action)) {
             isProjectionActive = false;
             promoteForeground(false);
@@ -238,15 +232,10 @@ public class TournyxVoiceService extends Service {
                     wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Tournyx::SquadVoiceWakeLock");
                 }
             }
-            if (wakeLock != null && !wakeLock.isHeld()) {
-                wakeLock.acquire(4 * 60 * 60 * 1000L);
-            }
+            if (wakeLock != null && !wakeLock.isHeld()) wakeLock.acquire(4 * 60 * 60 * 1000L);
         } catch (Exception ignored) {}
-
         try {
-            if (audioManager != null) {
-                audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
-            }
+            if (audioManager != null) audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
         } catch (Exception ignored) {}
     }
 
@@ -353,9 +342,7 @@ public class TournyxVoiceService extends Service {
     private void createChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel ch = new NotificationChannel(
-                CHANNEL_ID,
-                "Tournyx Squad Voice",
-                NotificationManager.IMPORTANCE_LOW
+                CHANNEL_ID, "Tournyx Squad Voice", NotificationManager.IMPORTANCE_LOW
             );
             ch.setDescription("Keeps Clan Voice and Screen Sharing live while playing games");
             ch.setSound(null, null);
@@ -366,9 +353,7 @@ public class TournyxVoiceService extends Service {
 
     @Override
     public void onDestroy() {
-        try {
-            if (wakeLock != null && wakeLock.isHeld()) wakeLock.release();
-        } catch (Exception ignored) {}
+        try { if (wakeLock != null && wakeLock.isHeld()) wakeLock.release(); } catch (Exception ignored) {}
         super.onDestroy();
     }
 
@@ -379,13 +364,13 @@ public class TournyxVoiceService extends Service {
 }
 `;
   fs.writeFileSync(path.join(javaDir, "TournyxVoiceService.java"), voiceServiceSource, "utf8");
-  console.log("✅ Generated TournyxVoiceService.java (Background Mic + Discord Notification Controls).");
 
-  // 3. Patch MainActivity.java (Uses org.json.JSONObject — Zero Escaped Quote Strings)
+  // 3. Patch MainActivity.java (Direct Native Permissions, LocationManager GPS Engine, WebView Mic/Cam Prompt, Screen Share & Voice)
   const mainActPath = path.join(javaDir, "MainActivity.java");
   const javaSource = String.raw`package in.tournyx.app;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -397,20 +382,26 @@ import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.AudioManager;
 import android.media.Image;
 import android.media.ImageReader;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
+import android.provider.Settings;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.webkit.GeolocationPermissions;
 import android.webkit.JavascriptInterface;
+import android.webkit.PermissionRequest;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -422,14 +413,19 @@ import com.getcapacitor.BridgeWebChromeClient;
 import com.getcapacitor.BridgeWebViewClient;
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.json.JSONObject;
 
 public class MainActivity extends BridgeActivity {
-    private static final int REQ_LOCATION_PERM = 9041;
+    private static final int REQ_LOCATION_WEB = 9041;
     private static final int REQ_SCREEN_SHARE = 9042;
+    private static final int REQ_ALL_PERMS = 9043;
+    private static final int REQ_LOCATION_NATIVE = 9044;
+    private static final int REQ_MEDIA_WEB = 9045;
     private static final int OBSIDIAN_BG = Color.parseColor("#050508");
 
     private static final Set<String> ALLOWED_PACKAGES = new HashSet<>(Arrays.asList(
@@ -441,7 +437,7 @@ public class MainActivity extends BridgeActivity {
         "com.whatsapp.w4b"
     ));
 
-    private static final Set<String> TRUSTED_GEO_HOSTS = new HashSet<>(Arrays.asList(
+    private static final Set<String> TRUSTED_HOSTS = new HashSet<>(Arrays.asList(
         "app.tournyx.in",
         "tournyx.in",
         "www.tournyx.in",
@@ -450,6 +446,9 @@ public class MainActivity extends BridgeActivity {
 
     private GeolocationPermissions.Callback pendingGeoCallback;
     private String pendingGeoOrigin;
+    private PermissionRequest pendingWebMediaRequest;
+    private long locPermRequestedAtMs = 0L;
+    private LocationListener activeLocationListener;
 
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private MediaProjection mediaProjection;
@@ -468,9 +467,7 @@ public class MainActivity extends BridgeActivity {
             String action = intent.getStringExtra("action");
             boolean muted = intent.getBooleanExtra("muted", false);
             boolean speaker = intent.getBooleanExtra("speaker", true);
-            if ("leave".equals(action)) {
-                stopScreenShareInternal();
-            }
+            if ("leave".equals(action)) stopScreenShareInternal();
             JSONObject payload = new JSONObject();
             try {
                 payload.put("action", action != null ? action : "");
@@ -510,25 +507,52 @@ public class MainActivity extends BridgeActivity {
             webView.setWebChromeClient(new BridgeWebChromeClient(this.bridge) {
                 @Override
                 public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
-                    if (!isTrustedGeoOrigin(origin)) {
+                    if (!isTrustedOrigin(origin)) {
                         callback.invoke(origin, false, false);
                         return;
                     }
-                    boolean fine = ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
-                        == PackageManager.PERMISSION_GRANTED;
-                    boolean coarse = ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                        == PackageManager.PERMISSION_GRANTED;
-                    if (fine || coarse) {
+                    if (hasLocationPermission()) {
                         callback.invoke(origin, true, false);
                     } else {
                         pendingGeoCallback = callback;
                         pendingGeoOrigin = origin;
+                        locPermRequestedAtMs = System.currentTimeMillis();
                         ActivityCompat.requestPermissions(
                             MainActivity.this,
                             new String[]{ Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION },
-                            REQ_LOCATION_PERM
+                            REQ_LOCATION_WEB
                         );
                     }
+                }
+
+                @Override
+                public void onPermissionRequest(final PermissionRequest request) {
+                    if (request == null || request.getOrigin() == null || !isTrustedOrigin(request.getOrigin().toString())) {
+                        if (request != null) request.deny();
+                        return;
+                    }
+                    mainHandler.post(() -> {
+                        List<String> needed = new ArrayList<>();
+                        for (String res : request.getResources()) {
+                            if (PermissionRequest.RESOURCE_AUDIO_CAPTURE.equals(res)
+                                && ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                                needed.add(Manifest.permission.RECORD_AUDIO);
+                            }
+                            if (PermissionRequest.RESOURCE_VIDEO_CAPTURE.equals(res)
+                                && ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                                needed.add(Manifest.permission.CAMERA);
+                            }
+                        }
+                        if (needed.isEmpty()) {
+                            request.grant(request.getResources());
+                        } else {
+                            if (pendingWebMediaRequest != null) {
+                                try { pendingWebMediaRequest.deny(); } catch (Exception ignored) {}
+                            }
+                            pendingWebMediaRequest = request;
+                            ActivityCompat.requestPermissions(MainActivity.this, needed.toArray(new String[0]), REQ_MEDIA_WEB);
+                        }
+                    });
                 }
             });
 
@@ -581,6 +605,143 @@ public class MainActivity extends BridgeActivity {
         }
     }
 
+    private boolean hasLocationPermission() {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+            || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private boolean isDeviceLocationEnabled() {
+        try {
+            LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            if (lm == null) return false;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) return lm.isLocationEnabled();
+            return lm.isProviderEnabled(LocationManager.GPS_PROVIDER) || lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        } catch (Exception e) {
+            return true;
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private void fetchNativeLocationNow() {
+        if (!hasLocationPermission()) {
+            locPermRequestedAtMs = System.currentTimeMillis();
+            ActivityCompat.requestPermissions(
+                this,
+                new String[]{ Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION },
+                REQ_LOCATION_NATIVE
+            );
+            return;
+        }
+
+        if (!isDeviceLocationEnabled()) {
+            emitLocationError(2, "Please turn ON your phone Location (GPS) toggle, then tap Enable Location again.", true);
+            try {
+                startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+            } catch (Exception ignored) {}
+            return;
+        }
+
+        try {
+            LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            if (lm == null) {
+                emitLocationError(2, "Location service unavailable on this device.", false);
+                return;
+            }
+
+            // 1. Check fresh cached location (< 5 minutes old) for instant <50ms login
+            Location best = getBestLastKnownLocation(lm);
+            if (best != null && (System.currentTimeMillis() - best.getTime()) < 5 * 60 * 1000L) {
+                emitLocationSuccess(best);
+                return;
+            }
+
+            // 2. Request live fix from Network + GPS providers with 8s fail-safe fallback
+            clearActiveLocationListener(lm);
+            final boolean[] resolved = { false };
+
+            activeLocationListener = new LocationListener() {
+                @Override
+                public void onLocationChanged(@NonNull Location loc) {
+                    if (resolved[0]) return;
+                    resolved[0] = true;
+                    clearActiveLocationListener(lm);
+                    emitLocationSuccess(loc);
+                }
+                @Override public void onStatusChanged(String provider, int status, Bundle extras) {}
+                @Override public void onProviderEnabled(@NonNull String provider) {}
+                @Override public void onProviderDisabled(@NonNull String provider) {}
+            };
+
+            if (lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 0f, activeLocationListener, Looper.getMainLooper());
+            }
+            if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0L, 0f, activeLocationListener, Looper.getMainLooper());
+            }
+
+            mainHandler.postDelayed(() -> {
+                if (resolved[0]) return;
+                resolved[0] = true;
+                clearActiveLocationListener(lm);
+                Location fallback = getBestLastKnownLocation(lm);
+                if (fallback != null) emitLocationSuccess(fallback);
+                else emitLocationError(3, "Could not lock GPS signal indoors. Move near a window and retry.", false);
+            }, 8000);
+        } catch (Exception e) {
+            emitLocationError(2, "Location lookup failed. Please retry.", false);
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private Location getBestLastKnownLocation(LocationManager lm) {
+        Location best = null;
+        try {
+            for (String provider : lm.getProviders(true)) {
+                Location l = lm.getLastKnownLocation(provider);
+                if (l == null) continue;
+                if (best == null || l.getTime() > best.getTime()) best = l;
+            }
+        } catch (Exception ignored) {}
+        return best;
+    }
+
+    private void clearActiveLocationListener(LocationManager lm) {
+        try {
+            if (activeLocationListener != null && lm != null) lm.removeUpdates(activeLocationListener);
+        } catch (Exception ignored) {}
+        activeLocationListener = null;
+    }
+
+    private void emitLocationSuccess(Location loc) {
+        JSONObject payload = new JSONObject();
+        try {
+            payload.put("latitude", loc.getLatitude());
+            payload.put("longitude", loc.getLongitude());
+            payload.put("accuracy", loc.getAccuracy());
+            payload.put("timestamp", loc.getTime() > 0 ? loc.getTime() : System.currentTimeMillis());
+        } catch (Exception ignored) {}
+        dispatchJsEvent("tournyx:native-location", payload.toString());
+    }
+
+    private void emitLocationError(int code, String message, boolean needsSettings) {
+        JSONObject payload = new JSONObject();
+        try {
+            payload.put("code", code);
+            payload.put("message", message != null ? message : "Location unavailable");
+            payload.put("needsSettings", needsSettings);
+        } catch (Exception ignored) {}
+        dispatchJsEvent("tournyx:native-location-error", payload.toString());
+    }
+
+    private void openAppPermissionSettings() {
+        try {
+            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            intent.setData(Uri.fromParts("package", getPackageName(), null));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } catch (Exception ignored) {}
+    }
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -594,11 +755,59 @@ public class MainActivity extends BridgeActivity {
     @Override
     public void onDestroy() {
         try { unregisterReceiver(voiceActionReceiver); } catch (Exception ignored) {}
+        try {
+            LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            clearActiveLocationListener(lm);
+        } catch (Exception ignored) {}
         stopScreenShareInternal();
         super.onDestroy();
     }
 
     private class TournyxNativeJsBridge {
+        @JavascriptInterface
+        public boolean hasLocationAccess() {
+            return hasLocationPermission();
+        }
+
+        @JavascriptInterface
+        public void requestAllAppPermissions() {
+            mainHandler.post(() -> {
+                List<String> needed = new ArrayList<>();
+                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    needed.add(Manifest.permission.ACCESS_FINE_LOCATION);
+                    needed.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+                }
+                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                    needed.add(Manifest.permission.RECORD_AUDIO);
+                }
+                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    needed.add(Manifest.permission.CAMERA);
+                }
+                if (Build.VERSION.SDK_INT >= 33
+                    && ContextCompat.checkSelfPermission(MainActivity.this, "android.permission.POST_NOTIFICATIONS") != PackageManager.PERMISSION_GRANTED) {
+                    needed.add("android.permission.POST_NOTIFICATIONS");
+                }
+                if (needed.isEmpty()) {
+                    JSONObject p = new JSONObject();
+                    try { p.put("location", true); } catch (Exception ignored) {}
+                    dispatchJsEvent("tournyx:permissions-result", p.toString());
+                } else {
+                    locPermRequestedAtMs = System.currentTimeMillis();
+                    ActivityCompat.requestPermissions(MainActivity.this, needed.toArray(new String[0]), REQ_ALL_PERMS);
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public void requestLocationAndFetch() {
+            mainHandler.post(MainActivity.this::fetchNativeLocationNow);
+        }
+
+        @JavascriptInterface
+        public void openAppSettings() {
+            mainHandler.post(MainActivity.this::openAppPermissionSettings);
+        }
+
         @JavascriptInterface
         public void startVoiceService(String roomName) {
             Intent svc = new Intent(MainActivity.this, TournyxVoiceService.class);
@@ -683,15 +892,9 @@ public class MainActivity extends BridgeActivity {
         try {
             stopScreenShareInternal();
             MediaProjectionManager mpm = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-            if (mpm == null) {
-                dispatchJsEvent("tournyx:screen-share-denied", "{}");
-                return;
-            }
+            if (mpm == null) { dispatchJsEvent("tournyx:screen-share-denied", "{}"); return; }
             mediaProjection = mpm.getMediaProjection(resultCode, data);
-            if (mediaProjection == null) {
-                dispatchJsEvent("tournyx:screen-share-denied", "{}");
-                return;
-            }
+            if (mediaProjection == null) { dispatchJsEvent("tournyx:screen-share-denied", "{}"); return; }
 
             DisplayMetrics dm = getResources().getDisplayMetrics();
             float scale = Math.min(1.0f, 540.0f / Math.max(1, Math.min(dm.widthPixels, dm.heightPixels)));
@@ -705,9 +908,7 @@ public class MainActivity extends BridgeActivity {
 
             mediaProjection.registerCallback(new MediaProjection.Callback() {
                 @Override
-                public void onStop() {
-                    mainHandler.post(MainActivity.this::stopScreenShareInternal);
-                }
+                public void onStop() { mainHandler.post(MainActivity.this::stopScreenShareInternal); }
             }, captureHandler);
 
             imageReader = ImageReader.newInstance(captureWidth, captureHeight, PixelFormat.RGBA_8888, 2);
@@ -727,9 +928,7 @@ public class MainActivity extends BridgeActivity {
                     int rowPadding = rowStride - pixelStride * captureWidth;
 
                     Bitmap padded = Bitmap.createBitmap(
-                        captureWidth + rowPadding / pixelStride,
-                        captureHeight,
-                        Bitmap.Config.ARGB_8888
+                        captureWidth + rowPadding / pixelStride, captureHeight, Bitmap.Config.ARGB_8888
                     );
                     padded.copyPixelsFromBuffer(buffer);
                     Bitmap cropped = Bitmap.createBitmap(padded, 0, 0, captureWidth, captureHeight);
@@ -750,14 +949,8 @@ public class MainActivity extends BridgeActivity {
             }, captureHandler);
 
             virtualDisplay = mediaProjection.createVirtualDisplay(
-                "TournyxScreenShare",
-                captureWidth,
-                captureHeight,
-                density,
-                DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
-                imageReader.getSurface(),
-                null,
-                captureHandler
+                "TournyxScreenShare", captureWidth, captureHeight, density,
+                DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR, imageReader.getSurface(), null, captureHandler
             );
 
             JSONObject readyPayload = new JSONObject();
@@ -797,12 +990,12 @@ public class MainActivity extends BridgeActivity {
         });
     }
 
-    private boolean isTrustedGeoOrigin(String origin) {
+    private boolean isTrustedOrigin(String origin) {
         if (origin == null || origin.isEmpty()) return false;
         try {
             Uri uri = Uri.parse(origin);
             String host = uri.getHost();
-            return host != null && TRUSTED_GEO_HOSTS.contains(host.toLowerCase());
+            return host != null && TRUSTED_HOSTS.contains(host.toLowerCase());
         } catch (Exception e) {
             return false;
         }
@@ -810,25 +1003,58 @@ public class MainActivity extends BridgeActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQ_LOCATION_PERM && pendingGeoCallback != null) {
-            boolean granted = false;
-            for (int r : grantResults) {
-                if (r == PackageManager.PERMISSION_GRANTED) {
-                    granted = true;
-                    break;
-                }
-            }
+        if (requestCode == REQ_LOCATION_WEB && pendingGeoCallback != null) {
+            boolean granted = hasLocationPermission();
             pendingGeoCallback.invoke(pendingGeoOrigin, granted, false);
             pendingGeoCallback = null;
             pendingGeoOrigin = null;
             return;
         }
+
+        if (requestCode == REQ_LOCATION_NATIVE) {
+            if (hasLocationPermission()) {
+                fetchNativeLocationNow();
+            } else {
+                long elapsed = System.currentTimeMillis() - locPermRequestedAtMs;
+                boolean canAskAgain = ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION);
+                boolean permanentlyBlocked = !canAskAgain && elapsed < 450;
+                emitLocationError(1, permanentlyBlocked
+                    ? "Location is blocked in Android Settings. Enable Location permission for Tournyx and return."
+                    : "Location permission is required to log in.", permanentlyBlocked);
+                if (permanentlyBlocked) openAppPermissionSettings();
+            }
+            return;
+        }
+
+        if (requestCode == REQ_ALL_PERMS) {
+            JSONObject p = new JSONObject();
+            try {
+                p.put("location", hasLocationPermission());
+                p.put("mic", ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED);
+            } catch (Exception ignored) {}
+            dispatchJsEvent("tournyx:permissions-result", p.toString());
+            return;
+        }
+
+        if (requestCode == REQ_MEDIA_WEB && pendingWebMediaRequest != null) {
+            boolean grantedAny = false;
+            for (int r : grantResults) {
+                if (r == PackageManager.PERMISSION_GRANTED) { grantedAny = true; break; }
+            }
+            try {
+                if (grantedAny) pendingWebMediaRequest.grant(pendingWebMediaRequest.getResources());
+                else pendingWebMediaRequest.deny();
+            } catch (Exception ignored) {}
+            pendingWebMediaRequest = null;
+            return;
+        }
+
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
 `;
   fs.writeFileSync(mainActPath, javaSource, "utf8");
-  console.log("✅ Patched MainActivity.java (Voice Bridge, MediaProjection Screen Share, Geolocation & Game Launcher).");
+  console.log("✅ Patched MainActivity.java (Direct Native Permissions, LocationManager Engine, Mic/Cam Prompt & Screen Share).");
 
   // 4. Patch Obsidian #050508 Launch Theme in styles.xml
   const stylesPath = path.join(ROOT, "android", "app", "src", "main", "res", "values", "styles.xml");
@@ -840,7 +1066,6 @@ public class MainActivity extends BridgeActivity {
         '<item name="android:windowBackground">#050508</item>\n        <item name="android:background">#050508</item>\n        <item name="android:statusBarColor">#050508</item>\n        <item name="android:navigationBarColor">#050508</item>\n        <item name="android:windowLightStatusBar">false</item>'
       );
       fs.writeFileSync(stylesPath, stylesXml, "utf8");
-      console.log("✅ Patched Android styles.xml (#050508 Obsidian launch theme).");
     }
   }
 }
@@ -927,7 +1152,7 @@ function patchIOS() {
   if (additions.length > 0) {
     plist = plist.replace(/<\/dict>\s*<\/plist>/i, `${additions.join("\n")}\n</dict>\n</plist>`);
     fs.writeFileSync(plistPath, plist, "utf8");
-    console.log("✅ Patched iOS Info.plist (Background Audio/VoIP, OAuth Scheme, Location & 120Hz ProMotion).");
+    console.log("✅ Patched iOS Info.plist.");
   }
 
   const appDelegatePath = path.join(ROOT, "ios", "App", "App", "AppDelegate.swift");
@@ -941,7 +1166,6 @@ function patchIOS() {
         window?.overrideUserInterfaceStyle = .dark`
       );
       fs.writeFileSync(appDelegatePath, swift, "utf8");
-      console.log("✅ Patched iOS AppDelegate.swift (Dark #050508 Liquid Glass window surface).");
     }
   }
 }
