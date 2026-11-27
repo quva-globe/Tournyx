@@ -1,6 +1,9 @@
 (() => {
   "use strict";
 
+  // Never double-run inside the top-level persistent app-shell.html container
+  if (window.location.pathname.toLowerCase().endsWith("app-shell.html")) return;
+
   const APP_VERSION = "6.1.0";
   const PUBLIC_ORIGIN = "https://tournyx.in";
   const OAUTH_CALLBACK_URI = "in.tournyx.app://auth/callback";
@@ -17,10 +20,6 @@
     "Globe-support", "maintenance"
   ]);
 
-  const AUTH_EXEMPT_PAGES = new Set([
-    "login.html", "privacy.html", "terms.html", "refund.html", "support.html", "about.html"
-  ]);
-
   const PERSISTED_KEYS = [
     "tournyx_user",
     SUPABASE_AUTH_STORAGE_KEY,
@@ -28,15 +27,6 @@
     "tournyx_theme_config",
     "tournyx_psm",
     "tx_onboard_v6_done"
-  ];
-
-  const DOCK_TABS = [
-    { id: "index", label: "Home", href: "index.html", icon: "fa-house" },
-    { id: "explore", label: "Explore", href: "explore.html", icon: "fa-compass" },
-    { id: "matches", label: "Matches", href: "matches.html", icon: "fa-trophy" },
-    { id: "reels", label: "Reels", href: "reels.html", icon: "fa-clapperboard" },
-    { id: "clans", label: "Clans", href: "clans.html", icon: "fa-shield-halved" },
-    { id: "profile", label: "Profile", href: "profile.html", icon: "fa-user" }
   ];
 
   const DEFAULT_EVENT_BANNERS = [
@@ -72,12 +62,26 @@
     }
   ];
 
-  const isCapacitor = Boolean(window.Capacitor?.isNativePlatform?.());
-  const isTauri = Boolean(window.__TAURI_INTERNALS__ || window.__TAURI__);
+  const topWin = (() => {
+    try { return window.top || window; } catch (e) { return window; }
+  })();
+
+  const capObj = window.Capacitor || topWin.Capacitor || null;
+  const isCapacitor = Boolean(capObj?.isNativePlatform?.());
+  const isTauri = Boolean(window.__TAURI_INTERNALS__ || window.__TAURI__ || topWin.__TAURI_INTERNALS__ || topWin.__TAURI__);
   const isNative = isCapacitor || isTauri;
+  const shellApi = (() => {
+    try { return (window.parent && window.parent !== window && window.parent.TournyxShell) ? window.parent.TournyxShell : null; }
+    catch (e) { return null; }
+  })();
+  const isInShell = Boolean(shellApi);
+  const androidBridge = (() => {
+    try { return window.TournyxAndroidBridge || topWin.TournyxAndroidBridge || null; }
+    catch (e) { return null; }
+  })();
 
   function detectPlatform() {
-    if (isCapacitor) return (window.Capacitor.getPlatform?.() || "android").toLowerCase();
+    if (isCapacitor) return (capObj.getPlatform?.() || "android").toLowerCase();
     if (isTauri) {
       const ua = navigator.userAgent || "";
       if (/Mac/i.test(ua)) return "macos";
@@ -91,6 +95,14 @@
   const isAppleNative = platform === "ios" || platform === "macos";
   const isMobileNative = platform === "android" || platform === "ios";
   const isDesktopNative = platform === "windows" || platform === "macos" || platform === "linux";
+
+  // Automatically boot top-level native launches inside persistent app-shell.html (keeps Clan Voice alive across pages)
+  if (isNative && window.self === window.top && !sessionStorage.getItem("tx_shell_bypass")) {
+    const file = window.location.pathname.split("/").pop() || "index.html";
+    const target = `${file}${window.location.search || ""}${window.location.hash || ""}`;
+    window.location.replace(`app-shell.html?page=${encodeURIComponent(target)}`);
+    return;
+  }
 
   document.documentElement.dataset.txPlatform = platform;
   document.documentElement.dataset.txNative = isNative ? "true" : "false";
@@ -114,24 +126,13 @@
 
   function doNativeHaptic(style = "light") {
     try {
-      const h = window.Capacitor?.Plugins?.Haptics;
+      const h = capObj?.Plugins?.Haptics;
       if (h?.impact) {
         h.impact({ style: style === "heavy" ? "HEAVY" : "LIGHT" });
         return;
       }
       if (navigator.vibrate) navigator.vibrate(style === "heavy" ? 22 : 10);
     } catch (e) {}
-  }
-
-  function hasValidSavedSession() {
-    try {
-      const raw = localStorage.getItem("tournyx_user");
-      if (!raw || raw === "undefined" || raw === "null") return false;
-      const u = JSON.parse(raw);
-      return Boolean(u?.email && String(u.email).toLowerCase() !== "guest@tournyx.com");
-    } catch (e) {
-      return false;
-    }
   }
 
   // =========================================================================
@@ -144,50 +145,19 @@
     Storage.prototype.setItem = function(key, value) {
       origSetItem.call(this, key, value);
       if (this === window.localStorage && PERSISTED_KEYS.includes(key)) {
-        try {
-          window.Capacitor?.Plugins?.Preferences?.set?.({ key, value: String(value) });
-        } catch (e) {}
+        try { capObj?.Plugins?.Preferences?.set?.({ key, value: String(value) }); } catch (e) {}
       }
     };
-
     Storage.prototype.removeItem = function(key) {
       origRemoveItem.call(this, key);
       if (this === window.localStorage && PERSISTED_KEYS.includes(key)) {
-        try {
-          window.Capacitor?.Plugins?.Preferences?.remove?.({ key });
-        } catch (e) {}
+        try { capObj?.Plugins?.Preferences?.remove?.({ key }); } catch (e) {}
       }
     };
-  }
-
-  async function hydratePersistedNativePrefs() {
-    if (!isCapacitor) return;
-    const prefs = window.Capacitor?.Plugins?.Preferences;
-    if (!prefs?.get) return;
-    let restoredUser = false;
-    for (const key of PERSISTED_KEYS) {
-      try {
-        const localVal = window.localStorage.getItem(key);
-        if (!localVal || localVal === "undefined" || localVal === "null") {
-          const res = await prefs.get({ key });
-          if (res?.value && res.value !== "undefined" && res.value !== "null") {
-            origSetItem.call(window.localStorage, key, res.value);
-            if (key === "tournyx_user") restoredUser = true;
-          }
-        } else {
-          prefs.set?.({ key, value: localVal });
-        }
-      } catch (e) {}
-    }
-    if (restoredUser) {
-      window.dispatchEvent(new CustomEvent("tournyx:session-restored"));
-    }
   }
 
   // =========================================================================
   // 2. TRANSPARENT SUPABASE SWR CACHE (ZERO BLANK SCREENS ON TAB SWITCH)
-  //    - Caches read-only REST GET + get_* RPCs in fast sessionStorage (<1ms)
-  //    - Auto-invalidates immediately on ANY write/mutation request
   // =========================================================================
   const SWR_PREFIX = "tx_swr_v6:";
   const SWR_TTL_MS = 90 * 1000;
@@ -205,12 +175,12 @@
 
   function clearSwrCache() {
     try {
-      const toRemove = [];
+      const keys = [];
       for (let i = 0; i < sessionStorage.length; i++) {
         const k = sessionStorage.key(i);
-        if (k && k.startsWith(SWR_PREFIX)) toRemove.push(k);
+        if (k && k.startsWith(SWR_PREFIX)) keys.push(k);
       }
-      toRemove.forEach((k) => sessionStorage.removeItem(k));
+      keys.forEach((k) => sessionStorage.removeItem(k));
     } catch (e) {}
   }
 
@@ -218,19 +188,14 @@
     try {
       const raw = sessionStorage.getItem(key);
       if (!raw) return null;
-      const parsed = JSON.parse(raw);
-      if (!parsed || typeof parsed.body !== "string") return null;
-      if (Date.now() - parsed.ts > SWR_TTL_MS) {
-        sessionStorage.removeItem(key);
-        return null;
-      }
-      return parsed;
-    } catch (e) {
-      return null;
-    }
+      const p = JSON.parse(raw);
+      if (!p || typeof p.body !== "string") return null;
+      if (Date.now() - p.ts > SWR_TTL_MS) { sessionStorage.removeItem(key); return null; }
+      return p;
+    } catch (e) { return null; }
   }
 
-  function writeSwr(key, body, contentType) {
+  function writeSwr(key, body, ct) {
     if (!body || body.length > SWR_MAX_BYTES) return;
     try {
       const keys = [];
@@ -238,17 +203,9 @@
         const k = sessionStorage.key(i);
         if (k && k.startsWith(SWR_PREFIX)) keys.push(k);
       }
-      if (keys.length >= SWR_MAX_ENTRIES) {
-        sessionStorage.removeItem(keys[0]);
-      }
-      sessionStorage.setItem(key, JSON.stringify({
-        ts: Date.now(),
-        ct: contentType || "application/json; charset=utf-8",
-        body
-      }));
-    } catch (e) {
-      clearSwrCache();
-    }
+      if (keys.length >= SWR_MAX_ENTRIES) sessionStorage.removeItem(keys[0]);
+      sessionStorage.setItem(key, JSON.stringify({ ts: Date.now(), ct: ct || "application/json; charset=utf-8", body }));
+    } catch (e) { clearSwrCache(); }
   }
 
   if (isNative && typeof window.fetch === "function") {
@@ -264,7 +221,6 @@
       const isReadGet = method === "GET";
       const isReadRpc = method === "POST" && /\/rest\/v1\/rpc\/get_[a-z0-9_]+/i.test(urlStr);
 
-      // Any mutation clears cached reads so wallet/streak/joins stay 100% live
       if (!isReadGet && !isReadRpc) {
         clearSwrCache();
         return origFetch(input, init);
@@ -276,9 +232,7 @@
 
       const refreshInBg = () => origFetch(input, init).then((resp) => {
         if (resp && resp.ok) {
-          resp.clone().text().then((txt) => {
-            writeSwr(cacheKey, txt, resp.headers.get("content-type"));
-          }).catch(() => {});
+          resp.clone().text().then((txt) => writeSwr(cacheKey, txt, resp.headers.get("content-type"))).catch(() => {});
         }
         return resp;
       });
@@ -293,17 +247,13 @@
           }));
         }
       }
-
       return refreshInBg();
     };
   }
 
   // =========================================================================
   // 3. NATIVE 1-TAP OAUTH BRIDGE (GOOGLE, DISCORD, FACEBOOK DEVICE ACCOUNTS)
-  //    Uses Chrome Custom Tabs / ASWebAuthenticationSession + Custom Scheme
   // =========================================================================
-  let activeSupaClients = [];
-
   function installSupabaseOAuthHook() {
     if (!isCapacitor) return;
 
@@ -325,9 +275,9 @@
                 skipBrowserRedirect: true
               });
               const res = await origOAuth(Object.assign({}, credentials, { options: opts }));
-              if (res?.data?.url && window.Capacitor?.Plugins?.Browser?.open) {
+              if (res?.data?.url && capObj?.Plugins?.Browser?.open) {
                 TournyxLoader.show("Opening Secure Sign-In...");
-                await window.Capacitor.Plugins.Browser.open({
+                await capObj.Plugins.Browser.open({
                   url: res.data.url,
                   toolbarColor: "#050508",
                   presentationStyle: "popover"
@@ -340,7 +290,14 @@
               return origOAuth(credentials);
             }
           };
-          activeSupaClients.push(client);
+
+          // Complete PKCE ?code= exchange automatically when Chrome Custom Tabs returns to login.html
+          const urlParams = new URLSearchParams(window.location.search);
+          const pkceCode = urlParams.get("code");
+          if (pkceCode && urlParams.get("native_oauth") === "1" && !client.auth.__txCodeExchanged) {
+            client.auth.__txCodeExchanged = true;
+            client.auth.exchangeCodeForSession?.(pkceCode).catch(() => {});
+          }
         }
         return client;
       };
@@ -354,67 +311,193 @@
         Object.defineProperty(window, "supabase", {
           configurable: true,
           get() { return _sb; },
-          set(val) {
-            _sb = val;
-            wrapCreateClient(val);
-          }
+          set(val) { _sb = val; wrapCreateClient(val); }
         });
       } catch (e) {}
     }
   }
-
-  async function handleNativeOAuthCallback(urlStr) {
-    try {
-      await window.Capacitor?.Plugins?.Browser?.close?.();
-    } catch (e) {}
-
-    TournyxLoader.show("Completing Sign-In...");
-    try {
-      const parsed = new URL(urlStr);
-      const queryParams = new URLSearchParams(parsed.search || "");
-      const hashParams = new URLSearchParams((parsed.hash || "").replace(/^#/, ""));
-      const code = queryParams.get("code");
-      const accessToken = hashParams.get("access_token") || queryParams.get("access_token");
-      const refreshToken = hashParams.get("refresh_token") || queryParams.get("refresh_token");
-
-      const client = activeSupaClients[0] || (
-        window.supabase?.createClient
-          ? window.supabase.createClient(
-              `https://${SUPABASE_HOST}`,
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1YXRyd2ZyZWpud2ZubGRxcWd5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNDE5NjEsImV4cCI6MjA5OTYxNzk2MX0.zcJO4Es-DnuUKR-L_Eu44xIwmz4PxsFVCgs-t492t1g"
-            )
-          : null
-      );
-
-      if (client?.auth) {
-        if (code && typeof client.auth.exchangeCodeForSession === "function") {
-          await client.auth.exchangeCodeForSession(code);
-        } else if (accessToken && refreshToken && typeof client.auth.setSession === "function") {
-          await client.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
-        }
-
-        // Persist auth token to OS Preferences immediately
-        const sbTok = localStorage.getItem(SUPABASE_AUTH_STORAGE_KEY);
-        if (sbTok) {
-          window.Capacitor?.Plugins?.Preferences?.set?.({ key: SUPABASE_AUTH_STORAGE_KEY, value: sbTok });
-        }
-      }
-
-      clearSwrCache();
-      // Land on login.html?native_oauth=1 so login.html's existing user lookup syncs public.Users -> index.html
-      window.location.href = "login.html?native_oauth=1";
-    } catch (err) {
-      TournyxLoader.hide();
-      if (typeof window.showToast === "function") {
-        window.showToast("Sign-in cancelled or failed. Please try again.", true);
-      }
-    }
-  }
-
   installSupabaseOAuthHook();
 
   // =========================================================================
-  // 4. AUTOMATIC WHATSAPP / SHARE LINK REWRITER (app.tournyx.in -> tournyx.in)
+  // 4. ANDROID NATIVE SCREEN SHARING (getDisplayMedia POLYFILL) & VOICE SYNC
+  // =========================================================================
+  const liveMicTracks = new Set();
+  let screenSharePending = null;
+  let screenCanvas = null;
+  let screenCtx = null;
+  let screenStream = null;
+
+  function detectActiveRoomName() {
+    try {
+      const h = document.querySelector("[data-room-title], #voiceRoomTitle, #activeRoomTitle, .voice-room-title");
+      const txt = h?.textContent?.trim();
+      if (txt && txt.length >= 2) return txt.slice(0, 40);
+    } catch (e) {}
+    return "Tournyx Clan Voice";
+  }
+
+  function syncVoiceActiveToShell() {
+    const alive = Array.from(liveMicTracks).filter((t) => t.readyState === "live");
+    const isActive = alive.length > 0;
+    const isMuted = isActive ? alive.every((t) => !t.enabled) : false;
+    if (shellApi) {
+      shellApi.setVoiceState({
+        active: isActive,
+        roomName: detectActiveRoomName(),
+        muted: isMuted
+      });
+    } else if (androidBridge) {
+      try {
+        if (isActive) androidBridge.startVoiceService(detectActiveRoomName());
+        else androidBridge.stopVoiceService();
+      } catch (e) {}
+    }
+  }
+
+  function installNativeMediaAndVoiceBridge() {
+    if (!isNative || !navigator.mediaDevices) return;
+
+    // A. Wrap getUserMedia to auto-activate Android Background Voice Service + Floating Pill
+    if (typeof navigator.mediaDevices.getUserMedia === "function" && !navigator.mediaDevices.__txGumWrapped) {
+      const origGum = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+      navigator.mediaDevices.__txGumWrapped = true;
+
+      navigator.mediaDevices.getUserMedia = async function(constraints) {
+        const stream = await origGum(constraints);
+        if (constraints?.audio && stream) {
+          stream.getAudioTracks().forEach((track) => {
+            liveMicTracks.add(track);
+            const onEnd = () => {
+              liveMicTracks.delete(track);
+              syncVoiceActiveToShell();
+            };
+            track.addEventListener("ended", onEnd, { once: true });
+            const origStop = track.stop.bind(track);
+            track.stop = function() {
+              origStop();
+              onEnd();
+            };
+          });
+          syncVoiceActiveToShell();
+        }
+        return stream;
+      };
+    }
+
+    // B. Polyfill navigator.mediaDevices.getDisplayMedia on Android via MediaProjection
+    if (platform === "android" && androidBridge?.requestScreenShare) {
+      navigator.mediaDevices.getDisplayMedia = function() {
+        return new Promise((resolve, reject) => {
+          if (screenSharePending) {
+            reject(new DOMException("Screen share request already in progress", "AbortError"));
+            return;
+          }
+          screenSharePending = { resolve, reject };
+          androidBridge.requestScreenShare();
+        });
+      };
+
+      window.addEventListener("tournyx:screen-share-ready", (e) => {
+        if (!screenSharePending) return;
+        const { resolve, reject } = screenSharePending;
+        screenSharePending = null;
+        try {
+          const w = Number(e?.detail?.width) || 540;
+          const h = Number(e?.detail?.height) || 960;
+          screenCanvas = document.createElement("canvas");
+          screenCanvas.width = w;
+          screenCanvas.height = h;
+          screenCtx = screenCanvas.getContext("2d");
+          screenCtx.fillStyle = "#050508";
+          screenCtx.fillRect(0, 0, w, h);
+
+          screenStream = screenCanvas.captureStream(12);
+          screenStream.getVideoTracks().forEach((vt) => {
+            const origStop = vt.stop.bind(vt);
+            vt.stop = function() {
+              origStop();
+              try { androidBridge.stopScreenShare(); } catch (err) {}
+              screenStream = null;
+              screenCanvas = null;
+              screenCtx = null;
+            };
+          });
+          resolve(screenStream);
+        } catch (err) {
+          reject(err);
+        }
+      });
+
+      window.addEventListener("tournyx:screen-share-denied", () => {
+        if (!screenSharePending) return;
+        const { reject } = screenSharePending;
+        screenSharePending = null;
+        reject(new DOMException("Screen sharing permission denied", "NotAllowedError"));
+      });
+
+      window.addEventListener("tournyx:screen-frame", (e) => {
+        if (!screenCtx || !screenCanvas || !e?.detail?.jpg) return;
+        const img = new Image();
+        img.onload = () => {
+          try { screenCtx.drawImage(img, 0, 0, screenCanvas.width, screenCanvas.height); } catch (err) {}
+        };
+        img.src = "data:image/jpeg;base64," + e.detail.jpg;
+      });
+    }
+
+    // C. Receive Mute / Speaker / Hang Up controls from Floating Pill & Android Notification Shade
+    window.addEventListener("message", (e) => {
+      const msg = e?.data;
+      if (!msg || msg.type !== "TX_SHELL_VOICE_ACTION") return;
+
+      if (msg.action === "mute") {
+        const wantMuted = Boolean(msg.state?.muted);
+        liveMicTracks.forEach((t) => {
+          if (t.readyState === "live") t.enabled = !wantMuted;
+        });
+        // Keep clans.html Mute button label visually synced if present
+        document.querySelectorAll("button").forEach((btn) => {
+          const txt = (btn.textContent || "").trim().toLowerCase();
+          if (txt === "mute" || txt === "unmute" || txt === "muted") {
+            btn.classList.toggle("ring-2", wantMuted);
+            btn.classList.toggle("ring-red-500", wantMuted);
+          }
+        });
+      } else if (msg.action === "leave") {
+        liveMicTracks.forEach((t) => { try { t.stop(); } catch (err) {} });
+        liveMicTracks.clear();
+        try { androidBridge?.stopScreenShare?.(); } catch (err) {}
+        // Click clans.html Leave button cleanly so Supabase voice room presence updates immediately
+        document.querySelectorAll("button").forEach((btn) => {
+          const txt = (btn.textContent || "").trim().toUpperCase();
+          if (txt === "LEAVE" || txt.includes("LEAVE ROOM")) {
+            btn.click();
+          }
+        });
+      }
+    });
+  }
+  installNativeMediaAndVoiceBridge();
+
+  // Hide Web-Only "Playing in Background? Download the dedicated Tournyx Mobile App / GET APP" Card Inside the App
+  function hideWebAppPromoCards() {
+    if (!isNative) return;
+    const sweep = () => {
+      document.querySelectorAll("div, section").forEach((el) => {
+        if (el.id === "tx-festival-banner" || el.children.length > 5) return;
+        const txt = (el.textContent || "");
+        if (txt.includes("Playing in Background?") && txt.includes("GET APP")) {
+          el.style.display = "none";
+        }
+      });
+    };
+    sweep();
+    setTimeout(sweep, 350);
+    setTimeout(sweep, 1100);
+  }
+
+  // =========================================================================
+  // 5. AUTOMATIC WHATSAPP / SHARE LINK REWRITER (app.tournyx.in -> tournyx.in)
   // =========================================================================
   function normalizePublicShareStr(val) {
     if (typeof val !== "string") return val;
@@ -434,7 +517,6 @@
         return origShare(clean);
       };
     }
-
     if (navigator.clipboard?.writeText) {
       const origWriteText = navigator.clipboard.writeText.bind(navigator.clipboard);
       navigator.clipboard.writeText = function(text) {
@@ -444,7 +526,7 @@
   }
 
   // =========================================================================
-  // 5. UNIFIED COMMON APP LOADER (window.TournyxLoader)
+  // 6. UNIFIED COMMON APP LOADER & GEOLOCATION BRIDGE
   // =========================================================================
   let loaderAutoHideTimer = null;
 
@@ -460,12 +542,11 @@
       const ov = document.createElement("div");
       ov.id = "tx-common-loader";
       ov.setAttribute("role", "status");
-      ov.setAttribute("aria-live", "polite");
       ov.innerHTML = `
         <div class="tx-loader-pill">
           <div class="tx-loader-spinner" aria-hidden="true"></div>
-          <div style="min-width:0;">
-            <div style="font-size:13px;font-weight:700;color:#FFFFFF;line-height:1.2;" id="tx-loader-label">Syncing Arena...</div>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:#FFFFFF;" id="tx-loader-label">Syncing Arena...</div>
             <div style="font-size:10px;color:#94A3B8;font-family:JetBrains Mono,monospace;margin-top:2px;">TOURNYX ESPORTS</div>
           </div>
         </div>`;
@@ -482,10 +563,7 @@
       rail.classList.add("is-active");
       fill.style.width = `${Math.max(8, Math.min(100, Number(pct) || 0))}%`;
       if (pct >= 100) {
-        setTimeout(() => {
-          rail.classList.remove("is-active");
-          fill.style.width = "0%";
-        }, 200);
+        setTimeout(() => { rail.classList.remove("is-active"); fill.style.width = "0%"; }, 200);
       }
     },
     show(label = "Syncing Arena...") {
@@ -513,54 +591,44 @@
     isCapacitor,
     isTauri,
     isAppleNative,
+    isInShell,
     platform,
     loader: TournyxLoader,
     haptic: doNativeHaptic,
     clearCache: clearSwrCache,
     openExternal(url) {
       if (!url || !/^https?:\/\//i.test(url)) return;
-      if (isCapacitor && window.Capacitor?.Plugins?.Browser?.open) {
-        window.Capacitor.Plugins.Browser.open({ url, toolbarColor: "#050508" }).catch(() => {
+      if (isCapacitor && capObj?.Plugins?.Browser?.open) {
+        capObj.Plugins.Browser.open({ url, toolbarColor: "#050508" }).catch(() => {
           window.open(url, "_blank", "noopener,noreferrer");
         });
         return;
       }
-      if (isTauri && window.__TAURI_INTERNALS__?.invoke) {
-        window.__TAURI_INTERNALS__.invoke("plugin:opener|open_url", { url }).catch(() => {
+      if (isTauri && (window.__TAURI_INTERNALS__ || topWin.__TAURI_INTERNALS__)?.invoke) {
+        (window.__TAURI_INTERNALS__ || topWin.__TAURI_INTERNALS__).invoke("plugin:opener|open_url", { url }).catch(() => {
           window.open(url, "_blank", "noopener,noreferrer");
         });
         return;
       }
       window.open(url, "_blank", "noopener,noreferrer");
     },
-    navigate(href) {
-      performSmoothNavigate(href);
-    },
-    openCommandPalette() {
-      toggleCommandPalette(true);
-    }
+    navigate(href) { performSmoothNavigate(href); },
+    openCommandPalette() { toggleCommandPalette(true); }
   };
 
-  // =========================================================================
-  // 6. AUTOMATIC NATIVE GEOLOCATION BRIDGE (ZERO LOGIN BLOCKS)
-  // =========================================================================
+  // Native Geolocation Bridge (Fixes Android/iOS Login Location Prompts)
   if (isCapacitor && navigator.geolocation) {
-    const nativeGeo = window.Capacitor?.Plugins?.Geolocation;
+    const nativeGeo = capObj?.Plugins?.Geolocation;
     const origGetPos = navigator.geolocation.getCurrentPosition.bind(navigator.geolocation);
-
     if (nativeGeo?.getCurrentPosition) {
       navigator.geolocation.getCurrentPosition = async function(successCb, errorCb, options) {
         try {
           let perm = await nativeGeo.checkPermissions?.();
-          const state = perm?.location || perm?.coarseLocation;
-          if (state !== "granted") {
+          if ((perm?.location || perm?.coarseLocation) !== "granted") {
             perm = await nativeGeo.requestPermissions?.();
           }
-          const finalState = perm?.location || perm?.coarseLocation;
-          if (finalState === "denied") {
-            if (typeof errorCb === "function") {
-              errorCb({ code: 1, message: "Location permission denied. Enable Location in App Settings." });
-            }
+          if ((perm?.location || perm?.coarseLocation) === "denied") {
+            if (typeof errorCb === "function") errorCb({ code: 1, message: "Location permission denied." });
             return;
           }
           const pos = await nativeGeo.getCurrentPosition({
@@ -578,7 +646,6 @@
 
   // =========================================================================
   // 7. ZOMATO-STYLE ANIMATED EVENT & FESTIVAL HERO BANNER (HOME PAGE)
-  //    Works seamlessly on BOTH Website and All 4 Dedicated Apps
   // =========================================================================
   let bannerTimer = null;
 
@@ -610,7 +677,6 @@
     mainEl.insertBefore(wrap, mainEl.firstChild);
 
     let activeIdx = 0;
-
     const renderSlide = (idx) => {
       activeIdx = ((idx % banners.length) + banners.length) % banners.length;
       const b = banners[activeIdx];
@@ -657,7 +723,6 @@
       }, autoplayMs);
     };
 
-    // Swipe Left / Right Support on Touch Screens
     let sx = 0;
     wrap.addEventListener("touchstart", (e) => { sx = e.touches[0]?.clientX || 0; }, { passive: true });
     wrap.addEventListener("touchend", (e) => {
@@ -672,27 +737,20 @@
     restartAutoplay();
   }
 
-  // If running in normal web browser (not native app), only mount the Event Banner and exit
   if (!isNative) {
-    window.addEventListener("DOMContentLoaded", () => {
-      mountAnimatedEventBanner();
-    });
+    window.addEventListener("DOMContentLoaded", () => mountAnimatedEventBanner());
     return;
   }
 
   // =========================================================================
-  // 8. FAST-TAP NAVIGATION MUTEX & LOCAL PREFETCH ENGINE
+  // 8. SHELL-AWARE FAST NAVIGATION, PULL-TO-REFRESH & DESKTOP CMD+K
   // =========================================================================
-  let isNavigating = false;
-  let navUnlockTimer = null;
-
   function resolveLocalNativeHref(rawHref) {
     if (!rawHref) return null;
     const trimmed = String(rawHref).trim();
     if (!trimmed || trimmed.startsWith("#") || trimmed.startsWith("javascript:") || trimmed.startsWith("mailto:") || trimmed.startsWith("tel:")) {
       return null;
     }
-
     let candidate = trimmed;
     try {
       const parsed = new URL(trimmed, window.location.origin);
@@ -702,17 +760,12 @@
       } else if (/^https?:\/\//i.test(trimmed)) {
         return { external: true, url: trimmed };
       }
-    } catch (e) {
-      return null;
-    }
+    } catch (e) { return null; }
 
-    if (candidate === "/" || candidate === "") {
-      return { external: false, url: "index.html" };
-    }
-
-    const cleanMatch = candidate.match(/^\/?([A-Za-z0-9_-]+)(?:\.html)?(\?[^#]*)?(#.*)?$/);
-    if (cleanMatch && KNOWN_PAGES.has(cleanMatch[1])) {
-      return { external: false, url: `${cleanMatch[1]}.html${cleanMatch[2] || ""}${cleanMatch[3] || ""}` };
+    if (candidate === "/" || candidate === "") return { external: false, url: "index.html" };
+    const m = candidate.match(/^\/?([A-Za-z0-9_-]+)(?:\.html)?(\?[^#]*)?(#.*)?$/);
+    if (m && KNOWN_PAGES.has(m[1])) {
+      return { external: false, url: `${m[1]}.html${m[2] || ""}${m[3] || ""}` };
     }
     return null;
   }
@@ -720,53 +773,27 @@
   function performSmoothNavigate(targetHref) {
     const resolved = resolveLocalNativeHref(targetHref);
     if (!resolved) {
-      if (/^https?:\/\//i.test(String(targetHref || ""))) {
-        window.TournyxNative.openExternal(targetHref);
-      }
+      if (/^https?:\/\//i.test(String(targetHref || ""))) window.TournyxNative.openExternal(targetHref);
       return;
     }
     if (resolved.external) {
       window.TournyxNative.openExternal(resolved.url);
       return;
     }
-
-    // Strict fast-tap mutex prevents WebView thrashing when tapping quickly
-    if (isNavigating) return;
-    const curFull = currentPageFile() + window.location.search;
-    if (curFull === resolved.url) return;
-
-    isNavigating = true;
-    clearTimeout(navUnlockTimer);
-    navUnlockTimer = setTimeout(() => { isNavigating = false; }, 1800);
-
-    doNativeHaptic("light");
-    TournyxLoader.bar(80);
-    window.location.href = resolved.url;
-  }
-
-  function prefetchCorePages() {
-    const cur = currentPageFile();
-    const run = () => {
-      DOCK_TABS.forEach((tab) => {
-        if (tab.href === cur) return;
-        const link = document.createElement("link");
-        link.rel = "prefetch";
-        link.href = tab.href;
-        document.head.appendChild(link);
-      });
-    };
-    if (window.requestIdleCallback) window.requestIdleCallback(run, { timeout: 1200 });
-    else setTimeout(run, 600);
+    if (shellApi) {
+      shellApi.navigate(resolved.url);
+    } else {
+      doNativeHaptic("light");
+      TournyxLoader.bar(80);
+      window.location.href = resolved.url;
+    }
   }
 
   document.addEventListener("click", (e) => {
     const anchor = e.target?.closest?.("a[href]");
     if (!anchor || e.defaultPrevented) return;
     const rawHref = anchor.getAttribute("href") || "";
-
-    if (/^(intent:|freefiremax:|freefireth:|pubg:|cod:|riotclient:|whatsapp:)/i.test(rawHref)) {
-      return;
-    }
+    if (/^(intent:|freefiremax:|freefireth:|pubg:|cod:|riotclient:|whatsapp:)/i.test(rawHref)) return;
 
     const resolved = resolveLocalNativeHref(rawHref);
     if (!resolved) return;
@@ -780,68 +807,22 @@
   window.open = function(url, target, features) {
     const resolved = resolveLocalNativeHref(url);
     if (resolved) {
-      if (resolved.external) {
-        window.TournyxNative.openExternal(resolved.url);
-        return null;
-      }
+      if (resolved.external) { window.TournyxNative.openExternal(resolved.url); return null; }
       performSmoothNavigate(resolved.url);
       return window;
     }
     return origWindowOpen(url, target, features);
   };
 
-  // =========================================================================
-  // 9. UNIFIED FLOATING LIQUID GLASS CAPSULE DOCK (FIXES ALL NAV BUGS)
-  // =========================================================================
-  function mountUnifiedCapsuleDock() {
-    const page = currentPageFile();
-    if (page === "login.html" || page === "reels.html") return;
-    if (document.getElementById("tx-native-dock")) return;
-
-    const activeKey = page.replace(/\.html$/i, "") || "index";
-    const dock = document.createElement("nav");
-    dock.id = "tx-native-dock";
-    dock.setAttribute("aria-label", "Tournyx Primary Navigation");
-    dock.innerHTML = DOCK_TABS.map((t) => {
-      const isAct = activeKey === t.id;
-      return `
-        <a href="${t.href}" class="tx-dock-item ${isAct ? "is-active" : ""}" ${isAct ? 'aria-current="page"' : ""}>
-          <i class="fa-solid ${t.icon}"></i>
-          <span>${t.label}</span>
-        </a>
-      `;
-    }).join("");
-
-    document.body.appendChild(dock);
-    document.body.classList.add("tx-has-dock");
-
-    // Softly condense capsule dock when scrolling down
-    let lastY = window.scrollY;
-    let ticking = false;
-    window.addEventListener("scroll", () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        const y = window.scrollY;
-        dock.classList.toggle("is-condensed", y > 90 && y > lastY + 14);
-        lastY = y;
-        ticking = false;
-      });
-    }, { passive: true });
-  }
-
-  // =========================================================================
-  // 10. SUPPRESS DUPLICATE login.html WEB SPLASH INSIDE NATIVE APPS ONLY
-  // =========================================================================
   function suppressDuplicateLoginSplash() {
     if (currentPageFile() !== "login.html") return;
     const sweep = () => {
       document.querySelectorAll("div, section").forEach((el) => {
-        if (el.id === "tx-animated-splash" || el.id === "tx-common-loader") return;
+        if (el.id === "tx-common-loader") return;
         const txt = (el.textContent || "").toUpperCase();
         if (txt.includes("INITIALIZING TOURNYX") || txt.includes("SKIP INTRO")) {
           const st = window.getComputedStyle(el);
-          if (st.position === "fixed" || st.zIndex >= 50) {
+          if (st.position === "fixed" || Number(st.zIndex) >= 50) {
             el.classList.add("tx-login-intro-hidden");
           }
         }
@@ -852,80 +833,27 @@
     setTimeout(sweep, 260);
   }
 
-  // =========================================================================
-  // 11. 2-STAGE TX DRAGON KINETIC SPLASH + FIRST-TIME LOGIN GATE
-  // =========================================================================
-  function enforceFirstTimeLoginGate() {
-    const page = currentPageFile();
-    if (AUTH_EXEMPT_PAGES.has(page)) return false;
-    if (!hasValidSavedSession()) {
-      window.location.replace("login.html");
-      return true;
-    }
-    return false;
-  }
-
-  function mountAnimatedColdSplash(onDone) {
-    if (sessionStorage.getItem("tx_cold_boot_done") === "1") {
-      onDone();
-      return;
-    }
-    sessionStorage.setItem("tx_cold_boot_done", "1");
-
-    const splash = document.createElement("div");
-    splash.id = "tx-animated-splash";
-    splash.setAttribute("aria-label", "Loading Tournyx Esports");
-    splash.innerHTML = `
-      <div class="tx-splash-aura" aria-hidden="true"></div>
-      <div class="tx-splash-crest-wrap">
-        <div class="tx-splash-arc-outer"></div>
-        <div class="tx-splash-arc-inner"></div>
-        <div class="tx-splash-logo-frame">
-          <img class="tx-splash-logo" src="favicon.png" alt="Tournyx Esports">
-        </div>
-      </div>
-      <div style="text-align:center;position:relative;z-index:2;">
-        <div style="font-family:Orbitron,Plus Jakarta Sans,sans-serif;font-size:20px;font-weight:900;letter-spacing:0.14em;color:#FFFFFF;">
-          TOURNYX<span style="color:#D4FF00;">.</span>
-        </div>
-        <div style="font-family:JetBrains Mono,monospace;font-size:10px;letter-spacing:0.20em;color:#C4B5FD;margin-top:5px;text-transform:uppercase;">
-          ESPORTS ARENA
-        </div>
-      </div>
-    `;
-    document.body.appendChild(splash);
-
-    // Seamless Stage 1 -> Stage 2 handoff
-    try { window.Capacitor?.Plugins?.SplashScreen?.hide?.(); } catch (e) {}
-
-    let dismissed = false;
-    const dismiss = () => {
-      if (dismissed) return;
-      dismissed = true;
-      splash.classList.add("is-hiding");
-      setTimeout(() => {
-        splash.remove();
-        onDone();
-      }, 340);
-    };
-
-    const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
-    const beatMs = reduceMotion ? 260 : 1250;
-    const minBeat = new Promise((r) => setTimeout(r, beatMs));
-    const maxCap = new Promise((r) => setTimeout(r, 1750));
-    const docReady = document.readyState === "complete"
-      ? Promise.resolve()
-      : new Promise((r) => window.addEventListener("load", r, { once: true }));
-
-    Promise.race([Promise.all([minBeat, docReady]), maxCap]).then(dismiss);
-  }
-
-  // =========================================================================
-  // 12. SMOOTH DELIBERATE PULL-TO-REFRESH (KEEPING USER'S GESTURE, ZERO ACCIDENTS)
-  // =========================================================================
-  function initPullToRefresh() {
+  function initPullToRefreshAndScrollCondense() {
     if (!isMobileNative) return;
     const page = currentPageFile();
+
+    if (page !== "reels.html" && page !== "login.html") {
+      let lastY = window.scrollY;
+      let ticking = false;
+      window.addEventListener("scroll", () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          const y = window.scrollY;
+          if (isInShell) {
+            window.parent.postMessage({ type: "TX_DOCK_CONDENSE", condensed: y > 90 && y > lastY + 14 }, "*");
+          }
+          lastY = y;
+          ticking = false;
+        });
+      }, { passive: true });
+    }
+
     if (page === "reels.html" || page === "login.html") return;
 
     const pill = document.createElement("div");
@@ -933,16 +861,9 @@
     pill.innerHTML = '<i class="fa-solid fa-rotate-right" style="color:#D4FF00;"></i><span>Pull to refresh</span>';
     document.body.appendChild(pill);
 
-    let startY = 0;
-    let startX = 0;
-    let pullDist = 0;
-    let tracking = false;
-
+    let startY = 0, startX = 0, pullDist = 0, tracking = false;
     window.addEventListener("touchstart", (e) => {
-      if (window.scrollY > 1 || document.body.classList.contains("modal-open") || isNavigating) {
-        tracking = false;
-        return;
-      }
+      if (window.scrollY > 1 || document.body.classList.contains("modal-open")) { tracking = false; return; }
       startY = e.touches[0]?.clientY || 0;
       startX = e.touches[0]?.clientX || 0;
       pullDist = 0;
@@ -954,10 +875,7 @@
       const dy = (e.touches[0]?.clientY || 0) - startY;
       const dx = Math.abs((e.touches[0]?.clientX || 0) - startX);
       if (dx > dy || dy <= 18 || window.scrollY > 1) {
-        if (pullDist > 0) {
-          pill.classList.remove("is-visible");
-          pill.style.transform = "translate3d(-50%, -68px, 0)";
-        }
+        if (pullDist > 0) { pill.classList.remove("is-visible"); pill.style.transform = "translate3d(-50%, -68px, 0)"; }
         pullDist = 0;
         if (dx > dy) tracking = false;
         return;
@@ -972,7 +890,7 @@
     window.addEventListener("touchend", () => {
       if (!tracking) return;
       tracking = false;
-      if (pullDist >= 84 && !isNavigating) {
+      if (pullDist >= 84) {
         doNativeHaptic("heavy");
         clearSwrCache();
         sessionStorage.setItem("tx_force_fresh", "1");
@@ -987,18 +905,16 @@
     }, { passive: true });
   }
 
-  // =========================================================================
-  // 13. DESKTOP COMMAND PALETTE (Cmd+K / Ctrl+K) & BATTERY GUARDS
-  // =========================================================================
+  // Desktop Quick Command Palette (Cmd+K / Ctrl+K)
   const CMD_ROUTES = [
-    { name: "Home Arena Feed", sub: "Event Banners, Tournaments & Social Feed", href: "index.html", icon: "fa-house" },
-    { name: "Explore Cups & Scrims", sub: "Browse and register for open lobbies", href: "explore.html", icon: "fa-compass" },
-    { name: "My Registered Matches", sub: "Open private Room Vaults & E-Certificates", href: "matches.html", icon: "fa-trophy" },
-    { name: "Clutch Reels", sub: "Full-screen vertical highlights player", href: "reels.html", icon: "fa-clapperboard" },
-    { name: "Clans & Squad Voice", sub: "Manage rosters and live voice comms", href: "clans.html", icon: "fa-shield-halved" },
-    { name: "Host Event Studio", sub: "Create a Tournament or Daily Scrim", href: "tournament.html", icon: "fa-satellite-dish" },
-    { name: "Tickets & Wallet", sub: "View TX Passes and Points balance", href: "tickets.html", icon: "fa-ticket" },
-    { name: "Player Profile", sub: "Stats, IGNs & verified badges", href: "profile.html", icon: "fa-user" }
+    { name: "Home Arena Feed", sub: "Event Banners, Tournaments & Feed", href: "index.html", icon: "fa-house" },
+    { name: "Explore Cups & Scrims", sub: "Browse open lobbies", href: "explore.html", icon: "fa-compass" },
+    { name: "My Registered Matches", sub: "Private Room Vaults & E-Certificates", href: "matches.html", icon: "fa-trophy" },
+    { name: "Clutch Reels", sub: "Vertical highlights player", href: "reels.html", icon: "fa-clapperboard" },
+    { name: "Clans & Squad Voice", sub: "Rosters, Screen Share & Voice", href: "clans.html", icon: "fa-shield-halved" },
+    { name: "Host Event Studio", sub: "Create a Tournament or Scrim", href: "tournament.html", icon: "fa-satellite-dish" },
+    { name: "Tickets & Wallet", sub: "TX Passes and Points balance", href: "tickets.html", icon: "fa-ticket" },
+    { name: "Player Profile", sub: "Stats, IGNs & Badges", href: "profile.html", icon: "fa-user" }
   ];
 
   function toggleCommandPalette(forceOpen) {
@@ -1021,9 +937,7 @@
       document.body.appendChild(pal);
       const inp = pal.querySelector("#txCmdInput");
       inp.addEventListener("input", () => renderCmdList(inp.value));
-      inp.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") pal.querySelector("#txCmdList button")?.click();
-      });
+      inp.addEventListener("keydown", (e) => { if (e.key === "Enter") pal.querySelector("#txCmdList button")?.click(); });
     }
     const open = forceOpen !== undefined ? Boolean(forceOpen) : !pal.classList.contains("is-active");
     pal.classList.toggle("is-active", open);
@@ -1054,92 +968,11 @@
     list.querySelectorAll("button[data-cmd-href]").forEach((btn) => {
       btn.addEventListener("mouseenter", () => { btn.style.background = "rgba(255,255,255,0.08)"; });
       btn.addEventListener("mouseleave", () => { btn.style.background = "transparent"; });
-      btn.addEventListener("click", () => {
-        toggleCommandPalette(false);
-        performSmoothNavigate(btn.dataset.cmdHref);
-      });
+      btn.addEventListener("click", () => { toggleCommandPalette(false); performSmoothNavigate(btn.dataset.cmdHref); });
     });
   }
 
-  function initDesktopAndBatteryHooks() {
-    const suspendMedia = () => {
-      document.querySelectorAll("video").forEach((v) => { try { if (!v.paused) v.pause(); } catch (e) {} });
-    };
-    document.addEventListener("visibilitychange", () => { if (document.hidden) suspendMedia(); });
-
-    if (isDesktopNative) {
-      if (platform === "macos") {
-        document.querySelector("header")?.setAttribute("data-tauri-drag-region", "");
-      }
-      document.addEventListener("keydown", (e) => {
-        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
-          e.preventDefault();
-          toggleCommandPalette();
-        } else if (e.key === "Escape" && document.getElementById("tx-cmd-palette")?.classList.contains("is-active")) {
-          toggleCommandPalette(false);
-        }
-      });
-    }
-
-    if (!isCapacitor) return;
-    const plugins = window.Capacitor?.Plugins || {};
-    try {
-      plugins.StatusBar?.setBackgroundColor?.({ color: "#050508" });
-      plugins.StatusBar?.setStyle?.({ style: "DARK" });
-      plugins.App?.addListener?.("appStateChange", ({ isActive }) => { if (!isActive) suspendMedia(); });
-
-      // Deep Links + Native OAuth Callback Router
-      plugins.App?.addListener?.("appUrlOpen", (event) => {
-        const url = event?.url || "";
-        if (!url) return;
-        if (url.toLowerCase().startsWith(OAUTH_CALLBACK_URI)) {
-          handleNativeOAuthCallback(url);
-          return;
-        }
-        const resolved = resolveLocalNativeHref(url);
-        if (resolved && !resolved.external) performSmoothNavigate(resolved.url);
-      });
-
-      // Android Hardware Back Button Stack
-      let lastBackPress = 0;
-      plugins.App?.addListener?.("backButton", () => {
-        const drawer = document.getElementById("commandDrawer");
-        if (drawer?.classList.contains("active") && typeof window.toggleCommandDrawer === "function") {
-          window.toggleCommandDrawer(false);
-          return;
-        }
-        const activeSheets = document.querySelectorAll(".sheet-overlay.active");
-        if (activeSheets.length > 0) {
-          const top = activeSheets[activeSheets.length - 1];
-          if (top.id === "theaterPlayerModal" && typeof window.closeTheaterPlayer === "function") {
-            window.closeTheaterPlayer();
-            return;
-          }
-          if (top.id && typeof window.closeModal === "function") {
-            window.closeModal(top.id);
-            return;
-          }
-          top.classList.remove("active");
-          document.body.classList.remove("modal-open");
-          return;
-        }
-        const pg = currentPageFile();
-        if (pg !== "index.html" && pg !== "" && pg !== "login.html") {
-          if (window.history.length > 1) window.history.back();
-          else performSmoothNavigate("index.html");
-          return;
-        }
-        const now = Date.now();
-        if (now - lastBackPress < 2000) plugins.App?.exitApp?.();
-        else {
-          lastBackPress = now;
-          if (typeof window.showToast === "function") window.showToast("Press back again to exit Tournyx");
-        }
-      });
-    } catch (e) {}
-  }
-
-  // Non-Blocking Update Check
+  // Non-Blocking In-App Update Check
   async function checkAppUpdateSoft() {
     if (sessionStorage.getItem("tx_update_checked") === "1") return;
     sessionStorage.setItem("tx_update_checked", "1");
@@ -1169,34 +1002,41 @@
     } catch (e) {}
   }
 
-  // =========================================================================
-  // 14. BOOT SEQUENCE
-  // =========================================================================
-  const prefsReadyPromise = hydratePersistedNativePrefs();
-
-  window.addEventListener("DOMContentLoaded", async () => {
+  // Boot Child Page Inside Shell
+  window.addEventListener("DOMContentLoaded", () => {
     sessionStorage.removeItem("tx_force_fresh");
+    const page = currentPageFile();
     document.body.classList.add("is-native-app", `platform-${platform}`, "tx-page-entering");
-    setTimeout(() => document.body.classList.remove("tx-page-entering"), 220);
+    if (isMobileNative && page !== "login.html" && page !== "reels.html") {
+      document.body.classList.add("tx-has-dock");
+    }
+    setTimeout(() => document.body.classList.remove("tx-page-entering"), 200);
 
     suppressDuplicateLoginSplash();
+    hideWebAppPromoCards();
     ensureLoaderDom();
-    initDesktopAndBatteryHooks();
+    mountAnimatedEventBanner();
+    initPullToRefreshAndScrollCondense();
 
-    await prefsReadyPromise;
-
-    mountAnimatedColdSplash(() => {
-      if (enforceFirstTimeLoginGate()) return;
-      mountUnifiedCapsuleDock();
-      mountAnimatedEventBanner();
-      initPullToRefresh();
-      prefetchCorePages();
-      setTimeout(checkAppUpdateSoft, 3500);
+    // Pause non-voice videos when app goes background (never touches live Clan Voice audio!)
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden && page !== "clans.html") {
+        document.querySelectorAll("video").forEach((v) => { try { if (!v.paused) v.pause(); } catch (e) {} });
+      }
     });
+
+    if (isDesktopNative) {
+      if (platform === "macos") document.querySelector("header")?.setAttribute("data-tauri-drag-region", "");
+      document.addEventListener("keydown", (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); toggleCommandPalette(); }
+        else if (e.key === "Escape" && document.getElementById("tx-cmd-palette")?.classList.contains("is-active")) toggleCommandPalette(false);
+      });
+    }
+
+    setTimeout(checkAppUpdateSoft, 3500);
   });
 
   window.addEventListener("pageshow", () => {
-    isNavigating = false;
     TournyxLoader.hide();
   });
 })();
