@@ -63,7 +63,7 @@ function copyDirRecursive(src, dst) {
 }
 
 function bundleLocalVendors() {
-  const flags = { tailwind: false, supabase: false, hls: false, fa: false, appShellCss: false };
+  const flags = { tailwind: false, supabase: false, hls: false, fa: false, themeCss: false, appShellCss: false };
 
   // 1. Pre-compile Tailwind CSS into static www/vendor/tournyx.min.css (Zero CDN runtime lag)
   const twInput = path.join(ROOT, "styles", "tailwind-input.css");
@@ -111,10 +111,23 @@ function bundleLocalVendors() {
     fs.copyFileSync(shellCssSrc, path.join(VENDOR_DIR, "native-app-shell.css"));
     flags.appShellCss = true;
   }
-
+  // 5. Copy Shared 3-Color Theme CSS & Dedicated App Shell CSS
+  const themeCssSrc = path.join(ROOT, "styles", "tournyx-theme.css");
+  if (fs.existsSync(themeCssSrc)) {
+    fs.copyFileSync(themeCssSrc, path.join(VENDOR_DIR, "tournyx-theme.css"));
+    flags.themeCss = true;
+  }
+  const shellCssSrc = path.join(ROOT, "styles", "native-app-shell.css");
+  if (fs.existsSync(shellCssSrc)) {
+    fs.copyFileSync(shellCssSrc, path.join(VENDOR_DIR, "native-app-shell.css"));
+    flags.appShellCss = true;
+  }
   return flags;
 }
 
+if (flags.themeCss && !out.includes("tournyx-theme.css")) {
+    injections.push('<link rel="stylesheet" href="vendor/tournyx-theme.css">');
+  }
 function patchHtmlForNative(html, flags) {
   let out = html;
 
