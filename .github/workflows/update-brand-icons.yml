@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   update-icons:
-    name: Generate All Sizes & Commit to main
+    name: Generate All Sizes From logo-transparent.png & Commit to main
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -26,11 +26,11 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Install Sharp & Generate All Website Logo Sizes + Transparent Cutout
+      - name: Install Sharp & Generate All Sizes From Root logo-transparent.png
         run: |
+          test -f logo-transparent.png
           npm install
           node scripts/build-icons.mjs web
-          test -f logo-transparent.png
           test -f favicon.png
           test -f favicon.ico
           test -f apple-touch-icon.png
@@ -55,19 +55,19 @@ jobs:
             }
           '
 
-      - name: Commit & Push Updated Icons + Transparent Logo + OG Banner to main
+      - name: Commit & Push Updated Icons + OG Banner to main
         run: |
           git config user.name "Tournyx Brand Bot"
           git config user.email "actions@users.noreply.github.com"
-          git add logo-transparent.png favicon.png favicon.ico apple-touch-icon.png og-banner.png *.html
+          git add favicon.png favicon.ico apple-touch-icon.png og-banner.png *.html
           if git diff --cached --quiet; then
             echo "No brand icon changes to commit."
           else
-            git commit -m "Update Tournyx transparent cutout, brand icons & og-banner.png"
+            git commit -m "Regenerate Tournyx icons & og-banner from root logo-transparent.png"
             git push origin main
           fi
 
-      - name: Upload Downloadable Brand Icon Pack (All Sizes)
+      - name: Upload Downloadable Brand Icon Pack
         uses: actions/upload-artifact@v4
         with:
           name: Tournyx-Brand-Icons-Pack
