@@ -12,11 +12,11 @@ on:
         type: boolean
         default: true
       build_macos:
-        description: "Build macOS (.dmg installer)"
+        description: "Build macOS Liquid Glass (.dmg installer)"
         type: boolean
         default: true
       build_ios:
-        description: "Build iOS (unsigned .ipa for sideloading)"
+        description: "Build iOS Liquid Glass (unsigned .ipa)"
         type: boolean
         default: true
   push:
@@ -28,7 +28,7 @@ permissions:
 
 jobs:
   # ==========================================================
-  # 1. ANDROID (.apk + optional Play Store signed .aab)
+  # 1. ANDROID (Obsidian GPU-Safe .apk + optional signed .aab)
   # ==========================================================
   build-android:
     name: Android APK / AAB
@@ -38,13 +38,13 @@ jobs:
       - name: Checkout Tournyx Repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 20
+      - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
 
       - name: Setup Java 17 (Temurin)
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: "temurin"
           java-version: "17"
@@ -59,39 +59,22 @@ jobs:
             (yes || true) | "$SDKMGR" --licenses > /dev/null 2>&1 || true
           fi
 
-      - name: Install Dependencies & Prepare www/
+      - name: Install Dependencies & Compile Local Bundle (www/)
         run: |
           npm install
           npm run prep:www
+          test -f www/vendor/tournyx.min.css
+          test -f www/vendor/native-app-shell.css
+          test -f www/native-bridge.js
 
-      - name: Initialize & Patch Android Project
+      - name: Initialize, Patch & Inject Official Tournyx Icons
         run: |
           npx cap add android
           node scripts/patch-native.mjs android
+          node scripts/build-icons.mjs android
+          test -f android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png
+          test -f android/app/src/main/res/values/ic_launcher_background.xml
           npx cap sync android
-
-      - name: Generate Android App Icons
-        run: |
-          if [ ! -f "favicon.png" ]; then
-            curl -fsSL "https://tournyx.in/favicon.png" -o favicon.png || true
-          fi
-          if [ -f "favicon.png" ]; then
-            mkdir -p assets
-            cp favicon.png assets/icon-only.png
-            cp favicon.png assets/splash.png
-            npx --yes @capacitor/assets generate --android --iconBackgroundColor "#050508" --splashBackgroundColor "#050508" || true
-          fi
-          if ! ls android/app/src/main/res/mipmap-*/ic_launcher_background.* >/dev/null 2>&1; then
-            mkdir -p android/app/src/main/res/values
-            if ! grep -rq 'name="ic_launcher_background"' android/app/src/main/res/values 2>/dev/null; then
-              printf '<?xml version="1.0" encoding="utf-8"?>\n<resources>\n    <color name="ic_launcher_background">#050508</color>\n</resources>\n' > android/app/src/main/res/values/ic_launcher_background.xml
-            fi
-            for f in android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml; do
-              if [ -f "$f" ]; then
-                sed -i 's|@mipmap/ic_launcher_background|@color/ic_launcher_background|g' "$f"
-              fi
-            done
-          fi
 
       - name: Build Installable Android APK
         working-directory: android
@@ -99,7 +82,7 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleDebug
 
-      - name: Build Signed Play Store Release (Optional When Keystore Secrets Exist)
+      - name: Build Signed Play Store Release (When Keystore Secrets Exist)
         working-directory: android
         env:
           KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
@@ -139,7 +122,7 @@ jobs:
           retention-days: 30
 
   # ==========================================================
-  # 2. WINDOWS (.exe NSIS & .msi via Tauri v2)
+  # 2. WINDOWS (Obsidian Mica + Tray .exe / .msi via Tauri v2)
   # ==========================================================
   build-windows:
     name: Windows Installer (.exe / .msi)
@@ -149,10 +132,10 @@ jobs:
       - name: Checkout Tournyx Repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 20
+      - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
 
       - name: Setup Rust Stable
         uses: dtolnay/rust-toolchain@stable
@@ -162,18 +145,17 @@ jobs:
         with:
           workspaces: "./src-tauri -> target"
 
-      - name: Install Dependencies & Prepare www/
+      - name: Install Dependencies & Compile Local Bundle (www/)
         run: |
           npm install
           npm run prep:www
 
-      - name: Generate Windows App Icons & Build Installer
+      - name: Generate Official Tournyx Desktop Icons & Build Installer
         shell: pwsh
         run: |
-          if (!(Test-Path "favicon.png")) {
-            Invoke-WebRequest -Uri "https://tournyx.in/favicon.png" -OutFile "favicon.png"
-          }
-          npx tauri icon favicon.png
+          node scripts/build-icons.mjs source
+          if (!(Test-Path "assets/icon-only.png")) { throw "Missing assets/icon-only.png" }
+          npx tauri icon assets/icon-only.png
           npx tauri build
 
       - name: Upload Windows Installers
@@ -186,7 +168,7 @@ jobs:
           retention-days: 30
 
   # ==========================================================
-  # 3. macOS (.dmg via Tauri v2)
+  # 3. macOS (Apple Liquid Glass Vibrancy .dmg via Tauri v2)
   # ==========================================================
   build-macos:
     name: macOS Installer (.dmg)
@@ -196,10 +178,10 @@ jobs:
       - name: Checkout Tournyx Repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 20
+      - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
 
       - name: Setup Rust Stable
         uses: dtolnay/rust-toolchain@stable
@@ -209,17 +191,16 @@ jobs:
         with:
           workspaces: "./src-tauri -> target"
 
-      - name: Install Dependencies & Prepare www/
+      - name: Install Dependencies & Compile Local Bundle (www/)
         run: |
           npm install
           npm run prep:www
 
-      - name: Generate macOS App Icons & Build DMG
+      - name: Generate Official Tournyx Mac Icons & Build DMG
         run: |
-          if [ ! -f "favicon.png" ]; then
-            curl -fsSL "https://tournyx.in/favicon.png" -o favicon.png
-          fi
-          npx tauri icon favicon.png
+          node scripts/build-icons.mjs source
+          test -f assets/icon-only.png
+          npx tauri icon assets/icon-only.png
           npx tauri build
 
       - name: Upload macOS DMG
@@ -230,7 +211,7 @@ jobs:
           retention-days: 30
 
   # ==========================================================
-  # 4. iOS (Unsigned .ipa via Capacitor 6 + Xcode CLI)
+  # 4. iOS (Apple Liquid Glass Unsigned .ipa via Capacitor 6)
   # ==========================================================
   build-ios:
     name: iOS Package (.ipa)
@@ -242,33 +223,25 @@ jobs:
       - name: Checkout Tournyx Repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 20
+      - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
 
-      - name: Install Dependencies & Prepare www/
+      - name: Install Dependencies & Compile Local Bundle (www/)
         run: |
           npm install
           npm run prep:www
+          test -f www/vendor/tournyx.min.css
+          test -f www/vendor/native-app-shell.css
 
-      - name: Initialize & Patch iOS Project
+      - name: Initialize, Patch & Inject Official Tournyx iOS Icons
         run: |
           npx cap add ios
           node scripts/patch-native.mjs ios
+          node scripts/build-icons.mjs ios
+          test -f ios/App/App/Assets.xcassets/AppIcon.appiconset/AppIcon-512@2x.png
           npx cap sync ios
-
-      - name: Generate iOS App Icons
-        run: |
-          if [ ! -f "favicon.png" ]; then
-            curl -fsSL "https://tournyx.in/favicon.png" -o favicon.png || true
-          fi
-          if [ -f "favicon.png" ]; then
-            mkdir -p assets
-            cp favicon.png assets/icon-only.png
-            cp favicon.png assets/splash.png
-            npx --yes @capacitor/assets generate --ios --iconBackgroundColor "#050508" --splashBackgroundColor "#050508" || true
-          fi
 
       - name: Build Unsigned iOS App & Package IPA
         run: |
