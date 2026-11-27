@@ -1,44 +1,77 @@
 {
-  "autoplay_ms": 4800,
-  "banners": [
+  "autoplay_ms": 6500,
+  "hero_slides": [
     {
-      "id": "mega-weekend-drop",
-      "badge": "LIVE EVENT • SEASON 6",
-      "title": "THE GRAND CLUTCH FEST",
-      "subtitle": "Zero-lag Free Fire MAX & BGMI rooms with instant TX Pass rewards.",
-      "cta_text": "Explore Cups",
+      "id": "season-8-battlegrounds",
+      "eyebrow": "LIVE SEASON 8 • FEATURED DROP",
+      "title": "THE GRAND CLUTCH CHAMPIONSHIP",
+      "description": "Free Fire MAX, BGMI & CODM high-stakes lobbies with verified Room Vaults and instant TX Pass payouts.",
+      "cta_text": "Enter Arena",
       "cta_href": "explore.html",
-      "theme": "dragon-violet",
+      "secondary_text": "Watch Live",
+      "secondary_href": "reels.html",
+      "media_type": "video",
+      "media_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+      "poster_url": "og-banner.png"
+    },
+    {
+      "id": "festival-prize-rush",
+      "eyebrow": "FESTIVAL SPECIAL • LIMITED TIME",
+      "title": "FESTIVE MEGA PRIZE RUSH",
+      "description": "Double daily check-in streaks, 8-slice Spin & Win jackpot drops, and zero-fee festive scrim rooms.",
+      "cta_text": "Claim Rewards",
+      "cta_href": "index.html#dailyCheckinCard",
+      "secondary_text": "View Matches",
+      "secondary_href": "matches.html",
+      "media_type": "video",
+      "media_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+      "poster_url": "og-banner.png"
+    },
+    {
+      "id": "clan-wars-live",
+      "eyebrow": "SQUAD COMMS • NEW ENGINE",
+      "title": "CLAN WARS WITH HD VOICE",
+      "description": "Drop into background-safe Squad Voice with live gameplay screen sharing and dominate seasonal leaderboards.",
+      "cta_text": "Open Clans",
+      "cta_href": "clans.html",
+      "secondary_text": "Host Event",
+      "secondary_href": "tournament.html",
+      "media_type": "image",
+      "media_url": "og-banner.png",
+      "poster_url": "og-banner.png"
+    }
+  ],
+  "latest_events": [
+    {
+      "id": "ev-ffmax-cup",
+      "tag": "FF MAX • SQUAD",
+      "title": "Weekend Clutch Cup",
+      "meta": "Slots Filling Fast • Live",
+      "href": "explore.html",
+      "icon": "fa-crosshairs"
+    },
+    {
+      "id": "ev-bgmi-scrims",
+      "tag": "BGMI • T1 SCRIMS",
+      "title": "Night Erangel Drop",
+      "meta": "Room Vault Unlocks 8 PM",
+      "href": "explore.html",
       "icon": "fa-trophy"
     },
     {
-      "id": "festival-special",
-      "badge": "FESTIVAL SPECIAL",
-      "title": "MEGA PRIZE POOL DROP",
-      "subtitle": "Daily scrims, 8-slice Spin & Win, and bonus streak drops unlocked.",
-      "cta_text": "Claim Rewards",
-      "cta_href": "index.html#dailyCheckinCard",
-      "theme": "festival-gold",
-      "icon": "fa-sparkles"
-    },
-    {
-      "id": "clutch-reels-creator",
-      "badge": "CREATOR ARENA",
-      "title": "UPLOAD CLUTCH REELS",
-      "subtitle": "Drop 1v4 vertical highlights and earn +25 TX PTS per 1,000 verified views.",
-      "cta_text": "Watch Reels",
-      "cta_href": "reels.html",
-      "theme": "cyber-cyan",
+      "id": "ev-reels-bonus",
+      "tag": "CREATORS • REELS",
+      "title": "1v4 Highlight Bounty",
+      "meta": "+25 TX PTS / 1K Views",
+      "href": "reels.html",
       "icon": "fa-clapperboard"
     },
     {
-      "id": "squad-clans-war",
-      "badge": "CLAN WARS",
-      "title": "BUILD YOUR SQUAD CLAN",
-      "subtitle": "Invite teammates with verified deep links and squad voice comms.",
-      "cta_text": "Open Clans",
-      "cta_href": "clans.html",
-      "theme": "crimson-rush",
+      "id": "ev-clan-recruit",
+      "tag": "CLAN WARS",
+      "title": "Recruit Your Roster",
+      "meta": "HD Voice & Screen Share",
+      "href": "clans.html",
       "icon": "fa-shield-halved"
     }
   ]
