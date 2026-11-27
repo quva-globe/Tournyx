@@ -1,0 +1,45 @@
+{
+  "autoplay_ms": 4800,
+  "banners": [
+    {
+      "id": "mega-weekend-drop",
+      "badge": "LIVE EVENT • SEASON 6",
+      "title": "THE GRAND CLUTCH FEST",
+      "subtitle": "Zero-lag Free Fire MAX & BGMI rooms with instant TX Pass rewards.",
+      "cta_text": "Explore Cups",
+      "cta_href": "explore.html",
+      "theme": "dragon-violet",
+      "icon": "fa-trophy"
+    },
+    {
+      "id": "festival-special",
+      "badge": "FESTIVAL SPECIAL",
+      "title": "MEGA PRIZE POOL DROP",
+      "subtitle": "Daily scrims, 8-slice Spin & Win, and bonus streak drops unlocked.",
+      "cta_text": "Claim Rewards",
+      "cta_href": "index.html#dailyCheckinCard",
+      "theme": "festival-gold",
+      "icon": "fa-sparkles"
+    },
+    {
+      "id": "clutch-reels-creator",
+      "badge": "CREATOR ARENA",
+      "title": "UPLOAD CLUTCH REELS",
+      "subtitle": "Drop 1v4 vertical highlights and earn +25 TX PTS per 1,000 verified views.",
+      "cta_text": "Watch Reels",
+      "cta_href": "reels.html",
+      "theme": "cyber-cyan",
+      "icon": "fa-clapperboard"
+    },
+    {
+      "id": "squad-clans-war",
+      "badge": "CLAN WARS",
+      "title": "BUILD YOUR SQUAD CLAN",
+      "subtitle": "Invite teammates with verified deep links and squad voice comms.",
+      "cta_text": "Open Clans",
+      "cta_href": "clans.html",
+      "theme": "crimson-rush",
+      "icon": "fa-shield-halved"
+    }
+  ]
+}
