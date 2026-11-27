@@ -69,8 +69,11 @@ function bundleLocalVendors() {
   const twInput = path.join(ROOT, "styles", "tailwind-input.css");
   const twOut = path.join(VENDOR_DIR, "tournyx.min.css");
   if (fs.existsSync(twInput)) {
-    const npxBin = process.platform === "win32" ? "npx.cmd" : "npx";
-    execFileSync(npxBin, ["tailwindcss", "-i", twInput, "-o", twOut, "--minify"], {
+    const twPkgPath = path.join(ROOT, "node_modules", "tailwindcss", "package.json");
+    const twPkg = JSON.parse(fs.readFileSync(twPkgPath, "utf8"));
+    const binRel = typeof twPkg.bin === "string" ? twPkg.bin : (twPkg.bin?.tailwindcss || "lib/cli.js");
+    const twCli = path.join(ROOT, "node_modules", "tailwindcss", binRel);
+    execFileSync(process.execPath, [twCli, "-i", twInput, "-o", twOut, "--minify"], {
       cwd: ROOT,
       stdio: "inherit"
     });
