@@ -1,0 +1,30 @@
+{
+  "enabled": true,
+  "cooldown_sec": 90,
+  "ads": [
+    {
+      "id": "tx-sponsor-skippable-01",
+      "sponsor": "Tournyx Pro Arena",
+      "headline": "Season 8 Championship — Win Instant TX Passes",
+      "cta_text": "Join Now",
+      "cta_url": "explore.html",
+      "media_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+      "poster_url": "og-banner.png",
+      "duration_sec": 15,
+      "skippable": true,
+      "skip_after_sec": 5
+    },
+    {
+      "id": "tx-sponsor-nonskip-02",
+      "sponsor": "Tournyx Clan Wars",
+      "headline": "Squad Voice + Live Screen Share — Zero Lag",
+      "cta_text": "Open Clans",
+      "cta_url": "clans.html",
+      "media_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+      "poster_url": "og-banner.png",
+      "duration_sec": 8,
+      "skippable": false,
+      "skip_after_sec": 0
+    }
+  ]
+}
