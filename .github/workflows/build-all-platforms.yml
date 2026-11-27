@@ -78,9 +78,19 @@ jobs:
           if [ -f "favicon.png" ]; then
             mkdir -p assets
             cp favicon.png assets/icon-only.png
-            cp favicon.png assets/icon-foreground.png
             cp favicon.png assets/splash.png
             npx --yes @capacitor/assets generate --android --iconBackgroundColor "#050508" --splashBackgroundColor "#050508" || true
+          fi
+          if ! ls android/app/src/main/res/mipmap-*/ic_launcher_background.* >/dev/null 2>&1; then
+            mkdir -p android/app/src/main/res/values
+            if ! grep -rq 'name="ic_launcher_background"' android/app/src/main/res/values 2>/dev/null; then
+              printf '<?xml version="1.0" encoding="utf-8"?>\n<resources>\n    <color name="ic_launcher_background">#050508</color>\n</resources>\n' > android/app/src/main/res/values/ic_launcher_background.xml
+            fi
+            for f in android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml; do
+              if [ -f "$f" ]; then
+                sed -i 's|@mipmap/ic_launcher_background|@color/ic_launcher_background|g' "$f"
+              fi
+            done
           fi
 
       - name: Build Installable Android APK
