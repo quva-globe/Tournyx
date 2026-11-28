@@ -3437,12 +3437,17 @@
 
         body.querySelector("#cpFollowActionBtn")?.addEventListener("click", () => togglePostFollow(p.id));
         body.querySelector("#cpMessageActionBtn")?.addEventListener("click", () => {
+          if (prof.allow_dms === false) {
+            showToast("This user has paused new chat requests.", true);
+            return;
+          }
           closeModal("creatorProfileModal");
           startDirectChatWithUser({
-            peer_email: prof.target_email,
-            peer_name: prof.username,
-            peer_uid: prof.public_uid,
-            peer_avatar: av
+            peer_email: prof.target_email || "",
+            peer_name: prof.username || p.author_name || "Creator",
+            peer_uid: prof.public_uid || p.creator_uid || "",
+            peer_avatar: av,
+            post_id: p.id || ""
           });
         });
         body.querySelector("#cpOpenInboxSelfBtn")?.addEventListener("click", () => {
@@ -3557,10 +3562,14 @@
           safeQuery(() => dbClient.rpc("get_user_dm_inbox", { p_user_email: email }), null),
           safeQuery(() => dbClient.rpc("get_user_notifications", { p_user_email: email }), null)
         ]);
-        if (dmRes.data?.ok && Array.isArray(dmRes.data.conversations)) dmConversations = dmRes.data.conversations;
-        if (nRes.data?.ok && Array.isArray(nRes.data.notifications)) userNotifications = nRes.data.notifications;
-        updateSocialUnreadBadges();
-      }
+        if (dmRes.data?.ok) {
+          if (Array.isArray(dmRes.data.conversations)) dmConversations = dmRes.data.conversations;
+          if (typeof dmRes.data.allow_dms === "boolean") {
+            myAllowDms = dmRes.data.allow_dms;
+            localStorage.setItem("tournyx_allow_dms", myAllowDms ? "true" : "false");
+            syncDmToggleBtn();
+          }
+        }
 
       async function openMessagesDrawer() {
         if (!requireAuthOrOpen()) return;
@@ -3639,13 +3648,25 @@
 
       async function startDirectChatWithUser(peer) {
         if (!requireAuthOrOpen()) return;
-        if (!peer?.peer_email) { showToast("This creator hasn't enabled direct messaging yet.", true); return; }
+        if (!peer?.peer_email && !peer?.peer_uid && !peer?.post_id && !peer?.peer_name) {
+          showToast("Could not identify this creator.", true);
+          return;
+        }
         await fetchDmInboxAndNotifications();
-        const existing = dmConversations.find((c) => normStr(c.peer_email) === normStr(peer.peer_email));
+        const existing = dmConversations.find((c) =>
+          (peer.peer_email && normStr(c.peer_email) === normStr(peer.peer_email)) ||
+          (peer.peer_uid && String(c.peer_uid || "") === String(peer.peer_uid))
+        );
         openModal("dmInboxModal");
         openDmThread(existing || {
-          id: null, status: "new", initiator_email: normStr(currentUser.email),
-          peer_email: peer.peer_email, peer_name: peer.peer_name || "Player", peer_uid: peer.peer_uid || "", peer_avatar: peer.peer_avatar || ""
+          id: null,
+          status: "new",
+          initiator_email: normStr(currentUser.email),
+          peer_email: peer.peer_email || "",
+          peer_name: peer.peer_name || "Player",
+          peer_uid: peer.peer_uid || "",
+          peer_avatar: peer.peer_avatar || "",
+          post_id: peer.post_id || ""
         });
       }
 
@@ -3725,7 +3746,7 @@
       }
 
       async function sendActiveDmMessage() {
-        if (!requireAuthOrOpen() || !activeDmPeer?.peer_email || inFlight.has("sendDm")) return;
+        if (!requireAuthOrOpen() || !activeDmPeer || inFlight.has("sendDm")) return;
         const inp = document.getElementById("dmMessageInput");
         const body = inp.value.trim();
         if (!body) return;
@@ -3734,19 +3755,29 @@
         btn.disabled = true;
         try {
           const { data: res, error: err } = await dbClient.rpc("send_direct_message", {
-            p_sender_email: normStr(currentUser.email), p_recipient_email: normStr(activeDmPeer.peer_email), p_body: body
+            p_sender_email: normStr(currentUser.email),
+            p_recipient_email: normStr(activeDmPeer.peer_email || ""),
+            p_body: body,
+            p_post_id: activeDmPeer.post_id ? String(activeDmPeer.post_id) : null,
+            p_recipient_uid: activeDmPeer.peer_uid ? String(activeDmPeer.peer_uid) : null,
+            p_recipient_name: activeDmPeer.peer_name || null
           });
-          if (err || !res?.ok) throw new Error(res?.error || "Run tournyx_dm_notifications.sql in Supabase first.");
+          if (err) throw new Error(err.message || "Database RPC error");
+          if (!res?.ok) throw new Error(res?.error || "Could not send message.");
           inp.value = "";
           activeDmPeer.id = res.conversation_id;
+          activeDmPeer.peer_email = res.recipient_email || activeDmPeer.peer_email;
           activeDmPeer.status = res.status;
           document.getElementById("dmRequestDecisionBar")?.classList.add("hidden");
           if (res.is_first_request) showToast(`Chat request sent to ${activeDmPeer.peer_name}!`);
           await openDmThread(activeDmPeer);
-        } catch (e) { showToast(e?.message || "Send failed", true); }
-        finally { inFlight.delete("sendDm"); btn.disabled = false; }
+        } catch (e) {
+          showToast(e?.message || "Send failed", true);
+        } finally {
+          inFlight.delete("sendDm");
+          btn.disabled = false;
+        }
       }
-
       // LIVE NOTIFICATIONS CENTER WITH INLINE QUICK-REPLY
       async function openNotificationsDrawer() {
         if (!requireAuthOrOpen()) return;
