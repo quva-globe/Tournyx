@@ -835,7 +835,8 @@
           </div>
         </div>
 
-        
+        <!-- Right: Clean Action Buttons (Zero Overflow on Mobile) -->
+        <div class="flex items-center gap-2 flex-shrink-0">
           <!-- Verify Ticket Code QR -->
           <button onclick="openModal('passVerifyModal')" type="button" title="Verify Any TX Ticket Code" aria-label="Verify Ticket Code"
             class="liquid-btn w-10 h-10 rounded-full flex items-center justify-center text-[#38BDF8]">
@@ -2111,23 +2112,20 @@
     </div>
   </div>
 
-  <!-- MULTI-STEP PAYMENT WORKFLOW OVERLAY -->
-  <div id="verifyOverlay" class="hidden fixed inset-0 z-[9000] bg-[#050508]/95 flex-col items-center justify-center text-center p-6 space-y-5">
-    <div class="relative w-20 h-20 flex items-center justify-center">
-      <div class="absolute inset-0 rounded-full border-2 border-[#38BDF8]/25 pay-pulse-ring"></div>
-      <div class="w-16 h-16 rounded-full border-4 border-[#38BDF8]/20 border-t-[#10B981] animate-spin"></div>
-      <i class="fa-solid fa-shield-halved absolute text-[#38BDF8] text-lg"></i>
-    </div>
-    <div class="space-y-1.5 max-w-xs">
-      <h3 id="verifyOverlayTitle" class="font-display text-base font-extrabold text-white uppercase tracking-wide">Connecting Tournyx Pay</h3>
-      <p id="verifyOverlayDesc" class="font-mono text-xs text-[#38BDF8]">Encrypting order &amp; verifying daily cap...</p>
-    </div>
-    <div class="flex items-center gap-2 font-mono text-[10.5px] uppercase">
-      <span id="verifyStep1" class="px-3 py-1 rounded-full bg-[#38BDF8]/20 text-[#38BDF8] border border-[#38BDF8]/45">1. Order</span>
-      <span class="text-[#475569]">→</span>
-      <span id="verifyStep2" class="px-3 py-1 rounded-full bg-white/5 text-[#64748B] border border-white/10">2. Verify</span>
-      <span class="text-[#475569]">→</span>
-      <span id="verifyStep3" class="px-3 py-1 rounded-full bg-white/5 text-[#64748B] border border-white/10">3. Mint</span>
+  <!-- SLEEK MINIMAL PAYMENT VERIFICATION OVERLAY -->
+  <div id="verifyOverlay" class="hidden fixed inset-0 z-[9000] bg-[#050508]/92 backdrop-blur-md flex-col items-center justify-center text-center p-6">
+    <div class="glass-surface rounded-3xl px-8 py-7 max-w-xs w-full space-y-4 border border-white/15">
+      <div class="relative w-16 h-16 mx-auto flex items-center justify-center">
+        <div id="verifySpinnerRing" class="w-16 h-16 rounded-full border-[3px] border-white/10 border-t-[#38BDF8] border-r-[#8B5CF6] animate-spin"></div>
+        <div id="verifySuccessCircle" class="hidden w-16 h-16 rounded-full bg-[#10B981]/20 border-2 border-[#10B981] items-center justify-center text-[#10B981] text-2xl shadow-[0_0_26px_rgba(16,185,129,0.45)]">
+          <i class="fa-solid fa-check"></i>
+        </div>
+        <i id="verifyShieldIcon" class="fa-solid fa-shield-halved absolute text-[#38BDF8] text-base"></i>
+      </div>
+      <div class="space-y-1">
+        <h3 id="verifyOverlayTitle" class="font-display text-base font-extrabold text-white">Verifying Payment</h3>
+        <p id="verifyOverlayDesc" class="font-mono text-xs text-[#94A3B8]">Securing your Arena Pass...</p>
+      </div>
     </div>
   </div>
 
@@ -2156,7 +2154,7 @@
         DB_ENDPOINT: "https://zuatrwfrejnwfnldqqgy.supabase.co",
         DB_PUBLIC_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1YXRyd2ZyZWpud2ZubGRxcWd5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNDE5NjEsImV4cCI6MjA5OTYxNzk2MX0.zcJO4Es-DnuUKR-L_Eu44xIwmz4PxsFVCgs-t492t1g",
         TICKET_PRICE: 10,
-        UNIVERSAL_TICKET_PRICE: 25
+        UNIVERSAL_TICKET_PRICE: 25,
         MAX_DAILY_INR: 20000,
         MAX_DAILY_PASSES: 2000,
         CACHE_KEY: "tournyx_tickets_v90_cache",
@@ -3562,19 +3560,24 @@
             p_recipient_identifier: recip,
             p_note: note
           });
-          if (error || !res?.ok) throw new Error(res?.error || error?.message || "Could not transfer pass.");
+         if (error || !res?.ok) throw new Error(res?.error || error?.message || "Could not transfer pass.");
 
-          sendTournyxPushAlert({
-            emails: [res.recipient_email],
-            heading: "🎁 You Received a Free Tournyx Arena Pass!",
-            content: `${currentUser.ign || currentUser.username} gifted you pass ${res.ticket_code}. Open Tickets Vault to view it!`,
-            url: "https://tournyx.in/tickets.html"
-          });
+       if (res.sender_new_earnings !== undefined) {
+         currentUser.earnings = safeNum(res.sender_new_earnings, 0);
+         try { localStorage.setItem("tournyx_user", JSON.stringify(currentUser)); } catch (e) {}
+       }
 
-          closeModal("giftPassModal");
-          doHaptic("heavy");
-          showToast(`Pass ${res.ticket_code} gifted to ${res.recipient_name}!`);
-          await syncAllWalletData(false);
+       sendTournyxPushAlert({
+         emails: [res.recipient_email],
+         heading: "🎁 You Received a Free Tournyx Arena Pass!",
+         content: `${currentUser.ign || currentUser.username} gifted you pass ${res.ticket_code} (₹${res.pass_value_inr || 10} value). Open Tickets Vault!`,
+         url: "https://tournyx.in/tickets.html"
+       });
+
+       closeModal("giftPassModal");
+       doHaptic("heavy");
+       showToast(`Pass ${res.ticket_code} gifted to ${res.recipient_name}! (₹${res.pass_value_inr || 10} deducted)`);
+       await syncAllWalletData(false);
         } catch (err) {
           showToast(err?.message || "Pass transfer failed.", true);
         } finally {
@@ -4126,7 +4129,8 @@
       }
 
       function getCouponBenefitSummary(c, qty) {
-        const baseAmt = qty * CONFIG.TICKET_PRICE;
+        const unitP = getUnitPassPrice(selectedCheckoutGame);
+        const baseAmt = qty * unitP;
         const dtype = String(c.discount_type || "PERCENT").toUpperCase();
         const dval = safeNum(c.discount_value, 0);
 
@@ -4140,7 +4144,7 @@
           };
         }
         if (dtype === "FLAT") {
-          const save = Math.min(dval, Math.max(0, baseAmt - 10));
+          const save = Math.min(dval, Math.max(0, baseAmt - unitP));
           return {
             discountInr: Number(save.toFixed(2)), bonusPasses: 0, waivePlatform: false, cashbackPts: 0,
             estValueInr: save,
@@ -4151,8 +4155,8 @@
           const bonus = Math.max(1, Math.floor(dval));
           return {
             discountInr: 0, bonusPasses: bonus, waivePlatform: false, cashbackPts: 0,
-            estValueInr: bonus * CONFIG.TICKET_PRICE,
-            label: `+${bonus} Free Bonus Pass${bonus > 1 ? "es" : ""} (Worth ₹${bonus * CONFIG.TICKET_PRICE})`
+            estValueInr: bonus * unitP,
+            label: `+${bonus} Free Bonus Pass${bonus > 1 ? "es" : ""} (Worth ₹${bonus * unitP})`
           };
         }
         if (dtype === "ZERO_PLATFORM_FEE") {
@@ -4716,9 +4720,11 @@
         const payload = { action: "create_order", email: normStr(currentUser.email), order_type: orderType };
 
         if (orderType === "PASS") {
+          const unitP = getUnitPassPrice(selectedCheckoutGame);
+          const maxQty = Math.floor(CONFIG.MAX_DAILY_INR / unitP);
           const qty = parseInt(document.getElementById("passQtyInput").value, 10) || 0;
-          if (qty < 1 || qty > CONFIG.MAX_DAILY_PASSES) { showToast("Enter between 1 and 2,000 passes (₹20,000 daily cap).", true); return; }
-          if (qty * CONFIG.TICKET_PRICE > remainingInr) { showToast(`24h cap reached! Max ${Math.floor(remainingInr / CONFIG.TICKET_PRICE)} pass(es) left today.`, true); return; }
+          if (qty < 1 || qty > maxQty) { showToast(`Enter between 1 and ${maxQty.toLocaleString("en-IN")} passes (₹20,000 daily cap).`, true); return; }
+          if (qty * unitP > remainingInr) { showToast(`24h cap reached! Max ${Math.floor(remainingInr / unitP)} pass(es) left today.`, true); return; }
           payload.game = selectedCheckoutGame;
           payload.quantity = qty;
           payload.coupon_code = appliedCouponObj ? appliedCouponObj.code : "";
@@ -4734,7 +4740,7 @@
         }
 
         inFlight.add("payGateway");
-        setVerifyOverlay(true, "INITIALIZING TOURNYX PAY", "Verifying server quote & encrypting order...", 1);
+        setVerifyOverlay(true, "Connecting Tournyx Pay", "Verifying server quote & encrypting order...", false);
 
         try {
           const { data: orderRes, error: orderErr } = await dbClient.functions.invoke("tournyx-payment-gateway", { body: payload });
