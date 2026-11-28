@@ -1291,6 +1291,8 @@
                 <option value="Tournament Entry">Entries</option>
                 <option value="Pass Gift">Pass Gifts</option>
                 <option value="Prize">Prizes &amp; Rewards</option>
+                <option value="Organizer Funds">Organizer Funds</option>
+                <option value="Withdrawal">Withdrawals</option>
               </select>
               <select id="txnTypeFilter" onchange="renderTransactions()" class="tx-input sm:col-span-2 font-mono text-xs">
                 <option value="ALL">All</option>
@@ -2706,7 +2708,7 @@
         let isCredit = false;
         if (rawType.includes("credit") || rawType === "in") isCredit = true;
         else if (rawType.includes("debit") || rawType === "out") isCredit = false;
-        else if (rawCat.includes("entry") || rawCat.includes("contribution") || rawTitle.includes("joined:") || rawTitle.includes("gifted pass")) isCredit = false;
+        else if (rawCat.includes("entry") || rawCat.includes("withdraw") || rawCat.includes("contribution") || rawTitle.includes("withdraw") || rawTitle.includes("joined:") || rawTitle.includes("gifted pass")) isCredit = false;
         else if (rawCat.includes("purchase") || rawCat.includes("prize") || rawCat.includes("reward") || rawTitle.includes("received pass") || rawTitle.includes("won")) isCredit = true;
         else isCredit = safeNum(t.amount, 0) > 0;
 
@@ -2807,14 +2809,63 @@
           .filter((o) => o.paid_at && new Date(o.paid_at).getTime() >= cutoff)
           .reduce((sum, o) => sum + safeNum(o.base_inr, 0), 0);
 
-        // Merge & Deduplicate Transactions
+        // Merge & Deduplicate ALL Actions (Transaction + Paid Orders + Tournament Entries + Gifted Passes)
         const mergedMap = new Map();
-        (txnRes.data || [])
-          .filter((t) => !normStr(t.title).includes("withdraw"))
-          .forEach((row) => {
-            const n = normalizeTransactionRow(row, "DB");
-            mergedMap.set(n.receipt_id, n);
-          });
+        (txnRes.data || []).forEach((row) => {
+          const n = normalizeTransactionRow(row, "DB");
+          mergedMap.set(n.receipt_id, n);
+        });
+
+        // Include any PAID payment_orders not yet present in Transaction
+        paidOrdersHistory.forEach((po) => {
+          const oid = String(po.razorpay_order_id || "").trim();
+          if (!oid || mergedMap.has(oid)) return;
+          const isCredOrder = String(po.order_type || "").toUpperCase() === "CREDITS";
+          mergedMap.set(oid, normalizeTransactionRow({
+            receipt_id: oid,
+            title: isCredOrder ? "Organizer Prize Pool Top-Up" : "Arena Pass Purchase",
+            amount: safeNum(po.base_inr, 0),
+            type: "Credit",
+            status: "Success",
+            category: isCredOrder ? "Organizer Funds" : "Pass Purchase",
+            currency: "INR",
+            created_at: po.paid_at || new Date().toISOString()
+          }, "ORDER"));
+        });
+
+        // Include all Tournament Registrations
+        (regRes.data || []).forEach((r) => {
+          const rid = String(r.receipt_id || `REG-${r.id}`);
+          if (mergedMap.has(rid)) return;
+          const codes = Array.isArray(parseJsonSafe(r.ticket_codes_used, [])) ? parseJsonSafe(r.ticket_codes_used, []) : [];
+          let amt = safeNum(r.amount_paid, 0);
+          if (r.payment_method === "ticket_vault" && amt > 0 && amt < 10) amt = amt * 10;
+          if (amt === 0 && codes.length > 0) amt = codes.length * 10;
+          mergedMap.set(rid, normalizeTransactionRow({
+            receipt_id: rid,
+            title: `Joined Match ${r.tournament_id} (${r.clan_name || "Squad"} • Slot #${r.slot_number || 1})`,
+            amount: amt, type: "Debit", status: "Success", category: "Tournament Entry",
+            tournament_id: r.tournament_id, ticket_codes: codes,
+            currency: r.payment_method === "points" ? "PTS" : "INR", created_at: r.created_at
+          }, "REG"));
+        });
+
+        // Safety net: Also include any received gift passes if not yet in Transaction
+        vaultTickets.forEach((tk) => {
+          if (!tk.gifted_from_email) return;
+          const alreadyLogged = Array.from(mergedMap.values()).some((x) => (x.ticket_codes || []).includes(tk.ticket_code) && normStr(x.category).includes("gift"));
+          if (alreadyLogged) return;
+          const val = normStr(tk.tier) === "universal" || normStr(tk.game || tk.game_scope) === "universal" ? 25 : 10;
+          const gid = `GIFT-IN-${tk.ticket_code}`;
+          mergedMap.set(gid, normalizeTransactionRow({
+            receipt_id: gid,
+            title: `Received Pass (${tk.ticket_code}) from ${String(tk.gifted_from_email).split("@")[0]}`,
+            amount: val, type: "Credit", status: "Success", category: "Pass Gift",
+            ticket_codes: [tk.ticket_code], currency: "INR", created_at: tk.gifted_at || tk.created_at
+          }, "GIFT"));
+        });
+
+        transactionsData = Array.from(mergedMap.values()).sort((a, b) => b.sortMs - a.sortMs);
 
         (regRes.data || []).forEach((r) => {
           const rid = String(r.receipt_id || `REG-${r.id}`);
@@ -3566,6 +3617,12 @@
          currentUser.earnings = safeNum(res.sender_new_earnings, 0);
          try { localStorage.setItem("tournyx_user", JSON.stringify(currentUser)); } catch (e) {}
        }
+          if (res.sender_txn) {
+            const normGiftTxn = normalizeTransactionRow(res.sender_txn, "DB");
+            transactionsData = [normGiftTxn, ...transactionsData.filter((x) => x.receipt_id !== normGiftTxn.receipt_id)];
+            updateLedgerMetricsAndCharts();
+            renderTransactions();
+          }
 
        sendTournyxPushAlert({
          emails: [res.recipient_email],
