@@ -7,9 +7,9 @@
   <meta name="color-scheme" content="dark only">
 
   <!-- PRIMARY SEO + GEO (INDIA SKILL-BASED ESPORTS AUTH PORTAL) -->
-  <title>Login &amp; Create Player ID — Tournyx Esports India</title>
+  <title>Login &amp; Enter Arena — Tournyx Esports India</title>
   <meta name="description" content="Sign in or create your verified Tournyx Esports Player ID to compete in 100% skill-based Free Fire MAX, BGMI, CODM, and Valorant tournaments, daily scrims, HD Clan Voice rooms, and Clutch Reels across India.">
-  <meta name="keywords" content="Tournyx Login, Tournyx Register, Indian Esports Platform, BGMI Tournaments India, Free Fire MAX Scrims, CODM Competitive India, Valorant India, Skill Based Esports, Quva Technologies">
+  <meta name="keywords" content="Tournyx Login, Tournyx Esports, Indian Esports Tournaments, BGMI Scrims India, Free Fire MAX Guilds, CODM Competitive India, Valorant India, Skill Based Esports, Quva Technologies">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <meta name="author" content="Tournyx Esports Pvt Ltd">
   <meta name="geo.region" content="IN">
@@ -22,12 +22,12 @@
   <meta property="og:locale" content="en_IN">
   <meta property="og:site_name" content="Tournyx Esports">
   <meta property="og:url" content="https://tournyx.in/login">
-  <meta property="og:title" content="Login &amp; Create Player ID — Tournyx Esports India">
-  <meta property="og:description" content="Secure 1-tap login, regional GPS fair-play routing, WhatsApp OTP verification, and instant access to India's skill-based esports arena.">
+  <meta property="og:title" content="Enter the Arena — Tournyx Esports India">
+  <meta property="og:description" content="1-tap game-style arena entry, live trailer backdrop, server-hardened auth firewall, GPS fair-play routing & verified Indian esports tournaments.">
   <meta property="og:image" content="https://tournyx.in/og-banner.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Tournyx Esports — Player &amp; Organizer Portal">
-  <meta name="twitter:description" content="Compete in verified skill-based Indian esports tournaments, scrims & HD Clan Voice.">
+  <meta name="twitter:description" content="Compete in verified skill-based Indian esports tournaments, 4v4 scrims & HD Clan Voice.">
   <meta name="twitter:image" content="https://tournyx.in/og-banner.png">
 
   <!-- PWA & FULL-COLOR BRAND ICONS -->
@@ -36,6 +36,7 @@
   <link rel="icon" href="/favicon.png" type="image/png" sizes="512x512">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="preload" as="image" href="logo-full.png">
+  <link rel="preload" as="image" href="https://tournyx.in/hq-fallback-bg.jpg">
 
   <!-- AEO STRUCTURED DATA -->
   <script type="application/ld+json">
@@ -60,9 +61,9 @@
   }
   </script>
 
-  <!-- PRE-PAINT NATIVE APP DETECTOR & SPLASH BLOCKER
-       Runs synchronously before first paint so Android/iOS/Windows/macOS dedicated apps
-       NEVER show a duplicate web splash screen while web visitors get the Hex-Crest Splash! -->
+  <!-- PRE-PAINT NATIVE APP DETECTOR & WEB SPLASH BLOCKER
+       Executes synchronously before first paint: dedicated Android/iOS/Windows/macOS apps
+       skip the web splash cleanly (zero double-splash), while website visitors get the AAA Title Reveal. -->
   <script>
     (function() {
       try {
@@ -81,13 +82,16 @@
           /TournyxApp|Capacitor|Tauri/i.test(navigator.userAgent || "")
         );
         window.__TX_IS_DEDICATED_APP = isNative;
-        if (isNative) {
-          document.documentElement.classList.add("is-native-app");
-        }
+        if (isNative) document.documentElement.classList.add("is-native-app");
+
         var savedTier = localStorage.getItem("tournyx_perf_tier");
         if (savedTier === "ultra" || savedTier === "balanced" || savedTier === "lite") {
           document.documentElement.setAttribute("data-perf-tier", savedTier);
-        } else if (localStorage.getItem("tournyx_psm") === "true" || navigator.connection?.saveData) {
+        } else if (
+          localStorage.getItem("tournyx_psm") === "true" ||
+          navigator.connection?.saveData ||
+          (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+        ) {
           document.documentElement.setAttribute("data-perf-tier", "lite");
         }
       } catch (e) {}
@@ -135,7 +139,7 @@
     };
   </script>
 
-  <!-- OneSignal Passive Push SDK (No Clunky Top-Bar Notify Button; Prompts Cleanly Post-Auth) -->
+  <!-- OneSignal Passive Push SDK (Clean Post-Auth Opt-In, Zero Top-Bar Notify Clutter) -->
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
   <script>
     window.OneSignalDeferred = window.OneSignalDeferred || [];
@@ -209,137 +213,132 @@
     }
 
     /* =========================================================================
-       1. STRICT WEB vs. DEDICATED APP SPLASH & BACKDROP LAYERS
+       1. EXACT UNCLIPPED LOGO EMBLEM (AAA BRUSHED OBSIDIAN & CHROME BEVEL)
+          Zero polygon clipping, zero rainbow box — showcases exact logo-full.png!
        ========================================================================= */
-    /* Dedicated Native Apps (Android / iOS / Windows / macOS) BLOCK Web Splash 100% */
-    html.is-native-app #webHexSplash {
+    .tx-logo-emblem {
+      position: relative;
+      border-radius: 22px;
+      padding: 2.5px;
+      background: linear-gradient(145deg, rgba(226, 232, 240, 0.55) 0%, rgba(56, 189, 248, 0.65) 36%, rgba(139, 92, 246, 0.72) 72%, rgba(245, 158, 11, 0.45) 100%);
+      box-shadow:
+        0 18px 42px -8px rgba(0, 0, 0, 0.92),
+        0 0 28px rgba(56, 189, 248, 0.24),
+        inset 0 1px 0 rgba(255, 255, 255, 0.45);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .tx-logo-emblem-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 19.5px;
+      background: #080A14;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+    .tx-logo-emblem-inner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    /* Quiet, high-craft diagonal metallic sheen sweep across the exact logo */
+    .tx-logo-emblem::after {
+      content: "";
+      position: absolute;
+      inset: -20%;
+      width: 42%;
+      background: linear-gradient(105deg, transparent 20%, rgba(255, 255, 255, 0.34) 50%, transparent 80%);
+      transform: translateX(-180%) skewX(-18deg);
+      animation: txMetallicGlint 4.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+      pointer-events: none;
+    }
+    @keyframes txMetallicGlint {
+      0% { transform: translateX(-180%) skewX(-18deg); }
+      32%, 100% { transform: translateX(340%) skewX(-18deg); }
+    }
+
+    /* =========================================================================
+       2. AAA CINEMATIC WEB TITLE SPLASH (100% BLOCKED IN DEDICATED APPS!)
+       ========================================================================= */
+    html.is-native-app #webTitleSplash {
       display: none !important;
       opacity: 0 !important;
       pointer-events: none !important;
     }
 
-    /* Non-Square Sculpted Hexagonal Crest Web Splash (Uses Exact logo-full.png With Borders) */
-    #webHexSplash {
+    #webTitleSplash {
       position: fixed;
       inset: 0;
       z-index: 9990;
       background:
-        radial-gradient(560px circle at 50% 42%, rgba(139, 92, 246, 0.24), transparent 62%),
-        radial-gradient(480px circle at 50% 58%, rgba(56, 189, 248, 0.14), transparent 64%),
-        #050508;
+        radial-gradient(620px circle at 50% 44%, rgba(139, 92, 246, 0.20), transparent 62%),
+        radial-gradient(500px circle at 50% 60%, rgba(56, 189, 248, 0.12), transparent 65%),
+        #040509;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.45s ease;
+      transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.55s ease;
     }
-    #webHexSplash.is-done {
+    #webTitleSplash.is-done {
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
     }
-
-    /* Sculpted Octa-Hex Beveled Crest Shell (Zero Plain Square!) */
-    .tx-hex-crest-outer {
-      position: relative;
-      width: 132px;
-      height: 132px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      animation: txCrestReveal 1.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    .tx-splash-reveal {
+      animation: txSplashRise 0.85s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
-    .tx-hex-crest-ring {
-      position: absolute;
-      inset: -6px;
-      clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
-      background: conic-gradient(from 0deg, #8B5CF6, #38BDF8, #F59E0B, #10B981, #8B5CF6);
-      animation: txSpinSlow 4.5s linear infinite;
-      filter: drop-shadow(0 0 22px rgba(56, 189, 248, 0.55));
+    @keyframes txSplashRise {
+      from { opacity: 0; transform: translate3d(0, 18px, 0) scale(0.92); filter: blur(6px); }
+      to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); filter: blur(0); }
     }
-    .tx-hex-crest-frame {
-      position: relative;
-      width: 120px;
-      height: 120px;
-      clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
-      background: #0C0E18;
-      padding: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 2;
-    }
-    .tx-hex-crest-frame img {
-      width: 100%;
+    .tx-splash-bar-fill {
+      width: 0%;
       height: 100%;
-      object-fit: cover;
-      clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
-      display: block;
+      background: linear-gradient(90deg, #8B5CF6 0%, #38BDF8 55%, #10B981 100%);
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.75);
+      animation: txSplashLoad 1.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    @keyframes txSplashLoad {
+      0% { width: 0%; }
+      55% { width: 72%; }
+      100% { width: 100%; }
     }
 
-    /* Compact Header/Hero Sculpted Hex Emblem (Non-Square!) */
-    .tx-hex-badge-sm {
-      width: 64px;
-      height: 64px;
-      padding: 2.5px;
-      clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
-      background: linear-gradient(135deg, #8B5CF6 0%, #38BDF8 55%, #F59E0B 100%);
-      filter: drop-shadow(0 8px 20px rgba(139, 92, 246, 0.45));
-      flex-shrink: 0;
-    }
-    .tx-hex-badge-sm img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
-      background: #0A0C16;
-      display: block;
-    }
-
-    @keyframes txCrestReveal {
-      0% { transform: scale(0.42) rotate(-14deg); opacity: 0; }
-      55% { transform: scale(1.06) rotate(0deg); opacity: 1; }
-      100% { transform: scale(1) rotate(0deg); opacity: 1; }
-    }
-    @keyframes txSpinSlow { to { transform: rotate(360deg); } }
-
-    /* Background Canvas & Ambient Arena Stage */
-    .tx-ambient-stage {
+    /* =========================================================================
+       3. FULL-BLEED LIVE ESPORTS TRAILER VIDEO + TACTICAL SCANLINES + EMBERS
+       ========================================================================= */
+    .tx-trailer-video {
       position: fixed;
       inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
       z-index: 0;
+      filter: brightness(0.46) contrast(1.12) saturate(1.18);
+      transition: opacity 0.75s ease, filter 0.4s ease;
+      opacity: 1;
       pointer-events: none;
-      background:
-        radial-gradient(760px circle at 14% 8%, rgba(139, 92, 246, 0.18), transparent 58%),
-        radial-gradient(640px circle at 88% 12%, rgba(56, 189, 248, 0.13), transparent 56%),
-        radial-gradient(540px circle at 50% 104%, rgba(245, 158, 11, 0.08), transparent 60%),
-        linear-gradient(180deg, #06070D 0%, #050508 100%);
+    }
+    /* Brighten trailer subtly when showing the full-screen BGMI/FF Tap-Anywhere Lobby! */
+    body.tap-lobby-active .tx-trailer-video {
+      filter: brightness(0.62) contrast(1.14) saturate(1.22);
     }
 
-    /* Dedicated App Animated Floating Aurora Clouds Layer (Active in Native Apps & Desktop Apps) */
-    .tx-app-nebula-clouds {
+    .tx-cinema-vignette {
       position: fixed;
       inset: 0;
       z-index: 1;
       pointer-events: none;
-      overflow: hidden;
-      opacity: 0.45;
-    }
-    html.is-native-app .tx-app-nebula-clouds { opacity: 0.78; }
-    .tx-nebula-orb {
-      position: absolute;
-      border-radius: 9999px;
-      filter: blur(72px);
-      will-change: transform;
-      animation: txDriftCloud 16s ease-in-out infinite alternate;
-    }
-    .tx-nebula-orb.o1 { width: 420px; height: 260px; top: -60px; left: -90px; background: rgba(139, 92, 246, 0.32); }
-    .tx-nebula-orb.o2 { width: 380px; height: 240px; top: 30%; right: -110px; background: rgba(56, 189, 248, 0.26); animation-duration: 20s; animation-delay: -5s; }
-    .tx-nebula-orb.o3 { width: 360px; height: 220px; bottom: -80px; left: 22%; background: rgba(16, 185, 129, 0.18); animation-duration: 24s; animation-delay: -9s; }
-    @keyframes txDriftCloud {
-      0% { transform: translate3d(0, 0, 0) scale(1); }
-      50% { transform: translate3d(42px, -22px, 0) scale(1.12); }
-      100% { transform: translate3d(-26px, 28px, 0) scale(0.96); }
+      background-image:
+        radial-gradient(720px circle at 16% 12%, rgba(139, 92, 246, 0.24), transparent 56%),
+        radial-gradient(640px circle at 86% 16%, rgba(56, 189, 248, 0.16), transparent 54%),
+        linear-gradient(180deg, rgba(5, 5, 9, 0.56) 0%, rgba(5, 5, 9, 0.34) 42%, rgba(5, 5, 9, 0.88) 88%, rgba(5, 5, 9, 0.97) 100%),
+        linear-gradient(to right, rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 100% 100%, 34px 34px, 34px 34px;
     }
 
     #txParticlesCanvas {
@@ -349,86 +348,169 @@
       height: 100vh;
       z-index: 2;
       pointer-events: none;
-      opacity: 0.52;
+      opacity: 0.65;
     }
 
     /* =========================================================================
-       2. LIQUID GLASS SURFACES & MULTI-ACCENT BUTTONS (MATCHED TO v8.5 SUITE)
+       4. FREE FIRE / BGMI FULL-SCREEN "TAP ANYWHERE TO ENTER ARENA" LOBBY
+       ========================================================================= */
+    #tapToEnterLobby {
+      position: fixed;
+      inset: 0;
+      z-index: 26;
+      display: none;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      padding: calc(env(safe-area-inset-top, 0px) + 74px) 16px calc(env(safe-area-inset-bottom, 0px) + 28px);
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    #tapToEnterLobby.is-active {
+      display: flex;
+      animation: txFadeSlideIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    .tx-tap-prompt-bar {
+      position: relative;
+      overflow: hidden;
+      padding: 14px 28px;
+      border-radius: 9999px;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.28) 0%, rgba(12, 14, 26, 0.86) 50%, rgba(56, 189, 248, 0.28) 100%);
+      backdrop-filter: blur(18px) saturate(180%);
+      -webkit-backdrop-filter: blur(18px) saturate(180%);
+      border: 1px solid rgba(56, 189, 248, 0.55);
+      box-shadow: 0 0 36px rgba(56, 189, 248, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.32);
+      animation: txTapPulse 2.2s ease-in-out infinite;
+    }
+    .tx-tap-prompt-bar::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      width: 36%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+      animation: txBannerSweep 2.8s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes txTapPulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 28px rgba(56, 189, 248, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.32); }
+      50%      { transform: scale(1.03); box-shadow: 0 0 44px rgba(139, 92, 246, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.48); }
+    }
+
+    /* =========================================================================
+       5. KINETIC LIQUID GLASS AUTH TERMINAL (3D TILT + HUD CORNERS + CTAs)
        ========================================================================= */
     .glass-card {
-      background: linear-gradient(155deg, rgba(255, 255, 255, 0.065) 0%, rgba(16, 19, 32, 0.89) 38%, rgba(9, 11, 20, 0.96) 100%);
-      backdrop-filter: blur(18px) saturate(155%);
-      -webkit-backdrop-filter: blur(18px) saturate(155%);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      box-shadow: 0 22px 54px -16px rgba(0, 0, 0, 0.88), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+      background: linear-gradient(155deg, rgba(255, 255, 255, 0.075) 0%, rgba(14, 17, 30, 0.88) 38%, rgba(8, 10, 18, 0.95) 100%);
+      backdrop-filter: blur(18px) saturate(160%);
+      -webkit-backdrop-filter: blur(18px) saturate(160%);
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      box-shadow: 0 24px 58px -14px rgba(0, 0, 0, 0.90), inset 0 1px 0 rgba(255, 255, 255, 0.20);
+      transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.2s ease, box-shadow 0.2s ease;
     }
+    .tx-arena-card {
+      position: relative;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+    /* Tactical HUD Angular Corner Brackets */
+    .tx-hud-corner {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      pointer-events: none;
+      z-index: 3;
+      border-color: rgba(56, 189, 248, 0.65);
+    }
+    .tx-hud-corner.tl { top: 8px; left: 8px; border-top: 2px solid; border-left: 2px solid; border-top-left-radius: 8px; }
+    .tx-hud-corner.tr { top: 8px; right: 8px; border-top: 2px solid; border-right: 2px solid; border-top-right-radius: 8px; }
+    .tx-hud-corner.bl { bottom: 8px; left: 8px; border-bottom: 2px solid; border-left: 2px solid; border-bottom-left-radius: 8px; }
+    .tx-hud-corner.br { bottom: 8px; right: 8px; border-bottom: 2px solid; border-right: 2px solid; border-bottom-right-radius: 8px; }
+
+    /* Kinetic Light Beam Along Top Edge */
+    .tx-kinetic-beam {
+      position: absolute;
+      top: 0; left: 18px; right: 18px; height: 2px;
+      border-radius: 9999px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .tx-kinetic-beam::after {
+      content: "";
+      position: absolute;
+      top: 0; bottom: 0; width: 42%;
+      background: linear-gradient(90deg, transparent, #8B5CF6, #38BDF8, #10B981, transparent);
+      animation: txBeamGlide 3.4s ease-in-out infinite alternate;
+    }
+    @keyframes txBeamGlide {
+      from { left: -12%; }
+      to   { left: 70%; }
+    }
+
     .glass-inset {
-      background: rgba(9, 11, 20, 0.86);
+      background: rgba(8, 10, 18, 0.84);
       border: 1px solid rgba(255, 255, 255, 0.10);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
     }
 
     .liquid-btn {
+      position: relative;
+      overflow: hidden;
       background: linear-gradient(155deg, rgba(255, 255, 255, 0.14) 0%, rgba(22, 25, 44, 0.72) 50%, rgba(11, 13, 24, 0.88) 100%);
       backdrop-filter: saturate(190%) blur(18px);
       -webkit-backdrop-filter: saturate(190%) blur(18px);
       border: 1px solid rgba(255, 255, 255, 0.22);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.34);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.34);
       color: #F8FAFC;
-      transition: transform 0.14s cubic-bezier(0.22, 1.25, 0.36, 1), border-color 0.18s ease;
+      transition: transform 0.14s cubic-bezier(0.22, 1.25, 0.36, 1), border-color 0.18s ease, box-shadow 0.18s ease;
     }
-    .liquid-btn:hover { border-color: rgba(56, 189, 248, 0.55); }
+    .liquid-btn:hover { border-color: rgba(56, 189, 248, 0.60); box-shadow: 0 8px 24px rgba(56, 189, 248, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.42); }
     .liquid-btn:active { transform: scale(0.93); }
 
-    .btn-primary {
-      background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 48%, #38BDF8 100%);
-      color: #FFFFFF;
+    /* Kinetic Sheen CTA Buttons */
+    .btn-primary, .btn-gold, .btn-emerald {
+      position: relative;
+      overflow: hidden;
       font-weight: 800;
-      border: 1px solid rgba(255, 255, 255, 0.28);
-      box-shadow: 0 12px 28px -8px rgba(139, 92, 246, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.34);
-      transition: transform 0.14s ease, filter 0.18s ease;
+      transition: transform 0.14s cubic-bezier(0.22, 1.25, 0.36, 1), filter 0.18s ease, box-shadow 0.18s ease;
     }
-    .btn-primary:hover:not(:disabled) { filter: brightness(1.08); }
-    .btn-primary:active:not(:disabled) { transform: scale(0.96); }
-    .btn-primary:disabled { opacity: 0.48; cursor: not-allowed; box-shadow: none; }
+    .btn-primary::after, .btn-gold::after, .btn-emerald::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      width: 34%;
+      background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.34), transparent);
+      transform: translateX(-180%) skewX(-20deg);
+      animation: txBannerSweep 4.2s ease-in-out infinite;
+      pointer-events: none;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 46%, #38BDF8 100%);
+      color: #FFFFFF;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      box-shadow: 0 12px 30px -8px rgba(139, 92, 246, 0.58), inset 0 1px 0 rgba(255, 255, 255, 0.36);
+    }
+    .btn-primary:hover:not(:disabled) { filter: brightness(1.09); box-shadow: 0 14px 34px -6px rgba(56, 189, 248, 0.55); }
+    .btn-primary:active:not(:disabled), .btn-gold:active:not(:disabled), .btn-emerald:active:not(:disabled) { transform: scale(0.96); }
+    .btn-primary:disabled, .btn-gold:disabled, .btn-emerald:disabled { opacity: 0.48; cursor: not-allowed; box-shadow: none; }
 
     .btn-gold {
       background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 55%, #EA580C 100%);
       color: #090600;
-      font-weight: 800;
-      border: 1px solid rgba(255, 255, 255, 0.34);
-      box-shadow: 0 10px 24px -8px rgba(245, 158, 11, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.45);
-      transition: transform 0.14s ease, filter 0.18s ease;
+      border: 1px solid rgba(255, 255, 255, 0.36);
+      box-shadow: 0 10px 26px -8px rgba(245, 158, 11, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.45);
     }
-    .btn-gold:hover:not(:disabled) { filter: brightness(1.06); }
-    .btn-gold:active:not(:disabled) { transform: scale(0.96); }
-    .btn-gold:disabled { opacity: 0.48; cursor: not-allowed; box-shadow: none; }
-
     .btn-emerald {
-      background: linear-gradient(135deg, #10B981 0%, #059669 55%, #0EA5E9 100%);
+      background: linear-gradient(135deg, #10B981 0%, #059669 52%, #0EA5E9 100%);
       color: #FFFFFF;
-      font-weight: 800;
-      border: 1px solid rgba(255, 255, 255, 0.26);
-      box-shadow: 0 10px 26px -8px rgba(16, 185, 129, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.32);
-      transition: transform 0.14s ease, filter 0.18s ease;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      box-shadow: 0 10px 26px -8px rgba(16, 185, 129, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.34);
     }
-    .btn-emerald:active:not(:disabled) { transform: scale(0.96); }
-    .btn-emerald:disabled { opacity: 0.48; cursor: not-allowed; }
-
-    .btn-ghost {
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      color: #E2E8F0;
-      font-weight: 600;
-      transition: background-color 0.16s ease, border-color 0.16s ease, transform 0.14s ease;
-    }
-    .btn-ghost:hover:not(:disabled) { background: rgba(255, 255, 255, 0.11); border-color: rgba(255, 255, 255, 0.26); color: #FFFFFF; }
-    .btn-ghost:active:not(:disabled) { transform: scale(0.96); }
 
     .tx-input {
       width: 100%;
       min-height: 44px;
-      background-color: #080A14;
+      background-color: #070912;
       border: 1px solid rgba(255, 255, 255, 0.14);
       color: #F8FAFC;
       border-radius: 14px;
@@ -436,10 +518,11 @@
       font-size: 14px;
       line-height: 1.45;
       outline: none;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
     }
     .tx-input:focus {
       border-color: #38BDF8;
+      background-color: #0A0D1A;
       box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.18);
     }
     select.tx-input {
@@ -451,8 +534,35 @@
       appearance: none;
     }
 
+    /* Crisp 28px Tactical Touch Reticle Burst (Silent Visual Feedback) */
+    .hud-tap-fx {
+      position: fixed;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1.5px solid #38BDF8;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.75), inset 0 0 6px rgba(139, 92, 246, 0.65);
+      transform: translate(-50%, -50%) scale(0.25);
+      animation: hudTapBurst 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      z-index: 9700;
+      pointer-events: none;
+    }
+    .hud-tap-fx::after {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border-radius: 50%;
+      background: #8B5CF6;
+      opacity: 0.9;
+    }
+    @keyframes hudTapBurst {
+      0% { transform: translate(-50%, -50%) scale(0.25); opacity: 0.95; }
+      70% { transform: translate(-50%, -50%) scale(1.02); opacity: 0.55; }
+      100% { transform: translate(-50%, -50%) scale(1.22); opacity: 0; }
+    }
+
     /* =========================================================================
-       3. PASSING-CLOUDS GAME TRANSITION & DEDICATED APP ONBOARDING STAGE
+       6. PASSING-CLOUDS CURTAIN, DEDICATED APP ONBOARDING & WARP HYPERDRIVE
        ========================================================================= */
     #appCloudCurtain {
       position: fixed;
@@ -461,7 +571,7 @@
       pointer-events: none;
       display: none;
       overflow: hidden;
-      background: radial-gradient(circle at 50% 50%, rgba(18, 22, 46, 0.72), rgba(5, 5, 8, 0.94));
+      background: radial-gradient(circle at 50% 50%, rgba(16, 20, 44, 0.72), rgba(5, 5, 8, 0.94));
     }
     #appCloudCurtain.is-active { display: block; }
     .tx-cloud-bank {
@@ -473,33 +583,23 @@
       will-change: transform, opacity;
       opacity: 0;
     }
-    .tx-cloud-bank.c1 {
-      top: -12vh; left: -160vw;
-      background: radial-gradient(circle, rgba(226, 232, 240, 0.42) 0%, rgba(56, 189, 248, 0.28) 46%, transparent 74%);
-    }
-    .tx-cloud-bank.c2 {
-      top: 22vh; right: -160vw;
-      background: radial-gradient(circle, rgba(196, 181, 253, 0.40) 0%, rgba(139, 92, 246, 0.30) 48%, transparent 74%);
-    }
-    .tx-cloud-bank.c3 {
-      bottom: -14vh; left: -155vw;
-      background: radial-gradient(circle, rgba(167, 243, 208, 0.30) 0%, rgba(56, 189, 248, 0.26) 46%, transparent 74%);
-    }
-    #appCloudCurtain.is-active .tx-cloud-bank.c1 { animation: txCloudPassRight 1.15s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
-    #appCloudCurtain.is-active .tx-cloud-bank.c2 { animation: txCloudPassLeft 1.15s cubic-bezier(0.22, 1, 0.36, 1) 0.06s forwards; }
-    #appCloudCurtain.is-active .tx-cloud-bank.c3 { animation: txCloudPassRight 1.15s cubic-bezier(0.22, 1, 0.36, 1) 0.12s forwards; }
-    @keyframes txCloudPassRight {
+    .tx-cloud-bank.c1 { top: -12vh; left: -160vw; background: radial-gradient(circle, rgba(226, 232, 240, 0.44) 0%, rgba(56, 189, 248, 0.28) 46%, transparent 74%); }
+    .tx-cloud-bank.c2 { top: 22vh; right: -160vw; background: radial-gradient(circle, rgba(196, 181, 253, 0.42) 0%, rgba(139, 92, 246, 0.30) 48%, transparent 74%); }
+    .tx-cloud-bank.c3 { bottom: -14vh; left: -155vw; background: radial-gradient(circle, rgba(167, 243, 208, 0.32) 0%, rgba(56, 189, 248, 0.26) 46%, transparent 74%); }
+    #appCloudCurtain.is-active .tx-cloud-bank.c1 { animation: txCloudRight 1.12s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+    #appCloudCurtain.is-active .tx-cloud-bank.c2 { animation: txCloudLeft 1.12s cubic-bezier(0.22, 1, 0.36, 1) 0.06s forwards; }
+    #appCloudCurtain.is-active .tx-cloud-bank.c3 { animation: txCloudRight 1.12s cubic-bezier(0.22, 1, 0.36, 1) 0.12s forwards; }
+    @keyframes txCloudRight {
       0% { transform: translate3d(0, 0, 0) scale(0.95); opacity: 0; }
       45% { transform: translate3d(135vw, 0, 0) scale(1.18); opacity: 0.96; }
       100% { transform: translate3d(275vw, 0, 0) scale(1.3); opacity: 0; }
     }
-    @keyframes txCloudPassLeft {
+    @keyframes txCloudLeft {
       0% { transform: translate3d(0, 0, 0) scale(0.95); opacity: 0; }
       45% { transform: translate3d(-135vw, 0, 0) scale(1.18); opacity: 0.96; }
       100% { transform: translate3d(-275vw, 0, 0) scale(1.3); opacity: 0; }
     }
 
-    /* Fullscreen Dedicated App Cinematic Onboarding Overlay (Benefits + 5-Step Animated Wizard) */
     #appOnboardingStage {
       position: fixed;
       inset: 0;
@@ -507,27 +607,47 @@
       display: none;
       flex-direction: column;
       background:
-        radial-gradient(640px circle at 20% 10%, rgba(139, 92, 246, 0.22), transparent 55%),
-        radial-gradient(560px circle at 85% 88%, rgba(56, 189, 248, 0.18), transparent 58%),
-        #050508;
+        radial-gradient(640px circle at 20% 10%, rgba(139, 92, 246, 0.24), transparent 56%),
+        radial-gradient(560px circle at 85% 88%, rgba(56, 189, 248, 0.20), transparent 58%),
+        rgba(5, 6, 11, 0.94);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
     }
-    #appOnboardingStage.is-open { display: flex; animation: txFadeSlideIn 0.34s cubic-bezier(0.22, 1, 0.36, 1) both; }
-    @keyframes txFadeSlideIn {
-      from { opacity: 0; transform: translate3d(0, 18px, 0) scale(0.985); }
-      to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
-    }
+    #appOnboardingStage.is-open { display: flex; animation: txFadeSlideIn 0.32s cubic-bezier(0.22, 1, 0.36, 1) both; }
     .tx-wiz-step { display: none; }
-    .tx-wiz-step.is-active { display: block; animation: txStepEnter 0.3s cubic-bezier(0.22, 1, 0.36, 1) both; }
+    .tx-wiz-step.is-active { display: block; animation: txStepEnter 0.28s cubic-bezier(0.22, 1, 0.36, 1) both; }
     @keyframes txStepEnter {
-      from { opacity: 0; transform: translate3d(20px, 0, 0); }
-      to { opacity: 1; transform: translate3d(0, 0, 0); }
+      from { opacity: 0; transform: translate3d(22px, 0, 0); }
+      to   { opacity: 1; transform: translate3d(0, 0, 0); }
     }
 
-    /* =========================================================================
-       4. ACCELERATED WARP-SPEED "ENTERING THE ARENA" GAMING LAUNCH OVERLAY
-       ========================================================================= */
+    /* Animated Dedicated-App Promo Banner */
+    .tx-app-promo-banner {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      padding: 13px 16px;
+      border: 1px solid rgba(56, 189, 248, 0.30);
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.24) 0%, rgba(13, 16, 30, 0.88) 54%, rgba(56, 189, 248, 0.22) 100%);
+      box-shadow: 0 14px 32px -12px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.20);
+    }
+    .tx-app-promo-banner::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      width: 36%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.14), transparent);
+      animation: txBannerSweep 4.6s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes txBannerSweep {
+      0% { transform: translateX(-160%) skewX(-20deg); }
+      42%, 100% { transform: translateX(350%) skewX(-20deg); }
+    }
+
+    /* Accelerated Warp-Speed Hyperdrive Launch Overlay */
     #arenaWarpOverlay {
       position: fixed;
       inset: 0;
@@ -539,83 +659,34 @@
       justify-content: center;
       overflow: hidden;
     }
-    #arenaWarpOverlay.is-active { display: flex; animation: txWarpFade 0.24s ease forwards; }
-    #arenaWarpCanvas {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-    }
-    .tx-warp-vignette {
-      position: absolute;
-      inset: 0;
-      z-index: 2;
-      pointer-events: none;
-      background: radial-gradient(circle at 50% 50%, transparent 20%, rgba(5, 5, 8, 0.88) 85%);
-    }
+    #arenaWarpOverlay.is-active { display: flex; animation: txWarpFade 0.22s ease forwards; }
+    #arenaWarpCanvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; }
+    .tx-warp-vignette { position: absolute; inset: 0; z-index: 2; pointer-events: none; background: radial-gradient(circle at 50% 50%, transparent 18%, rgba(5, 5, 8, 0.88) 86%); }
     @keyframes txWarpFade { from { opacity: 0; } to { opacity: 1; } }
 
-    /* Animated Gaming Banner Strip Inside Dedicated App Login Header */
-    .tx-app-promo-banner {
-      position: relative;
-      border-radius: 22px;
-      overflow: hidden;
-      padding: 14px 16px;
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      background: linear-gradient(135deg, rgba(139, 92, 246, 0.24) 0%, rgba(14, 17, 32, 0.92) 52%, rgba(56, 189, 248, 0.22) 100%);
-      box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.22);
-    }
-    .tx-app-promo-banner::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      width: 38%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.14), transparent);
-      animation: txBannerSweep 4.8s ease-in-out infinite;
-      pointer-events: none;
-    }
-    @keyframes txBannerSweep {
-      0% { transform: translateX(-140%) skewX(-20deg); }
-      45%, 100% { transform: translateX(340%) skewX(-20deg); }
-    }
-
-    /* Modals, Shimmer & Feedback */
+    /* Modals, Shimmer & Utility Keyframes */
     .modal-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 8600;
-      background: rgba(3, 4, 9, 0.86);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 14px;
-      opacity: 0;
-      transition: opacity 0.2s ease;
+      position: fixed; inset: 0; z-index: 8600; background: rgba(3, 4, 9, 0.86);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      display: none; align-items: center; justify-content: center; padding: 14px; opacity: 0; transition: opacity 0.2s ease;
     }
     .modal-overlay.active { display: flex; opacity: 1; }
     .modal-card {
-      width: 100%;
-      max-width: 460px;
-      max-height: 90dvh;
+      width: 100%; max-width: 460px; max-height: 90dvh;
       background: linear-gradient(165deg, rgba(20, 22, 38, 0.97) 0%, rgba(9, 11, 20, 0.99) 100%);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      border-radius: 24px;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.16); border-radius: 24px;
+      display: flex; flex-direction: column; overflow: hidden;
       box-shadow: 0 28px 68px rgba(0, 0, 0, 0.94), inset 0 1px 0 rgba(255, 255, 255, 0.20);
       animation: txFadeSlideIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
-
+    @keyframes txFadeSlideIn {
+      from { opacity: 0; transform: translate3d(0, 14px, 0) scale(0.97); }
+      to   { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+    }
     @keyframes skelShimmer { 0% { background-position: -220% 0; } 100% { background-position: 220% 0; } }
     .skel {
       background: linear-gradient(90deg, rgba(22, 25, 42, 0.88) 20%, rgba(44, 49, 78, 0.94) 50%, rgba(22, 25, 42, 0.88) 80%);
-      background-size: 220% 100%;
-      animation: skelShimmer 1.35s infinite linear;
-      border-radius: 12px;
+      background-size: 220% 100%; animation: skelShimmer 1.35s infinite linear; border-radius: 12px;
     }
     @keyframes shakeAnim {
       0%, 100% { transform: translateX(0); }
@@ -626,21 +697,37 @@
     }
     .shake-anim { animation: shakeAnim 0.4s ease; }
 
-    /* Adaptive Lite Mode & Reduced-Motion Clean Degradation */
+    /* =========================================================================
+       7. STRICT 3-TIER ADAPTIVE PERFORMANCE DEGRADATION (ULTRA / BALANCED / LITE)
+       ========================================================================= */
+    html[data-perf-tier="balanced"] .glass-card { backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
     html[data-perf-tier="lite"] .glass-card,
     html[data-perf-tier="lite"] .liquid-btn,
-    html[data-perf-tier="lite"] .modal-overlay {
+    html[data-perf-tier="lite"] .modal-overlay,
+    html[data-perf-tier="lite"] .tx-tap-prompt-bar,
+    html[data-perf-tier="lite"] #appOnboardingStage {
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
-      background: #101322 !important;
+      background: #0E1120 !important;
     }
     html[data-perf-tier="lite"] #txParticlesCanvas,
-    html[data-perf-tier="lite"] .tx-app-nebula-clouds,
-    html[data-perf-tier="lite"] .tx-app-promo-banner::after { display: none !important; }
-    html[data-perf-tier="lite"] .tx-hex-crest-ring { animation: none !important; }
+    html[data-perf-tier="lite"] .tx-logo-emblem::after,
+    html[data-perf-tier="lite"] .tx-kinetic-beam::after,
+    html[data-perf-tier="lite"] .btn-primary::after,
+    html[data-perf-tier="lite"] .btn-gold::after,
+    html[data-perf-tier="lite"] .btn-emerald::after,
+    html[data-perf-tier="lite"] .tx-tap-prompt-bar::after,
+    html[data-perf-tier="lite"] .tx-app-promo-banner::after {
+      display: none !important;
+      animation: none !important;
+    }
+    html[data-perf-tier="lite"] .tx-tap-prompt-bar { animation: none !important; }
 
     @media (prefers-reduced-motion: reduce) {
-      .tx-nebula-orb, .tx-hex-crest-ring, .tx-app-promo-banner::after, .skel { animation: none !important; }
+      .tx-logo-emblem::after, .tx-kinetic-beam::after, .tx-tap-prompt-bar, .tx-tap-prompt-bar::after,
+      .btn-primary::after, .btn-gold::after, .btn-emerald::after, .tx-app-promo-banner::after, .skel {
+        animation: none !important;
+      }
     }
 
     #toast {
@@ -652,61 +739,80 @@
     .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
   </style>
 </head>
-<!-- === END PART 2 / PASTE PART 3 BELOW === -->
+<!-- === END PART 1 / PASTE PART 2 BELOW === -->
   <body id="mainBody" class="selection:bg-[#8B5CF6] selection:text-white relative flex flex-col justify-between min-h-[100dvh]">
 
   <!-- OFFLINE / NETWORK RECOVERY BANNER -->
   <div id="offlineBanner" class="hidden fixed top-0 left-0 right-0 z-[9998] bg-[#F59E0B] text-[#050508] py-1.5 px-4 text-center font-mono text-xs font-bold uppercase tracking-wider">
-    <i class="fa-solid fa-wifi mr-1.5"></i> Offline — Reconnect to Authenticate or Sync Live Arena
+    <i class="fa-solid fa-wifi mr-1.5"></i> Offline — Reconnect to Authenticate or Enter Arena
   </div>
 
-  <!-- 1. NON-SQUARE SCULPTED HEX-CREST WEB SPLASH
-       (100% Blocked in Dedicated Android/iOS/Desktop Apps via Pre-Paint CSS!) -->
-  <div id="webHexSplash" role="status" aria-label="Initializing Tournyx Esports">
-    <div class="relative flex flex-col items-center text-center px-6">
-      <div class="tx-hex-crest-outer">
-        <div class="tx-hex-crest-ring" aria-hidden="true"></div>
-        <div class="tx-hex-crest-frame">
-          <img src="logo-full.png" onerror="this.onerror=null;this.src='favicon.png'" alt="Tournyx Esports Official Crest">
+  <!-- =========================================================
+       1. AAA CINEMATIC WEB TITLE SPLASH
+          (Exact Unclipped logo-full.png • 100% Blocked Pre-Paint in Dedicated Native Apps!)
+       ========================================================= -->
+  <div id="webTitleSplash" role="status" aria-label="Initializing Tournyx Esports">
+    <div class="tx-splash-reveal relative flex flex-col items-center text-center px-6 max-w-sm w-full">
+      <div class="tx-logo-emblem w-[112px] h-[112px] sm:w-[124px] sm:h-[124px]">
+        <div class="tx-logo-emblem-inner">
+          <img src="logo-full.png" onerror="this.onerror=null;this.src='favicon.png'" alt="Tournyx Esports Official Logo">
         </div>
       </div>
 
       <div class="mt-6 space-y-1.5">
-        <div class="font-orbitron text-lg font-black tracking-[0.24em] text-white uppercase" data-no-translate>
+        <div class="font-orbitron text-xl sm:text-2xl font-black tracking-[0.22em] text-white uppercase" data-no-translate>
           TOURNYX <span class="text-[#38BDF8]">ESPORTS</span>
         </div>
-        <div class="font-mono text-[10.5px] tracking-[0.26em] text-[#FBBF24] uppercase font-bold animate-pulse">
-          INITIALIZING SKILL ARENA...
+        <div class="font-mono text-[10px] tracking-[0.28em] text-[#94A3B8] uppercase">
+          POWER YOUR PLAY • OWN THE ARENA
         </div>
       </div>
 
+      <!-- Ultra-Thin Bottom Telemetry Progress Rail -->
+      <div class="w-56 h-[3px] rounded-full bg-white/10 overflow-hidden mt-7">
+        <div class="tx-splash-bar-fill"></div>
+      </div>
+
       <button onclick="dismissWebSplash()" type="button"
-        class="liquid-btn mt-7 min-h-[38px] px-5 rounded-full font-mono text-[10.5px] font-bold tracking-widest uppercase inline-flex items-center gap-2">
-        <span>Skip</span><i class="fa-solid fa-forward text-[#38BDF8]"></i>
+        class="liquid-btn mt-6 min-h-[38px] px-5 rounded-full font-mono text-[10px] font-bold tracking-widest uppercase inline-flex items-center gap-2">
+        <span>Skip</span><i class="fa-solid fa-forward text-[#38BDF8] text-[9px]"></i>
       </button>
     </div>
   </div>
 
-  <!-- 2. MULTI-LAYER ADAPTIVE ARENA BACKDROP (NEBULA CLOUDS + GPU PARTICLES) -->
-  <div class="tx-ambient-stage" aria-hidden="true"></div>
-  <div class="tx-app-nebula-clouds" aria-hidden="true">
-    <div class="tx-nebula-orb o1"></div>
-    <div class="tx-nebula-orb o2"></div>
-    <div class="tx-nebula-orb o3"></div>
-  </div>
+  <!-- =========================================================
+       2. FULL-BLEED LIVE ESPORTS TRAILER VIDEO + VIGNETTE + GPU EMBERS
+       ========================================================= -->
+  <video
+    id="bgVideo"
+    src="https://tournyx.in/FFBGMICODTRAILER.mp4"
+    poster="https://tournyx.in/hq-fallback-bg.jpg"
+    autoplay
+    loop
+    muted
+    playsinline
+    webkit-playsinline
+    preload="auto"
+    class="tx-trailer-video"
+    aria-hidden="true">
+  </video>
+  <div class="tx-cinema-vignette" aria-hidden="true"></div>
   <canvas id="txParticlesCanvas" aria-hidden="true"></canvas>
 
-  <!-- 3. CLEAN REAL-TIME TOP HUD (ZERO CLUNKY NOTIFY OR VOLUME BUTTONS) -->
+  <!-- =========================================================
+       3. CLEAN REAL-TIME AAA HUD BAR (Z-30 — STAYS ABOVE TAP-ANYWHERE LOBBY)
+          Removed Clunky Notify & Volume Toggles; Clean Telemetry & Tools Only
+       ========================================================= -->
   <header class="relative z-30 w-full max-w-[1280px] mx-auto px-3 sm:px-6 pt-safe">
     <div class="pt-3 pb-2 flex flex-wrap items-center justify-between gap-2">
-      <!-- Left: Live Server Latency + Mandatory Regional GPS Pill -->
+      <!-- Left: Server Latency + Mandatory Regional GPS Pill -->
       <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
         <div class="px-3 py-1.5 rounded-full glass-inset flex items-center gap-1.5 whitespace-nowrap" data-no-translate>
           <span class="relative flex h-2 w-2 flex-shrink-0">
             <span id="pingPulseDot" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10B981] opacity-75"></span>
             <span id="pingCoreDot" class="relative inline-flex rounded-full h-2 w-2 bg-[#10B981]"></span>
           </span>
-          <span class="font-mono text-[10px] text-[#CBD5E1] uppercase font-semibold">
+          <span class="font-mono text-[10px] text-[#E2E8F0] uppercase font-semibold">
             IN-SOUTH-1 • <span id="live-ping" class="text-[#10B981] font-bold">--MS</span>
           </span>
         </div>
@@ -719,15 +825,15 @@
         </button>
       </div>
 
-      <!-- Right: PWA Install (Web Only), Graphics Tier, Help, 24-Lang Switcher, Manage Accounts -->
+      <!-- Right: PWA Install (Web Only), 3-Tier Graphics Mode, Help, 24-Lang, Saved Accounts -->
       <div class="flex items-center gap-1.5 sm:gap-2">
         <button id="pwaInstallBtn" onclick="installPWAApp()" type="button"
           class="hidden btn-gold min-h-[36px] px-3 rounded-full font-mono text-[10px] uppercase items-center gap-1.5">
           <i class="fa-solid fa-download text-[10px]"></i><span>Install App</span>
         </button>
 
-        <button id="perfTierBtn" onclick="cyclePerfTier()" type="button" title="Graphics Mode (Ultra / Balanced / Lite)"
-          class="hidden md:inline-flex liquid-btn min-h-[36px] px-3 rounded-full font-mono text-[10px] font-bold uppercase items-center gap-1.5" data-no-translate>
+        <button id="perfTierBtn" onclick="cyclePerfTier()" type="button" title="Graphics Quality (Ultra / Balanced / Lite)"
+          class="hidden sm:inline-flex liquid-btn min-h-[36px] px-3 rounded-full font-mono text-[10px] font-bold uppercase items-center gap-1.5" data-no-translate>
           <i class="fa-solid fa-gauge-high text-[#38BDF8] text-[11px]"></i>
           <span id="perfTierLabel">AUTO</span>
         </button>
@@ -753,61 +859,139 @@
     </div>
   </header>
 
-  <!-- 4. MAIN RESPONSIVE WORKSPACE (DESKTOP SPLIT-STAGE + MOBILE / APP TERMINAL) -->
+  <!-- =========================================================
+       4. FREE FIRE / BGMI FULL-SCREEN "TAP ANYWHERE TO ENTER ARENA" LOBBY
+          Activates Automatically When a Saved Account Exists on This Device!
+          Shows Full-Screen Trailer Video + Verified Agent Plate + Instant 1-Tap Launch.
+       ========================================================= -->
+  <section id="tapToEnterLobby" onclick="handleTapAnywhereLobby(event)" role="button" tabindex="0" aria-label="Tap anywhere to enter the Tournyx Arena">
+    <!-- Top Brand Identity Floating Cleanly Over Live Trailer -->
+    <div class="my-auto flex flex-col items-center text-center pointer-events-none px-4">
+      <div class="tx-logo-emblem w-[88px] h-[88px] sm:w-[104px] sm:h-[104px] mb-4">
+        <div class="tx-logo-emblem-inner">
+          <img src="logo-full.png" onerror="this.onerror=null;this.src='favicon.png'" alt="Tournyx Esports">
+        </div>
+      </div>
+
+      <span class="px-3 py-1 rounded-full bg-black/55 border border-[#38BDF8]/40 font-mono text-[10px] font-bold text-[#38BDF8] uppercase tracking-[0.22em] mb-2">
+        SEASON 4 • INDIAN SKILL ARENA
+      </span>
+
+      <h1 class="font-orbitron text-3xl sm:text-5xl font-black tracking-[0.14em] text-white uppercase drop-shadow-[0_6px_28px_rgba(0,0,0,0.92)]" data-no-translate>
+        TOURNYX <span class="text-[#38BDF8]">ESPORTS</span>
+      </h1>
+      <p class="font-mono text-[11px] sm:text-xs text-[#CBD5E1] tracking-[0.24em] uppercase mt-2 drop-shadow">
+        POWER YOUR PLAY • OWN THE ARENA
+      </p>
+    </div>
+
+    <!-- Bottom Game Dock: Agent Plate + Pulsing "TAP ANYWHERE TO ENTER ARENA" Bar + Switch Controls -->
+    <div class="w-full max-w-md mx-auto flex flex-col items-center gap-3.5 pb-2">
+      <!-- Verified Agent Identity Plate -->
+      <div class="w-full glass-card rounded-2xl p-3.5 border border-[#10B981]/45 flex items-center justify-between gap-3 shadow-2xl">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="relative flex-shrink-0">
+            <img id="lobbyAgentAvatar" src="https://api.dicebear.com/7.x/adventurer/svg?seed=Player" alt="Agent Avatar"
+              class="w-12 h-12 rounded-2xl object-cover border-2 border-[#10B981] bg-[#080A14]">
+            <span class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-[#10B981] border-2 border-[#080A14] flex items-center justify-center">
+              <i class="fa-solid fa-bolt text-[8px] text-[#050508]"></i>
+            </span>
+          </div>
+          <div class="min-w-0 text-left">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span id="lobbyStatusBadge" class="px-2 py-0.5 rounded bg-[#10B981]/20 text-[#10B981] font-mono text-[9px] font-black uppercase">1-TAP READY</span>
+              <span id="lobbyAgentRole" class="font-mono text-[9.5px] text-[#FBBF24] font-bold uppercase" data-no-translate>PLAYER</span>
+            </div>
+            <div id="lobbyAgentName" class="font-display text-sm sm:text-base font-extrabold text-white truncate mt-0.5" data-no-translate>COMMANDER</div>
+            <div id="lobbyAgentEmail" class="font-mono text-[10px] text-[#94A3B8] truncate" data-no-translate>player@tournyx.in</div>
+          </div>
+        </div>
+        <div class="text-right flex-shrink-0">
+          <span class="font-mono text-[9px] text-[#94A3B8] uppercase block">Region</span>
+          <span id="lobbyAgentRegion" class="font-mono text-[10.5px] font-bold text-[#38BDF8] block" data-no-translate>INDIA</span>
+        </div>
+      </div>
+
+      <!-- Pulsing Game-Style Tap Prompt -->
+      <div class="tx-tap-prompt-bar text-center">
+        <span id="lobbyTapLabel" class="relative z-10 font-orbitron text-xs sm:text-sm font-black tracking-[0.18em] text-white uppercase inline-flex items-center gap-2.5">
+          <i class="fa-solid fa-bolt text-[#FBBF24]"></i>
+          <span>TAP ANYWHERE TO ENTER ARENA</span>
+          <i class="fa-solid fa-chevron-right text-[#38BDF8] text-xs"></i>
+        </span>
+      </div>
+
+      <!-- Secondary Non-Propagating Controls (Does NOT Trigger Tap-to-Enter) -->
+      <div class="flex items-center justify-center gap-2.5 pt-0.5" onclick="event.stopPropagation();">
+        <button onclick="switchToManualLoginFromLobby(event)" type="button"
+          class="liquid-btn min-h-[38px] px-4 rounded-full font-mono text-[10.5px] font-bold uppercase inline-flex items-center gap-1.5">
+          <i class="fa-solid fa-right-left text-[#38BDF8]"></i><span>Switch Account</span>
+        </button>
+        <button onclick="logoutFromTapLobby(event)" type="button"
+          class="min-h-[38px] px-4 rounded-full bg-[#F43F5E]/16 hover:bg-[#F43F5E]/28 border border-[#F43F5E]/45 text-[#FDA4AF] font-mono text-[10.5px] font-bold uppercase inline-flex items-center gap-1.5 transition-colors">
+          <i class="fa-solid fa-power-off"></i><span>Sign Out</span>
+        </button>
+      </div>
+    </div>
+  </section>
+<!-- === END PART 2 / PASTE PART 3 BELOW === -->
+    <!-- =========================================================
+       5. MAIN RESPONSIVE AUTH WORKSPACE
+          (Auto-Hidden While Full-Screen "Tap Anywhere" Lobby Is Active;
+           Visible for New Visitors, Manual Login, & Switch Account)
+       ========================================================= -->
   <main id="mainUiContainer" class="relative z-20 flex-1 w-full max-w-[1280px] mx-auto px-3 sm:px-6 pt-2 pb-10 flex flex-col lg:grid lg:grid-cols-12 lg:gap-8 items-center justify-center">
 
-    <!-- LEFT COLUMN (Desktop >= 1024px): 100% REAL-TIME INDIAN ESPORTS COMMAND STAGE (ZERO DEMO DATA) -->
+    <!-- LEFT COLUMN (Desktop >= 1024px): 100% REAL-TIME ARENA TELEMETRY (ZERO DEMO DATA, ZERO DUPLICATE HOST LINKS) -->
     <section class="hidden lg:flex lg:col-span-6 xl:col-span-7 flex-col justify-between pr-2 space-y-6">
-      <div class="inline-flex items-center gap-2.5 self-start px-3.5 py-1.5 rounded-full glass-inset border border-[#8B5CF6]/45">
+      <div class="inline-flex items-center gap-2.5 self-start px-3.5 py-1.5 rounded-full glass-inset border border-[#38BDF8]/35">
         <span class="px-2 py-0.5 rounded-full bg-[#10B981] text-[#050508] font-mono text-[10px] font-black uppercase">100% SKILL-BASED</span>
         <span class="font-mono text-[11px] text-[#E2E8F0] tracking-wider uppercase" data-no-translate>FREE FIRE MAX • BGMI • CODM • VALORANT</span>
       </div>
 
       <div class="space-y-3">
-        <h2 class="font-display text-4xl xl:text-[52px] font-extrabold tracking-tight text-white uppercase leading-[1.05]">
+        <h2 class="font-display text-4xl xl:text-[52px] font-extrabold tracking-tight text-white uppercase leading-[1.04] drop-shadow-[0_6px_24px_rgba(0,0,0,0.85)]">
           POWER YOUR PLAY.<br>
           <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#8B5CF6] via-[#38BDF8] to-[#10B981]">OWN THE ARENA.</span>
         </h2>
-        <p class="font-body text-sm xl:text-base text-[#94A3B8] max-w-xl leading-relaxed">
-          India's dedicated competitive esports ecosystem. Compete in verified daily scrims &amp; tournaments, communicate in HD Clan Voice rooms, upload 1080p Clutch Reels, and withdraw skill rewards straight to UPI.
+        <p class="font-body text-sm xl:text-base text-[#CBD5E1] max-w-xl leading-relaxed">
+          India's dedicated competitive esports platform. Compete in verified daily scrims &amp; regional cups, coordinate in HD background Clan Voice rooms, drop 1080p Clutch Reels, and withdraw skill rewards straight to UPI.
         </p>
       </div>
 
-      <!-- Real-Time Live Platform Telemetry Strip (Hydrated Live From Supabase — Zero Hardcoded Fake Counts) -->
+      <!-- Real-Time Live Platform Counts (Hydrated Live From Supabase) -->
       <div class="grid grid-cols-3 gap-3 max-w-xl">
-        <div class="glass-card rounded-2xl p-3.5 space-y-0.5">
+        <div class="glass-card rounded-2xl p-3.5 space-y-0.5 border border-white/12">
           <span class="font-mono text-[10px] text-[#94A3B8] uppercase block">Verified Athletes</span>
           <strong id="liveStatsPlayers" class="font-orbitron text-xl font-black text-white block" data-no-translate>--</strong>
         </div>
-        <div class="glass-card rounded-2xl p-3.5 space-y-0.5">
+        <div class="glass-card rounded-2xl p-3.5 space-y-0.5 border border-white/12">
           <span class="font-mono text-[10px] text-[#94A3B8] uppercase block">Active Clans</span>
           <strong id="liveStatsClans" class="font-orbitron text-xl font-black text-[#38BDF8] block" data-no-translate>--</strong>
         </div>
-        <div class="glass-card rounded-2xl p-3.5 space-y-0.5">
+        <div class="glass-card rounded-2xl p-3.5 space-y-0.5 border border-white/12">
           <span class="font-mono text-[10px] text-[#94A3B8] uppercase block">Open Lobbies</span>
           <strong id="liveStatsLobbies" class="font-orbitron text-xl font-black text-[#10B981] block" data-no-translate>--</strong>
         </div>
       </div>
 
-      <!-- 100% Real-Time Live Tournaments From Supabase (Zero Showcase / Demo Fillers) -->
-      <div class="space-y-2.5">
-        <div class="flex items-center justify-between max-w-2xl">
-          <span class="font-mono text-[11px] font-bold text-[#FBBF24] uppercase tracking-wider inline-flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-[#10B981] animate-pulse"></span> Live &amp; Upcoming Arena Cups
+      <!-- 100% Real-Time Live Arena Cups From Supabase (Zero Showcase / Demo Cards) -->
+      <div class="space-y-2.5 max-w-2xl">
+        <div class="flex items-center justify-between">
+          <span class="font-mono text-[11px] font-bold text-[#FBBF24] uppercase tracking-wider inline-flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-[#10B981] animate-pulse"></span> Live &amp; Upcoming Arena Lobbies
           </span>
-          <a href="organizer.html" class="font-mono text-[11px] font-bold text-[#38BDF8] hover:underline uppercase">
-            Host a Tournament ↗
-          </a>
+          <span class="font-mono text-[10px] text-[#94A3B8] uppercase">Real-Time Sync</span>
         </div>
 
-        <div id="liveTournamentsGrid" class="grid grid-cols-2 gap-3 max-w-2xl">
-          <div class="glass-card rounded-2xl p-4 space-y-2">
-            <div class="h-4 w-20 skel"></div>
+        <div id="liveTournamentsGrid" class="grid grid-cols-2 gap-3">
+          <div class="glass-card rounded-2xl p-4 space-y-2.5">
+            <div class="h-3.5 w-20 skel"></div>
             <div class="h-4 w-4/5 skel"></div>
             <div class="h-3.5 w-1/2 skel"></div>
           </div>
-          <div class="glass-card rounded-2xl p-4 space-y-2">
-            <div class="h-4 w-20 skel"></div>
+          <div class="glass-card rounded-2xl p-4 space-y-2.5">
+            <div class="h-3.5 w-20 skel"></div>
             <div class="h-4 w-4/5 skel"></div>
             <div class="h-3.5 w-1/2 skel"></div>
           </div>
@@ -815,10 +999,10 @@
       </div>
     </section>
 
-    <!-- RIGHT COLUMN: UNIFIED HARDENED AUTH TERMINAL -->
+    <!-- RIGHT COLUMN: KINETIC 3D-TILT AUTH TERMINAL -->
     <section class="w-full max-w-[468px] mx-auto lg:col-span-6 xl:col-span-5 flex flex-col justify-center space-y-3">
 
-      <!-- ANIMATED DEDICATED-APP GAMING BANNER (Highlights Live Esports Feel Inside Mobile & Desktop Apps) -->
+      <!-- ANIMATED DEDICATED-APP GAMING BANNER (Shown Inside Dedicated Mobile & Desktop Apps) -->
       <div id="appPromoBanner" class="hidden tx-app-promo-banner">
         <div class="flex items-center justify-between gap-3 relative z-10">
           <div class="min-w-0">
@@ -826,7 +1010,7 @@
               <span class="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-ping"></span> LIVE ARENA READY
             </span>
             <h3 id="appBannerTitle" class="font-display text-sm font-extrabold text-white mt-1 truncate">India's Skill-Based Esports Hub</h3>
-            <p id="appBannerSub" class="font-body text-[11px] text-[#CBD5E1] truncate">Verified Scrims • HD Clan Voice • Instant UPI Payouts</p>
+            <p id="appBannerSub" class="font-body text-[11px] text-[#CBD5E1] truncate">Verified Scrims • HD Clan Voice • Fast UPI Payouts</p>
           </div>
           <div class="flex items-center gap-1 flex-shrink-0" id="appBannerDots">
             <span class="w-4 h-1.5 rounded-full bg-[#38BDF8]"></span>
@@ -836,36 +1020,22 @@
         </div>
       </div>
 
-      <!-- 1-TAP AUTOMATIC DEVICE RESUME BAR (DIRECT INSTANT LOGIN — ZERO MANUAL TYPING!) -->
-      <div id="quickResumeBar" class="hidden p-3 rounded-2xl glass-card border border-[#10B981]/50 flex items-center justify-between gap-2.5">
-        <div onclick="resumePrimarySavedAccount()" class="flex items-center gap-2.5 min-w-0 cursor-pointer flex-1">
-          <img id="resumeAvatar" src="https://api.dicebear.com/7.x/adventurer/svg?seed=Player" alt="Saved Agent"
-            class="w-10 h-10 rounded-full border-2 border-[#10B981] object-cover flex-shrink-0 bg-[#0A0C16]">
-          <div class="min-w-0">
-            <span class="font-mono text-[9px] text-[#10B981] tracking-widest uppercase font-bold block">1-TAP VERIFIED SESSION</span>
-            <span id="resumeName" class="font-display text-xs font-extrabold text-white truncate block" data-no-translate>PLAYER</span>
-            <span id="resumeEmail" class="font-mono text-[10px] text-[#94A3B8] truncate block" data-no-translate>player@tournyx.in</span>
-          </div>
-        </div>
-        <div class="flex items-center gap-1.5 flex-shrink-0">
-          <button id="btnQuickResume" onclick="resumePrimarySavedAccount()" type="button"
-            class="btn-emerald min-h-[38px] px-3.5 rounded-full font-mono text-[10.5px] uppercase inline-flex items-center gap-1">
-            <span>Resume</span><i class="fa-solid fa-bolt"></i>
-          </button>
-          <button onclick="openAccountsModal()" type="button" title="Switch or Manage Accounts"
-            class="liquid-btn w-9 h-9 rounded-full flex items-center justify-center text-xs text-[#38BDF8]">
-            <i class="fa-solid fa-repeat"></i>
-          </button>
-        </div>
-      </div>
+      <!-- RETURN TO 1-TAP LOBBY PILL (Visible Only If User Clicked "Switch Account" From Tap Lobby) -->
+      <button id="btnReturnToTapLobby" onclick="showTapAnywhereLobby()" type="button"
+        class="hidden liquid-btn w-full min-h-[42px] px-4 rounded-2xl font-mono text-[11px] font-bold text-[#10B981] uppercase items-center justify-between gap-2">
+        <span class="inline-flex items-center gap-2"><i class="fa-solid fa-bolt"></i><span>Return to 1-Tap Quick Entry</span></span>
+        <i class="fa-solid fa-chevron-right text-xs text-[#38BDF8]"></i>
+      </button>
 
-      <!-- SCULPTED HEXAGONAL BRAND HEADER (EXACT logo-full.png — ZERO SQUARE BOX) -->
-      <div class="flex flex-col items-center justify-center text-center pt-1">
-        <div class="relative mb-2">
-          <div class="tx-hex-badge-sm">
-            <img src="logo-full.png" onerror="this.onerror=null;this.src='favicon.png'" alt="Tournyx Esports Logo">
+      <!-- EXACT UNCLIPPED LOGO EMBLEM & IDENTITY HEADER -->
+      <div class="flex flex-col items-center justify-center text-center pt-0.5">
+        <div class="relative mb-2.5">
+          <div class="tx-logo-emblem w-16 h-16 sm:w-[70px] sm:h-[70px]">
+            <div class="tx-logo-emblem-inner">
+              <img src="logo-full.png" onerror="this.onerror=null;this.src='favicon.png'" alt="Tournyx Esports Logo">
+            </div>
           </div>
-          <span class="absolute -bottom-0.5 -right-1 w-5 h-5 rounded-full bg-[#10B981] text-[#050508] flex items-center justify-center text-[9.5px] font-black border-2 border-[#050508]" title="Firewall Protected">
+          <span class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-[#10B981] text-[#050508] flex items-center justify-center text-[9.5px] font-black border-2 border-[#050508]" title="Server Auth Firewall Active">
             <i class="fa-solid fa-shield-halved"></i>
           </span>
         </div>
@@ -873,14 +1043,19 @@
         <h1 class="font-orbitron text-xl sm:text-2xl tracking-wider uppercase text-white font-black leading-none" data-no-translate>
           TOURNYX <span class="text-[#38BDF8]">ESPORTS</span>
         </h1>
-        <p class="font-mono text-[9.5px] tracking-[0.2em] text-[#94A3B8] uppercase mt-1">
+        <p class="font-mono text-[9.5px] tracking-[0.2em] text-[#CBD5E1] uppercase mt-1">
           POWER YOUR PLAY • OWN THE ARENA
         </p>
       </div>
 
-      <!-- MAIN HARDENED LIQUID GLASS AUTH CARD -->
-      <div id="mainAuthCard" class="w-full glass-card rounded-3xl p-4 sm:p-5 pb-6 relative overflow-hidden transition-all duration-300">
-        <div id="cardTopAccent" class="absolute top-0 left-4 right-4 h-[2px] rounded-full bg-gradient-to-r from-[#8B5CF6] via-[#38BDF8] to-[#10B981]"></div>
+      <!-- MAIN KINETIC LIQUID GLASS AUTH TERMINAL -->
+      <div id="mainAuthCard" class="tx-arena-card w-full glass-card rounded-3xl p-4 sm:p-5 pb-6 overflow-hidden">
+        <!-- Tactical HUD Corner Brackets & Kinetic Beam -->
+        <span class="tx-hud-corner tl" aria-hidden="true"></span>
+        <span class="tx-hud-corner tr" aria-hidden="true"></span>
+        <span class="tx-hud-corner bl" aria-hidden="true"></span>
+        <span class="tx-hud-corner br" aria-hidden="true"></span>
+        <div id="cardTopAccent" class="tx-kinetic-beam" aria-hidden="true"></div>
 
         <!-- REGIONAL FAIR-PLAY GPS LOCK OVERLAY -->
         <div id="cardGeoLockOverlay" class="hidden absolute inset-0 z-50 bg-[#06070E]/95 backdrop-blur-xl p-6 flex-col items-center justify-center text-center space-y-4 rounded-3xl">
@@ -890,7 +1065,7 @@
           <div class="space-y-1.5 max-w-xs">
             <span class="font-mono text-[10px] text-[#FBBF24] tracking-widest uppercase font-bold block">Regional Fair-Play Lock</span>
             <h3 class="font-display text-base font-extrabold text-white leading-snug">
-              Location Access Required for Regional Server &amp; Fair-Play Verification
+              Location Access Required for Regional Server &amp; Fair-Play Routing
             </h3>
             <p class="font-body text-xs text-[#94A3B8] leading-relaxed">
               Allow GPS location to route you to the lowest-ping Indian server and auto-fill your State &amp; City profile.
@@ -917,8 +1092,8 @@
           <span id="lockoutCountdownBadge" class="px-2.5 py-1 rounded-full bg-[#F43F5E] text-white font-mono text-xs font-black flex-shrink-0" data-no-translate>45s</span>
         </div>
 
-        <!-- CONDITIONAL 2-TAB DEFAULT SWITCHER (LOGIN | ORGANIZER • CREATE ID REVEALS ON WEB SIGNUP) -->
-        <div class="p-1 glass-inset rounded-full grid grid-cols-2 gap-1 mb-3.5" id="authTabSwitcher">
+        <!-- CONDITIONAL 2-TAB DEFAULT SWITCHER (LOGIN | ORGANIZER • CREATE ID REVEALS FOR WEB SIGNUP) -->
+        <div class="p-1 glass-inset rounded-full grid grid-cols-2 gap-1 mb-3.5 relative z-10" id="authTabSwitcher">
           <button id="tabBtnLogin" onclick="switchAuthTab('login')" type="button"
             class="min-h-[40px] px-2 text-center rounded-full font-mono text-[11px] sm:text-xs font-extrabold tracking-wider uppercase transition-all bg-gradient-to-r from-[#8B5CF6] to-[#38BDF8] text-white shadow whitespace-nowrap">
             <i class="fa-solid fa-right-to-bracket mr-1"></i><span>Login</span>
@@ -936,7 +1111,7 @@
         </div>
 
         <!-- GLOBAL 18+ DPDP ACT & FAIR PLAY TERMS GATE -->
-        <label id="termsGateContainer" onclick="doHaptic()" class="flex items-start gap-2.5 mb-3.5 px-3 py-2.5 rounded-2xl glass-inset cursor-pointer select-none">
+        <label id="termsGateContainer" onclick="doHaptic()" class="flex items-start gap-2.5 mb-3.5 px-3 py-2.5 rounded-2xl glass-inset cursor-pointer select-none relative z-10">
           <input type="checkbox" id="masterTerms" checked class="peer sr-only">
           <div class="w-4 h-4 mt-0.5 rounded border border-white/30 bg-[#080A14] peer-checked:bg-[#10B981] peer-checked:border-[#10B981] flex items-center justify-center transition-all flex-shrink-0">
             <i class="fa-solid fa-check text-[#050508] text-[10px] font-black opacity-0 peer-checked:opacity-100 transition-opacity"></i>
@@ -950,14 +1125,14 @@
         <!-- =========================================================
              VIEW 1: HARDENED PLAYER LOGIN
              ========================================================= -->
-        <div id="viewLogin" class="block">
+        <div id="viewLogin" class="block relative z-10">
           <form id="playerLoginForm" class="flex flex-col gap-3" autocomplete="on">
             <input type="text" name="tx_bot_trap" id="txBotTrapLogin" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true">
 
             <div>
               <label class="font-mono text-[10px] text-[#94A3B8] tracking-widest uppercase mb-1 flex items-center justify-between" for="loginEmail">
                 <span>Player Identifier / Email</span>
-                <span id="attemptCounterLabel" class="text-[#38BDF8] text-[9.5px]" data-no-translate>SHIELD: READY</span>
+                <span id="attemptCounterLabel" class="text-[#38BDF8] text-[9.5px]" data-no-translate>SHIELD: ACTIVE</span>
               </label>
               <div class="relative flex items-center">
                 <i class="fa-solid fa-envelope text-[#64748B] text-xs absolute left-3.5 pointer-events-none"></i>
@@ -996,8 +1171,8 @@
 
           <!-- Divider -->
           <div class="relative flex items-center justify-center my-4">
-            <div class="w-full h-[1px] bg-white/[0.09]"></div>
-            <span class="absolute px-3 bg-[#0E1120] font-mono text-[9.5px] tracking-widest text-[#94A3B8] uppercase">
+            <div class="w-full h-[1px] bg-white/[0.10]"></div>
+            <span class="absolute px-3 bg-[#0D101E] font-mono text-[9.5px] tracking-widest text-[#94A3B8] uppercase">
               Or Authenticate Via
             </span>
           </div>
@@ -1040,7 +1215,7 @@
           <div class="mt-4 pt-3.5 border-t border-white/[0.08] flex flex-col sm:flex-row items-center justify-between gap-2 text-xs">
             <span class="text-[#94A3B8]">New to Tournyx?</span>
             <button onclick="handleSignupTrigger()" type="button"
-              class="btn-emerald min-h-[38px] px-4 rounded-full font-display text-xs inline-flex items-center gap-1.5">
+              class="btn-emerald min-h-[40px] px-4 rounded-full font-display text-xs inline-flex items-center gap-1.5">
               <span>Create Free Player ID →</span>
             </button>
           </div>
@@ -1048,9 +1223,9 @@
 
         <!-- =========================================================
              VIEW 2: FAST WEB SIGN-UP FORM (WITH LIVE IGN SUGGESTIONS,
-             PASSWORD ENTROPY METER, +91 OTP & AUTO-FILLED GPS STATE+CITY)
+             PASSWORD ENTROPY METER, +91 OTP & GPS AUTO-FILLED STATE+CITY)
              ========================================================= -->
-        <div id="viewSignup" class="hidden">
+        <div id="viewSignup" class="hidden relative z-10">
           <div class="flex items-center justify-between gap-2 mb-3">
             <div>
               <span class="font-display text-sm font-extrabold text-[#10B981] block">Create Player ID</span>
@@ -1058,7 +1233,7 @@
             </div>
 
             <div class="flex items-center gap-1.5">
-              <button onclick="launchAppOnboardingFlow()" type="button" title="Guided Animated Setup"
+              <button onclick="launchAppOnboardingFlow(false)" type="button" title="Guided Animated Setup"
                 class="liquid-btn min-h-[34px] px-2.5 rounded-full font-mono text-[10px] text-[#38BDF8] font-bold">
                 <i class="fa-solid fa-wand-magic-sparkles"></i>
               </button>
@@ -1120,7 +1295,7 @@
               </div>
             </div>
 
-            <!-- WhatsApp +91 OTP Verification (With 45s Cooldown & Auto-Verify on 6 Digits) -->
+            <!-- WhatsApp +91 OTP Verification (45s Cooldown + Auto-Verify on 6 Digits) -->
             <div class="p-3 rounded-2xl glass-inset border border-white/12 space-y-2">
               <div class="flex items-center justify-between">
                 <label class="font-mono text-[9.5px] text-[#FBBF24] uppercase font-bold" for="regPhone">
@@ -1186,7 +1361,6 @@
               </div>
             </div>
 
-            <!-- Clickable Pro IGN Suggestions -->
             <div id="ignSuggestionsBox" class="hidden flex-wrap items-center gap-1.5 p-2 rounded-xl glass-inset"></div>
 
             <!-- Fuzzy GPS Auto-Filled State & City/District -->
@@ -1214,8 +1388,9 @@
 
         <!-- =========================================================
              VIEW 3: VERIFIED ORGANIZER STUDIO PORTAL
+             (Single Dedicated Entry Point for Hosts — Zero Duplicates Elsewhere!)
              ========================================================= -->
-        <div id="viewOrganizer" class="hidden">
+        <div id="viewOrganizer" class="hidden relative z-10">
           <div class="mb-3.5 p-3 rounded-2xl bg-[#F59E0B]/12 border border-[#F59E0B]/40 flex items-center justify-between gap-2">
             <div class="flex items-center gap-2.5 min-w-0">
               <div class="w-9 h-9 rounded-xl bg-[#F59E0B]/20 flex items-center justify-center text-[#FBBF24] flex-shrink-0">
@@ -1274,8 +1449,8 @@
     </section>
   </main>
 
-  <!-- 5. INSTITUTIONAL FOOTER -->
-  <footer class="relative z-20 w-full max-w-[1280px] mx-auto px-4 py-3 pb-safe flex flex-col sm:flex-row items-center justify-between gap-2 text-center border-t border-white/[0.06]">
+  <!-- 6. INSTITUTIONAL FOOTER -->
+  <footer id="pageFooter" class="relative z-20 w-full max-w-[1280px] mx-auto px-4 py-3 pb-safe flex flex-col sm:flex-row items-center justify-between gap-2 text-center border-t border-white/[0.07]">
     <div class="font-mono text-[10px] text-[#10B981] inline-flex items-center gap-1.5">
       <i class="fa-solid fa-shield-halved"></i><span>Server-Hardened Auth Firewall Active</span>
     </div>
@@ -1288,7 +1463,7 @@
   </footer>
 <!-- === END PART 3 / PASTE PART 4 BELOW === -->
     <!-- =========================================================
-       6. PASSING-CLOUDS GAME TRANSITION CURTAIN
+       7. PASSING-CLOUDS GPU GAME TRANSITION CURTAIN
        ========================================================= -->
   <div id="appCloudCurtain" aria-hidden="true">
     <div class="tx-cloud-bank c1"></div>
@@ -1297,9 +1472,9 @@
   </div>
 
   <!-- =========================================================
-       7. DEDICATED APP CINEMATIC ONBOARDING STAGE
-          Phase A: Tournyx Hex Crest & 3-Slide Visual Benefits Showcase (Next / Skip)
-          Phase B: 5-Step Animated Interactive Sign-Up Wizard (Direct Home Entry)
+       8. DEDICATED APP CINEMATIC ONBOARDING STAGE
+          Phase A: Official Unclipped Emblem & 3-Slide Visual Benefits (Next / Skip)
+          Phase B: 5-Step Interactive Animated Sign-Up Wizard -> Direct Home Entry
        ========================================================= -->
   <section id="appOnboardingStage" class="pt-safe pb-safe" role="dialog" aria-modal="true" aria-label="Tournyx Esports Guided Onboarding">
     <!-- Top Onboarding Bar -->
@@ -1310,7 +1485,7 @@
       </button>
 
       <div class="flex items-center gap-2">
-        <div class="w-7 h-7 rounded-lg overflow-hidden border border-white/20 bg-[#100822]">
+        <div class="w-7 h-7 rounded-lg overflow-hidden border border-white/20 bg-[#080A14]">
           <img src="logo-full.png" onerror="this.onerror=null;this.src='favicon.png'" alt="" class="w-full h-full object-cover">
         </div>
         <span id="appOnbStageLabel" class="font-mono text-[10.5px] font-bold text-[#38BDF8] uppercase tracking-wider">TOURNYX BRIEFING</span>
@@ -1322,29 +1497,33 @@
       </button>
     </div>
 
-    <!-- Centered Animated Content Stage -->
+    <!-- Centered Animated Stage -->
     <div class="flex-1 w-full max-w-xl mx-auto px-4 py-4 flex flex-col justify-center">
 
       <!-- PHASE A: VISUAL TOURNYX BENEFITS SHOWCASE (3 GAME-FEEL SLIDES) -->
       <div id="appBenefitsPhase" class="space-y-6 text-center">
-        <!-- Sculpted Hex Crest Hero -->
+        <!-- Exact Unclipped Official Emblem -->
         <div class="flex justify-center">
-          <div class="tx-hex-crest-outer" style="width:112px;height:112px;">
-            <div class="tx-hex-crest-ring"></div>
-            <div class="tx-hex-crest-frame" style="width:102px;height:102px;">
+          <div class="tx-logo-emblem w-[96px] h-[96px] sm:w-[108px] sm:h-[108px]">
+            <div class="tx-logo-emblem-inner">
               <img src="logo-full.png" onerror="this.onerror=null;this.src='favicon.png'" alt="Tournyx Esports">
             </div>
           </div>
         </div>
 
-        <!-- Slide Cards -->
+        <!-- Slide Card -->
         <div id="appBenefitSlideBox" class="glass-card rounded-3xl p-6 space-y-4 border border-[#8B5CF6]/40 relative overflow-hidden">
+          <span class="tx-hud-corner tl" aria-hidden="true"></span>
+          <span class="tx-hud-corner tr" aria-hidden="true"></span>
+          <span class="tx-hud-corner bl" aria-hidden="true"></span>
+          <span class="tx-hud-corner br" aria-hidden="true"></span>
+
           <div id="appBenefitBadge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#10B981]/16 border border-[#10B981]/45 font-mono text-[10px] font-bold text-[#10B981] uppercase">
             <i class="fa-solid fa-trophy"></i> 100% Skill-Based Arena
           </div>
 
           <div id="appBenefitIconWrap" class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-[#8B5CF6]/25 to-[#38BDF8]/25 border border-white/20 flex items-center justify-center text-3xl text-[#38BDF8]">
-            <i class="fa-solid fa-bolt"></i>
+            <i class="fa-solid fa-trophy"></i>
           </div>
 
           <div class="space-y-2">
@@ -1373,7 +1552,7 @@
           </div>
         </div>
 
-        <!-- Slide Dots & Next / Start Controls -->
+        <!-- Slide Dots & Next / Skip / Existing Login Controls -->
         <div class="space-y-4">
           <div id="appBenefitDots" class="flex items-center justify-center gap-2">
             <span class="w-7 h-2 rounded-full bg-[#38BDF8] transition-all"></span>
@@ -1391,6 +1570,11 @@
               <span>Next</span><i class="fa-solid fa-arrow-right"></i>
             </button>
           </div>
+
+          <button onclick="closeAppOnboardingStage()" type="button"
+            class="font-mono text-[11px] text-[#94A3B8] hover:text-[#38BDF8] transition-colors">
+            Already have a Tournyx account? <span class="text-white underline font-bold">Sign In</span>
+          </button>
         </div>
       </div>
 
@@ -1407,7 +1591,7 @@
           </div>
         </div>
 
-        <!-- OAuth Verified Pill (Shown inside wizard if user came from Google/Discord OAuth) -->
+        <!-- OAuth Verified Pill (If User Arrived via Google/Discord/Facebook/Apple) -->
         <div id="wizOAuthPill" class="hidden p-3 rounded-2xl bg-[#10B981]/14 border border-[#10B981]/45 flex items-center justify-between gap-2">
           <div class="flex items-center gap-2 min-w-0">
             <i class="fa-solid fa-circle-check text-[#10B981]"></i>
@@ -1416,14 +1600,16 @@
           <span class="px-2 py-0.5 rounded-full bg-[#10B981]/20 font-mono text-[9px] font-bold text-[#10B981] uppercase">VERIFIED</span>
         </div>
 
-        <div class="glass-card rounded-3xl p-5 sm:p-6 space-y-5 border border-white/15">
+        <div class="glass-card rounded-3xl p-5 sm:p-6 space-y-5 border border-white/15 relative overflow-hidden">
+          <span class="tx-hud-corner tl" aria-hidden="true"></span>
+          <span class="tx-hud-corner tr" aria-hidden="true"></span>
 
           <!-- STEP 1: CHOOSE YOUR MAIN GAME -->
           <div id="wizStep1" class="tx-wiz-step is-active space-y-4">
             <div class="space-y-1">
               <span class="font-mono text-[10px] font-bold text-[#FBBF24] uppercase">Battleground Selection</span>
               <h2 class="font-display text-xl font-extrabold text-white">Which game do you dominate?</h2>
-              <p class="font-body text-xs text-[#94A3B8]">We customize your lobby feed, scrim suggestions, and UID format around your main game.</p>
+              <p class="font-body text-xs text-[#94A3B8]">We personalize your arena lobbies, scrim rooms, and UID rules around your main game.</p>
             </div>
 
             <div class="grid grid-cols-2 gap-3" id="wizGameCards">
@@ -1457,7 +1643,7 @@
             </div>
           </div>
 
-          <!-- STEP 2: DISPLAY NAME & UNIQUE IN-GAME NAME (WITH LIVE SUGGESTIONS) -->
+          <!-- STEP 2: DISPLAY NAME & UNIQUE IGN (WITH INTERACTIVE PRO TAG SUGGESTIONS) -->
           <div id="wizStep2" class="tx-wiz-step space-y-4">
             <div class="space-y-1">
               <span class="font-mono text-[10px] font-bold text-[#38BDF8] uppercase">Player Identity</span>
@@ -1533,7 +1719,7 @@
             <div class="space-y-1">
               <span class="font-mono text-[10px] font-bold text-[#FBBF24] uppercase">Anti-Smurf Shield</span>
               <h2 class="font-display text-xl font-extrabold text-white">Verify your +91 WhatsApp Number</h2>
-              <p class="font-body text-xs text-[#94A3B8]">1 number = 1 verified esports athlete. Keeps tournaments fair &amp; hacker-free.</p>
+              <p class="font-body text-xs text-[#94A3B8]">1 number = 1 verified esports athlete. Keeps lobbies fair &amp; hacker-free.</p>
             </div>
 
             <div class="p-4 rounded-2xl glass-inset border border-white/12 space-y-3">
@@ -1566,12 +1752,12 @@
             </div>
           </div>
 
-          <!-- STEP 5: ACCOUNT SECURITY (EMAIL + PASSWORD OR GOOGLE LINK) & DIRECT ARENA LAUNCH -->
+          <!-- STEP 5: ACCOUNT SECURITY (EMAIL + PASSWORD) & DIRECT HOME LAUNCH -->
           <div id="wizStep5" class="tx-wiz-step space-y-4">
             <div class="space-y-1">
               <span class="font-mono text-[10px] font-bold text-[#10B981] uppercase">Final Lock-In</span>
               <h2 class="font-display text-xl font-extrabold text-white">Secure your Tournyx Account</h2>
-              <p class="font-body text-xs text-[#94A3B8]">Once completed, we deploy you directly into the Tournyx Home Arena.</p>
+              <p class="font-body text-xs text-[#94A3B8]">Once completed, we deploy you straight into the Tournyx Home Arena.</p>
             </div>
 
             <div id="wizEmailPwdFields" class="space-y-3">
@@ -1605,7 +1791,7 @@
             </div>
           </div>
 
-          <!-- Wizard Step Action Footer -->
+          <!-- Wizard Action Footer -->
           <div class="pt-2 flex items-center gap-2.5">
             <button id="btnWizPrev" onclick="wizardPrevStep()" type="button"
               class="hidden liquid-btn min-h-[48px] px-5 rounded-2xl font-display text-xs font-bold uppercase">
@@ -1626,16 +1812,16 @@
   </section>
 
   <!-- =========================================================
-       8. ACCELERATED WARP-SPEED "ENTERING THE ARENA" GAMING LAUNCHER
+       9. ACCELERATED WARP-SPEED "ENTERING THE ARENA" GAMING LAUNCHER
+          (GPU Starfield Hyperdrive Canvas + Exact Unclipped Emblem)
        ========================================================= -->
   <div id="arenaWarpOverlay" role="status" aria-live="polite" aria-label="Entering the Tournyx Arena">
     <canvas id="arenaWarpCanvas" aria-hidden="true"></canvas>
     <div class="tx-warp-vignette" aria-hidden="true"></div>
 
     <div class="relative z-10 flex flex-col items-center text-center px-6 max-w-md w-full space-y-5">
-      <div class="tx-hex-crest-outer" style="width:124px;height:124px;">
-        <div class="tx-hex-crest-ring"></div>
-        <div class="tx-hex-crest-frame" style="width:112px;height:112px;">
+      <div class="tx-logo-emblem w-[108px] h-[108px] sm:w-[120px] sm:h-[120px]">
+        <div class="tx-logo-emblem-inner">
           <img src="logo-full.png" onerror="this.onerror=null;this.src='favicon.png'" alt="Tournyx Esports">
         </div>
       </div>
@@ -1661,8 +1847,7 @@
   </div>
 
   <!-- =========================================================
-       9. ALL HARDENED MODALS (ACCOUNTS, 24-LANG PICKER, HELP DESK,
-          FORGOT PASSWORD & ORGANIZER STATUS)
+       10. ALL 5 HARDENED MODALS + HIGH-CONTRAST TOAST
        ========================================================= -->
 
   <!-- MODAL A: 1-TAP DIRECT-RESUME MANAGE ACCOUNTS MODAL -->
@@ -1673,7 +1858,7 @@
           <h3 class="font-display text-base font-extrabold text-[#FBBF24] flex items-center gap-2">
             <i class="fa-solid fa-users-gear"></i><span>Saved Agent Profiles</span>
           </h3>
-          <p class="font-body text-[11px] text-[#94A3B8]">Tap Resume for instant 1-tap login — zero password re-entry</p>
+          <p class="font-body text-[11px] text-[#94A3B8]">Tap Resume for instant 1-tap direct login — zero password re-entry</p>
         </div>
         <button onclick="closeModals()" type="button" aria-label="Close" class="liquid-btn w-9 h-9 rounded-full flex items-center justify-center"><i class="fa-solid fa-xmark text-sm"></i></button>
       </div>
@@ -1703,7 +1888,7 @@
     </div>
   </div>
 
-  <!-- MODAL C: UPGRADED HELP & SUPPORT DESK (CREATE TICKET + TRACK LIVE TICKET) -->
+  <!-- MODAL C: UPGRADED HELP & SUPPORT DESK (CREATE + LIVE TRACK TICKET) -->
   <div class="modal-overlay" id="helpModal" role="dialog" aria-modal="true" aria-label="Tournyx Player Support Desk">
     <div class="modal-card">
       <div class="px-5 py-4 border-b border-white/[0.08] flex items-center justify-between gap-2 flex-shrink-0">
@@ -1711,12 +1896,11 @@
           <h3 class="font-display text-base font-extrabold text-[#38BDF8] flex items-center gap-2">
             <i class="fa-solid fa-headset"></i><span>Tournyx Player Support</span>
           </h3>
-          <p class="font-body text-[11px] text-[#94A3B8]">Submit verified support tickets or track existing replies live</p>
+          <p class="font-body text-[11px] text-[#94A3B8]">Submit verified support tickets or track live replies</p>
         </div>
         <button onclick="closeModals()" type="button" aria-label="Close" class="liquid-btn w-9 h-9 rounded-full flex items-center justify-center"><i class="fa-solid fa-xmark text-sm"></i></button>
       </div>
 
-      <!-- Support Mode Switcher -->
       <div class="px-5 pt-3.5 pb-1 grid grid-cols-2 gap-2 flex-shrink-0">
         <button id="helpTabCreate" onclick="switchHelpTab('create')" type="button"
           class="min-h-[38px] rounded-xl bg-gradient-to-r from-[#8B5CF6] to-[#38BDF8] text-white font-display text-xs font-bold">
@@ -1729,7 +1913,6 @@
       </div>
 
       <div class="p-5 overflow-y-auto max-h-[64vh]">
-        <!-- Create Ticket View -->
         <div id="supportFormView">
           <form id="supportTicketForm" onsubmit="submitSupportTicket(event)" class="space-y-3">
             <div>
@@ -1756,7 +1939,6 @@
           </form>
         </div>
 
-        <!-- Ticket Created Receipt Card -->
         <div id="supportReceiptView" class="hidden text-center space-y-3.5 py-2">
           <div class="w-12 h-12 mx-auto rounded-2xl bg-[#10B981]/18 border border-[#10B981] flex items-center justify-center text-[#10B981] text-lg">
             <i class="fa-solid fa-check"></i>
@@ -1779,7 +1961,6 @@
           </div>
         </div>
 
-        <!-- Track Existing Ticket View -->
         <div id="supportTrackView" class="hidden space-y-3">
           <form onsubmit="trackSupportTicket(event)" class="space-y-3">
             <div>
@@ -1848,7 +2029,7 @@
   </div>
 <!-- === END PART 4 / PASTE PART 5 BELOW === -->
     <!-- =========================================================
-       10. TOURNYX v9.0 HARDENED AUTH FIREWALL & GAME-FEEL ENGINE
+       11. TOURNYX v10.0 AAA ESPORTS AUTH & GPU MOTION ENGINE
        ========================================================= -->
   <script>
     (() => {
@@ -1874,9 +2055,9 @@
       let googleAuthenticatedEmail = "";
       let googleAuthenticatedName = "";
       let googleAuthenticatedAvatar = "";
+      let isTapLobbyVisible = false;
 
       let isPhoneVerified = false;
-      let verifiedPhoneDigits = "";
       let otpCooldownTimer = null;
       let otpCooldownSec = 0;
 
@@ -1890,9 +2071,9 @@
       let emailCheckTimer = null;
       let inFlight = new Set();
 
-      // Dedicated App Onboarding Wizard State
+      // Dedicated App Onboarding State
       let isOnboardingOpen = false;
-      let onboardingMode = "benefits"; // "benefits" | "wizard"
+      let onboardingMode = "benefits";
       let benefitSlideIdx = 0;
       let wizardStep = 1;
       let wizardSelectedGame = "";
@@ -1900,7 +2081,7 @@
       const isDedicatedApp = () => Boolean(window.__TX_IS_DEDICATED_APP);
 
       // ============================================================================
-      // 1. DEVICE FINGERPRINT, UTILITIES, ADAPTIVE 3-TIER GRAPHICS & SPLASH CONTROL
+      // 1. DEVICE FINGERPRINT, UTILITIES, 3-TIER GPU ENGINE & TRAILER CONTROLLER
       // ============================================================================
       function getOrCreateDeviceFp() {
         try {
@@ -1952,10 +2133,11 @@
       }
 
       function dismissWebSplash() {
-        const el = document.getElementById("webHexSplash");
+        const el = document.getElementById("webTitleSplash");
         if (!el) return;
         el.classList.add("is-done");
-        setTimeout(() => { el.style.display = "none"; }, 480);
+        setTimeout(() => { el.style.display = "none"; }, 560);
+        syncTrailerVideoPlayback();
       }
 
       function detectHardwarePerfTier() {
@@ -1971,11 +2153,24 @@
         return "balanced";
       }
 
+      function syncTrailerVideoPlayback() {
+        const vid = document.getElementById("bgVideo");
+        if (!vid) return;
+        const tier = document.documentElement.getAttribute("data-perf-tier") || "balanced";
+        if (tier === "lite") {
+          try { vid.pause(); } catch (e) {}
+        } else {
+          vid.muted = true;
+          if (vid.paused) vid.play().catch(() => {});
+        }
+      }
+
       function applyPerfTier(tier, notify = false) {
         document.documentElement.setAttribute("data-perf-tier", tier);
         const lbl = document.getElementById("perfTierLabel");
         if (lbl) lbl.textContent = tier.toUpperCase();
-        initAmbientParticles();
+        syncTrailerVideoPlayback();
+        initAmbientEmbers();
         if (notify) showToast(`Graphics mode set to ${tier.toUpperCase()}`, true);
       }
 
@@ -1988,7 +2183,7 @@
         applyPerfTier(next, true);
       }
 
-      function initAmbientParticles() {
+      function initAmbientEmbers() {
         const canvas = document.getElementById("txParticlesCanvas");
         if (!canvas) return;
         if (particleRafId) { cancelAnimationFrame(particleRafId); particleRafId = null; }
@@ -1999,15 +2194,16 @@
         const ctx = canvas.getContext("2d");
         let w = (canvas.width = window.innerWidth);
         let h = (canvas.height = window.innerHeight);
-        const count = tier === "ultra" ? (w < 768 ? 22 : 38) : (w < 768 ? 12 : 20);
-        const palette = ["#8B5CF6", "#38BDF8", "#10B981", "#F59E0B"];
-        const dots = Array.from({ length: count }, (_, i) => ({
+        const count = tier === "ultra" ? (w < 768 ? 22 : 36) : (w < 768 ? 10 : 18);
+        const colors = ["#38BDF8", "#8B5CF6", "#FBBF24", "#10B981"];
+        const embers = Array.from({ length: count }, (_, i) => ({
           x: Math.random() * w,
           y: Math.random() * h,
-          r: Math.random() * 1.7 + 0.6,
-          vx: (Math.random() - 0.5) * 0.3,
-          vy: -Math.random() * 0.35 - 0.08,
-          c: palette[i % palette.length]
+          r: Math.random() * 1.9 + 0.6,
+          vx: (Math.random() - 0.5) * 0.36,
+          vy: -Math.random() * 0.48 - 0.12,
+          c: colors[i % colors.length],
+          a: Math.random() * 0.45 + 0.22
         }));
 
         let lastTs = 0;
@@ -2023,21 +2219,37 @@
               h = canvas.height = window.innerHeight;
             }
             ctx.clearRect(0, 0, w, h);
-            for (const d of dots) {
-              d.x += d.vx; d.y += d.vy;
-              if (d.y < -8) { d.y = h + 8; d.x = Math.random() * w; }
-              if (d.x < 0) d.x = w;
-              if (d.x > w) d.x = 0;
+            for (const p of embers) {
+              p.x += p.vx; p.y += p.vy;
+              if (p.y < -10) { p.y = h + 10; p.x = Math.random() * w; }
+              if (p.x < 0) p.x = w;
+              if (p.x > w) p.x = 0;
               ctx.beginPath();
-              ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
-              ctx.fillStyle = d.c;
-              ctx.globalAlpha = 0.42;
+              ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+              ctx.fillStyle = p.c;
+              ctx.globalAlpha = p.a;
               ctx.fill();
             }
           }
           particleRafId = requestAnimationFrame(draw);
         }
         particleRafId = requestAnimationFrame(draw);
+      }
+
+      // Subtle Desktop 3D GPU Perspective Tilt on Auth Card (Ultra Tier Only)
+      function initDesktopCard3DTilt() {
+        const card = document.getElementById("mainAuthCard");
+        if (!card || window.matchMedia?.("(pointer: coarse)")?.matches) return;
+        card.addEventListener("pointermove", (e) => {
+          if (document.documentElement.getAttribute("data-perf-tier") !== "ultra") return;
+          const rect = card.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width - 0.5;
+          const y = (e.clientY - rect.top) / rect.height - 0.5;
+          card.style.transform = `perspective(1100px) rotateX(${(-y * 4.5).toFixed(2)}deg) rotateY(${(x * 5.2).toFixed(2)}deg)`;
+        });
+        card.addEventListener("pointerleave", () => {
+          card.style.transform = "perspective(1100px) rotateX(0deg) rotateY(0deg)";
+        });
       }
 
       let toastTimer = null;
@@ -2127,12 +2339,10 @@
         return true;
       }
 
-      function isHumanDwellOk() {
-        return (Date.now() - BOOT_TS) >= 650;
-      }
+      function isHumanDwellOk() { return (Date.now() - BOOT_TS) >= 600; }
 
       // ============================================================================
-      // 2. COMPLETE INDIA STATE/CITY DIRECTORY + FUZZY GPS AUTO-FILL (STATE + CITY!)
+      // 2. COMPLETE INDIA DIRECTORY + FUZZY GPS AUTO-FILL (STATE + CITY/DISTRICT!)
       // ============================================================================
       const STATE_ABBR_MAP = {
         "ANDHRA PRADESH": "AP", "ARUNACHAL PRADESH": "AR", "ASSAM": "AS", "BIHAR": "BR",
@@ -2208,7 +2418,6 @@
         const customRow = document.getElementById(customRowId);
         if (!stateSel || !citySel) return;
         const state = stateSel.value;
-
         if (state === "Other") {
           customRow?.classList.remove("hidden");
           citySel.innerHTML = '<option value="Other" selected>Other</option>';
@@ -2233,15 +2442,10 @@
       function handleCityChange(cityId = "regCity", customRowId = "customLocationRow") {
         const citySel = document.getElementById(cityId);
         const customRow = document.getElementById(customRowId);
-        if (!citySel || !customRow) return;
-        customRow.classList.toggle("hidden", citySel.value !== "Other");
+        if (citySel && customRow) customRow.classList.toggle("hidden", citySel.value !== "Other");
       }
 
-      /**
-       * Fuzzy Auto-Fill: Matches State (including aliases like "NCT of Delhi" -> "Delhi")
-       * AND automatically injects + selects the exact GPS City/District even for smaller towns!
-       */
-      function applyGeoAutoFillToSelectPair(stateId, cityId, customRowId, forceOverwrite = false) {
+      function applyGeoAutoFillToPair(stateId, cityId, customRowId, forceOverwrite = false) {
         const stateSel = document.getElementById(stateId);
         const citySel = document.getElementById(cityId);
         if (!stateSel || !citySel || !userGeoLocation.state) return;
@@ -2254,7 +2458,6 @@
             (o) => o.value && (o.value.toLowerCase() === aliasState || aliasState.includes(o.value.toLowerCase()) || o.value.toLowerCase().includes(aliasState))
           );
           if (!matchState) {
-            // Inject detected state dynamically so user never has to type it
             const dynSt = document.createElement("option");
             dynSt.value = userGeoLocation.state;
             dynSt.textContent = `${userGeoLocation.state} (GPS)`;
@@ -2271,7 +2474,7 @@
           let matchCity = Array.from(citySel.options).find(
             (o) => o.value && (o.value.toLowerCase() === cityRaw.toLowerCase() || cityRaw.toLowerCase().includes(o.value.toLowerCase()))
           );
-          if (!matchCity && cityPretty && cityPretty !== "Located" && cityPretty !== "Unknown") {
+          if (!matchCity && cityPretty && !["Located", "Unknown", "India"].includes(cityPretty)) {
             const dynCity = document.createElement("option");
             dynCity.value = cityPretty;
             dynCity.textContent = `${cityPretty} (GPS)`;
@@ -2287,8 +2490,8 @@
       }
 
       function applyGeoAutoFillAllForms(forceOverwrite = false) {
-        applyGeoAutoFillToSelectPair("regState", "regCity", "customLocationRow", forceOverwrite);
-        applyGeoAutoFillToSelectPair("wizState", "wizCity", "wizCustomLocRow", forceOverwrite);
+        applyGeoAutoFillToPair("regState", "regCity", "customLocationRow", forceOverwrite);
+        applyGeoAutoFillToPair("wizState", "wizCity", "wizCustomLocRow", forceOverwrite);
       }
 
       function setCardGeoLock(locked) {
@@ -2316,14 +2519,12 @@
             const lat = pos.coords.latitude;
             const lon = pos.coords.longitude;
             userGeoLocation.coords = `${lat.toFixed(6)},${lon.toFixed(6)}`;
-
             try {
               const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`);
               const data = await res.json();
               const rawCity = String(data.city || data.locality || data.principalSubdivision || "").trim();
               const rawState = String(data.principalSubdivision || "").trim();
-              const stateUpper = rawState.toUpperCase();
-              const stateShort = STATE_ABBR_MAP[stateUpper] || (data.principalSubdivisionCode ? data.principalSubdivisionCode.split("-").pop() : "IN");
+              const stateShort = STATE_ABBR_MAP[rawState.toUpperCase()] || (data.principalSubdivisionCode ? data.principalSubdivisionCode.split("-").pop() : "IN");
 
               userGeoLocation.city = rawCity || "India";
               userGeoLocation.state = rawState || "India";
@@ -2331,7 +2532,10 @@
 
               isLocationGranted = true;
               setCardGeoLock(false);
-              if (cityText) cityText.textContent = `${userGeoLocation.city.toUpperCase()}, ${stateShort}`;
+              const label = `${userGeoLocation.city.toUpperCase()}, ${stateShort}`;
+              if (cityText) cityText.textContent = label;
+              const regEl = document.getElementById("lobbyAgentRegion");
+              if (regEl) regEl.textContent = label;
               applyGeoAutoFillAllForms(userTriggered);
               if (userTriggered) showToast(`Region locked: ${userGeoLocation.city}, ${stateShort}`, true);
             } catch (err) {
@@ -2362,7 +2566,7 @@
       }
 
       // ============================================================================
-      // 3. 100% REAL-TIME LIVE TELEMETRY & TOURNAMENTS (ZERO DEMO / FAKE DATA)
+      // 3. REAL-TIME ARENA TELEMETRY & LIVE OPEN TOURNAMENTS (ZERO DEMO CARDS)
       // ============================================================================
       async function measureRealPing() {
         const pingEl = document.getElementById("live-ping");
@@ -2389,7 +2593,6 @@
       async function fetchRealTimeArenaTelemetry() {
         const grid = document.getElementById("liveTournamentsGrid");
         if (!isSupabaseReady || !supabaseClient) return;
-
         try {
           const [tRes, uCnt, cCnt] = await Promise.all([
             supabaseClient.from("Tournaments").select("match_id, title, game, status, prize, prize_pts, filled_slots, slots, event_type").order("created_at", { ascending: false }).limit(12),
@@ -2416,9 +2619,9 @@
               <div class="col-span-2 glass-card rounded-2xl p-4 flex items-center justify-between gap-3">
                 <div>
                   <div class="font-display text-sm font-bold text-white">No Live Lobbies Open Right Now</div>
-                  <p class="font-body text-xs text-[#94A3B8] mt-0.5">Sign in to create a 4v4 clan scrim or get alerted when the next cup drops.</p>
+                  <p class="font-body text-xs text-[#94A3B8] mt-0.5">Sign in to start a 4v4 clan scrim or receive instant push alerts for upcoming cups.</p>
                 </div>
-                <a href="organizer.html" class="liquid-btn px-3.5 py-2 rounded-full font-mono text-[10.5px] font-bold text-[#FBBF24] uppercase flex-shrink-0">Host ↗</a>
+                <span class="px-3 py-1 rounded-full bg-white/[0.06] font-mono text-[10px] text-[#38BDF8] font-bold uppercase flex-shrink-0">Standby</span>
               </div>
             `;
             return;
@@ -2432,7 +2635,7 @@
             const maxS = Math.max(2, Number(t.slots || 48));
             const pct = Math.min(100, Math.round((filled / maxS) * 100));
             return `
-              <a href="explore.html?tournament=${encodeURIComponent(t.match_id)}" class="glass-card hover:border-[#38BDF8]/55 rounded-2xl p-4 space-y-2.5 transition-colors block">
+              <a href="explore.html?tournament=${encodeURIComponent(t.match_id)}" class="glass-card hover:border-[#38BDF8]/60 rounded-2xl p-4 space-y-2.5 transition-all block">
                 <div class="flex items-center justify-between gap-2 font-mono text-[10px]">
                   <span class="${idx === 0 ? "text-[#FBBF24]" : "text-[#38BDF8]"} font-bold uppercase truncate">${isScrim ? "⚡ SCRIM" : "🏆 CUP"} • ${escapeHtml(t.game || "Esports")}</span>
                   <span class="text-[#10B981] font-bold flex-shrink-0">● OPEN</span>
@@ -2452,31 +2655,321 @@
       }
 
       // ============================================================================
-      // 4. LIVE IGN/EMAIL CHECKER, SMART UID HINTS & PASSWORD ENTROPY METER
+      // 4. FREE FIRE / BGMI FULL-SCREEN "TAP ANYWHERE TO ENTER ARENA" LOBBY
+      //    & 1-TAP CRYPTOGRAPHIC DEVICE RESUME VAULT
+      // ============================================================================
+      function loadSavedDeviceAccounts() {
+        let list = [];
+        try {
+          const raw = JSON.parse(localStorage.getItem(SAVED_ACCOUNTS_KEY) || "[]");
+          if (Array.isArray(raw)) list = raw.filter((a) => a && a.email);
+        } catch (e) {}
+
+        // Seamless bridge for existing users already stored in localStorage.tournyx_user
+        try {
+          const active = JSON.parse(localStorage.getItem("tournyx_user") || "null");
+          if (active && active.email) {
+            const em = String(active.email).trim().toLowerCase();
+            if (!list.some((a) => a.email === em)) {
+              list.unshift({
+                email: em,
+                ign: active.ign || active.username || em.split("@")[0],
+                role: active.role || "player",
+                avatar: safeAvatarUrl(active.avatar, active.ign || active.username),
+                city: active.city || "",
+                state: active.state || "",
+                resumeToken: "",
+                legacyActive: true,
+                lastUsed: Date.now()
+              });
+            }
+          }
+        } catch (e) {}
+
+        // Also import tournyx_recent_accounts if present
+        try {
+          const legacy = JSON.parse(localStorage.getItem("tournyx_recent_accounts") || "[]");
+          if (Array.isArray(legacy)) {
+            legacy.forEach((a) => {
+              const em = String(a?.email || "").trim().toLowerCase();
+              if (em && !list.some((x) => x.email === em)) {
+                list.push({
+                  email: em,
+                  ign: a.ign || em.split("@")[0],
+                  role: "player",
+                  avatar: safeAvatarUrl(a.avatar, a.ign),
+                  resumeToken: "",
+                  lastUsed: Date.now() - 1000
+                });
+              }
+            });
+          }
+        } catch (e) {}
+        return list.slice(0, 5);
+      }
+
+      function saveDeviceAccountVault(profile, resumeToken = "") {
+        if (!profile?.email) return;
+        const email = String(profile.email).trim().toLowerCase();
+        try {
+          let list = loadSavedDeviceAccounts();
+          const prev = list.find((a) => a.email === email);
+          list = list.filter((a) => a.email !== email);
+          list.unshift({
+            email,
+            ign: profile.ign || profile.username || email.split("@")[0],
+            role: profile.role || "player",
+            avatar: safeAvatarUrl(profile.avatar, profile.ign || profile.username),
+            city: profile.city || prev?.city || "",
+            state: profile.state || prev?.state || "",
+            resumeToken: resumeToken || prev?.resumeToken || "",
+            lastUsed: Date.now()
+          });
+          localStorage.setItem(SAVED_ACCOUNTS_KEY, JSON.stringify(list.slice(0, 5)));
+        } catch (e) {}
+      }
+
+      function getPrimarySavedAccount() {
+        const list = loadSavedDeviceAccounts();
+        return list.find((a) => a.resumeToken) || list[0] || null;
+      }
+
+      function showTapAnywhereLobby() {
+        const primary = getPrimarySavedAccount();
+        if (!primary) {
+          hideTapAnywhereLobby(false);
+          return false;
+        }
+        isTapLobbyVisible = true;
+        document.body.classList.add("tap-lobby-active");
+        document.getElementById("mainUiContainer")?.classList.add("hidden");
+        document.getElementById("pageFooter")?.classList.add("hidden");
+        document.getElementById("btnReturnToTapLobby")?.classList.add("hidden");
+
+        document.getElementById("lobbyAgentAvatar").src = safeAvatarUrl(primary.avatar, primary.ign);
+        document.getElementById("lobbyAgentName").textContent = primary.ign;
+        document.getElementById("lobbyAgentEmail").textContent = primary.email;
+        document.getElementById("lobbyAgentRole").textContent = String(primary.role || "player").toUpperCase();
+        const badge = document.getElementById("lobbyStatusBadge");
+        if (badge) badge.textContent = primary.resumeToken ? "1-TAP READY" : "SAVED PROFILE";
+        const reg = [userGeoLocation.city || primary.city, userGeoLocation.stateShort || primary.state].filter(Boolean).join(", ");
+        document.getElementById("lobbyAgentRegion").textContent = (reg || "INDIA").toUpperCase();
+
+        document.getElementById("tapToEnterLobby")?.classList.add("is-active");
+        syncTrailerVideoPlayback();
+        return true;
+      }
+
+      function hideTapAnywhereLobby(showReturnPill = true) {
+        isTapLobbyVisible = false;
+        document.body.classList.remove("tap-lobby-active");
+        document.getElementById("tapToEnterLobby")?.classList.remove("is-active");
+        document.getElementById("mainUiContainer")?.classList.remove("hidden");
+        document.getElementById("pageFooter")?.classList.remove("hidden");
+
+        const retBtn = document.getElementById("btnReturnToTapLobby");
+        if (retBtn) {
+          const canReturn = showReturnPill && Boolean(getPrimarySavedAccount());
+          retBtn.classList.toggle("hidden", !canReturn);
+          retBtn.classList.toggle("flex", canReturn);
+        }
+      }
+
+      function switchToManualLoginFromLobby(e) {
+        if (e) e.stopPropagation();
+        doHaptic();
+        hideTapAnywhereLobby(true);
+        switchAuthTab("login");
+      }
+
+      async function logoutFromTapLobby(e) {
+        if (e) e.stopPropagation();
+        doHaptic("heavy");
+        const primary = getPrimarySavedAccount();
+        if (primary) await removeSavedAccount(primary.email, false);
+        hideTapAnywhereLobby(false);
+        showToast("Signed out cleanly. Choose an account or sign in.", true);
+      }
+
+      async function handleTapAnywhereLobby(e) {
+        if (e?.target?.closest("button, a, header, .modal-overlay")) return;
+        const primary = getPrimarySavedAccount();
+        if (!primary) { hideTapAnywhereLobby(false); return; }
+        await resumeSavedAccountDirectly(primary.email);
+      }
+
+      /**
+       * TRUE 1-TAP AUTOMATIC DIRECT LOGIN:
+       * 1) If device holds a cryptographic resumeToken -> verifies via tx_auth_resume_device RPC -> Warp Entry to index.html!
+       * 2) If user has a live Supabase Auth JWT matching this email (e.g. OAuth / legacy session) -> mints token via tx_auth_oauth_sync -> Warp Entry!
+       * 3) Otherwise (pre-v9 password account with no token yet) -> opens password field with 1-line prompt to verify once and lock in 1-Tap forever.
+       */
+      async function resumeSavedAccountDirectly(email) {
+        doHaptic("heavy");
+        if (inFlight.has("resume")) return;
+        if (!verifyLocationUnlocked()) {
+          hideTapAnywhereLobby(true);
+          return;
+        }
+        const cleanEmail = String(email || "").trim().toLowerCase();
+        const acc = loadSavedDeviceAccounts().find((a) => a.email === cleanEmail);
+        if (!acc) return;
+        if (!isSupabaseReady || !supabaseClient) { showToast("Connecting to Tournyx Firewall..."); return; }
+
+        inFlight.add("resume");
+        closeModals();
+        const tapLbl = document.getElementById("lobbyTapLabel");
+        const origLbl = tapLbl?.innerHTML;
+        if (tapLbl) tapLbl.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-[#38BDF8]"></i> <span>VERIFYING SESSION...</span>`;
+
+        try {
+          // Path A: Cryptographic 1-Tap Device Token
+          if (acc.resumeToken) {
+            const { data: res, error } = await supabaseClient.rpc("tx_auth_resume_device", {
+              p_email: cleanEmail,
+              p_resume_token: acc.resumeToken,
+              p_device_fp: getOrCreateDeviceFp(),
+              p_city: userGeoLocation.city || "",
+              p_state: userGeoLocation.state || ""
+            });
+            if (!error && res?.ok && res.profile) {
+              saveDeviceAccountVault(res.profile, acc.resumeToken);
+              launchWarpArenaEntry(res.profile, REDIRECT_URL);
+              return;
+            }
+          }
+
+          // Path B: Active Verified Supabase Auth JWT (OAuth or Supabase Session Upgrade -> Mints 1-Tap Token)
+          const { data: sessData } = await supabaseClient.auth.getSession().catch(() => ({ data: null }));
+          const jwtEmail = String(sessData?.session?.user?.email || "").trim().toLowerCase();
+          if (jwtEmail && jwtEmail === cleanEmail) {
+            const { data: syncRes } = await supabaseClient.rpc("tx_auth_oauth_sync", {
+              p_email: cleanEmail,
+              p_device_fp: getOrCreateDeviceFp(),
+              p_device_label: getDeviceLabel(),
+              p_city: userGeoLocation.city || "",
+              p_state: userGeoLocation.state || ""
+            });
+            if (syncRes?.ok && syncRes.exists && syncRes.profile) {
+              saveDeviceAccountVault(syncRes.profile, syncRes.resume_token || "");
+              launchWarpArenaEntry(syncRes.profile, REDIRECT_URL);
+              return;
+            }
+          }
+
+          // Path C: Legacy account needs 1-time password confirmation to mint cryptographic 1-Tap token
+          hideTapAnywhereLobby(false);
+          switchAuthTab("login");
+          const inp = document.getElementById("loginEmail");
+          if (inp) inp.value = cleanEmail;
+          document.getElementById("loginPwd")?.focus();
+          showToast("Verify your password once to activate 1-Tap Instant Arena Entry.");
+        } catch (err) {
+          showToast("Could not connect. Check your network and tap again.");
+        } finally {
+          inFlight.delete("resume");
+          if (tapLbl && origLbl) tapLbl.innerHTML = origLbl;
+        }
+      }
+
+      function renderAccountsList() {
+        const accounts = loadSavedDeviceAccounts();
+        const area = document.getElementById("accountsListArea");
+        if (!area) return;
+
+        if (!accounts.length) {
+          area.innerHTML = `<div class="py-8 text-center font-body text-xs text-[#94A3B8]">No saved accounts on this device yet. Sign in once to activate Tap-Anywhere Arena Entry.</div>`;
+          return;
+        }
+
+        area.innerHTML = accounts.map((a) => {
+          const hasToken = Boolean(a.resumeToken);
+          return `
+            <div class="p-3 rounded-2xl glass-inset border ${hasToken ? "border-[#10B981]/35" : "border-white/10"} flex items-center justify-between gap-2.5">
+              <div class="flex items-center gap-2.5 min-w-0 flex-1">
+                <img src="${escapeHtml(safeAvatarUrl(a.avatar, a.ign))}" alt="" class="w-10 h-10 rounded-full border border-[#38BDF8] object-cover flex-shrink-0">
+                <div class="min-w-0">
+                  <div class="flex items-center gap-1.5">
+                    <span class="font-display text-xs font-extrabold text-white truncate" data-no-translate>${escapeHtml(a.ign)}</span>
+                    ${hasToken ? `<span class="px-1.5 py-0.5 rounded bg-[#10B981]/20 text-[#10B981] font-mono text-[8.5px] font-bold uppercase">1-TAP</span>` : ""}
+                  </div>
+                  <div class="font-mono text-[10px] text-[#94A3B8] truncate" data-no-translate>${escapeHtml(a.email)}</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-1.5 flex-shrink-0">
+                <button type="button" data-resume-email="${escapeHtml(a.email)}"
+                  class="${hasToken ? "btn-emerald" : "btn-primary"} min-h-[34px] px-3 rounded-full font-mono text-[10px] uppercase">
+                  Resume
+                </button>
+                <button type="button" data-remove-email="${escapeHtml(a.email)}" aria-label="Remove Account"
+                  class="w-8 h-8 rounded-full bg-[#F43F5E]/15 hover:bg-[#F43F5E]/30 text-[#FDA4AF] flex items-center justify-center text-xs">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+              </div>
+            </div>
+          `;
+        }).join("");
+
+        area.querySelectorAll("[data-resume-email]").forEach((btn) => {
+          btn.addEventListener("click", () => resumeSavedAccountDirectly(btn.dataset.resumeEmail));
+        });
+        area.querySelectorAll("[data-remove-email]").forEach((btn) => {
+          btn.addEventListener("click", () => removeSavedAccount(btn.dataset.removeEmail, true));
+        });
+      }
+
+      function openAccountsModal() {
+        renderAccountsList();
+        openModal("accountsModal");
+      }
+
+      async function removeSavedAccount(email, notify = true) {
+        doHaptic();
+        const cleanEmail = String(email || "").trim().toLowerCase();
+        const list = loadSavedDeviceAccounts();
+        const target = list.find((a) => a.email === cleanEmail);
+
+        if (target?.resumeToken && isSupabaseReady && supabaseClient) {
+          supabaseClient.rpc("tx_auth_revoke_device", {
+            p_email: cleanEmail,
+            p_resume_token: target.resumeToken,
+            p_device_fp: getOrCreateDeviceFp()
+          }).catch(() => {});
+        }
+
+        const next = list.filter((a) => a.email !== cleanEmail);
+        localStorage.setItem(SAVED_ACCOUNTS_KEY, JSON.stringify(next));
+        try {
+          const cur = JSON.parse(localStorage.getItem("tournyx_user") || "null");
+          if (cur && String(cur.email || "").toLowerCase() === cleanEmail) {
+            localStorage.removeItem("tournyx_user");
+            localStorage.removeItem("tournyx_userData");
+            supabaseClient?.auth?.signOut({ scope: "local" }).catch(() => {});
+          }
+          const leg = JSON.parse(localStorage.getItem("tournyx_recent_accounts") || "[]");
+          if (Array.isArray(leg)) {
+            localStorage.setItem("tournyx_recent_accounts", JSON.stringify(leg.filter((x) => String(x?.email || "").toLowerCase() !== cleanEmail)));
+          }
+        } catch (e) {}
+
+        renderAccountsList();
+        if (!getPrimarySavedAccount()) hideTapAnywhereLobby(false);
+        else if (isTapLobbyVisible) showTapAnywhereLobby();
+        if (notify) showToast("Device session revoked & account removed.", true);
+      }
+
+      // ============================================================================
+      // 5. LIVE IGN/EMAIL CHECKER, SMART UID HINTS, PASSWORD METER & LOCKOUT
       // ============================================================================
       function updateGameUidHint(gameVal, uidInputId, hintElId) {
         const g = String(gameVal || "").toLowerCase();
         const inp = document.getElementById(uidInputId);
         const hint = document.getElementById(hintElId);
         if (!inp || !hint) return;
-
-        if (g.includes("valorant")) {
-          inp.placeholder = "RiotID#TAG (e.g. Ace#IND)";
-          inp.removeAttribute("inputmode");
-          hint.textContent = "Format: Name#TAG";
-        } else if (g.includes("bgmi")) {
-          inp.placeholder = "BGMI Character ID (10 digits)";
-          inp.setAttribute("inputmode", "numeric");
-          hint.textContent = "10-digit BGMI ID";
-        } else if (g.includes("cod")) {
-          inp.placeholder = "CODM UID (15–19 digits)";
-          inp.setAttribute("inputmode", "numeric");
-          hint.textContent = "Find in Profile → Basic";
-        } else {
-          inp.placeholder = "Free Fire MAX UID (8–12 digits)";
-          inp.setAttribute("inputmode", "numeric");
-          hint.textContent = "8–12 digit FF MAX UID";
-        }
+        if (g.includes("valorant")) { inp.placeholder = "RiotID#TAG (e.g. Ace#IND)"; inp.removeAttribute("inputmode"); hint.textContent = "Format: Name#TAG"; }
+        else if (g.includes("bgmi")) { inp.placeholder = "BGMI Character ID (10 digits)"; inp.setAttribute("inputmode", "numeric"); hint.textContent = "10-digit BGMI ID"; }
+        else if (g.includes("cod")) { inp.placeholder = "CODM UID (15–19 digits)"; inp.setAttribute("inputmode", "numeric"); hint.textContent = "Find in Profile → Basic"; }
+        else { inp.placeholder = "Free Fire MAX UID (8–12 digits)"; inp.setAttribute("inputmode", "numeric"); hint.textContent = "8–12 digit FF MAX UID"; }
       }
 
       function generateQuickIgnIdeas(displayName) {
@@ -2497,41 +2990,22 @@
         const hint = document.getElementById(hintId);
         const suggBox = document.getElementById(suggBoxId);
         clearTimeout(ignCheckTimer);
-        if (val.length < 2) {
-          if (hint) { hint.textContent = ""; hint.classList.add("hidden"); }
-          return;
-        }
-        if (hint) {
-          hint.classList.remove("hidden");
-          hint.className = "font-mono text-[9.5px] px-1 text-[#38BDF8]";
-          hint.textContent = "Checking...";
-        }
+        if (val.length < 2) { if (hint) { hint.textContent = ""; hint.classList.add("hidden"); } return; }
+        if (hint) { hint.classList.remove("hidden"); hint.className = "font-mono text-[9.5px] px-1 text-[#38BDF8]"; hint.textContent = "Checking..."; }
         ignCheckTimer = setTimeout(async () => {
           if (!isSupabaseReady || !supabaseClient) return;
           try {
             const { data: res } = await supabaseClient.rpc("tx_check_handle_availability", { p_ign: val, p_email: "", p_phone: "" });
             if (!res?.ok) return;
             if (res.ign_available) {
-              if (hint) {
-                hint.className = "font-mono text-[9.5px] px-1 text-[#10B981] font-bold";
-                hint.textContent = "✓ IGN Available";
-              }
+              if (hint) { hint.className = "font-mono text-[9.5px] px-1 text-[#10B981] font-bold"; hint.textContent = "✓ IGN Available"; }
               if (suggBox && suggBoxId === "ignSuggestionsBox") suggBox.classList.add("hidden");
             } else {
-              if (hint) {
-                hint.className = "font-mono text-[9.5px] px-1 text-[#FB7185] font-bold";
-                hint.textContent = "✗ Taken — Pick below";
-              }
+              if (hint) { hint.className = "font-mono text-[9.5px] px-1 text-[#FB7185] font-bold"; hint.textContent = "✗ Taken — Pick below"; }
               if (suggBox && Array.isArray(res.suggestions) && res.suggestions.length) {
-                suggBox.classList.remove("hidden");
-                suggBox.classList.add("flex");
+                suggBox.classList.remove("hidden"); suggBox.classList.add("flex");
                 suggBox.innerHTML = `<span class="font-mono text-[9.5px] text-[#94A3B8] mr-1">Try:</span>` +
-                  res.suggestions.map((sg) => `
-                    <button type="button" data-pick-ign="${escapeHtml(sg)}" data-target-inp="${escapeHtml(targetInputId)}"
-                      class="liquid-btn px-2.5 py-1 rounded-full font-mono text-[10px] font-bold text-[#FBBF24]">
-                      ${escapeHtml(sg)}
-                    </button>
-                  `).join("");
+                  res.suggestions.map((sg) => `<button type="button" data-pick-ign="${escapeHtml(sg)}" data-target-inp="${escapeHtml(targetInputId)}" class="liquid-btn px-2.5 py-1 rounded-full font-mono text-[10px] font-bold text-[#FBBF24]">${escapeHtml(sg)}</button>`).join("");
               }
             }
           } catch (e) {}
@@ -2542,23 +3016,15 @@
         const val = String(rawVal || "").trim().toLowerCase();
         const hint = document.getElementById(hintId);
         clearTimeout(emailCheckTimer);
-        if (!val.includes("@") || !val.includes(".")) {
-          if (hint) hint.classList.add("hidden");
-          return;
-        }
+        if (!val.includes("@") || !val.includes(".")) { if (hint) hint.classList.add("hidden"); return; }
         emailCheckTimer = setTimeout(async () => {
           if (!isSupabaseReady || !supabaseClient) return;
           try {
             const { data: res } = await supabaseClient.rpc("tx_check_handle_availability", { p_ign: "", p_email: val, p_phone: "" });
             if (!res?.ok || !hint) return;
             hint.classList.remove("hidden");
-            if (res.email_available) {
-              hint.className = "font-mono text-[10px] px-1 text-[#10B981]";
-              hint.textContent = "✓ Email ready for new Player ID";
-            } else {
-              hint.className = "font-mono text-[10px] px-1 text-[#FBBF24]";
-              hint.textContent = "Account exists — switch to Login tab!";
-            }
+            if (res.email_available) { hint.className = "font-mono text-[10px] px-1 text-[#10B981]"; hint.textContent = "✓ Email ready for new Player ID"; }
+            else { hint.className = "font-mono text-[10px] px-1 text-[#FBBF24]"; hint.textContent = "Account exists — switch to Login tab!"; }
           } catch (e) {}
         }, 420);
       }
@@ -2567,7 +3033,6 @@
         const bar = document.getElementById(barId);
         const lbl = document.getElementById(labelId);
         if (!bar || !lbl) return 0;
-
         const val = String(pwd || "");
         const commonBad = ["123456", "12345678", "password", "qwerty", "111111", "000000", "abcdef", "freefire", "tournyx"];
         let score = 0;
@@ -2579,32 +3044,15 @@
         if (commonBad.includes(val.toLowerCase())) score = Math.min(score, 20);
 
         bar.style.width = `${val.length ? Math.max(15, score) : 0}%`;
-        if (!val.length) {
-          bar.className = "h-full w-0 rounded-full transition-all duration-300";
-          lbl.textContent = "Strength";
-          lbl.className = "font-mono text-[9.5px] text-[#94A3B8] uppercase";
-        } else if (score < 45) {
-          bar.className = "h-full rounded-full transition-all duration-300 bg-[#F43F5E]";
-          lbl.textContent = commonBad.includes(val.toLowerCase()) ? "Common / Weak" : "Weak";
-          lbl.className = "font-mono text-[9.5px] text-[#FB7185] uppercase font-bold";
-        } else if (score < 75) {
-          bar.className = "h-full rounded-full transition-all duration-300 bg-[#F59E0B]";
-          lbl.textContent = "Good";
-          lbl.className = "font-mono text-[9.5px] text-[#FBBF24] uppercase font-bold";
-        } else {
-          bar.className = "h-full rounded-full transition-all duration-300 bg-[#10B981]";
-          lbl.textContent = "Pro Shield";
-          lbl.className = "font-mono text-[9.5px] text-[#10B981] uppercase font-bold";
-        }
+        if (!val.length) { bar.className = "h-full w-0 rounded-full transition-all duration-300"; lbl.textContent = "Strength"; lbl.className = "font-mono text-[9.5px] text-[#94A3B8] uppercase"; }
+        else if (score < 45) { bar.className = "h-full rounded-full transition-all duration-300 bg-[#F43F5E]"; lbl.textContent = commonBad.includes(val.toLowerCase()) ? "Common / Weak" : "Weak"; lbl.className = "font-mono text-[9.5px] text-[#FB7185] uppercase font-bold"; }
+        else if (score < 75) { bar.className = "h-full rounded-full transition-all duration-300 bg-[#F59E0B]"; lbl.textContent = "Good"; lbl.className = "font-mono text-[9.5px] text-[#FBBF24] uppercase font-bold"; }
+        else { bar.className = "h-full rounded-full transition-all duration-300 bg-[#10B981]"; lbl.textContent = "Pro Shield"; lbl.className = "font-mono text-[9.5px] text-[#10B981] uppercase font-bold"; }
         return score;
       }
 
-      // ============================================================================
-      // 5. SERVER-ENFORCED LOCKOUT UI & 1-TAP CRYPTOGRAPHIC DEVICE RESUME VAULT
-      // ============================================================================
       function triggerServerLockoutCountdown(seconds) {
-        const sec = Math.max(1, Number(seconds) || 45);
-        const until = Date.now() + sec * 1000;
+        const until = Date.now() + Math.max(1, Number(seconds) || 45) * 1000;
         sessionStorage.setItem("tx_lockout_until", String(until));
         enforceSecurityLockoutUI();
       }
@@ -2641,217 +3089,12 @@
         if (isCurrentlyLockedOut()) lockoutInterval = setInterval(tick, 1000);
       }
 
-      function loadSavedDeviceAccounts() {
-        try {
-          const arr = JSON.parse(localStorage.getItem(SAVED_ACCOUNTS_KEY) || "[]");
-          if (Array.isArray(arr) && arr.length) return arr;
-          // Migrate legacy tournyx_recent_accounts gracefully (marks token="" until next login mints a token)
-          const legacy = JSON.parse(localStorage.getItem("tournyx_recent_accounts") || "[]");
-          if (Array.isArray(legacy) && legacy.length) {
-            return legacy.map((a) => ({
-              email: String(a.email || "").trim().toLowerCase(),
-              ign: a.ign || "Player",
-              role: "player",
-              avatar: safeAvatarUrl(a.avatar, a.ign),
-              resumeToken: "",
-              lastUsed: Date.now()
-            })).filter((a) => a.email);
-          }
-        } catch (e) {}
-        return [];
-      }
-
-      function saveDeviceAccountVault(profile, resumeToken = "") {
-        if (!profile?.email) return;
-        const email = String(profile.email).trim().toLowerCase();
-        try {
-          let list = loadSavedDeviceAccounts();
-          const prev = list.find((a) => a.email === email);
-          list = list.filter((a) => a.email !== email);
-          list.unshift({
-            email,
-            ign: profile.ign || profile.username || email.split("@")[0],
-            role: profile.role || "player",
-            avatar: safeAvatarUrl(profile.avatar, profile.ign || profile.username),
-            resumeToken: resumeToken || prev?.resumeToken || "",
-            lastUsed: Date.now()
-          });
-          if (list.length > 5) list = list.slice(0, 5);
-          localStorage.setItem(SAVED_ACCOUNTS_KEY, JSON.stringify(list));
-          renderQuickResumeBar();
-        } catch (e) {}
-      }
-
-      function renderQuickResumeBar() {
-        const bar = document.getElementById("quickResumeBar");
-        if (!bar) return;
-        const accounts = loadSavedDeviceAccounts();
-        const primary = accounts.find((a) => a.resumeToken) || null;
-        if (!primary) {
-          bar.classList.add("hidden");
-          return;
-        }
-        document.getElementById("resumeAvatar").src = safeAvatarUrl(primary.avatar, primary.ign);
-        document.getElementById("resumeName").textContent = primary.ign;
-        document.getElementById("resumeEmail").textContent = primary.email;
-        bar.classList.remove("hidden");
-      }
-
-      /**
-       * TRUE 1-TAP AUTOMATIC DIRECT LOGIN (NEVER FILLS LOGIN FORM FOR MANUAL TYPING!)
-       * Validates the device-bound cryptographic resume token on the server RPC and launches
-       * straight into the Arena Entry warp animation -> index.html!
-       */
-      async function resumeSavedAccountDirectly(email) {
-        doHaptic();
-        if (!verifyLocationUnlocked() || inFlight.has("resume")) return;
-        const cleanEmail = String(email || "").trim().toLowerCase();
-        const acc = loadSavedDeviceAccounts().find((a) => a.email === cleanEmail);
-
-        if (!acc || !acc.resumeToken) {
-          closeModals();
-          switchAuthTab("login");
-          const inp = document.getElementById("loginEmail");
-          if (inp) inp.value = cleanEmail;
-          document.getElementById("loginPwd")?.focus();
-          showToast("Sign in once to activate 1-Tap Instant Resume for this account.");
-          return;
-        }
-
-        if (!isSupabaseReady || !supabaseClient) {
-          showToast("Connecting to Tournyx Security Firewall...");
-          return;
-        }
-
-        inFlight.add("resume");
-        closeModals();
-        btnLoading("btnQuickResume", "RESUMING...");
-        try {
-          const { data: res, error } = await supabaseClient.rpc("tx_auth_resume_device", {
-            p_email: cleanEmail,
-            p_resume_token: acc.resumeToken,
-            p_device_fp: getOrCreateDeviceFp(),
-            p_city: userGeoLocation.city || "",
-            p_state: userGeoLocation.state || ""
-          });
-
-          if (error || !res?.ok || !res.profile) {
-            // Token expired/revoked — clear stale token gracefully
-            saveDeviceAccountVault({ ...acc }, "");
-            let updated = loadSavedDeviceAccounts().map((x) => (x.email === cleanEmail ? { ...x, resumeToken: "" } : x));
-            localStorage.setItem(SAVED_ACCOUNTS_KEY, JSON.stringify(updated));
-            renderQuickResumeBar();
-            showToast(res?.error || "Session expired. Please sign in once to re-link 1-Tap Resume.");
-            switchAuthTab("login");
-            document.getElementById("loginEmail").value = cleanEmail;
-            document.getElementById("loginPwd")?.focus();
-            return;
-          }
-
-          saveDeviceAccountVault(res.profile, acc.resumeToken);
-          launchWarpArenaEntry(res.profile, REDIRECT_URL);
-        } catch (err) {
-          showToast("Could not resume session. Check your network.");
-        } finally {
-          inFlight.delete("resume");
-          btnReset("btnQuickResume");
-        }
-      }
-
-      function resumePrimarySavedAccount() {
-        const accounts = loadSavedDeviceAccounts();
-        const primary = accounts.find((a) => a.resumeToken) || accounts[0];
-        if (primary) resumeSavedAccountDirectly(primary.email);
-      }
-
-      function renderAccountsList() {
-        const accounts = loadSavedDeviceAccounts();
-        const area = document.getElementById("accountsListArea");
-        if (!area) return;
-
-        if (!accounts.length) {
-          area.innerHTML = `<div class="py-8 text-center font-body text-xs text-[#94A3B8]">No saved accounts on this device yet. Sign in once to enable 1-Tap Instant Resume.</div>`;
-          return;
-        }
-
-        area.innerHTML = accounts.map((a) => {
-          const hasToken = Boolean(a.resumeToken);
-          return `
-            <div class="p-3 rounded-2xl glass-inset border ${hasToken ? "border-[#10B981]/35" : "border-white/10"} flex items-center justify-between gap-2.5">
-              <div class="flex items-center gap-2.5 min-w-0 flex-1">
-                <img src="${escapeHtml(safeAvatarUrl(a.avatar, a.ign))}" alt="" class="w-10 h-10 rounded-full border border-[#38BDF8] object-cover flex-shrink-0">
-                <div class="min-w-0">
-                  <div class="flex items-center gap-1.5">
-                    <span class="font-display text-xs font-extrabold text-white truncate" data-no-translate>${escapeHtml(a.ign)}</span>
-                    ${hasToken ? `<span class="px-1.5 py-0.5 rounded bg-[#10B981]/20 text-[#10B981] font-mono text-[8.5px] font-bold uppercase">1-TAP</span>` : ""}
-                  </div>
-                  <div class="font-mono text-[10px] text-[#94A3B8] truncate" data-no-translate>${escapeHtml(a.email)}</div>
-                </div>
-              </div>
-              <div class="flex items-center gap-1.5 flex-shrink-0">
-                <button type="button" data-resume-email="${escapeHtml(a.email)}"
-                  class="${hasToken ? "btn-emerald" : "btn-primary"} min-h-[34px] px-3 rounded-full font-mono text-[10px] uppercase">
-                  ${hasToken ? "Resume" : "Sign In"}
-                </button>
-                <button type="button" data-remove-email="${escapeHtml(a.email)}" aria-label="Remove Account"
-                  class="w-8 h-8 rounded-full bg-[#F43F5E]/15 hover:bg-[#F43F5E]/30 text-[#FDA4AF] flex items-center justify-center text-xs">
-                  <i class="fa-solid fa-trash-can"></i>
-                </button>
-              </div>
-            </div>
-          `;
-        }).join("");
-
-        area.querySelectorAll("[data-resume-email]").forEach((btn) => {
-          btn.addEventListener("click", () => resumeSavedAccountDirectly(btn.dataset.resumeEmail));
-        });
-        area.querySelectorAll("[data-remove-email]").forEach((btn) => {
-          btn.addEventListener("click", () => removeSavedAccount(btn.dataset.removeEmail));
-        });
-      }
-
-      function openAccountsModal() {
-        renderAccountsList();
-        openModal("accountsModal");
-      }
-
-      async function removeSavedAccount(email) {
-        doHaptic();
-        const cleanEmail = String(email || "").trim().toLowerCase();
-        const list = loadSavedDeviceAccounts();
-        const target = list.find((a) => a.email === cleanEmail);
-
-        if (target?.resumeToken && isSupabaseReady && supabaseClient) {
-          supabaseClient.rpc("tx_auth_revoke_device", {
-            p_email: cleanEmail,
-            p_resume_token: target.resumeToken,
-            p_device_fp: getOrCreateDeviceFp()
-          }).catch(() => {});
-        }
-
-        const next = list.filter((a) => a.email !== cleanEmail);
-        localStorage.setItem(SAVED_ACCOUNTS_KEY, JSON.stringify(next));
-        try {
-          const cur = JSON.parse(localStorage.getItem("tournyx_user") || "null");
-          if (cur && String(cur.email || "").toLowerCase() === cleanEmail) {
-            localStorage.removeItem("tournyx_user");
-            localStorage.removeItem("tournyx_userData");
-          }
-        } catch (e) {}
-
-        renderAccountsList();
-        renderQuickResumeBar();
-        showToast("Device session revoked & account removed.", true);
-      }
-      /* === END PART 5 / PASTE PART 6 BELOW === */
-     // ============================================================================
-      // 6. DEDICATED APP PASSING-CLOUDS + BENEFITS SHOWCASE + 5-STEP ANIMATED WIZARD
+      // ============================================================================
+      // 6. DEDICATED APP PASSING-CLOUDS + BENEFITS SHOWCASE + 5-STEP WIZARD
       // ============================================================================
       const BENEFIT_SLIDES = [
         {
-          badge: "100% Skill-Based Esports",
-          badgeColor: "#10B981",
-          icon: "fa-trophy",
+          badge: "100% Skill-Based Esports", badgeColor: "#10B981", icon: "fa-trophy",
           title: "Compete Daily & Win Real Rewards",
           desc: "Join verified Free Fire MAX, BGMI, CODM & Valorant tournaments and daily scrims with escrow-protected UPI payouts.",
           bullets: [
@@ -2861,9 +3104,7 @@
           ]
         },
         {
-          badge: "Squad Comms & Clans",
-          badgeColor: "#38BDF8",
-          icon: "fa-headset",
+          badge: "Squad Comms & Clans", badgeColor: "#38BDF8", icon: "fa-headset",
           title: "HD Clan Voice & 4v4 Scrim Wars",
           desc: "Talk with zero-lag Opus squad voice that keeps running in the background while you game, plus live 4v4 clan challenges.",
           bullets: [
@@ -2873,9 +3114,7 @@
           ]
         },
         {
-          badge: "Gaming Creator Economy",
-          badgeColor: "#F43F5E",
-          icon: "fa-clapperboard",
+          badge: "Gaming Creator Economy", badgeColor: "#F43F5E", icon: "fa-clapperboard",
           title: "Drop 1080p Clutch Reels & Earn",
           desc: "Upload your best 1v4 clutches, grow verified followers across India, and unlock TX Points + Partner ad revenue share.",
           bullets: [
@@ -2908,7 +3147,7 @@
         paint();
         clearInterval(appBannerTimer);
         appBannerTimer = setInterval(() => {
-          if (!document.hidden && !isOnboardingOpen) { idx = (idx + 1) % slides.length; paint(); }
+          if (!document.hidden && !isOnboardingOpen && !isTapLobbyVisible) { idx = (idx + 1) % slides.length; paint(); }
         }, 4200);
       }
 
@@ -2922,14 +3161,13 @@
         curtain.classList.remove("is-active");
         void curtain.offsetWidth;
         curtain.classList.add("is-active");
-        setTimeout(() => onMidpoint?.(), 440);
-        setTimeout(() => curtain.classList.remove("is-active"), 1280);
+        setTimeout(() => onMidpoint?.(), 430);
+        setTimeout(() => curtain.classList.remove("is-active"), 1260);
       }
 
       function handleSignupTrigger() {
         doHaptic();
         if (!verifyLocationUnlocked() || !verifyTermsChecked()) return;
-        // Dedicated Apps (Mobile & Desktop) launch Passing Clouds -> Benefits Showcase -> 5-Step Interactive Wizard!
         if (isDedicatedApp()) {
           launchAppOnboardingFlow(false);
         } else {
@@ -2968,7 +3206,6 @@
         badge.style.color = s.badgeColor;
         badge.style.borderColor = s.badgeColor;
         badge.innerHTML = `<i class="fa-solid ${s.icon}"></i> ${escapeHtml(s.badge)}`;
-
         document.getElementById("appBenefitIconWrap").innerHTML = `<i class="fa-solid ${s.icon}"></i>`;
         document.getElementById("appBenefitTitle").textContent = s.title;
         document.getElementById("appBenefitDesc").textContent = s.desc;
@@ -2988,12 +3225,8 @@
 
       function advanceBenefitSlide() {
         doHaptic();
-        if (benefitSlideIdx < BENEFIT_SLIDES.length - 1) {
-          benefitSlideIdx += 1;
-          renderBenefitSlide();
-        } else {
-          skipBenefitsToWizard();
-        }
+        if (benefitSlideIdx < BENEFIT_SLIDES.length - 1) { benefitSlideIdx += 1; renderBenefitSlide(); }
+        else skipBenefitsToWizard();
       }
 
       function skipBenefitsToWizard() {
@@ -3008,7 +3241,6 @@
         document.getElementById("appOnbSkipBtn").classList.add("hidden");
         document.getElementById("appOnbStageLabel").textContent = "CREATE PLAYER ID";
 
-        // Sync OAuth state into Wizard Step 5 if user arrived via Google/Discord/Facebook/Apple
         const oauthPill = document.getElementById("wizOAuthPill");
         if (isGoogleSignupMode && googleAuthenticatedEmail) {
           oauthPill?.classList.remove("hidden");
@@ -3030,9 +3262,7 @@
 
       function setWizardStep(step) {
         wizardStep = Math.max(1, Math.min(5, step));
-        for (let i = 1; i <= 5; i++) {
-          document.getElementById(`wizStep${i}`)?.classList.toggle("is-active", i === wizardStep);
-        }
+        for (let i = 1; i <= 5; i++) document.getElementById(`wizStep${i}`)?.classList.toggle("is-active", i === wizardStep);
         const pct = wizardStep * 20;
         document.getElementById("wizStepCounter").textContent = `STEP ${wizardStep} OF 5`;
         document.getElementById("wizStepPercent").textContent = `${pct}%`;
@@ -3040,11 +3270,10 @@
         document.getElementById("btnWizPrev").classList.toggle("hidden", wizardStep <= 1);
         document.getElementById("btnWizNext").classList.toggle("hidden", wizardStep >= 5);
         document.getElementById("btnWizFinish").classList.toggle("hidden", wizardStep < 5);
-
-        if (wizardStep === 3) applyGeoAutoFillToSelectPair("wizState", "wizCity", "wizCustomLocRow", false);
+        if (wizardStep === 3) applyGeoAutoFillToPair("wizState", "wizCity", "wizCustomLocRow", false);
       }
 
-      function pickWizardGame(gameName, btnEl) {
+      function pickWizardGame(gameName) {
         doHaptic();
         wizardSelectedGame = gameName;
         document.querySelectorAll(".wiz-game-card").forEach((c) => {
@@ -3059,10 +3288,8 @@
         doHaptic();
         if (wizardStep === 1 && !wizardSelectedGame) { showToast("Select your primary esports game first."); return; }
         if (wizardStep === 2) {
-          const nm = document.getElementById("wizName").value.trim();
-          const ign = document.getElementById("wizIgn").value.trim();
-          if (nm.length < 2) { showToast("Enter your full or display name."); return; }
-          if (ign.length < 2) { showToast("Choose your In-Game Name (IGN)."); return; }
+          if (document.getElementById("wizName").value.trim().length < 2) { showToast("Enter your full or display name."); return; }
+          if (document.getElementById("wizIgn").value.trim().length < 2) { showToast("Choose your In-Game Name (IGN)."); return; }
         }
         if (wizardStep === 3) {
           const uid = document.getElementById("wizUid").value.trim();
@@ -3073,17 +3300,11 @@
           if (uid.length < 4) { showToast("Enter your valid in-game UID."); return; }
           if (!finalSt || !finalCt) { showToast("Select or auto-fill your Home State & City."); return; }
         }
-        if (wizardStep === 4 && !isPhoneVerified) {
-          showToast("Complete +91 WhatsApp OTP verification to continue.");
-          return;
-        }
+        if (wizardStep === 4 && !isPhoneVerified) { showToast("Complete +91 WhatsApp OTP verification to continue."); return; }
         setWizardStep(wizardStep + 1);
       }
 
-      function wizardPrevStep() {
-        doHaptic();
-        if (wizardStep > 1) setWizardStep(wizardStep - 1);
-      }
+      function wizardPrevStep() { doHaptic(); if (wizardStep > 1) setWizardStep(wizardStep - 1); }
 
       function closeAppOnboardingStage() {
         isOnboardingOpen = false;
@@ -3119,7 +3340,7 @@
         const w = (canvas.width = window.innerWidth);
         const h = (canvas.height = window.innerHeight);
         const cx = w / 2, cy = h / 2;
-        const starCount = tier === "ultra" ? 160 : 85;
+        const starCount = tier === "ultra" ? 170 : 85;
         const colors = ["#38BDF8", "#8B5CF6", "#FBBF24", "#10B981", "#FFFFFF"];
 
         const stars = Array.from({ length: starCount }, (_, i) => ({
@@ -3131,31 +3352,22 @@
         }));
         stars.forEach((s) => { s.pz = s.z; });
 
-        let speed = 16;
+        let speed = 18;
         function renderWarp() {
           ctx.fillStyle = "rgba(4, 5, 10, 0.28)";
           ctx.fillRect(0, 0, w, h);
-          speed = Math.min(54, speed + 1.15);
-
+          speed = Math.min(58, speed + 1.25);
           for (const s of stars) {
             s.pz = s.z;
             s.z -= speed;
-            if (s.z <= 2) {
-              s.x = (Math.random() - 0.5) * w * 1.4;
-              s.y = (Math.random() - 0.5) * h * 1.4;
-              s.z = w;
-              s.pz = w;
-            }
-            const sx = (s.x / s.z) * cx + cx;
-            const sy = (s.y / s.z) * cy + cy;
-            const px = (s.x / s.pz) * cx + cx;
-            const py = (s.y / s.pz) * cy + cy;
-
+            if (s.z <= 2) { s.x = (Math.random() - 0.5) * w * 1.4; s.y = (Math.random() - 0.5) * h * 1.4; s.z = w; s.pz = w; }
+            const sx = (s.x / s.z) * cx + cx, sy = (s.y / s.z) * cy + cy;
+            const px = (s.x / s.pz) * cx + cx, py = (s.y / s.pz) * cy + cy;
             ctx.beginPath();
             ctx.moveTo(px, py);
             ctx.lineTo(sx, sy);
             ctx.strokeStyle = s.col;
-            ctx.lineWidth = Math.max(1, (1 - s.z / w) * 3.2);
+            ctx.lineWidth = Math.max(1, (1 - s.z / w) * 3.4);
             ctx.stroke();
           }
           warpRafId = requestAnimationFrame(renderWarp);
@@ -3169,7 +3381,6 @@
         try {
           if (window.OneSignal?.login) {
             window.OneSignal.login(email).catch(() => {});
-            // Cleanly request push permission right after successful auth (never via a clunky header button)
             if (window.OneSignal?.Notifications?.permission === false) {
               window.OneSignal.Notifications.requestPermission?.().catch(() => {});
             }
@@ -3206,12 +3417,11 @@
         if (overlay) overlay.classList.add("is-active");
         startWarpStarfieldCanvas();
 
-        const stages = [
-          { ms: 60, p: 32, txt: "VERIFYING REGIONAL SERVER..." },
-          { ms: 460, p: 72, txt: "SYNCING CLAN & WALLET VAULT..." },
-          { ms: 880, p: 100, txt: "DEPLOYING ARENA FEED..." }
-        ];
-        stages.forEach((st) => {
+        [
+          { ms: 60, p: 34, txt: "LOCKING REGIONAL SERVER..." },
+          { ms: 440, p: 76, txt: "SYNCING CLAN & WALLET VAULT..." },
+          { ms: 860, p: 100, txt: "DEPLOYING ARENA FEED..." }
+        ].forEach((st) => {
           setTimeout(() => {
             if (bar) bar.style.width = `${st.p}%`;
             if (pct) pct.textContent = `${st.p}%`;
@@ -3226,7 +3436,7 @@
           } else {
             window.location.replace(targetUrl || REDIRECT_URL);
           }
-        }, 1280);
+        }, 1260);
       }
 
       // ============================================================================
@@ -3237,7 +3447,7 @@
         const signupBtn = document.getElementById("tabBtnSignup");
         const switcher = document.getElementById("authTabSwitcher");
         if (signupBtn) signupBtn.style.display = "block";
-        if (switcher) switcher.className = "p-1 glass-inset rounded-full grid grid-cols-3 gap-1 mb-3.5";
+        if (switcher) switcher.className = "p-1 glass-inset rounded-full grid grid-cols-3 gap-1 mb-3.5 relative z-10";
       }
 
       function switchAuthTab(tab) {
@@ -3254,43 +3464,27 @@
           signup: document.getElementById("tabBtnSignup"),
           organizer: document.getElementById("tabBtnOrg")
         };
-        const accent = document.getElementById("cardTopAccent");
 
         Object.keys(views).forEach((k) => {
           views[k]?.classList.toggle("hidden", k !== tab);
           views[k]?.classList.toggle("block", k === tab);
         });
 
-        const baseInactive = "min-h-[40px] px-2 text-center rounded-full font-mono text-[11px] sm:text-xs font-bold tracking-wider uppercase transition-all whitespace-nowrap";
-        if (btns.login) btns.login.className = `${baseInactive} text-[#94A3B8] hover:text-white`;
-        if (btns.organizer) btns.organizer.className = `${baseInactive} text-[#FBBF24] hover:text-white`;
-        if (btns.signup) btns.signup.className = `${baseInactive} text-[#10B981] hover:text-white`;
+        const base = "min-h-[40px] px-2 text-center rounded-full font-mono text-[11px] sm:text-xs font-bold tracking-wider uppercase transition-all whitespace-nowrap";
+        if (btns.login) btns.login.className = `${base} text-[#94A3B8] hover:text-white`;
+        if (btns.organizer) btns.organizer.className = `${base} text-[#FBBF24] hover:text-white`;
+        if (btns.signup) btns.signup.className = `${base} text-[#10B981] hover:text-white`;
 
-        if (tab === "login") {
-          if (btns.login) btns.login.className = `${baseInactive} font-extrabold bg-gradient-to-r from-[#8B5CF6] to-[#38BDF8] text-white shadow`;
-          if (accent) accent.className = "absolute top-0 left-4 right-4 h-[2px] rounded-full bg-gradient-to-r from-[#8B5CF6] via-[#38BDF8] to-[#10B981]";
-        } else if (tab === "signup") {
-          if (btns.signup) btns.signup.className = `${baseInactive} font-extrabold bg-gradient-to-r from-[#10B981] to-[#38BDF8] text-white shadow`;
-          if (accent) accent.className = "absolute top-0 left-4 right-4 h-[2px] rounded-full bg-gradient-to-r from-[#10B981] via-[#38BDF8] to-[#8B5CF6]";
-        } else if (tab === "organizer") {
-          if (btns.organizer) btns.organizer.className = `${baseInactive} font-extrabold bg-gradient-to-r from-[#FBBF24] to-[#EA580C] text-[#050508] shadow`;
-          if (accent) accent.className = "absolute top-0 left-4 right-4 h-[2px] rounded-full bg-gradient-to-r from-[#FBBF24] via-[#F59E0B] to-[#EA580C]";
-        }
+        if (tab === "login" && btns.login) btns.login.className = `${base} font-extrabold bg-gradient-to-r from-[#8B5CF6] to-[#38BDF8] text-white shadow`;
+        else if (tab === "signup" && btns.signup) btns.signup.className = `${base} font-extrabold bg-gradient-to-r from-[#10B981] to-[#38BDF8] text-white shadow`;
+        else if (tab === "organizer" && btns.organizer) btns.organizer.className = `${base} font-extrabold bg-gradient-to-r from-[#FBBF24] to-[#EA580C] text-[#050508] shadow`;
       }
 
       async function executeServerLogin({ identifier, password, portal, btnId }) {
         if (inFlight.has(btnId) || isCurrentlyLockedOut()) return;
-        if (!verifyLocationUnlocked() || !verifyTermsChecked()) return;
-        if (!isHumanDwellOk()) return;
-
-        if (!identifier || !password) {
-          showToast("Enter your credentials to continue.");
-          return;
-        }
-        if (!isSupabaseReady || !supabaseClient) {
-          showToast("Security gateway initializing. Please try again.");
-          return;
-        }
+        if (!verifyLocationUnlocked() || !verifyTermsChecked() || !isHumanDwellOk()) return;
+        if (!identifier || !password) { showToast("Enter your credentials to continue."); return; }
+        if (!isSupabaseReady || !supabaseClient) { showToast("Security gateway initializing..."); return; }
 
         inFlight.add(btnId);
         btnLoading(btnId, portal === "organizer" ? "VERIFYING HOST..." : "VERIFYING FIREWALL...");
@@ -3307,12 +3501,10 @@
           });
 
           if (error) throw new Error(error.message || "Authentication gateway unreachable.");
-
           if (!res?.ok) {
             shakeAuthCard();
-            if (res?.retry_after_sec > 0) {
-              triggerServerLockoutCountdown(res.retry_after_sec);
-            } else if (res?.attempts) {
+            if (res?.retry_after_sec > 0) triggerServerLockoutCountdown(res.retry_after_sec);
+            else if (res?.attempts) {
               const lbl = document.getElementById("attemptCounterLabel");
               if (lbl) {
                 lbl.textContent = `ATTEMPTS: ${res.attempts}/4`;
@@ -3323,11 +3515,9 @@
             return;
           }
 
-          // Silently establish Supabase Auth JWT if email exists in auth.users (non-blocking)
           if (res.profile?.email) {
             supabaseClient.auth.signInWithPassword({ email: res.profile.email, password }).catch(() => {});
           }
-
           saveDeviceAccountVault(res.profile, res.resume_token || "");
           launchWarpArenaEntry(res.profile, REDIRECT_URL);
         } catch (err) {
@@ -3347,12 +3537,8 @@
 
         inFlight.add("register");
         btnLoading(btnId, "ACTIVATING PLAYER ID...");
-
         try {
-          const avatarUrl = googleAuthenticatedAvatar ||
-            sessionStorage.getItem("tx_oauth_avatar") ||
-            `https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(ign)}`;
-
+          const avatarUrl = googleAuthenticatedAvatar || sessionStorage.getItem("tx_oauth_avatar") || `https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(ign)}`;
           const { data: res, error } = await supabaseClient.rpc("tx_auth_register", {
             p_email: email,
             p_password: isOAuth ? "" : password,
@@ -3369,21 +3555,11 @@
             p_device_fp: getOrCreateDeviceFp(),
             p_device_label: getDeviceLabel()
           });
-
           if (error) throw new Error(error.message || "Registration failed.");
-          if (!res?.ok || !res.profile) {
-            shakeAuthCard();
-            showToast(res?.error || "Could not complete registration.");
-            return;
-          }
+          if (!res?.ok || !res.profile) { shakeAuthCard(); showToast(res?.error || "Could not complete registration."); return; }
 
-          // Silently register auth.users session for RLS JWTs (never blocks direct Arena redirect!)
-          if (!isOAuth) {
-            supabaseClient.auth.signUp({ email, password, options: { data: { full_name: username, ign } } }).catch(() => {});
-          }
-
+          if (!isOAuth) supabaseClient.auth.signUp({ email, password, options: { data: { full_name: username, ign } } }).catch(() => {});
           saveDeviceAccountVault(res.profile, res.resume_token || "");
-          // Direct launch to Home Arena (zero confirmation screen or second login!)
           launchWarpArenaEntry(res.profile, REDIRECT_URL);
         } catch (err) {
           shakeAuthCard();
@@ -3417,7 +3593,6 @@
         });
       }
 
-      // Unified 4-Provider OAuth Launcher (Google, Discord, Facebook, Apple — Web + Native App Safe!)
       async function launchOAuthProvider(provider) {
         doHaptic();
         if (!verifyLocationUnlocked() || !verifyTermsChecked()) return;
@@ -3426,9 +3601,7 @@
         inFlight.add("oauth");
 
         const labels = { google: "Google", discord: "Discord", facebook: "Facebook", apple: "Apple" };
-        const extraOpts = {
-          redirectTo: window.location.origin + window.location.pathname
-        };
+        const extraOpts = { redirectTo: window.location.origin + window.location.pathname };
         if (provider === "google") extraOpts.queryParams = { prompt: "select_account" };
         if (provider === "discord") extraOpts.scopes = "identify email";
         if (provider === "facebook") extraOpts.scopes = "email public_profile";
@@ -3437,7 +3610,6 @@
           sessionStorage.setItem("tx_oauth_pending", "1");
           showToast(`Connecting to ${labels[provider] || provider}...`, true);
 
-          // Native Mobile App Safe Hand-Off (opens system Custom Tab / ASWebAuthenticationSession if bridge supports it)
           if (isDedicatedApp() && (window.TournyxNative?.openOAuthUrl || window.Capacitor?.Plugins?.Browser?.open)) {
             extraOpts.skipBrowserRedirect = true;
             const { data, error } = await supabaseClient.auth.signInWithOAuth({ provider, options: extraOpts });
@@ -3451,7 +3623,7 @@
           if (error) throw error;
         } catch (err) {
           sessionStorage.removeItem("tx_oauth_pending");
-          showToast(`${labels[provider] || provider} login is not enabled in Supabase Dashboard yet or was cancelled.`);
+          showToast(`${labels[provider] || provider} login was cancelled or is not enabled in Supabase Dashboard yet.`);
         } finally {
           setTimeout(() => inFlight.delete("oauth"), 1200);
         }
@@ -3463,8 +3635,7 @@
       function launchAppleOAuthDirect() { launchOAuthProvider("apple"); }
 
       async function handleGoogleOneTap(response) {
-        if (!response?.credential || !isSupabaseReady || !supabaseClient) return;
-        if (!verifyTermsChecked()) return;
+        if (!response?.credential || !isSupabaseReady || !supabaseClient || !verifyTermsChecked()) return;
         try {
           showToast("Verifying Google One-Tap...", true);
           const { data, error } = await supabaseClient.auth.signInWithIdToken({ provider: "google", token: response.credential });
@@ -3493,7 +3664,6 @@
             p_city: userGeoLocation.city || "",
             p_state: userGeoLocation.state || ""
           });
-
           if (res?.ok && res.exists && res.profile) {
             saveDeviceAccountVault(res.profile, res.resume_token || "");
             launchWarpArenaEntry(res.profile, REDIRECT_URL);
@@ -3501,15 +3671,10 @@
           }
         }
 
-        // Brand-New OAuth User -> Pre-fill verified email & launch Onboarding / Profile Completion
+        hideTapAnywhereLobby(false);
         activateGoogleSignupMode(email, fullName, avatar);
-        if (isDedicatedApp()) {
-          launchAppOnboardingFlow(true);
-        } else {
-          revealCreateIdTab();
-          switchAuthTab("signup");
-          applyGeoAutoFillAllForms(false);
-        }
+        if (isDedicatedApp()) launchAppOnboardingFlow(true);
+        else { revealCreateIdTab(); switchAuthTab("signup"); applyGeoAutoFillAllForms(false); }
         showToast("OAuth verified! Complete your esports profile to enter the Arena.", true);
       }
 
@@ -3598,24 +3763,16 @@
         if (!isSupabaseReady || !supabaseClient) { showToast("Security gateway initializing..."); return; }
 
         inFlight.add("sendOtp");
-        btnLoading(els.sendBtn, "CHECKING...");
+        btnLoading(els.sendBtn, "...");
         try {
           const { data: avail } = await supabaseClient.rpc("tx_check_handle_availability", { p_ign: "", p_email: "", p_phone: digits });
-          if (avail?.ok && avail.phone_available === false) {
-            shakeAuthCard();
-            showToast("Mobile number is already registered to another account.");
-            return;
-          }
+          if (avail?.ok && avail.phone_available === false) { shakeAuthCard(); showToast("Mobile number is already linked to another account."); return; }
 
-          document.getElementById(els.sendBtn).innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`;
-          const { data, error } = await supabaseClient.functions.invoke("tournyx-auth-gateway", {
-            body: { action: "send_otp", phone: "91" + digits }
-          });
+          const { data, error } = await supabaseClient.functions.invoke("tournyx-auth-gateway", { body: { action: "send_otp", phone: "91" + digits } });
           if (error || !data?.ok) throw new Error(data?.error || "Failed to dispatch WhatsApp OTP.");
 
           const grp = document.getElementById(els.group);
-          grp?.classList.remove("hidden");
-          grp?.classList.add("flex");
+          grp?.classList.remove("hidden"); grp?.classList.add("flex");
           document.getElementById(els.otp)?.focus();
           showToast("6-digit OTP sent to your WhatsApp!", true);
           startOtpCooldown(ctx);
@@ -3642,24 +3799,13 @@
         inFlight.add("verifyOtp");
         btnLoading(els.verBtn, "...");
         try {
-          const { data, error } = await supabaseClient.functions.invoke("tournyx-auth-gateway", {
-            body: { action: "verify_otp", phone: "91" + digits, otp: entered }
-          });
+          const { data, error } = await supabaseClient.functions.invoke("tournyx-auth-gateway", { body: { action: "verify_otp", phone: "91" + digits, otp: entered } });
           if (error || !data?.ok) { showToast("Invalid or expired OTP code."); return; }
 
           isPhoneVerified = true;
-          verifiedPhoneDigits = digits;
           clearInterval(otpCooldownTimer);
-
-          // Mirror verified state to both Web & Wizard phone inputs seamlessly
-          ["regPhone", "wizPhone"].forEach((pid) => {
-            const p = document.getElementById(pid);
-            if (p) { p.value = "+91 " + digits; p.readOnly = true; }
-          });
-          ["phoneOtpStatusTag", "wizPhoneStatus"].forEach((sid) => {
-            const s = document.getElementById(sid);
-            if (s) { s.textContent = "● VERIFIED"; s.className = "font-mono text-[10px] text-[#10B981] uppercase font-bold"; }
-          });
+          ["regPhone", "wizPhone"].forEach((pid) => { const p = document.getElementById(pid); if (p) { p.value = "+91 " + digits; p.readOnly = true; } });
+          ["phoneOtpStatusTag", "wizPhoneStatus"].forEach((sid) => { const s = document.getElementById(sid); if (s) { s.textContent = "● VERIFIED"; s.className = "font-mono text-[10px] text-[#10B981] uppercase font-bold"; } });
           const vBtn = document.getElementById(els.verBtn);
           if (vBtn) { vBtn.textContent = "VERIFIED ✓"; vBtn.disabled = true; }
           showToast("WhatsApp number verified!", true);
@@ -3673,7 +3819,6 @@
 
       function unlockPhoneInput(ctx = "web") {
         isPhoneVerified = false;
-        verifiedPhoneDigits = "";
         clearInterval(otpCooldownTimer);
         otpCooldownSec = 0;
         const els = getOtpEls(ctx);
@@ -3689,7 +3834,7 @@
       }
 
       // ============================================================================
-      // 10. 24-LANGUAGE DEVICE PICKER & UPGRADED HELP DESK (CREATE + TRACK TICKET)
+      // 10. 24-LANGUAGE DEVICE PICKER & UPGRADED HELP DESK (CREATE + LIVE TRACK)
       // ============================================================================
       function openLangModal() {
         const inp = document.getElementById("langSearchInput");
@@ -3745,7 +3890,7 @@
             const hdrCode = document.getElementById("hdrLangCode");
             if (hdrCode) hdrCode.textContent = meta.code === "en" ? "Lang" : meta.name;
             closeModals();
-            showToast(`App language set to ${meta.name} (saved on this device)`, true);
+            showToast(`App language set to ${meta.name} (saved on device)`, true);
           });
         });
       }
@@ -3755,7 +3900,7 @@
         switchHelpTab("create");
         const emailVal = document.getElementById("loginEmail")?.value.trim() ||
           document.getElementById("regEmail")?.value.trim() ||
-          loadSavedDeviceAccounts()[0]?.email || "";
+          getPrimarySavedAccount()?.email || "";
         if (emailVal.includes("@")) {
           document.getElementById("helpEmail").value = emailVal;
           document.getElementById("trackTicketEmailInp").value = emailVal;
@@ -3790,18 +3935,12 @@
         try {
           const meta = `${getDeviceLabel()} | Ping: ${document.getElementById("live-ping")?.textContent || "--"}`;
           const { data: res, error } = await supabaseClient.rpc("tx_create_support_ticket", {
-            p_email: email,
-            p_category: category,
-            p_message: message,
-            p_city: userGeoLocation.city || "UNKNOWN",
-            p_device_meta: meta
+            p_email: email, p_category: category, p_message: message, p_city: userGeoLocation.city || "UNKNOWN", p_device_meta: meta
           });
           if (error || !res?.ok) throw new Error(res?.error || error?.message || "Could not create support ticket.");
 
           lastCreatedTicketId = res.ticket_id;
-          supabaseClient.functions.invoke("tournyx-auth-gateway", {
-            body: { action: "support_email", ticket_id: res.ticket_id, email, category, message }
-          }).catch(() => {});
+          supabaseClient.functions.invoke("tournyx-auth-gateway", { body: { action: "support_email", ticket_id: res.ticket_id, email, category, message } }).catch(() => {});
 
           document.getElementById("receiptTicketId").textContent = res.ticket_id;
           document.getElementById("receiptEmailText").textContent = email;
@@ -3809,7 +3948,7 @@
           document.getElementById("supportReceiptView").classList.remove("hidden");
           showToast(`Support Ticket ${res.ticket_id} logged!`, true);
         } catch (err) {
-          showToast(err?.message || "Could not submit ticket. Please check connection.");
+          showToast(err?.message || "Could not submit ticket. Check connection.");
         } finally {
           inFlight.delete("supportCreate");
           btnReset("btnSubmitTicket");
@@ -3872,14 +4011,9 @@
         box.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-[#FBBF24] mr-1.5"></i>Checking live status...`;
         try {
           const { data: res } = await supabaseClient.rpc("tx_check_organizer_status", { p_email: email });
-          if (res?.ok) {
-            box.innerHTML = `<span class="text-[#FBBF24] font-bold">${escapeHtml(res.email)}</span> — STATUS: <span class="text-[#10B981] font-bold">${escapeHtml(res.status)}</span>`;
-          } else {
-            box.innerHTML = `<span class="text-[#FDA4AF]">${escapeHtml(res?.error || "No application found.")}</span>`;
-          }
-        } finally {
-          inFlight.delete("orgStatus");
-        }
+          if (res?.ok) box.innerHTML = `<span class="text-[#FBBF24] font-bold">${escapeHtml(res.email)}</span> — STATUS: <span class="text-[#10B981] font-bold">${escapeHtml(res.status)}</span>`;
+          else box.innerHTML = `<span class="text-[#FDA4AF]">${escapeHtml(res?.error || "No application found.")}</span>`;
+        } finally { inFlight.delete("orgStatus"); }
       }
 
       async function handleForgotPassword(e) {
@@ -3895,25 +4029,19 @@
           }
           closeModals();
           showToast(`If an account exists for ${email}, a recovery link has been sent.`, true);
-        } finally {
-          inFlight.delete("forgotPwd");
-          btnReset("btnResetPwd");
-        }
+        } finally { inFlight.delete("forgotPwd"); btnReset("btnResetPwd"); }
       }
 
       function installPWAApp() {
         doHaptic();
         if (deferredPwaPrompt) {
           deferredPwaPrompt.prompt();
-          deferredPwaPrompt.userChoice.then(() => {
-            deferredPwaPrompt = null;
-            document.getElementById("pwaInstallBtn")?.classList.add("hidden");
-          });
+          deferredPwaPrompt.userChoice.then(() => { deferredPwaPrompt = null; document.getElementById("pwaInstallBtn")?.classList.add("hidden"); });
         }
       }
 
       // ============================================================================
-      // 11. SUPABASE INIT, FORM BINDING & MASTER BOOT SEQUENCE
+      // 11. SUPABASE INIT, FORM BINDING, TOUCH RETICLE & MASTER BOOT SEQUENCE
       // ============================================================================
       function initSupabaseEngine() {
         const hadOAuthHash = window.location.hash.includes("access_token=") ||
@@ -3939,6 +4067,7 @@
             }
           });
         }
+        return isOAuthReturn;
       }
 
       function bindFormsAndListeners() {
@@ -3984,22 +4113,35 @@
           });
         });
 
-        // Caps-Lock Live Indicator on Login Password
         document.getElementById("loginPwd")?.addEventListener("keyup", (e) => {
           const caps = e.getModifierState && e.getModifierState("CapsLock");
           document.getElementById("capsLockHintLogin")?.classList.toggle("hidden", !caps);
         });
 
-        // Delegated Click for Pro IGN Suggestions & Modal Backdrop Close
+        // Keyboard Enter on Tap-Anywhere Lobby
+        document.getElementById("tapToEnterLobby")?.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleTapAnywhereLobby(e); }
+        });
+
+        // Crisp 28px Tactical Touch Reticle Burst + Video Autoplay Unlock
+        document.addEventListener("pointerdown", (e) => {
+          syncTrailerVideoPlayback();
+          if (document.documentElement.getAttribute("data-perf-tier") === "lite") return;
+          if (e.pointerType === "mouse" && e.button !== 0) return;
+          const tap = document.createElement("div");
+          tap.className = "hud-tap-fx";
+          tap.style.left = `${e.clientX}px`;
+          tap.style.top = `${e.clientY}px`;
+          document.body.appendChild(tap);
+          setTimeout(() => tap.remove(), 310);
+        }, { passive: true });
+
         document.addEventListener("click", (e) => {
           const ignBtn = e.target.closest("[data-pick-ign]");
           if (ignBtn) {
             doHaptic();
             const targetInp = document.getElementById(ignBtn.dataset.targetInp);
-            if (targetInp) {
-              targetInp.value = ignBtn.dataset.pickIgn;
-              targetInp.dispatchEvent(new Event("input"));
-            }
+            if (targetInp) { targetInp.value = ignBtn.dataset.pickIgn; targetInp.dispatchEvent(new Event("input")); }
             return;
           }
           if (e.target.classList.contains("modal-overlay")) closeModals();
@@ -4040,38 +4182,36 @@
         dismissWebSplash, doHaptic, togglePwd, openModal, closeModals, hideToast, cyclePerfTier,
         requestUserGeolocation, handleStateChange, handleCityChange, updateGameUidHint,
         generateQuickIgnIdeas, onIgnAvailabilityInput, onSignupEmailInput, evaluatePasswordStrength,
-        switchAuthTab, handleSignupTrigger, launchAppOnboardingFlow, appOnboardingBack,
+        showTapAnywhereLobby, hideTapAnywhereLobby, handleTapAnywhereLobby, switchToManualLoginFromLobby, logoutFromTapLobby,
+        switchAuthTab, handleSignupTrigger, launchAppOnboardingFlow, appOnboardingBack, closeAppOnboardingStage,
         skipBenefitsToWizard, advanceBenefitSlide, pickWizardGame, wizardPrevStep, wizardNextStep, submitWizardSignup,
         launchOAuthProvider, launchGoogleOAuthDirect, launchDiscordOAuthDirect, launchFacebookOAuthDirect, launchAppleOAuthDirect,
         handleGoogleOneTap, disableGoogleSignupMode,
         sendPhoneOtp, onOtpInputTyped, verifyPhoneOtp, unlockPhoneInput,
-        openAccountsModal, resumePrimarySavedAccount, resumeSavedAccountDirectly, removeSavedAccount,
+        openAccountsModal, resumeSavedAccountDirectly, removeSavedAccount,
         openLangModal, renderLanguageList,
         openHelpModal, switchHelpTab, submitSupportTicket, trackSupportTicket, copyGeneratedTicketId, resetSupportModalView,
         checkOrganizerStatus, handleForgotPassword, installPWAApp
       });
 
       window.addEventListener("DOMContentLoaded", () => {
-        initSupabaseEngine();
+        const isOAuthReturn = initSupabaseEngine();
         applyPerfTier(detectHardwarePerfTier(), false);
         initLocations();
         initPhoneFormatLock();
         bindFormsAndListeners();
+        initDesktopCard3DTilt();
         initDedicatedAppPromoBanner();
-        renderQuickResumeBar();
         enforceSecurityLockoutUI();
 
-        // Sync top-bar language badge with saved device language
         if (window.TournyxI18n?.getLangMeta) {
           const m = window.TournyxI18n.getLangMeta(window.TournyxI18n.getLang());
           const el = document.getElementById("hdrLangCode");
           if (el && m.code !== "en") el.textContent = m.name;
         }
 
-        // Auto-dismiss Non-Square Hex Web Splash after 1.65s (already hidden in Dedicated Apps!)
-        if (!isDedicatedApp()) {
-          setTimeout(dismissWebSplash, 1650);
-        }
+        // Auto-dismiss AAA Web Title Splash after 1.45s (Already blocked in Dedicated Apps!)
+        if (!isDedicatedApp()) setTimeout(dismissWebSplash, 1450);
 
         if (!navigator.onLine) document.getElementById("offlineBanner")?.classList.remove("hidden");
 
@@ -4080,19 +4220,35 @@
         setInterval(measureRealPing, 30000);
         fetchRealTimeArenaTelemetry();
 
-        // Google One-Tap (Web Only)
-        if (!isDedicatedApp() && GOOGLE_CLIENT_ID && !GOOGLE_CLIENT_ID.startsWith("YOUR_")) {
+        const params = new URLSearchParams(window.location.search);
+        const tabParam = params.get("tab");
+        const hasSavedAccount = Boolean(getPrimarySavedAccount());
+
+        if (!isOAuthReturn) {
+          if (tabParam === "organizer") {
+            hideTapAnywhereLobby(hasSavedAccount);
+            switchAuthTab("organizer");
+          } else if (tabParam === "signup") {
+            hideTapAnywhereLobby(hasSavedAccount);
+            handleSignupTrigger();
+          } else if (hasSavedAccount) {
+            // Returning Agent Detected -> Activate Full-Screen Free Fire / BGMI "TAP ANYWHERE TO ENTER ARENA" Lobby!
+            showTapAnywhereLobby();
+          } else if (isDedicatedApp()) {
+            // Brand-New Dedicated App User -> Automatically Launch Animated Passing-Clouds -> Tournyx Benefits Showcase!
+            setTimeout(() => launchAppOnboardingFlow(false), 380);
+          }
+        }
+
+        // Google One-Tap (Web Visitors Without Active Tap Lobby)
+        if (!isDedicatedApp() && !hasSavedAccount && GOOGLE_CLIENT_ID && !GOOGLE_CLIENT_ID.startsWith("YOUR_")) {
           setTimeout(() => {
             try {
               window.google?.accounts?.id?.initialize({ client_id: GOOGLE_CLIENT_ID, callback: handleGoogleOneTap, auto_select: false });
               window.google?.accounts?.id?.prompt();
             } catch (e) {}
-          }, 900);
+          }, 950);
         }
-
-        const params = new URLSearchParams(window.location.search);
-        if (params.get("tab") === "organizer") switchAuthTab("organizer");
-        else if (params.get("tab") === "signup") handleSignupTrigger();
       });
     })();
   </script>
