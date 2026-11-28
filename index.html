@@ -480,36 +480,90 @@
        INSTAGRAM-STYLE COMPACT PORTRAIT REELS & MINIMAL FEED CARDS
        Strictly Fixed Dimensions -> Zero Blown-Up Video Widths!
        ========================================================================= */
-    .tx-reel-card-compact {
+   .tx-reel-card-compact {
       position: relative;
-      width: 146px;
-      min-width: 146px;
-      max-width: 146px;
-      height: 238px;
-      border-radius: 18px;
+      width: 150px;
+      min-width: 150px;
+      max-width: 150px;
+      height: 252px;
+      border-radius: 20px;
       overflow: hidden;
       background: #090B14;
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 12px 28px -10px rgba(0, 0, 0, 0.80);
       flex-shrink: 0;
       scroll-snap-align: start;
       transition: border-color 0.18s ease, transform 0.16s ease;
     }
     @media (min-width: 640px) {
       .tx-reel-card-compact {
-        width: 162px;
-        min-width: 162px;
-        max-width: 162px;
-        height: 262px;
+        width: 168px;
+        min-width: 168px;
+        max-width: 168px;
+        height: 278px;
       }
     }
-    .tx-reel-card-compact:hover { border-color: rgba(139, 92, 246, 0.65); }
-    .tx-reel-card-compact video,
-    .tx-reel-card-compact img {
+    .tx-reel-card-compact.is-previewing {
+      border-color: rgba(56, 189, 248, 0.78);
+      box-shadow: 0 14px 32px -10px rgba(56, 189, 248, 0.34);
+    }
+    /* Strictly Scope Full-Bleed Media Sizing So Creator Avatar NEVER Blows Up! */
+    .tx-reel-media {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background: #070812;
+      z-index: 1;
+    }
+    .tx-reel-media > video,
+    .tx-reel-media > img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
     }
+    .tx-reel-av {
+      width: 22px !important;
+      height: 22px !important;
+      min-width: 22px;
+      border-radius: 9999px;
+      object-fit: cover;
+      border: 1.5px solid rgba(255, 255, 255, 0.45);
+      flex-shrink: 0;
+    }
+    .tx-sreel-bar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.14);
+      z-index: 12;
+      pointer-events: none;
+    }
+    .tx-sreel-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #F59E0B 0%, #38BDF8 55%, #8B5CF6 100%);
+      transition: width 0.12s linear;
+    }
+    .tx-sreel-gate {
+      position: absolute;
+      inset: 0;
+      z-index: 16;
+      background: linear-gradient(180deg, rgba(5, 5, 8, 0.42) 0%, rgba(5, 5, 8, 0.92) 100%);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 12px;
+      gap: 8px;
+    }
+    .tx-sreel-gate.is-visible { display: flex; }
 
     /* Compact Minimal Portrait Reel Inside Arena Feed (Matches Instagram Feed Scale) */
     .tx-feed-portrait-box {
@@ -2655,11 +2709,129 @@
         return `<img src="${escapeHtml(explicitThumb || "og-banner.png")}" alt="${escapeHtml(p.title)}" loading="lazy">`;
       }
 
-      // Compact Instagram-Sized Portrait Slider (146x238px -> 2.3 cards side by side!)
+      // Trending + Views Ranking Score (High Views, Likes, Comments + 72h Freshness Boost)
+      function rankTrendingReels(reels) {
+        const now = Date.now();
+        return [...(reels || [])].sort((a, b) => {
+          const ageHrsA = Math.max(1, (now - new Date(a.created_at || now).getTime()) / 3600000);
+          const ageHrsB = Math.max(1, (now - new Date(b.created_at || now).getTime()) / 3600000);
+          const freshA = ageHrsA <= 72 ? Math.max(0, 72 - ageHrsA) * 0.6 : 0;
+          const freshB = ageHrsB <= 72 ? Math.max(0, 72 - ageHrsB) * 0.6 : 0;
+          const scoreA = safeNum(a.views_count, 0) + safeNum(a.likes_count, 0) * 4 + safeNum(a.comments_count, 0) * 6 + freshA;
+          const scoreB = safeNum(b.views_count, 0) + safeNum(b.likes_count, 0) * 4 + safeNum(b.comments_count, 0) * 6 + freshB;
+          return scoreB - scoreA;
+        });
+      }
+
+      let activeSReelId = null;
+      let activeSReelTimer = null;
+      let activeSReelTick = null;
+      let sReelTrackScrollTimer = null;
+
+      function stopAllSuggestedReelPreviews(exceptId = null) {
+        clearTimeout(activeSReelTimer);
+        clearInterval(activeSReelTick);
+        document.querySelectorAll("#homeReelsTrack .tx-reel-card-compact[data-sreel-id]").forEach((card) => {
+          const cid = card.dataset.sreelId;
+          if (exceptId && cid === exceptId) return;
+          card.classList.remove("is-previewing");
+          const v = card.querySelector("video");
+          if (v && !v.paused) v.pause();
+          const fill = card.querySelector(".tx-sreel-bar-fill");
+          if (fill) fill.style.width = "0%";
+        });
+        if (!exceptId) activeSReelId = null;
+      }
+
+      function startSuggestedReel5sPreview(reelId) {
+        if (!reelId) return;
+        const card = document.querySelector(`#homeReelsTrack .tx-reel-card-compact[data-sreel-id="${reelId}"]`);
+        if (!card) return;
+        const gate = card.querySelector(".tx-sreel-gate");
+        if (gate?.classList.contains("is-visible")) return;
+
+        stopAllSuggestedReelPreviews(reelId);
+        activeSReelId = reelId;
+        card.classList.add("is-previewing");
+
+        const v = card.querySelector("video");
+        const fill = card.querySelector(".tx-sreel-bar-fill");
+        const PREVIEW_MS = 5000;
+        const startedAt = performance.now();
+
+        if (v) {
+          v.muted = true;
+          v.playsInline = true;
+          if (v.currentTime >= 4.8) v.currentTime = 0;
+          v.play().catch(() => {});
+        }
+
+        const finishPreview = () => {
+          clearTimeout(activeSReelTimer);
+          clearInterval(activeSReelTick);
+          if (v && !v.paused) v.pause();
+          if (fill) fill.style.width = "100%";
+          card.classList.remove("is-previewing");
+          gate?.classList.add("is-visible");
+        };
+
+        activeSReelTick = setInterval(() => {
+          const elapsed = performance.now() - startedAt;
+          const pct = Math.min(100, (elapsed / PREVIEW_MS) * 100);
+          if (fill) fill.style.width = `${pct.toFixed(1)}%`;
+          if (elapsed >= PREVIEW_MS) finishPreview();
+        }, 100);
+
+        activeSReelTimer = setTimeout(finishPreview, PREVIEW_MS + 80);
+      }
+
+      function bindSuggestedReelsInteraction() {
+        const track = document.getElementById("homeReelsTrack");
+        if (!track || track.__txSReelBound) return;
+        track.__txSReelBound = true;
+
+        // Touch / Hover on Any Card Immediately Starts Its 5-Second Autoplay Preview
+        track.addEventListener("touchstart", (e) => {
+          if (e.target.closest("button, a")) return;
+          const card = e.target.closest(".tx-reel-card-compact[data-sreel-id]");
+          if (card) startSuggestedReel5sPreview(card.dataset.sreelId);
+        }, { passive: true });
+
+        track.addEventListener("pointerenter", (e) => {
+          if (e.pointerType !== "mouse") return;
+          const card = e.target.closest?.(".tx-reel-card-compact[data-sreel-id]");
+          if (card) startSuggestedReel5sPreview(card.dataset.sreelId);
+        }, true);
+
+        // Sliding Horizontally Auto-Plays the Most Centered Card for 5 Seconds
+        track.addEventListener("scroll", () => {
+          clearTimeout(sReelTrackScrollTimer);
+          sReelTrackScrollTimer = setTimeout(() => {
+            if (document.body.classList.contains("modal-open")) return;
+            const tr = track.getBoundingClientRect();
+            const midX = tr.left + tr.width * 0.42;
+            let bestCard = null;
+            let bestDist = Infinity;
+            track.querySelectorAll(".tx-reel-card-compact[data-sreel-id]").forEach((card) => {
+              const r = card.getBoundingClientRect();
+              if (r.right < tr.left + 20 || r.left > tr.right - 20) return;
+              const dist = Math.abs((r.left + r.width / 2) - midX);
+              if (dist < bestDist) { bestDist = dist; bestCard = card; }
+            });
+            if (bestCard && bestCard.dataset.sreelId !== activeSReelId) {
+              startSuggestedReel5sPreview(bestCard.dataset.sreelId);
+            }
+          }, 180);
+        }, { passive: true });
+      }
+
+      // Upgraded Compact Portrait Suggested Reels & Highlights (Bottom Creator -> Minimal Title + Trending + 5s Autoplay)
       function renderHomeReelsSlider(reels) {
         const track = document.getElementById("homeReelsTrack");
         const badge = document.getElementById("homeReelsCountBadge");
         if (!track) return;
+
+        stopAllSuggestedReelPreviews();
 
         if (!Array.isArray(reels) || reels.length === 0) {
           if (badge) badge.classList.add("hidden");
@@ -2682,28 +2854,62 @@
           return;
         }
 
-        if (badge) { badge.textContent = String(reels.length); badge.classList.remove("hidden"); }
+        const sorted = rankTrendingReels(reels).slice(0, 10);
+        if (badge) { badge.textContent = String(sorted.length); badge.classList.remove("hidden"); }
 
-        track.innerHTML = reels.slice(0, 10).map((r) => {
+        track.innerHTML = sorted.map((r, idx) => {
           const av = safeExternalUrl(r.author_avatar) || `https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(r.author_name || "TX")}`;
+          const isHot = idx < 2 || safeNum(r.views_count, 0) >= 50;
+
           return `
-            <div class="tx-reel-card-compact group">
-              <a href="/reels?id=${encodeURIComponent(r.id)}" class="block w-full h-full">
-                ${buildRealMediaPreviewTag(r, false)}
-                <div class="absolute inset-0 bg-gradient-to-t from-[#050508] via-transparent to-black/35 pointer-events-none"></div>
-              </a>
-              <div class="absolute top-2 left-2 right-2 flex items-center justify-between gap-1 pointer-events-none">
-                <span class="px-1.5 py-0.5 rounded bg-black/75 font-mono text-[8.5px] font-bold text-[#38BDF8] truncate max-w-[78px]">${escapeHtml(r.game)}</span>
-                <span class="px-1.5 py-0.5 rounded bg-black/75 font-mono text-[8.5px] text-white inline-flex items-center gap-1"><i class="fa-solid fa-play text-[7px] text-[#F43F5E]"></i>${formatCompactNum(r.views_count)}</span>
+            <article class="tx-reel-card-compact group" data-sreel-id="${escapeHtml(r.id)}">
+              <!-- Strictly Scoped Video/Image Background Layer -->
+              <div class="tx-reel-media" data-sreel-tap="${escapeHtml(r.id)}">
+                ${buildRealMediaPreviewTag(r, true)}
+                <div class="absolute inset-0 bg-gradient-to-t from-[#050508] via-[#050508]/25 to-black/35 pointer-events-none"></div>
               </div>
-              <div class="absolute bottom-2 left-2 right-2 space-y-1">
-                <a href="/reels?id=${encodeURIComponent(r.id)}" class="font-display text-[11.5px] font-bold text-white line-clamp-2 leading-tight block">${escapeHtml(r.title)}</a>
-                <button type="button" data-open-creator-post="${escapeHtml(r.id)}" class="flex items-center gap-1.5 min-w-0 max-w-full text-left bg-transparent border-0 p-0 cursor-pointer">
-                  <img src="${escapeHtml(av)}" alt="" class="w-4 h-4 rounded-full object-cover border border-white/30 flex-shrink-0">
-                  <span class="font-body text-[10px] font-semibold text-[#E2E8F0] hover:text-[#38BDF8] truncate">${escapeHtml(r.author_name)}</span>
+
+              <!-- Top Minimal Telemetry: Trending/Game Pill + Views -->
+              <div class="absolute top-2 left-2 right-2 z-10 flex items-center justify-between gap-1 pointer-events-none">
+                ${isHot
+                  ? `<span class="px-1.5 py-0.5 rounded-md bg-gradient-to-r from-[#F59E0B] to-[#F43F5E] font-mono text-[8px] font-black text-white uppercase inline-flex items-center gap-0.5"><i class="fa-solid fa-fire text-[7px]"></i>HOT</span>`
+                  : `<span class="px-1.5 py-0.5 rounded-md bg-black/75 font-mono text-[8.5px] font-bold text-[#38BDF8] truncate max-w-[78px]">${escapeHtml(r.game)}</span>`
+                }
+                <span class="px-1.5 py-0.5 rounded-md bg-black/75 font-mono text-[8.5px] font-bold text-white inline-flex items-center gap-1">
+                  <i class="fa-solid fa-play text-[7px] text-[#38BDF8]"></i>${formatCompactNum(r.views_count)}
+                </span>
+              </div>
+
+              <!-- Bottom Minimal Stack: Creator Profile FIRST -> Title RIGHT BELOW -->
+              <div class="absolute bottom-2.5 left-2.5 right-2.5 z-10 space-y-1">
+                <button type="button" data-open-creator-post="${escapeHtml(r.id)}"
+                  class="flex items-center gap-1.5 min-w-0 max-w-full text-left bg-transparent border-0 p-0 cursor-pointer">
+                  <img src="${escapeHtml(av)}" alt="" class="tx-reel-av">
+                  <span class="font-display text-[11px] font-bold text-white hover:text-[#38BDF8] truncate drop-shadow">${escapeHtml(r.author_name)}</span>
+                  ${r.is_verified_author ? `<i class="fa-solid fa-circle-check text-[9px] text-[#38BDF8] flex-shrink-0"></i>` : ""}
+                </button>
+                <a href="/reels?id=${encodeURIComponent(r.id)}"
+                  class="font-body text-[10.5px] font-medium text-[#CBD5E1] hover:text-white line-clamp-1 leading-tight block">
+                  ${escapeHtml(r.title)}
+                </a>
+              </div>
+
+              <!-- 5-Second Live Preview Progress Rail -->
+              <div class="tx-sreel-bar"><div class="tx-sreel-bar-fill"></div></div>
+
+              <!-- Appears Cleanly After 5 Seconds -> Open Reels or Replay -->
+              <div class="tx-sreel-gate" data-sreel-gate="${escapeHtml(r.id)}">
+                <span class="font-mono text-[9px] font-bold text-[#38BDF8] uppercase tracking-wider">5s Preview Done</span>
+                <a href="/reels?id=${encodeURIComponent(r.id)}"
+                  class="btn-primary min-h-[34px] px-3.5 rounded-full font-display text-[11px] inline-flex items-center gap-1.5 shadow-lg">
+                  <i class="fa-solid fa-clapperboard text-[10px]"></i><span>Open Reels</span>
+                </a>
+                <button type="button" data-replay-sreel="${escapeHtml(r.id)}"
+                  class="liquid-btn min-h-[28px] px-2.5 rounded-full font-mono text-[9.5px] text-[#CBD5E1] inline-flex items-center gap-1">
+                  <i class="fa-solid fa-rotate-left text-[9px]"></i> Replay
                 </button>
               </div>
-            </div>
+            </article>
           `;
         }).join("") + `
           <a href="/reels" class="tx-reel-card-compact glass-surface hover:border-[#38BDF8]/65 p-3 flex flex-col items-center justify-center text-center gap-2">
@@ -2714,6 +2920,8 @@
             <span class="font-mono text-[9.5px] text-[#94A3B8]">Full 9:16 Feed</span>
           </a>
         `;
+
+        bindSuggestedReelsInteraction();
       }
 
       function setSocialFeedFilter(nextFilter) {
@@ -4109,6 +4317,32 @@
             return;
           }
           const replayBtn = e.target.closest("[data-replay-reel]");
+          const replaySReel = e.target.closest("[data-replay-sreel]");
+          if (replaySReel) {
+            e.stopPropagation();
+            const rid = replaySReel.dataset.replaySreel;
+            const card = document.querySelector(`#homeReelsTrack .tx-reel-card-compact[data-sreel-id="${rid}"]`);
+            if (card) {
+              card.querySelector(".tx-sreel-gate")?.classList.remove("is-visible");
+              const v = card.querySelector("video");
+              if (v) v.currentTime = 0;
+              startSuggestedReel5sPreview(rid);
+            }
+            return;
+          }
+
+          const sReelTap = e.target.closest("[data-sreel-tap]");
+          if (sReelTap) {
+            e.stopPropagation();
+            const rid = sReelTap.dataset.sreelTap;
+            if (activeSReelId === rid) {
+              showPageSwitchLoader("Opening Reels");
+              window.location.href = `/reels?id=${encodeURIComponent(rid)}`;
+            } else {
+              startSuggestedReel5sPreview(rid);
+            }
+            return;
+          }
           if (replayBtn) {
             e.stopPropagation();
             const postId = replayBtn.dataset.replayReel;
@@ -4256,6 +4490,7 @@
         if (modalStack.length > 0) closeModal(modalStack[modalStack.length - 1]);
       });
       window.addEventListener("pagehide", () => {
+        stopAllSuggestedReelPreviews();
         clearInterval(heroAutoTimer);
         if (heroObserver) { try { heroObserver.disconnect(); } catch (e) {} }
         if (activeFeedObserver) { try { activeFeedObserver.disconnect(); } catch (e) {} }
