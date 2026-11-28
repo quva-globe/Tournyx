@@ -979,21 +979,18 @@
             <i class="fa-solid fa-plus text-xs"></i><span>Upload</span>
           </button>
 
-          <!-- Role-Aware Liquid Glass Wallet Pill (Organizer: ₹Earnings | Tickets • Player: PTS | ₹Winnings | Tickets) -->
-          <a id="hdrWalletPill" href="tickets.html" onclick="return requireAuthOrOpen(event)" title="Wallet Earnings, Points & Active Tickets"
+          <!-- Clean 2-Part Role-Aware Economy Pill:
+               Player -> 🪙 Points | 🎟 Tickets (₹10 = 1 Ticket)
+               Organizer -> 🪙 Points | ₹ Earnings (Cash) -->
+          <a id="hdrWalletPill" href="tickets.html" onclick="return requireAuthOrOpen(event)" title="TX Points &amp; Tickets"
             class="liquid-btn min-h-[40px] px-3 rounded-full flex items-center gap-2">
-            <span id="hdrWalletEarnWrap" class="hidden font-mono text-xs font-bold text-[#10B981] items-center gap-1">
-              <i class="fa-solid fa-wallet text-[11px]"></i>
-              <span id="hdrWalletEarnings">₹0</span>
-            </span>
-            <span id="hdrWalletSepEarn" class="hidden text-white/20 text-[10px]">|</span>
-            <span id="hdrWalletPtsWrap" class="font-mono text-xs font-bold text-[#FBBF24] inline-flex items-center gap-1">
+            <span class="font-mono text-xs font-bold text-[#FBBF24] inline-flex items-center gap-1">
               <i class="fa-solid fa-coins text-[11px]"></i>
               <span id="hdrWalletPts">0</span>
             </span>
-            <span id="hdrWalletSepTix" class="text-white/20 text-[10px]">|</span>
-            <span class="font-mono text-xs font-bold text-[#38BDF8] inline-flex items-center gap-1">
-              <i class="fa-solid fa-ticket text-[11px]"></i>
+            <span class="text-white/20 text-[10px]">|</span>
+            <span id="hdrWalletSecondaryWrap" class="font-mono text-xs font-bold text-[#38BDF8] inline-flex items-center gap-1">
+              <i id="hdrWalletSecondaryIcon" class="fa-solid fa-ticket text-[11px]"></i>
               <span id="hdrWalletPasses">0</span>
             </span>
           </a>
@@ -2510,7 +2507,7 @@
       // ============================================================================
       // 4. WALLET, WARM-GOLD 7-DAY DAILY CHECK-IN & 8-SLICE SPIN WHEEL
       // ============================================================================
-     function resolveUserEarningsValue() {
+    function resolveUserEarningsValue() {
         const host = isVerifiedHost();
         if (host) {
           return Math.max(0, safeNum(
@@ -2527,49 +2524,38 @@
       }
 
       function syncWalletUi(points, passes, explicitEarnings = null) {
-        const p = Math.max(0, safeNum(points, 0));
-        const px = Math.max(0, safeNum(passes, 0));
+        const pts = Math.max(0, Math.floor(safeNum(points, 0)));
         const earn = explicitEarnings !== null ? Math.max(0, safeNum(explicitEarnings, 0)) : resolveUserEarningsValue();
         const host = isVerifiedHost();
 
         const pill = document.getElementById("hdrWalletPill");
-        const earnWrap = document.getElementById("hdrWalletEarnWrap");
-        const earnEl = document.getElementById("hdrWalletEarnings");
-        const sepEarn = document.getElementById("hdrWalletSepEarn");
-        const ptsWrap = document.getElementById("hdrWalletPtsWrap");
         const ptsEl = document.getElementById("hdrWalletPts");
-        const sepTix = document.getElementById("hdrWalletSepTix");
-        const passEl = document.getElementById("hdrWalletPasses");
+        const secWrap = document.getElementById("hdrWalletSecondaryWrap");
+        const secIcon = document.getElementById("hdrWalletSecondaryIcon");
+        const secVal = document.getElementById("hdrWalletPasses");
 
-        if (ptsEl) ptsEl.textContent = p.toLocaleString("en-IN");
-        if (passEl) passEl.textContent = String(px);
-        if (earnEl) earnEl.textContent = `₹${earn.toLocaleString("en-IN")}`;
+        if (ptsEl) ptsEl.textContent = pts.toLocaleString("en-IN");
 
         if (host) {
-          // Organizer View: ₹Host Earnings | 🎟 Active Tickets (clean on mobile, +Points on xl desktop if > 0)
-          if (pill) pill.title = `Organizer Earnings: ₹${earn.toLocaleString("en-IN")} • Active Tickets: ${px}`;
-          if (earnWrap) { earnWrap.classList.remove("hidden"); earnWrap.classList.add("inline-flex"); }
-          if (ptsWrap) { ptsWrap.className = p > 0 ? "hidden xl:inline-flex font-mono text-xs font-bold text-[#FBBF24] items-center gap-1" : "hidden"; }
-          if (sepEarn) sepEarn.className = p > 0 ? "hidden xl:inline text-white/20 text-[10px]" : "hidden";
-          if (sepTix) sepTix.className = "text-white/20 text-[10px]";
+          // ORGANIZER: Show raw ₹ Money (never converted to tickets)
+          if (secWrap) secWrap.className = "font-mono text-xs font-bold text-[#10B981] inline-flex items-center gap-1";
+          if (secIcon) secIcon.className = "fa-solid fa-wallet text-[11px]";
+          if (secVal) secVal.textContent = `₹${earn.toLocaleString("en-IN")}`;
+          if (pill) pill.title = `TX Points: ${pts.toLocaleString("en-IN")} • Organizer Earnings: ₹${earn.toLocaleString("en-IN")}`;
         } else {
-          // Player View: ₹Winnings (always on sm+, or on mobile when > 0) + 🪙 TX Points + 🎟 Active Tickets
-          if (pill) pill.title = `Player Winnings: ₹${earn.toLocaleString("en-IN")} • TX Points: ${p.toLocaleString("en-IN")} • Active Tickets: ${px}`;
-          if (earnWrap) {
-            earnWrap.className = earn > 0
-              ? "inline-flex font-mono text-xs font-bold text-[#10B981] items-center gap-1"
-              : "hidden sm:inline-flex font-mono text-xs font-bold text-[#10B981] items-center gap-1";
-          }
-          if (sepEarn) sepEarn.className = earn > 0 ? "text-white/20 text-[10px]" : "hidden sm:inline text-white/20 text-[10px]";
-          if (ptsWrap) ptsWrap.className = "inline-flex font-mono text-xs font-bold text-[#FBBF24] items-center gap-1";
-          if (sepTix) sepTix.className = "text-white/20 text-[10px]";
+          // PLAYER: ₹10 = 1 Ticket conversion from earnings (falls back to explicit passes if higher)
+          const ticketsFromEarnings = Math.floor(earn / 10);
+          const totalTickets = Math.max(ticketsFromEarnings, Math.floor(safeNum(passes, 0)));
+          if (secWrap) secWrap.className = "font-mono text-xs font-bold text-[#38BDF8] inline-flex items-center gap-1";
+          if (secIcon) secIcon.className = "fa-solid fa-ticket text-[11px]";
+          if (secVal) secVal.textContent = totalTickets.toLocaleString("en-IN");
+          if (pill) pill.title = `TX Points: ${pts.toLocaleString("en-IN")} • ${totalTickets} Tickets (₹${earn.toLocaleString("en-IN")} • ₹10 = 1 Ticket)`;
         }
 
         if (currentUser) {
-          currentUser.points = p;
-          currentUser.passes = px;
-          currentUser.tickets = px;
+          currentUser.points = pts;
           currentUser.earnings = earn;
+          currentUser.tickets = host ? 0 : Math.max(Math.floor(earn / 10), Math.floor(safeNum(passes, 0)));
           try { localStorage.setItem("tournyx_user", JSON.stringify(currentUser)); } catch (e) {}
         }
       }
@@ -3599,27 +3585,81 @@
         }, 260);
       }
 
-      function updateSocialUnreadBadges() {
-        const me = normStr(currentUser?.email);
-        const unreadDm = dmConversations.reduce((sum, c) => sum + safeNum(c.unread_count, 0), 0) +
-          dmConversations.filter((c) => c.status === "pending" && normStr(c.initiator_email) !== me).length;
-        const unreadNotif = userNotifications.filter((n) => !n.is_read).length;
+      function getSeenStorageKey(kind) {
+        const em = normStr(currentUser?.email || "guest");
+        return `tx_${kind}_seen_at_${em}`;
+      }
 
-        ["hdrUnreadDmBadge", "sbUnreadDmBadge", "drUnreadDmBadge"].forEach((id) => {
-          const el = document.getElementById(id);
-          if (!el) return;
-          el.textContent = unreadDm > 99 ? "99+" : String(unreadDm);
-          el.classList.toggle("hidden", unreadDm <= 0);
-        });
-        ["hdrUnreadNotifBadge", "sbUnreadNotifBadge", "drUnreadNotifBadge"].forEach((id) => {
-          const el = document.getElementById(id);
-          if (!el) return;
-          el.textContent = unreadNotif > 99 ? "99+" : String(unreadNotif);
-          el.classList.toggle("hidden", unreadNotif <= 0);
-        });
-        const reqCnt = dmConversations.filter((c) => c.status === "pending" && normStr(c.initiator_email) !== me).length;
-        const reqPill = document.getElementById("dmRequestsCountPill");
-        if (reqPill) { reqPill.textContent = String(reqCnt); reqPill.classList.toggle("hidden", reqCnt <= 0); }
+      function getLastSeenMs(kind) {
+        try {
+          const ts = Number(localStorage.getItem(getSeenStorageKey(kind)) || 0);
+          return Number.isFinite(ts) ? ts : 0;
+        } catch (e) { return 0; }
+      }
+
+      function setBadgeCountEl(el, count) {
+        if (!el) return;
+        const n = Math.max(0, Math.floor(safeNum(count, 0)));
+        if (n > 0) {
+          el.textContent = n > 99 ? "99+" : String(n);
+          el.classList.remove("hidden");
+          el.classList.add("inline-flex");
+        } else {
+          el.textContent = "";
+          el.classList.add("hidden");
+          el.classList.remove("inline-flex");
+        }
+      }
+
+      function updateSocialUnreadBadges(dmCount, notifCount) {
+        const dmSeenAt = getLastSeenMs("dm");
+const notifSeenAt = getLastSeenMs("notif");
+const unreadDms = (dmRows || []).filter((m) =>
+  m.is_read === false && new Date(m.created_at || 0).getTime() > dmSeenAt
+).length;
+const unreadNotifs = (notifRows || []).filter((n) =>
+  n.is_read === false && new Date(n.created_at || 0).getTime() > notifSeenAt
+).length;
+updateSocialUnreadBadges(unreadDms, unreadNotifs);
+        setBadgeCountEl(document.getElementById("hdrDmBadge"), dmCount);
+        setBadgeCountEl(document.getElementById("hdrNotifBadge"), notifCount);
+      }
+
+      // Immediately disappears the Notification dot on view + persists read state to DB & device
+      async function markAllNotificationsViewed() {
+        const nowIso = new Date().toISOString();
+        try { localStorage.setItem(getSeenStorageKey("notif"), String(Date.now())); } catch (e) {}
+        setBadgeCountEl(document.getElementById("hdrNotifBadge"), 0);
+
+        const email = normStr(currentUser?.email);
+        if (!email || !dbClient) return;
+        try {
+          await dbClient
+            .from("user_notifications")
+            .update({ is_read: true, read_at: nowIso })
+            .ilike("user_email", email)
+            .eq("is_read", false);
+        } catch (e) {}
+      }
+
+      // Immediately disappears the Message dot on view + marks incoming DMs read in DB
+      async function markAllMessagesViewed(specificSenderEmail = "") {
+        try { localStorage.setItem(getSeenStorageKey("dm"), String(Date.now())); } catch (e) {}
+        if (!specificSenderEmail) {
+          setBadgeCountEl(document.getElementById("hdrDmBadge"), 0);
+        }
+
+        const email = normStr(currentUser?.email);
+        if (!email || !dbClient) return;
+        try {
+          let q = dbClient
+            .from("direct_messages")
+            .update({ is_read: true })
+            .ilike("recipient_email", email)
+            .eq("is_read", false);
+          if (specificSenderEmail) q = q.ilike("sender_email", normStr(specificSenderEmail));
+          await q;
+        } catch (e) {}
       }
 
       async function fetchDmInboxAndNotifications() {
@@ -3642,6 +3682,7 @@
       }
 
      async function openMessagesDrawer() {
+       markAllMessagesViewed();
         if (!requireAuthOrOpen()) return;
         syncDmToggleBtn();
         activeDmPeer = null;
@@ -3851,6 +3892,7 @@
       }
       // LIVE NOTIFICATIONS CENTER WITH INLINE QUICK-REPLY
       async function openNotificationsDrawer() {
+        markAllNotificationsViewed();
         if (!requireAuthOrOpen()) return;
         openModal("notificationsModal");
         const box = document.getElementById("notificationsListBody");
