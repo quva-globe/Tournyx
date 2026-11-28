@@ -659,10 +659,26 @@
       justify-content: center;
       overflow: hidden;
     }
-    #arenaWarpOverlay.is-active { display: flex; animation: txWarpFade 0.22s ease forwards; }
+   #arenaWarpOverlay {
+      transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: opacity, transform;
+    }
+    #arenaWarpOverlay.is-active { display: flex; animation: txWarpFade 0.32s ease forwards; }
+    #arenaWarpOverlay.is-exiting { opacity: 0 !important; transform: scale(1.04); pointer-events: none; }
     #arenaWarpCanvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; }
-    .tx-warp-vignette { position: absolute; inset: 0; z-index: 2; pointer-events: none; background: radial-gradient(circle at 50% 50%, transparent 18%, rgba(5, 5, 8, 0.88) 86%); }
+    .tx-warp-vignette { position: absolute; inset: 0; z-index: 2; pointer-events: none; background: radial-gradient(circle at 50% 50%, transparent 22%, rgba(5, 5, 8, 0.86) 86%); }
+    .tx-warp-emblem-in { animation: txWarpEmblemPop 0.65s cubic-bezier(0.16, 1, 0.3, 1) both; }
+    .tx-warp-text-in { opacity: 0; animation: txWarpTextRise 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.24s forwards; }
+    .tx-warp-sub-in { opacity: 0; animation: txWarpTextRise 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.44s forwards; }
     @keyframes txWarpFade { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes txWarpEmblemPop {
+      from { opacity: 0; transform: scale(0.78) translateY(10px); filter: blur(6px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+    }
+    @keyframes txWarpTextRise {
+      from { opacity: 0; transform: translateY(12px); letter-spacing: 0.24em; }
+      to   { opacity: 1; transform: translateY(0); }
+    }
 
     /* Modals, Shimmer & Utility Keyframes */
     .modal-overlay {
@@ -1812,27 +1828,33 @@
   </section>
 
   <!-- =========================================================
-       9. ACCELERATED WARP-SPEED "ENTERING THE ARENA" GAMING LAUNCHER
-          (GPU Starfield Hyperdrive Canvas + Exact Unclipped Emblem)
+       9. SMOOTH GAME-FEEL "ENTERING THE ARENA" TRANSITION
+          (Zero Progress Bar • Emblem First -> Staggered Text -> Smooth Fade Out)
        ========================================================= -->
   <div id="arenaWarpOverlay" role="status" aria-live="polite" aria-label="Entering the Tournyx Arena">
     <canvas id="arenaWarpCanvas" aria-hidden="true"></canvas>
     <div class="tx-warp-vignette" aria-hidden="true"></div>
 
     <div class="relative z-10 flex flex-col items-center text-center px-6 max-w-md w-full space-y-5">
-      <div class="tx-logo-emblem w-[108px] h-[108px] sm:w-[120px] sm:h-[120px]">
+      <div class="tx-warp-emblem-in tx-logo-emblem w-[108px] h-[108px] sm:w-[120px] sm:h-[120px]">
         <div class="tx-logo-emblem-inner">
           <img src="logo-full.png" onerror="this.onerror=null;this.src='favicon.png'" alt="Tournyx Esports">
         </div>
       </div>
 
-      <div class="space-y-1.5">
-        <div id="warpGreeting" class="font-mono text-xs font-bold text-[#10B981] uppercase tracking-[0.24em]" data-no-translate>AGENT VERIFIED</div>
-        <h2 class="font-orbitron text-2xl sm:text-3xl font-black text-white tracking-[0.14em] uppercase drop-shadow-[0_0_24px_rgba(56,189,248,0.65)]">
+      <div class="space-y-2">
+        <div id="warpGreeting" class="tx-warp-text-in font-mono text-xs font-bold text-[#10B981] uppercase tracking-[0.26em]" data-no-translate>
+          LOGIN VERIFIED
+        </div>
+        <h2 class="tx-warp-text-in font-orbitron text-2xl sm:text-3xl font-black text-white tracking-[0.14em] uppercase drop-shadow-[0_0_24px_rgba(56,189,248,0.55)]">
           ENTERING THE ARENA
         </h2>
-        <p id="warpPhaseLabel" class="font-mono text-[11px] text-[#38BDF8] uppercase tracking-widest">LOCKING REGIONAL SERVER...</p>
+        <p id="warpPhaseLabel" class="tx-warp-sub-in font-mono text-[11px] text-[#38BDF8] uppercase tracking-[0.2em]">
+          DEPLOYING TO LOBBY...
+        </p>
       </div>
+    </div>
+  </div>
 
       <div class="w-full max-w-xs space-y-1.5">
         <div class="w-full h-2 rounded-full bg-white/15 overflow-hidden border border-white/15">
@@ -3330,6 +3352,7 @@
       // ============================================================================
       // 7. ACCELERATED WARP-SPEED "ENTERING THE ARENA" GAMING LAUNCH SEQUENCE
       // ============================================================================
+      // Smooth, Minimal-Speed Game-Feel Cosmic Drift (No Harsh Fast Bullet Lines!)
       function startWarpStarfieldCanvas() {
         const canvas = document.getElementById("arenaWarpCanvas");
         if (!canvas) return;
@@ -3340,40 +3363,66 @@
         const w = (canvas.width = window.innerWidth);
         const h = (canvas.height = window.innerHeight);
         const cx = w / 2, cy = h / 2;
-        const starCount = tier === "ultra" ? 170 : 85;
-        const colors = ["#38BDF8", "#8B5CF6", "#FBBF24", "#10B981", "#FFFFFF"];
+        const starCount = tier === "ultra" ? 95 : 52;
+        const colors = ["#38BDF8", "#8B5CF6", "#10B981", "#E2E8F0"];
 
         const stars = Array.from({ length: starCount }, (_, i) => ({
-          x: (Math.random() - 0.5) * w * 1.4,
-          y: (Math.random() - 0.5) * h * 1.4,
-          z: Math.random() * w,
+          x: (Math.random() - 0.5) * w * 1.6,
+          y: (Math.random() - 0.5) * h * 1.6,
+          z: Math.random() * w * 0.9 + w * 0.1,
           pz: 0,
-          col: colors[i % colors.length]
+          col: colors[i % colors.length],
+          alpha: Math.random() * 0.45 + 0.35
         }));
         stars.forEach((s) => { s.pz = s.z; });
 
-        let speed = 18;
-        function renderWarp() {
-          ctx.fillStyle = "rgba(4, 5, 10, 0.28)";
+        let speed = 2.6;
+        let pulseR = 48;
+
+        function renderDrift() {
+          ctx.fillStyle = "rgba(4, 5, 10, 0.24)";
           ctx.fillRect(0, 0, w, h);
-          speed = Math.min(58, speed + 1.25);
+
+          // Gentle ambient radar pulse ring behind logo
+          pulseR = (pulseR + 1.15) % Math.max(w, h) * 0.55;
+          ctx.beginPath();
+          ctx.arc(cx, cy, Math.max(36, pulseR), 0, Math.PI * 2);
+          ctx.strokeStyle = "rgba(56, 189, 248, 0.10)";
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+
+          // Smooth gentle ease (caps at minimal 7.2 instead of harsh 58!)
+          speed = Math.min(7.2, speed + 0.08);
+
           for (const s of stars) {
             s.pz = s.z;
             s.z -= speed;
-            if (s.z <= 2) { s.x = (Math.random() - 0.5) * w * 1.4; s.y = (Math.random() - 0.5) * h * 1.4; s.z = w; s.pz = w; }
-            const sx = (s.x / s.z) * cx + cx, sy = (s.y / s.z) * cy + cy;
-            const px = (s.x / s.pz) * cx + cx, py = (s.y / s.pz) * cy + cy;
+            if (s.z <= 8) {
+              s.x = (Math.random() - 0.5) * w * 1.6;
+              s.y = (Math.random() - 0.5) * h * 1.6;
+              s.z = w;
+              s.pz = w;
+            }
+            const sx = (s.x / s.z) * cx + cx;
+            const sy = (s.y / s.z) * cy + cy;
+            const px = (s.x / s.pz) * cx + cx;
+            const py = (s.y / s.pz) * cy + cy;
+
+            ctx.globalAlpha = s.alpha * Math.min(1, (1 - s.z / w) * 1.5);
             ctx.beginPath();
             ctx.moveTo(px, py);
             ctx.lineTo(sx, sy);
             ctx.strokeStyle = s.col;
-            ctx.lineWidth = Math.max(1, (1 - s.z / w) * 3.4);
+            ctx.lineCap = "round";
+            ctx.lineWidth = Math.max(0.8, (1 - s.z / w) * 2.1);
             ctx.stroke();
           }
-          warpRafId = requestAnimationFrame(renderWarp);
+          ctx.globalAlpha = 1;
+          warpRafId = requestAnimationFrame(renderDrift);
         }
+
         if (warpRafId) cancelAnimationFrame(warpRafId);
-        warpRafId = requestAnimationFrame(renderWarp);
+        warpRafId = requestAnimationFrame(renderDrift);
       }
 
       function syncPushLoginPostAuth(email) {
@@ -3408,37 +3457,34 @@
         syncPushLoginPostAuth(cleanProfile.email);
 
         const overlay = document.getElementById("arenaWarpOverlay");
-        const bar = document.getElementById("warpProgressBar");
-        const pct = document.getElementById("warpPctText");
-        const lbl = document.getElementById("warpPhaseLabel");
         const greet = document.getElementById("warpGreeting");
+        const lbl = document.getElementById("warpPhaseLabel");
 
-        if (greet) greet.textContent = `WELCOME, ${String(cleanProfile.ign).toUpperCase()}`;
-        if (overlay) overlay.classList.add("is-active");
+        if (greet) greet.textContent = `WELCOME BACK, ${String(cleanProfile.ign).toUpperCase()}`;
+        if (lbl) lbl.textContent = "LOGIN VERIFIED • SYNCING ARENA...";
+        if (overlay) {
+          overlay.classList.remove("is-exiting");
+          overlay.classList.add("is-active");
+        }
         startWarpStarfieldCanvas();
 
-        [
-          { ms: 60, p: 34, txt: "LOCKING REGIONAL SERVER..." },
-          { ms: 440, p: 76, txt: "SYNCING CLAN & WALLET VAULT..." },
-          { ms: 860, p: 100, txt: "DEPLOYING ARENA FEED..." }
-        ].forEach((st) => {
-          setTimeout(() => {
-            if (bar) bar.style.width = `${st.p}%`;
-            if (pct) pct.textContent = `${st.p}%`;
-            if (lbl) lbl.textContent = st.txt;
-          }, st.ms);
-        });
+        setTimeout(() => {
+          if (lbl) lbl.textContent = "DEPLOYING TO LOBBY...";
+        }, 580);
+
+        // Smooth fade-out dissolve BEFORE redirect (canvas keeps gliding until pagehide — never freezes!)
+        setTimeout(() => {
+          overlay?.classList.add("is-exiting");
+        }, 1020);
 
         setTimeout(() => {
-          if (warpRafId) { cancelAnimationFrame(warpRafId); warpRafId = null; }
           if (window.parent && window.parent !== window && window.parent.TournyxShell?.navigate) {
             window.parent.TournyxShell.navigate(targetUrl || REDIRECT_URL);
           } else {
             window.location.replace(targetUrl || REDIRECT_URL);
           }
-        }, 1260);
+        }, 1380);
       }
-
       // ============================================================================
       // 8. SERVER-HARDENED LOGIN, SIGNUP, ORGANIZER & 4-PROVIDER OAUTH ENGINE
       // ============================================================================
