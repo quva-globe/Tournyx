@@ -3574,11 +3574,9 @@
         updateSocialUnreadBadges();
       }
 
-      async function openMessagesDrawer() {
-        syncDmToggleBtn();
-
-      async function openMessagesDrawer() {
+     async function openMessagesDrawer() {
         if (!requireAuthOrOpen()) return;
+        syncDmToggleBtn();
         activeDmPeer = null;
         document.getElementById("dmBackToListBtn")?.classList.add("hidden");
         document.getElementById("dmSearchWrap")?.classList.remove("hidden");
