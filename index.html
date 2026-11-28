@@ -1444,8 +1444,13 @@
             <p id="dmModalSub" class="font-mono text-[10.5px] text-[#38BDF8] truncate">Search Players &amp; Send First-Time Chat Requests</p>
           </div>
         </div>
-        <button onclick="closeModal('dmInboxModal')" type="button" aria-label="Close Messages" class="liquid-btn w-9 h-9 rounded-full flex items-center justify-center"><i class="fa-solid fa-xmark text-sm"></i></button>
-      </div>
+        <div class="flex items-center gap-2 flex-shrink-0">
+          <button id="dmAllowToggleBtn" onclick="toggleMyDmPreference()" type="button"
+            class="liquid-btn min-h-[34px] px-3 rounded-full font-mono text-[10px] font-bold text-[#10B981]">
+            Requests: ON
+          </button>
+          <button onclick="closeModal('dmInboxModal')" type="button" aria-label="Close Messages" class="liquid-btn w-9 h-9 rounded-full flex items-center justify-center"><i class="fa-solid fa-xmark text-sm"></i></button>
+        </div>
 
       <!-- NEW: Live Player / Creator Search Bar Inside Messages (Start Any Chat Instantly!) -->
       <div id="dmSearchWrap" class="px-5 pt-3 pb-1 flex-shrink-0 space-y-2">
@@ -1902,6 +1907,36 @@
       let realtimeSocialChannel = null;
       let realtimeDmChannel = null;
       let pageSwitchTimer = null;
+
+      let myAllowDms = localStorage.getItem("tournyx_allow_dms") !== "false";
+
+      function syncDmToggleBtn() {
+        const b = document.getElementById("dmAllowToggleBtn");
+        if (!b) return;
+        b.textContent = myAllowDms ? "Requests: ON" : "Requests: OFF";
+        b.style.color = myAllowDms ? "#10B981" : "#FDA4AF";
+      }
+
+      async function toggleMyDmPreference() {
+        if (!requireAuthOrOpen() || inFlight.has("dmPref")) return;
+        inFlight.add("dmPref");
+        const nextVal = !myAllowDms;
+        try {
+          const { data: res, error: err } = await dbClient.rpc("set_my_dm_preference", {
+            p_user_email: normStr(currentUser.email),
+            p_allow_dms: nextVal
+          });
+          if (err || !res?.ok) throw new Error(res?.error || "Could not update preference");
+          myAllowDms = nextVal;
+          localStorage.setItem("tournyx_allow_dms", myAllowDms ? "true" : "false");
+          syncDmToggleBtn();
+          showToast(myAllowDms ? "Chat Requests turned ON" : "Chat Requests paused (existing chats stay active)");
+        } catch (e) {
+          showToast(e?.message || "Update failed", true);
+        } finally {
+          inFlight.delete("dmPref");
+        }
+      }
 
       // ============================================================================
       // 1. UTILITIES, SAFE ESCAPING & SUBTLE PAGE-SWITCHING LOADER (ZERO BLOCKER)
@@ -3320,7 +3355,9 @@
 
         const { data: res } = await safeQuery(() => dbClient.rpc("get_public_creator_profile", {
           p_creator_uid: String(p.creator_uid || p.author_email || ""),
-          p_viewer_email: isLoggedIn() ? normStr(currentUser.email) : null
+          p_viewer_email: isLoggedIn() ? normStr(currentUser.email) : null,
+          p_post_id: p.id || null,
+          p_author_name: p.author_name || null
         }), null);
 
         const prof = res?.ok && res.profile ? res.profile : {
