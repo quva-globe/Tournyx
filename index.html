@@ -994,18 +994,18 @@
               <span id="hdrWalletPasses">0</span>
             </span>
           </a>
-          <!-- Liquid Glass Direct Messages Button -->
+         <!-- Liquid Glass Direct Messages Button -->
           <button onclick="openMessagesDrawer()" type="button" title="Direct Messages & Chat Requests" aria-label="Direct Messages"
             class="liquid-btn relative w-10 h-10 rounded-full flex items-center justify-center">
             <i class="fa-regular fa-paper-plane text-[14px] text-[#38BDF8]"></i>
-            <span id="hdrUnreadDmBadge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-[#8B5CF6] font-mono text-[9.5px] font-bold text-white flex items-center justify-center">0</span>
+            <span id="hdrUnreadDmBadge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-[#8B5CF6] border-2 border-[#050508] font-mono text-[9.5px] font-bold text-white items-center justify-center leading-none"></span>
           </button>
 
           <!-- Liquid Glass Notifications Button -->
           <button onclick="openNotificationsDrawer()" type="button" title="Notifications & Replies" aria-label="Notifications"
             class="liquid-btn relative w-10 h-10 rounded-full flex items-center justify-center">
             <i class="fa-regular fa-bell text-[14px] text-[#FBBF24]"></i>
-            <span id="hdrUnreadNotifBadge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-[#F43F5E] font-mono text-[9.5px] font-bold text-white flex items-center justify-center">0</span>
+            <span id="hdrUnreadNotifBadge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-[#F43F5E] border-2 border-[#050508] font-mono text-[9.5px] font-bold text-white items-center justify-center leading-none"></span>
           </button>
 
           <!-- Desktop Graphics Tier Toggle -->
@@ -3585,7 +3585,7 @@
         }, 260);
       }
 
-      function getSeenStorageKey(kind) {
+     function getSeenStorageKey(kind) {
         const em = normStr(currentUser?.email || "guest");
         return `tx_${kind}_seen_at_${em}`;
       }
@@ -3611,55 +3611,54 @@
         }
       }
 
-      function updateSocialUnreadBadges(dmCount, notifCount) {
+      function updateSocialUnreadBadges() {
+        const me = normStr(currentUser?.email);
         const dmSeenAt = getLastSeenMs("dm");
-const notifSeenAt = getLastSeenMs("notif");
-const unreadDms = (dmRows || []).filter((m) =>
-  m.is_read === false && new Date(m.created_at || 0).getTime() > dmSeenAt
-).length;
-const unreadNotifs = (notifRows || []).filter((n) =>
-  n.is_read === false && new Date(n.created_at || 0).getTime() > notifSeenAt
-).length;
-updateSocialUnreadBadges(unreadDms, unreadNotifs);
-        setBadgeCountEl(document.getElementById("hdrDmBadge"), dmCount);
-        setBadgeCountEl(document.getElementById("hdrNotifBadge"), notifCount);
+        const notifSeenAt = getLastSeenMs("notif");
+
+        let pendingReqCount = 0;
+        let unreadDmTotal = 0;
+
+        (dmConversations || []).forEach((c) => {
+          const isIncomingPending = c.status === "pending" && normStr(c.initiator_email) !== me;
+          if (isIncomingPending) pendingReqCount += 1;
+          const lastMsgMs = new Date(c.last_message_at || 0).getTime();
+          const cUnread = safeNum(c.unread_count, 0);
+          if (lastMsgMs > dmSeenAt) {
+            unreadDmTotal += cUnread > 0 ? cUnread : (isIncomingPending ? 1 : 0);
+          }
+        });
+
+        const unreadNotifTotal = (userNotifications || []).filter((n) => {
+          if (n.is_read === true) return false;
+          const ts = new Date(n.created_at || 0).getTime();
+          return !ts || ts > notifSeenAt;
+        }).length;
+
+        setBadgeCountEl(document.getElementById("hdrUnreadDmBadge"), unreadDmTotal);
+        setBadgeCountEl(document.getElementById("drUnreadDmBadge"), unreadDmTotal);
+        setBadgeCountEl(document.getElementById("dmRequestsCountPill"), pendingReqCount);
+
+        setBadgeCountEl(document.getElementById("hdrUnreadNotifBadge"), unreadNotifTotal);
+        setBadgeCountEl(document.getElementById("drUnreadNotifBadge"), unreadNotifTotal);
       }
 
-      // Immediately disappears the Notification dot on view + persists read state to DB & device
+      // Immediately disappears the Notification dot on view + persists read state via RPC
       async function markAllNotificationsViewed() {
-        const nowIso = new Date().toISOString();
         try { localStorage.setItem(getSeenStorageKey("notif"), String(Date.now())); } catch (e) {}
-        setBadgeCountEl(document.getElementById("hdrNotifBadge"), 0);
+        setBadgeCountEl(document.getElementById("hdrUnreadNotifBadge"), 0);
+        setBadgeCountEl(document.getElementById("drUnreadNotifBadge"), 0);
 
         const email = normStr(currentUser?.email);
-        if (!email || !dbClient) return;
-        try {
-          await dbClient
-            .from("user_notifications")
-            .update({ is_read: true, read_at: nowIso })
-            .ilike("user_email", email)
-            .eq("is_read", false);
-        } catch (e) {}
+        if (!email || !isDbReady || !dbClient) return;
+        await safeQuery(() => dbClient.rpc("mark_notifications_read", { p_user_email: email }), null);
       }
 
-      // Immediately disappears the Message dot on view + marks incoming DMs read in DB
-      async function markAllMessagesViewed(specificSenderEmail = "") {
+      // Immediately disappears the Message dot on view (stays clear until a newer DM arrives)
+      function markAllMessagesViewed() {
         try { localStorage.setItem(getSeenStorageKey("dm"), String(Date.now())); } catch (e) {}
-        if (!specificSenderEmail) {
-          setBadgeCountEl(document.getElementById("hdrDmBadge"), 0);
-        }
-
-        const email = normStr(currentUser?.email);
-        if (!email || !dbClient) return;
-        try {
-          let q = dbClient
-            .from("direct_messages")
-            .update({ is_read: true })
-            .ilike("recipient_email", email)
-            .eq("is_read", false);
-          if (specificSenderEmail) q = q.ilike("sender_email", normStr(specificSenderEmail));
-          await q;
-        } catch (e) {}
+        setBadgeCountEl(document.getElementById("hdrUnreadDmBadge"), 0);
+        setBadgeCountEl(document.getElementById("drUnreadDmBadge"), 0);
       }
 
       async function fetchDmInboxAndNotifications() {
@@ -3681,9 +3680,9 @@ updateSocialUnreadBadges(unreadDms, unreadNotifs);
         updateSocialUnreadBadges();
       }
 
-     async function openMessagesDrawer() {
-       markAllMessagesViewed();
+    async function openMessagesDrawer() {
         if (!requireAuthOrOpen()) return;
+        markAllMessagesViewed();
         syncDmToggleBtn();
         activeDmPeer = null;
         document.getElementById("dmBackToListBtn")?.classList.add("hidden");
@@ -3697,7 +3696,6 @@ updateSocialUnreadBadges(unreadDms, unreadNotifs);
         await fetchDmInboxAndNotifications();
         renderDmInboxList();
       }
-
       function switchDmTab(tab) {
         doHaptic();
         activeDmTab = tab === "requests" ? "requests" : "primary";
@@ -3890,15 +3888,18 @@ updateSocialUnreadBadges(unreadDms, unreadNotifs);
           btn.disabled = false;
         }
       }
-      // LIVE NOTIFICATIONS CENTER WITH INLINE QUICK-REPLY
-      async function openNotificationsDrawer() {
-        markAllNotificationsViewed();
+     async function openNotificationsDrawer() {
         if (!requireAuthOrOpen()) return;
         openModal("notificationsModal");
         const box = document.getElementById("notificationsListBody");
         box.innerHTML = `<div class="py-10 text-center font-mono text-xs text-[#38BDF8]"><i class="fa-solid fa-spinner fa-spin mr-1.5"></i>Loading notifications...</div>`;
-        await fetchDmInboxAndNotifications();
-        renderNotificationsList();
+        try {
+          await fetchDmInboxAndNotifications();
+          renderNotificationsList();
+          markAllNotificationsViewed();
+        } catch (e) {
+          box.innerHTML = `<div class="py-10 text-center font-body text-xs text-[#94A3B8]">Could not load notifications right now. Tap to retry.</div>`;
+        }
       }
 
       function renderNotificationsList() {
