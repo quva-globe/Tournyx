@@ -1229,8 +1229,23 @@
                 </div>
 
                 <div id="activeScrimLobbyCard" class="hidden glass-card rounded-2xl p-5 space-y-3.5 border border-[#F43F5E]/50 shadow-[0_0_24px_rgba(244,63,94,0.16)]">
+                <!-- Match Lifecycle Controls (Postpone / Resume / Mark Finished / Cancel) -->
+                  <div class="edit-admin pt-2 border-t border-white/[0.08] grid grid-cols-3 gap-2">
+                    <button id="btnPostponeScrim" onclick="postponeActiveScrim()" type="button"
+                      class="liquid-btn min-h-[38px] px-2.5 rounded-xl font-mono text-[10.5px] font-bold text-[#FBBF24] uppercase inline-flex items-center justify-center gap-1">
+                      <i class="fa-regular fa-clock"></i><span>Postpone</span>
+                    </button>
+                    <button onclick="finishActiveScrimFriendly()" type="button"
+                      class="liquid-btn min-h-[38px] px-2.5 rounded-xl font-mono text-[10.5px] font-bold text-[#10B981] uppercase inline-flex items-center justify-center gap-1">
+                      <i class="fa-solid fa-flag-checkered"></i><span>Finished</span>
+                    </button>
+                    <button onclick="promptCancelActiveScrim()" type="button"
+                      class="min-h-[38px] px-2.5 rounded-xl bg-[#F43F5E]/12 hover:bg-[#F43F5E]/24 border border-[#F43F5E]/40 font-mono text-[10.5px] font-bold text-[#FDA4AF] uppercase inline-flex items-center justify-center gap-1 transition-colors">
+                      <i class="fa-solid fa-ban"></i><span>Cancel</span>
+                    </button>
+                  </div>
                   <div class="flex items-center justify-between gap-2 flex-wrap">
-                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#F43F5E]/16 border border-[#F43F5E]/45 font-mono text-[11px] font-bold text-[#FB7185] uppercase">
+                    <span id="scrimLiveStatusPill" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#F43F5E]/16 border border-[#F43F5E]/45 font-mono text-[11px] font-bold text-[#FB7185] uppercase">
                       <span class="w-1.5 h-1.5 rounded-full bg-[#F43F5E] animate-ping"></span> Upcoming 4v4 Scrim Live
                     </span>
                     <div class="flex items-center gap-1.5">
@@ -4386,9 +4401,53 @@
         return true;
       }
 
+      // Live Source-of-Truth Merger: Hydrates ANY Accepted/Postponed DB Challenge Straight Into Both Clans' Dashboards
+      function resolveActiveScrimForClan(clan) {
+        if (!clan) return null;
+        const liveCh = scrimChallenges.find((ch) =>
+          (ch.target_clan_id === clan.clanId || ch.challenger_clan_id === clan.clanId) &&
+          ["ACCEPTED", "POSTPONED"].includes(String(ch.status || "").toUpperCase())
+        );
+
+        const stored = clan.nextScrim && clan.nextScrim.title ? clan.nextScrim : null;
+
+        if (liveCh) {
+          const isPostponed = String(liveCh.status || "").toUpperCase() === "POSTPONED" ||
+            String(liveCh.proposed_time || "").toUpperCase().startsWith("[POSTPONED]");
+          const cleanTime = String(liveCh.proposed_time || "Scheduled").replace(/^\[POSTPONED\]\s*/i, "");
+          const partnerId = liveCh.target_clan_id === clan.clanId ? liveCh.challenger_clan_id : liveCh.target_clan_id;
+          const merged = {
+            ...(stored && stored.challenge_id === liveCh.id ? stored : {}),
+            title: (stored && stored.challenge_id === liveCh.id && stored.title) ? stored.title : `${liveCh.challenger_clan_name} vs ${liveCh.target_clan_name}`,
+            subtitle: `${liveCh.game || clan.game} • ${liveCh.map_mode || "4v4 Custom Room"} • ${cleanTime}`,
+            map_mode: liveCh.map_mode || stored?.map_mode || "4v4 Custom Room",
+            slot: stored?.slot || "4v4",
+            room_id: liveCh.room_id || stored?.room_id || "",
+            room_pass: liveCh.room_pass || stored?.room_pass || "",
+            host_clan_id: stored?.host_clan_id || liveCh.target_clan_id,
+            host_clan_name: stored?.host_clan_name || liveCh.target_clan_name,
+            challenge_id: liveCh.id,
+            partner_clan_id: partnerId,
+            status: isPostponed ? "POSTPONED" : "ACCEPTED"
+          };
+          clan.nextScrim = merged;
+          return merged;
+        }
+
+        // If stored scrim points to an already finished/cancelled challenge, auto-clear it
+        if (stored?.challenge_id) {
+          const endedCh = scrimChallenges.find((ch) => ch.id === stored.challenge_id && ["COMPLETED", "CANCELLED", "DECLINED"].includes(String(ch.status || "").toUpperCase()));
+          if (endedCh) {
+            clan.nextScrim = null;
+            return null;
+          }
+        }
+        return stored;
+      }
+
       function renderScrimWidget(clan, sortedRoster) {
         if (scrimCountdownInterval) { clearInterval(scrimCountdownInterval); scrimCountdownInterval = null; }
-        const scrim = clan.nextScrim;
+        const scrim = resolveActiveScrimForClan(clan);
         const emptyCard = document.getElementById("noActiveScrimCard");
         const activeCard = document.getElementById("activeScrimLobbyCard");
 
@@ -4401,20 +4460,38 @@
         emptyCard?.classList.add("hidden");
         activeCard?.classList.remove("hidden");
 
+        const isPostponed = String(scrim.status || "").toUpperCase() === "POSTPONED";
+        const statusPill = document.getElementById("scrimLiveStatusPill");
+        if (statusPill) {
+          statusPill.className = isPostponed
+            ? "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#F59E0B]/16 border border-[#F59E0B]/45 font-mono text-[11px] font-bold text-[#FBBF24] uppercase"
+            : "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#F43F5E]/16 border border-[#F43F5E]/45 font-mono text-[11px] font-bold text-[#FB7185] uppercase";
+          statusPill.innerHTML = isPostponed
+            ? `<i class="fa-regular fa-clock"></i> Scrim Postponed`
+            : `<span class="w-1.5 h-1.5 rounded-full bg-[#F43F5E] animate-ping"></span> Upcoming 4v4 Scrim Live`;
+        }
+
+        const postponeBtn = document.getElementById("btnPostponeScrim");
+        if (postponeBtn) {
+          postponeBtn.innerHTML = isPostponed
+            ? `<i class="fa-solid fa-play text-[#10B981]"></i><span>Resume</span>`
+            : `<i class="fa-regular fa-clock"></i><span>Postpone</span>`;
+        }
+
         document.getElementById("scrimCheckinStrip").innerHTML = sortedRoster.slice(0, 4).map((m) => `
           <div class="p-2.5 rounded-xl glass-inset text-center">
             <span class="font-display text-xs font-bold text-white truncate block">${escapeHtml(m.gameName || m.name)}</span>
-            <span class="font-mono text-[10px] text-[#10B981] uppercase">READY</span>
+            <span class="font-mono text-[10px] ${isPostponed ? "text-[#FBBF24]" : "text-[#10B981]"} uppercase">${isPostponed ? "HOLD" : "READY"}</span>
           </div>
         `).join("");
 
         const canSetRoom = isInvitedHostForScrim(clan, scrim);
         document.getElementById("btnSetScrimRoom")?.classList.toggle("hidden", !canSetRoom);
 
-        const hostName = scrim.host_clan_name || (canSetRoom ? clan.name : "Invited Host Clan");
+        const hostName = scrim.host_clan_name || (canSetRoom ? clan.name : "Host Clan");
         document.getElementById("scrimHostOwnerTag").textContent = canSetRoom
           ? `Room Host: Your Clan (${clan.name}) — You control Room ID & Pass`
-          : `Room Host: ${hostName} (Only invited host captain can set Room ID)`;
+          : `Room Host: ${hostName} (Host captain publishes Room ID & Pass)`;
 
         document.getElementById("scrimSlotPill").textContent = scrim.slot ? `Slot #${scrim.slot}` : "4v4 Live";
         document.getElementById("scrimMatchTitle").textContent = scrim.title;
@@ -4429,7 +4506,9 @@
             : `<span class="text-[#38BDF8]">Waiting for ${escapeHtml(hostName)}</span>`;
         }
 
-        if (scrim.start_time) {
+        if (isPostponed) {
+          document.getElementById("scrimTimerVal").textContent = "POSTPONED";
+        } else if (scrim.start_time) {
           const updateT = () => {
             const diff = Math.max(0, Math.floor((new Date(scrim.start_time).getTime() - Date.now()) / 1000));
             if (diff <= 0) { document.getElementById("scrimTimerVal").textContent = "LOBBY OPEN"; return; }
@@ -4443,178 +4522,187 @@
         }
       }
 
-      function openSetScrimRoomModal(challengeId = "", partnerClanId = "", prefillTitle = "", prefillMap = "") {
-        if (!activeClan) return;
-        const scrim = activeClan.nextScrim || {};
-        if (scrim.host_clan_id && scrim.host_clan_id !== activeClan.clanId) {
-          showToast("Only the invited host clan's Captain can set the Room ID & Password.", true);
-          return;
-        }
-        document.getElementById("ssrChallengeId").value = challengeId || scrim.challenge_id || "";
-        document.getElementById("ssrPartnerClanId").value = partnerClanId || scrim.partner_clan_id || "";
-        document.getElementById("ssrTitle").value = prefillTitle || scrim.title || `${activeClan.name} Custom Scrim`;
-        document.getElementById("ssrRoomId").value = scrim.room_id || "";
-        document.getElementById("ssrRoomPass").value = scrim.room_pass || "";
-        document.getElementById("ssrMapMode").value = prefillMap || scrim.map_mode || "4v4 Custom Room";
-        document.getElementById("ssrStartMins").value = "10";
-        openModal("setScrimRoomModal");
-      }
+      // Unified Lifecycle Engine: Postpone, Resume, Mark Finished, or Cancel Across Both Clans + DB
+      async function updateScrimLifecycle({ challengeId = null, primaryClan = null, partnerClanId = null, action = "COMPLETED", newTime = "", reason = "" }) {
+        const lockKey = `scrimLife_${challengeId || primaryClan?.clanId || "x"}`;
+        if (inFlightActions.has(lockKey)) return;
+        inFlightActions.add(lockKey);
 
-      async function saveScrimRoomCreds() {
-        if (!activeClan) return;
-        const existingScrim = activeClan.nextScrim || {};
-        if (existingScrim.host_clan_id && existingScrim.host_clan_id !== activeClan.clanId) {
-          showToast("Only the invited host clan's Captain can publish Room ID & Pass.", true);
-          return;
-        }
+        try {
+          const ch = challengeId ? scrimChallenges.find((x) => x.id === challengeId) : null;
+          const clanA = primaryClan || (ch ? globalClans.find((c) => c.clanId === ch.target_clan_id) : null);
+          const clanBId = partnerClanId || (ch ? (clanA && ch.target_clan_id === clanA.clanId ? ch.challenger_clan_id : ch.target_clan_id) : null);
+          const clanB = clanBId ? globalClans.find((c) => c.clanId === clanBId) : null;
+          const matchTitle = ch ? `${ch.challenger_clan_name} vs ${ch.target_clan_name}` : (clanA?.nextScrim?.title || "4v4 Scrim");
+          const actor = user.ign || user.username || "Captain";
 
-        const roomId = document.getElementById("ssrRoomId").value.trim();
-        const roomPass = document.getElementById("ssrRoomPass").value.trim();
-        const title = document.getElementById("ssrTitle").value.trim() || `${activeClan.name} Custom Scrim`;
-        const mapMode = document.getElementById("ssrMapMode").value.trim() || "4v4 Custom Room";
-        const mins = Math.max(0, Math.min(180, parseInt(document.getElementById("ssrStartMins").value, 10) || 0));
-        const challengeId = document.getElementById("ssrChallengeId").value.trim();
-        const partnerClanId = document.getElementById("ssrPartnerClanId").value.trim();
-        if (!roomId) { showToast("Enter a valid Room ID.", true); return; }
-
-        const scrimObj = {
-          title,
-          subtitle: `${activeClan.game} • ${mapMode}`,
-          map_mode: mapMode,
-          room_id: roomId,
-          room_pass: roomPass || "NONE",
-          slot: "4v4",
-          host_clan_id: existingScrim.host_clan_id || activeClan.clanId,
-          host_clan_name: existingScrim.host_clan_name || activeClan.name,
-          challenge_id: challengeId || null,
-          partner_clan_id: partnerClanId || null,
-          start_time: new Date(Date.now() + mins * 60000).toISOString(),
-          published_by: user.ign || user.username || "Captain"
-        };
-
-        activeClan.nextScrim = scrimObj;
-        activeClan.notifications.push({ msg: `Room ID (${roomId}) published for ${title}!`, timestamp: Date.now() });
-        await saveActiveClanUpdate("Scrim Room ID & Password published live!");
-
-        const allNotifyEmails = activeClan.roster.map((r) => r.email);
-        if (partnerClanId) {
-          const rival = globalClans.find((c) => c.clanId === partnerClanId);
-          if (rival) {
-            rival.nextScrim = { ...scrimObj, partner_clan_id: activeClan.clanId };
-            rival.notifications.push({ msg: `${activeClan.name} published Room ID (${roomId}) for ${title}!`, timestamp: Date.now() });
-            await persistClanToDb(rival);
-            rival.roster.forEach((r) => allNotifyEmails.push(r.email));
+          // 1. Update clan_scrim_challenges row (with graceful fallback if older DB CHECK constraint rejects POSTPONED/CANCELLED)
+          if (ch && isDbReady && dbClient) {
+            let dbPayload = { status: action };
+            if (action === "POSTPONED") {
+              dbPayload = { status: "POSTPONED", proposed_time: newTime || ch.proposed_time };
+            } else if (action === "ACCEPTED") {
+              dbPayload = { status: "ACCEPTED", proposed_time: String(ch.proposed_time || "").replace(/^\[POSTPONED\]\s*/i, "") };
+            }
+            const { error } = await dbClient.from("clan_scrim_challenges").update(dbPayload).eq("id", ch.id);
+            if (error) {
+              // Fallback for legacy status check constraints
+              if (action === "POSTPONED") {
+                await dbClient.from("clan_scrim_challenges").update({
+                  status: "ACCEPTED",
+                  proposed_time: `[POSTPONED] ${newTime || "Rescheduled"}`
+                }).eq("id", ch.id).catch(() => {});
+                ch.proposed_time = `[POSTPONED] ${newTime || "Rescheduled"}`;
+              } else if (action === "CANCELLED" || action === "COMPLETED") {
+                await dbClient.from("clan_scrim_challenges").update({ status: "DECLINED" }).eq("id", ch.id).catch(() => {});
+                ch.status = action;
+              }
+            } else {
+              ch.status = action;
+              if (action === "POSTPONED" && newTime) ch.proposed_time = newTime;
+              if (action === "ACCEPTED") ch.proposed_time = dbPayload.proposed_time;
+            }
           }
-        }
-        if (challengeId && isDbReady && dbClient) {
-          await dbClient.from("clan_scrim_challenges").update({ room_id: roomId, room_pass: roomPass || "NONE" }).eq("id", challengeId).catch(() => {});
-        }
-        sendTournyxPushAlert({ emails: allNotifyEmails, heading: `🔑 Room ID Live — ${title}`, content: `Room ID: ${roomId} | Pass: ${roomPass || "NONE"}. Join lobby now!` });
-        closeModal("setScrimRoomModal");
-      }
 
-      function copyScrimRoomCreds() {
-        const scrim = activeClan?.nextScrim;
-        if (scrim && scrim.room_id) {
-          copyText(`ROOM ID: ${scrim.room_id} | PASS: ${scrim.room_pass || "NONE"}`, "Scrim Room ID & Pass");
-        } else {
-          const me = getMyRosterEntry(activeClan);
-          if (me && (me.role === "Owner" || me.role === "Admin")) {
-            openSetScrimRoomModal();
-            showToast("Enter your Custom Room ID & Password to share with the squad.");
-          } else {
-            showToast("Room ID not published by Captain yet.", true);
-          }
-        }
-      }
-
-      function openResolveScrimModal() {
-        if (!activeClan || !activeClan.nextScrim) { showToast("No active scrim to verify.", true); return; }
-        aiUploadedScreenshots = [];
-        document.getElementById("aiScreenshotPreviews").innerHTML = "";
-        document.getElementById("aiScrimNotes").value = "";
-        document.getElementById("aiVerifyResultBox").classList.add("hidden");
-        openModal("resolveScrimModal");
-      }
-
-      function handleAiScreenshotSelection(e) {
-        const files = Array.from(e.target.files || []).slice(0, 3);
-        e.target.value = "";
-        if (!files.length) return;
-        aiUploadedScreenshots = [];
-        const previewEl = document.getElementById("aiScreenshotPreviews");
-        previewEl.innerHTML = "";
-        files.forEach((file) => {
-          const reader = new FileReader();
-          reader.onload = (ev) => {
-            const img = new Image();
-            img.onload = () => {
-              const canvas = document.createElement("canvas");
-              const scale = Math.min(1, 1280 / img.width);
-              canvas.width = Math.round(img.width * scale);
-              canvas.height = Math.round(img.height * scale);
-              canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
-              const compressed = canvas.toDataURL("image/jpeg", 0.82);
-              aiUploadedScreenshots.push(compressed);
-              previewEl.innerHTML += `<div class="rounded-xl overflow-hidden border border-[#38BDF8]/40 bg-black aspect-video"><img src="${compressed}" alt="Proof" class="w-full h-full object-cover"></div>`;
-            };
-            img.src = ev.target.result;
+          // 2. Sync Both Participating Clans' next_scrim + Noticeboard
+          const noticeMap = {
+            POSTPONED: `⏳ Scrim "${matchTitle}" postponed to ${newTime || "later"} by ${actor}.`,
+            ACCEPTED: `▶ Scrim "${matchTitle}" resumed and active by ${actor}!`,
+            COMPLETED: `🏁 Scrim "${matchTitle}" marked as Finished by ${actor}.`,
+            CANCELLED: `✕ Scrim "${matchTitle}" cancelled by ${actor}${reason ? ` (${reason})` : ""}.`
           };
-          reader.readAsDataURL(file);
+          const notifyEmails = [];
+
+          for (const targetC of [clanA, clanB].filter(Boolean)) {
+            if (action === "COMPLETED" || action === "CANCELLED") {
+              targetC.nextScrim = null;
+            } else if (action === "POSTPONED") {
+              const cur = resolveActiveScrimForClan(targetC) || targetC.nextScrim || { title: matchTitle };
+              targetC.nextScrim = {
+                ...cur,
+                status: "POSTPONED",
+                subtitle: `${cur.map_mode || "4v4 Scrim"} • Postponed: ${newTime || "TBA"}`,
+                start_time: null
+              };
+            } else if (action === "ACCEPTED") {
+              const cur = resolveActiveScrimForClan(targetC) || targetC.nextScrim || { title: matchTitle };
+              targetC.nextScrim = { ...cur, status: "ACCEPTED" };
+            }
+            targetC.notifications = targetC.notifications || [];
+            targetC.notifications.push({ msg: noticeMap[action] || noticeMap.COMPLETED, timestamp: Date.now() });
+            await persistClanToDb(targetC);
+            (targetC.roster || []).forEach((r) => notifyEmails.push(r.email));
+          }
+
+          sendTournyxPushAlert({
+            emails: notifyEmails,
+            heading: action === "POSTPONED" ? `⏳ Scrim Postponed` : action === "CANCELLED" ? `Scrim Cancelled` : `🏁 Scrim Updated`,
+            content: noticeMap[action] || noticeMap.COMPLETED
+          });
+
+          await fetchScrimChallenges();
+          if (activeClan) renderDashboard(activeClan);
+          renderRequests();
+          showToast(
+            action === "POSTPONED" ? `Match postponed to ${newTime}!` :
+            action === "ACCEPTED" ? "Scrim resumed!" :
+            action === "CANCELLED" ? "Scrim cancelled for both clans." :
+            "Match marked as Finished!"
+          );
+        } finally {
+          inFlightActions.delete(lockKey);
+        }
+      }
+
+      function manageChallengeLifecycle(challengeId, action) {
+        const ch = scrimChallenges.find((x) => x.id === challengeId);
+        if (!ch) return;
+        const myClan = userLiveClans.find((c) => c.clanId === ch.target_clan_id || c.clanId === ch.challenger_clan_id) || activeClan;
+        const rivalId = myClan && ch.target_clan_id === myClan.clanId ? ch.challenger_clan_id : ch.target_clan_id;
+
+        if (action === "POSTPONED") {
+          showTacticalInput({
+            title: "Postpone 4v4 Scrim",
+            desc: "Enter the new proposed date & time for both clans.",
+            initialValue: String(ch.proposed_time || "").replace(/^\[POSTPONED\]\s*/i, "") || "Tomorrow 9:00 PM IST",
+            placeholder: "e.g. Tomorrow 9:00 PM IST",
+            saveLabel: "Postpone Match",
+            onSave: (val) => { if (val) updateScrimLifecycle({ challengeId: ch.id, primaryClan: myClan, partnerClanId: rivalId, action: "POSTPONED", newTime: val }); }
+          });
+        } else if (action === "ACCEPTED") {
+          updateScrimLifecycle({ challengeId: ch.id, primaryClan: myClan, partnerClanId: rivalId, action: "ACCEPTED" });
+        } else if (action === "COMPLETED") {
+          showConfirmDialog({
+            title: "Mark Scrim Finished?",
+            message: "Marks this match as Completed and clears the active lobby for both clans. (Want Clan XP + K/D? Open Dashboard → AI Verify instead!)",
+            confirmText: "Mark Finished",
+            isDanger: false,
+            onConfirm: () => updateScrimLifecycle({ challengeId: ch.id, primaryClan: myClan, partnerClanId: rivalId, action: "COMPLETED" })
+          });
+        } else if (action === "CANCELLED") {
+          showTacticalInput({
+            title: "Cancel 4v4 Scrim?",
+            desc: "Optional reason sent to both squads. Clears the active scrim lobby immediately.",
+            initialValue: "Schedule conflict",
+            placeholder: "Reason for cancelling...",
+            saveLabel: "Cancel Match",
+            onSave: (val) => updateScrimLifecycle({ challengeId: ch.id, primaryClan: myClan, partnerClanId: rivalId, action: "CANCELLED", reason: val })
+          });
+        }
+      }
+
+      function postponeActiveScrim() {
+        if (!activeClan) return;
+        const s = resolveActiveScrimForClan(activeClan);
+        if (!s) return;
+        const isPostponed = String(s.status || "").toUpperCase() === "POSTPONED";
+        if (s.challenge_id) { manageChallengeLifecycle(s.challenge_id, isPostponed ? "ACCEPTED" : "POSTPONED"); return; }
+        if (isPostponed) {
+          updateScrimLifecycle({ primaryClan: activeClan, partnerClanId: s.partner_clan_id, action: "ACCEPTED" });
+        } else {
+          showTacticalInput({
+            title: "Postpone Scrim",
+            desc: "Enter the rescheduled time for your squad.",
+            initialValue: "Tomorrow 9:00 PM IST",
+            saveLabel: "Postpone",
+            onSave: (val) => { if (val) updateScrimLifecycle({ primaryClan: activeClan, partnerClanId: s.partner_clan_id, action: "POSTPONED", newTime: val }); }
+          });
+        }
+      }
+
+      function finishActiveScrimFriendly() {
+        if (!activeClan) return;
+        const s = resolveActiveScrimForClan(activeClan);
+        if (!s) return;
+        if (s.challenge_id) { manageChallengeLifecycle(s.challenge_id, "COMPLETED"); return; }
+        showConfirmDialog({
+          title: "Mark Scrim Finished?",
+          message: "Closes the active scrim lobby for both squads (0 XP). Use AI Verify if you want verified XP & K/D.",
+          confirmText: "Mark Finished",
+          isDanger: false,
+          onConfirm: () => updateScrimLifecycle({ primaryClan: activeClan, partnerClanId: s.partner_clan_id, action: "COMPLETED" })
         });
       }
 
-      async function submitAiScrimVerification() {
-        if (!activeClan || !isDbReady || !dbClient || inFlightActions.has("aiScrim")) return;
-        if (!aiUploadedScreenshots.length) { showToast("Upload at least 1 match scoreboard screenshot first.", true); return; }
-
-        inFlightActions.add("aiScrim");
-        const btn = document.getElementById("btnSubmitAiScrim");
-        const resBox = document.getElementById("aiVerifyResultBox");
-        btn.disabled = true;
-        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> AI Analyzing...`;
-
-        try {
-          const { data, error } = await dbClient.functions.invoke("tournyx-ai-referee", {
-            body: {
-              clan_id: activeClan.clanId,
-              challenge_id: activeClan.nextScrim?.challenge_id || null,
-              submitted_by_email: normStr(user.email),
-              notes: document.getElementById("aiScrimNotes").value.trim(),
-              images: aiUploadedScreenshots
-            }
-          });
-          if (error || !data?.ok) {
-            resBox.classList.remove("hidden");
-            resBox.className = "p-4 rounded-xl bg-red-500/12 border border-red-500/45 font-mono text-xs text-red-300";
-            resBox.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1"></i> ${escapeHtml(data?.error || error?.message || "Verification failed.")}`;
-            return;
-          }
-          resBox.classList.remove("hidden");
-          resBox.className = "p-4 rounded-xl bg-[#10B981]/12 border border-[#10B981]/45 font-mono text-xs text-[#10B981]";
-          resBox.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> Verified ${escapeHtml(data.summary)} • ${data.matched_count} Squadmates Matched • <strong>+${data.xp_awarded} Clan XP</strong>`;
-
-          await syncAllClanData(false);
-          setTimeout(() => {
-            closeModal("resolveScrimModal");
-            triggerCelebration(data.won ? "BOOYAH VERIFIED!" : "MATCH VERIFIED!", `+${data.xp_awarded} CLAN XP • ${data.team_kills} KILLS`);
-          }, 1200);
-        } finally {
-          inFlightActions.delete("aiScrim");
-          btn.disabled = false;
-          btn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> Verify &amp; Award XP`;
-        }
+      function promptCancelActiveScrim() {
+        if (!activeClan) return;
+        const s = resolveActiveScrimForClan(activeClan);
+        if (!s) return;
+        if (s.challenge_id) { manageChallengeLifecycle(s.challenge_id, "CANCELLED"); return; }
+        showConfirmDialog({
+          title: "Cancel 4v4 Scrim?",
+          message: "Removes this scrim from the active lobby for both squads.",
+          confirmText: "Cancel Match",
+          isDanger: true,
+          onConfirm: () => updateScrimLifecycle({ primaryClan: activeClan, partnerClanId: s.partner_clan_id, action: "CANCELLED" })
+        });
       }
 
-      async function cancelActiveScrimNoXp() {
-        if (!activeClan) return;
-        const chId = activeClan.nextScrim?.challenge_id;
-        activeClan.nextScrim = null;
-        if (chId && isDbReady && dbClient) {
-          await dbClient.from("clan_scrim_challenges").update({ status: "DECLINED" }).eq("id", chId).catch(() => {});
-        }
-        closeModal("resolveScrimModal");
-        await saveActiveClanUpdate("Scrim lobby cancelled (0 XP awarded).");
+      function openChallengeInDashboard(clanId) {
+        const idx = userLiveClans.findIndex((c) => c.clanId === clanId);
+        if (idx === -1) return;
+        switchTab("myClanTab", document.getElementById("tabBtnMyClans"));
+        openClanDashboard(idx);
       }
 
       async function claimDailyGuildCheckin() {
@@ -5911,33 +5999,63 @@
                 const rivalClanId = isIncoming ? ch.challenger_clan_id : ch.target_clan_id;
                 const myRole = myInvolvedClan ? getMyRosterEntry(myInvolvedClan)?.role : "";
                 const isMod = myRole === "Owner" || myRole === "Admin";
-                const canRespond = isIncoming && ch.status === "PENDING" && isMod;
-                const stCol = ch.status === "ACCEPTED" ? "text-[#10B981]" : ch.status === "DECLINED" ? "text-[#FDA4AF]" : "text-[#FBBF24]";
-                const matchTitle = `${ch.target_clan_name} vs ${ch.challenger_clan_name}`;
+                const rawSt = String(ch.status || "PENDING").toUpperCase();
+                const isPostponed = rawSt === "POSTPONED" || String(ch.proposed_time || "").toUpperCase().startsWith("[POSTPONED]");
+                const displaySt = isPostponed ? "POSTPONED" : rawSt;
+                const isActiveMatch = displaySt === "ACCEPTED" || displaySt === "POSTPONED";
+                const canRespond = isIncoming && displaySt === "PENDING" && isMod;
+                const stCol = displaySt === "ACCEPTED" ? "text-[#10B981]" : displaySt === "POSTPONED" ? "text-[#FBBF24]" : displaySt === "COMPLETED" ? "text-[#38BDF8]" : displaySt === "PENDING" ? "text-[#FBBF24]" : "text-[#FDA4AF]";
+                const matchTitle = `${ch.challenger_clan_name} vs ${ch.target_clan_name}`;
+                const cleanTime = String(ch.proposed_time || "").replace(/^\[POSTPONED\]\s*/i, "");
 
                 return `
-                  <div class="p-4 rounded-xl glass-inset space-y-2.5">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div class="p-4 rounded-xl glass-inset border ${isActiveMatch ? "border-[#38BDF8]/30" : "border-white/[0.07]"} space-y-3">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
                       <div>
                         <div class="font-display text-sm font-bold text-white">
                           <span class="text-[#FBBF24]">${escapeHtml(ch.challenger_clan_name)}</span> vs <span class="text-[#38BDF8]">${escapeHtml(ch.target_clan_name)}</span>
                         </div>
-                        <div class="font-mono text-xs text-[#94A3B8] mt-0.5">${escapeHtml(ch.game)} • ${escapeHtml(ch.map_mode)} • ${escapeHtml(ch.proposed_time)}</div>
+                        <div class="font-mono text-xs text-[#94A3B8] mt-0.5">${escapeHtml(ch.game)} • ${escapeHtml(ch.map_mode)} • ${escapeHtml(cleanTime)}</div>
                       </div>
                       <div class="flex items-center gap-2 flex-shrink-0 flex-wrap">
                         ${canRespond ? `
-                          <button onclick="respondScrimChallenge('${escapeHtml(ch.id)}', 'ACCEPTED')" type="button" class="btn-emerald min-h-[40px] px-4 rounded-xl font-display text-xs uppercase">Accept</button>
-                          <button onclick="respondScrimChallenge('${escapeHtml(ch.id)}', 'DECLINED')" type="button" class="min-h-[40px] px-3.5 rounded-xl bg-[#F43F5E]/15 border border-[#F43F5E]/40 font-display text-xs font-bold text-[#FDA4AF] uppercase">Decline</button>
-                        ` : `<span class="font-mono text-xs font-black uppercase ${stCol}">${escapeHtml(ch.status)}</span>`}
-                        ${ch.status === "ACCEPTED" && isMod && isIncoming && myInvolvedClan ? `
-                          <button onclick="openChallengeRoomSetup('${escapeHtml(myInvolvedClan.clanId)}', '${escapeHtml(ch.id)}', '${escapeHtml(rivalClanId)}', '${escapeHtml(matchTitle).replace(/'/g, "\\'")}', '${escapeHtml(ch.map_mode).replace(/'/g, "\\'")}')" type="button"
-                            class="btn-gold min-h-[38px] px-3 rounded-xl font-mono text-[11px] uppercase">
-                            <i class="fa-solid fa-key mr-1"></i>${ch.room_id ? "Edit Room ID" : "Set Room ID"}
+                          <button onclick="respondScrimChallenge('${escapeHtml(ch.id)}', 'ACCEPTED')" type="button" class="btn-emerald min-h-[38px] px-4 rounded-xl font-display text-xs uppercase">Accept</button>
+                          <button onclick="respondScrimChallenge('${escapeHtml(ch.id)}', 'DECLINED')" type="button" class="min-h-[38px] px-3.5 rounded-xl bg-[#F43F5E]/15 border border-[#F43F5E]/40 font-display text-xs font-bold text-[#FDA4AF] uppercase">Decline</button>
+                        ` : `<span class="px-2.5 py-1 rounded-lg bg-white/[0.06] font-mono text-[10.5px] font-black uppercase ${stCol}">${escapeHtml(displaySt)}</span>`}
+
+                        ${isActiveMatch && myInvolvedClan ? `
+                          <button onclick="openChallengeInDashboard('${escapeHtml(myInvolvedClan.clanId)}')" type="button"
+                            class="liquid-btn min-h-[36px] px-3 rounded-xl font-mono text-[10.5px] font-bold text-[#38BDF8] uppercase">
+                            Lobby ↗
                           </button>
                         ` : ""}
                       </div>
                     </div>
-                    ${ch.room_id ? `
+
+                    ${isActiveMatch && isMod && myInvolvedClan ? `
+                      <div class="pt-2 border-t border-white/[0.07] flex items-center gap-2 flex-wrap">
+                        ${isIncoming ? `
+                          <button onclick="openChallengeRoomSetup('${escapeHtml(myInvolvedClan.clanId)}', '${escapeHtml(ch.id)}', '${escapeHtml(rivalClanId)}', '${escapeHtml(matchTitle).replace(/'/g, "\\'")}', '${escapeHtml(ch.map_mode).replace(/'/g, "\\'")}')" type="button"
+                            class="btn-gold min-h-[36px] px-3 rounded-xl font-mono text-[10.5px] uppercase">
+                            <i class="fa-solid fa-key mr-1"></i>${ch.room_id ? "Edit Room ID" : "Set Room ID"}
+                          </button>
+                        ` : ""}
+                        <button onclick="manageChallengeLifecycle('${escapeHtml(ch.id)}', '${isPostponed ? "ACCEPTED" : "POSTPONED"}')" type="button"
+                          class="liquid-btn min-h-[36px] px-3 rounded-xl font-mono text-[10.5px] font-bold ${isPostponed ? "text-[#10B981]" : "text-[#FBBF24]"} uppercase">
+                          <i class="fa-solid ${isPostponed ? "fa-play" : "fa-clock"} mr-1"></i>${isPostponed ? "Resume" : "Postpone"}
+                        </button>
+                        <button onclick="manageChallengeLifecycle('${escapeHtml(ch.id)}', 'COMPLETED')" type="button"
+                          class="liquid-btn min-h-[36px] px-3 rounded-xl font-mono text-[10.5px] font-bold text-[#10B981] uppercase">
+                          <i class="fa-solid fa-flag-checkered mr-1"></i>Finished
+                        </button>
+                        <button onclick="manageChallengeLifecycle('${escapeHtml(ch.id)}', 'CANCELLED')" type="button"
+                          class="min-h-[36px] px-3 rounded-xl bg-[#F43F5E]/12 hover:bg-[#F43F5E]/22 border border-[#F43F5E]/40 font-mono text-[10.5px] font-bold text-[#FDA4AF] uppercase">
+                          <i class="fa-solid fa-ban mr-1"></i>Cancel
+                        </button>
+                      </div>
+                    ` : ""}
+
+                    ${ch.room_id && isActiveMatch ? `
                       <div class="pt-2 border-t border-white/[0.06] flex items-center justify-between gap-2 font-mono text-xs flex-wrap">
                         <span class="text-[#10B981]">Room ID: <strong>${escapeHtml(ch.room_id)}</strong> • Pass: <strong>${escapeHtml(ch.room_pass || "NONE")}</strong></span>
                         <div class="flex items-center gap-1.5">
@@ -7371,6 +7489,7 @@
         searchGlobalClans, filterClansByGame, openPublicClanModal, closePublicModal,
         triggerJoinFlow, closeJoinModal, processJoinRequest, cancelJoinRequest, instantLinkJoin,
         openScrimChallengeModal, openChallengeRoomSetup, submitScrimChallenge, respondScrimChallenge,
+        manageChallengeLifecycle, openChallengeInDashboard, postponeActiveScrim, finishActiveScrimFriendly, promptCancelActiveScrim,
         setLeaderboardScope, onLeaderboardStateChange, renderLeaderboard,
         acceptDirectInvite, rejectDirectInvite, handleReq, hideMail, dismissRejection, promptClearAllMail,
         openChat, closeChat, sendChatMessage, sendQuickChatChip, broadcastTypingSignal,
