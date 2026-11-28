@@ -820,15 +820,7 @@
       </div>
 
       <div class="space-y-1">
-        <span class="sidebar-section-lbl px-3 font-mono text-[10px] font-bold text-[#64748B] uppercase tracking-wider block mb-1.5">Social &amp; Studio</span>
-        <button onclick="openMessagesDrawer()" type="button" class="sidebar-nav-item w-full text-left justify-between">
-          <span class="flex items-center gap-3"><i class="fa-regular fa-paper-plane w-5 text-center text-sm text-[#38BDF8]"></i><span class="sidebar-label text-white">Messages</span></span>
-          <span id="sbUnreadDmBadge" class="hidden px-2 py-0.5 rounded-full bg-[#8B5CF6] font-mono text-[10px] font-bold text-white">0</span>
-        </button>
-        <button onclick="openNotificationsDrawer()" type="button" class="sidebar-nav-item w-full text-left justify-between">
-          <span class="flex items-center gap-3"><i class="fa-regular fa-bell w-5 text-center text-sm text-[#F59E0B]"></i><span class="sidebar-label">Notifications</span></span>
-          <span id="sbUnreadNotifBadge" class="hidden px-2 py-0.5 rounded-full bg-[#F43F5E] font-mono text-[10px] font-bold text-white">0</span>
-        </button>
+        <span class="sidebar-section-lbl px-3 font-mono text-[10px] font-bold text-[#64748B] uppercase tracking-wider block mb-1.5">Creator Studio</span>
         <button onclick="openUploadComposerModal()" type="button" class="sidebar-nav-item w-full text-left"><i class="fa-solid fa-cloud-arrow-up w-5 text-center text-sm text-[#10B981]"></i><span class="sidebar-label text-white">Upload HD Clip</span></button>
         <button onclick="openCreatorVaultModal()" type="button" class="sidebar-nav-item w-full text-left"><i class="fa-solid fa-chart-line w-5 text-center text-sm text-[#A855F7]"></i><span class="sidebar-label">Creator Vault</span></button>
         <a href="tournament.html" onclick="return requireAuthOrOpen(event)" class="sidebar-nav-item"><i class="fa-solid fa-satellite-dish w-5 text-center text-sm text-[#38BDF8]"></i><span class="sidebar-label">Host Studio</span></a>
@@ -987,20 +979,24 @@
             <i class="fa-solid fa-plus text-xs"></i><span>Upload</span>
           </button>
 
-          <!-- Liquid Glass Wallet Pill (Gold Coins + Cyan Passes) -->
-          <a href="tickets.html" onclick="return requireAuthOrOpen(event)" title="Wallet Points & TX Passes"
+          <!-- Role-Aware Liquid Glass Wallet Pill (Organizer: ₹Earnings | Tickets • Player: PTS | ₹Winnings | Tickets) -->
+          <a id="hdrWalletPill" href="tickets.html" onclick="return requireAuthOrOpen(event)" title="Wallet Earnings, Points & Active Tickets"
             class="liquid-btn min-h-[40px] px-3 rounded-full flex items-center gap-2">
-            <span class="font-mono text-xs font-bold text-[#FBBF24] inline-flex items-center gap-1">
+            <span id="hdrWalletEarnWrap" class="hidden font-mono text-xs font-bold text-[#10B981] items-center gap-1">
+              <i class="fa-solid fa-wallet text-[11px]"></i>
+              <span id="hdrWalletEarnings">₹0</span>
+            </span>
+            <span id="hdrWalletSepEarn" class="hidden text-white/20 text-[10px]">|</span>
+            <span id="hdrWalletPtsWrap" class="font-mono text-xs font-bold text-[#FBBF24] inline-flex items-center gap-1">
               <i class="fa-solid fa-coins text-[11px]"></i>
               <span id="hdrWalletPts">0</span>
             </span>
-            <span class="text-white/20 text-[10px]">|</span>
+            <span id="hdrWalletSepTix" class="text-white/20 text-[10px]">|</span>
             <span class="font-mono text-xs font-bold text-[#38BDF8] inline-flex items-center gap-1">
               <i class="fa-solid fa-ticket text-[11px]"></i>
               <span id="hdrWalletPasses">0</span>
             </span>
           </a>
-
           <!-- Liquid Glass Direct Messages Button -->
           <button onclick="openMessagesDrawer()" type="button" title="Direct Messages & Chat Requests" aria-label="Direct Messages"
             class="liquid-btn relative w-10 h-10 rounded-full flex items-center justify-center">
@@ -2514,14 +2510,66 @@
       // ============================================================================
       // 4. WALLET, WARM-GOLD 7-DAY DAILY CHECK-IN & 8-SLICE SPIN WHEEL
       // ============================================================================
-      function syncWalletUi(points, passes) {
+     function resolveUserEarningsValue() {
+        const host = isVerifiedHost();
+        if (host) {
+          return Math.max(0, safeNum(
+            playerSnapshot?.organizer_earnings ?? playerSnapshot?.host_earnings ?? playerSnapshot?.earnings ??
+            currentUser?.organizer_earnings ?? currentUser?.host_earnings ?? currentUser?.earnings ?? currentUser?.rupees ?? currentUser?.wallet_balance,
+            0
+          ));
+        }
+        return Math.max(0, safeNum(
+          playerSnapshot?.earnings ?? playerSnapshot?.rupees ??
+          currentUser?.earnings ?? currentUser?.rupees ?? currentUser?.wallet_balance,
+          0
+        ));
+      }
+
+      function syncWalletUi(points, passes, explicitEarnings = null) {
         const p = Math.max(0, safeNum(points, 0));
         const px = Math.max(0, safeNum(passes, 0));
-        document.getElementById("hdrWalletPts").textContent = p.toLocaleString("en-IN");
-        document.getElementById("hdrWalletPasses").textContent = String(px);
+        const earn = explicitEarnings !== null ? Math.max(0, safeNum(explicitEarnings, 0)) : resolveUserEarningsValue();
+        const host = isVerifiedHost();
+
+        const pill = document.getElementById("hdrWalletPill");
+        const earnWrap = document.getElementById("hdrWalletEarnWrap");
+        const earnEl = document.getElementById("hdrWalletEarnings");
+        const sepEarn = document.getElementById("hdrWalletSepEarn");
+        const ptsWrap = document.getElementById("hdrWalletPtsWrap");
+        const ptsEl = document.getElementById("hdrWalletPts");
+        const sepTix = document.getElementById("hdrWalletSepTix");
+        const passEl = document.getElementById("hdrWalletPasses");
+
+        if (ptsEl) ptsEl.textContent = p.toLocaleString("en-IN");
+        if (passEl) passEl.textContent = String(px);
+        if (earnEl) earnEl.textContent = `₹${earn.toLocaleString("en-IN")}`;
+
+        if (host) {
+          // Organizer View: ₹Host Earnings | 🎟 Active Tickets (clean on mobile, +Points on xl desktop if > 0)
+          if (pill) pill.title = `Organizer Earnings: ₹${earn.toLocaleString("en-IN")} • Active Tickets: ${px}`;
+          if (earnWrap) { earnWrap.classList.remove("hidden"); earnWrap.classList.add("inline-flex"); }
+          if (ptsWrap) { ptsWrap.className = p > 0 ? "hidden xl:inline-flex font-mono text-xs font-bold text-[#FBBF24] items-center gap-1" : "hidden"; }
+          if (sepEarn) sepEarn.className = p > 0 ? "hidden xl:inline text-white/20 text-[10px]" : "hidden";
+          if (sepTix) sepTix.className = "text-white/20 text-[10px]";
+        } else {
+          // Player View: ₹Winnings (always on sm+, or on mobile when > 0) + 🪙 TX Points + 🎟 Active Tickets
+          if (pill) pill.title = `Player Winnings: ₹${earn.toLocaleString("en-IN")} • TX Points: ${p.toLocaleString("en-IN")} • Active Tickets: ${px}`;
+          if (earnWrap) {
+            earnWrap.className = earn > 0
+              ? "inline-flex font-mono text-xs font-bold text-[#10B981] items-center gap-1"
+              : "hidden sm:inline-flex font-mono text-xs font-bold text-[#10B981] items-center gap-1";
+          }
+          if (sepEarn) sepEarn.className = earn > 0 ? "text-white/20 text-[10px]" : "hidden sm:inline text-white/20 text-[10px]";
+          if (ptsWrap) ptsWrap.className = "inline-flex font-mono text-xs font-bold text-[#FBBF24] items-center gap-1";
+          if (sepTix) sepTix.className = "text-white/20 text-[10px]";
+        }
+
         if (currentUser) {
           currentUser.points = p;
           currentUser.passes = px;
+          currentUser.tickets = px;
+          currentUser.earnings = earn;
           try { localStorage.setItem("tournyx_user", JSON.stringify(currentUser)); } catch (e) {}
         }
       }
@@ -4506,17 +4554,43 @@
         const email = isLoggedIn() ? normStr(currentUser.email) : null;
 
         try {
-          const [tRes, adsRes, snapRes, strictRegAlerts] = await Promise.all([
+          const [tRes, adsRes, snapRes, strictRegAlerts, userRowRes, tixRowRes] = await Promise.all([
             safeQuery(() => dbClient.from("Tournaments").select("*").order("created_at", { ascending: false }).limit(24), []),
             safeQuery(() => dbClient.from("tournyx_ad_campaigns").select("*").eq("is_active", true).order("priority", { ascending: true }).limit(20), []),
             email ? safeQuery(() => dbClient.rpc("get_home_player_snapshot", { p_user_email: email }), null) : Promise.resolve({ data: null }),
-            loadStrictRegisteredMatches(email)
+            loadStrictRegisteredMatches(email),
+            email ? safeQuery(() => dbClient.from("Users").select("*").ilike("email", email).limit(1), []) : Promise.resolve({ data: [] }),
+            email ? safeQuery(() => dbClient.from("Tickets").select("id, status").ilike("user_email", email).limit(100), []) : Promise.resolve({ data: [] })
           ]);
 
           if (Array.isArray(tRes.data)) allEvents = tRes.data.filter((t) => t && t.match_id);
           const activeAds = Array.isArray(adsRes.data) ? adsRes.data : [];
           feedAds = activeAds.filter((a) => a.placement === "FEED_CARD");
           if (snapRes.data?.ok) playerSnapshot = snapRes.data;
+
+          const liveUserRow = Array.isArray(userRowRes.data) && userRowRes.data[0] ? userRowRes.data[0] : null;
+          if (liveUserRow && currentUser) {
+            currentUser = { ...currentUser, ...liveUserRow };
+            try { localStorage.setItem("tournyx_user", JSON.stringify(currentUser)); } catch (e) {}
+          }
+
+          const activeTicketCount = Array.isArray(tixRowRes.data)
+            ? tixRowRes.data.filter((tk) => !tk?.status || ["active", "unused", "valid", "available"].includes(normStr(tk.status))).length
+            : 0;
+          const resolvedPasses = Math.max(
+            activeTicketCount,
+            safeNum(playerSnapshot?.passes, 0),
+            safeNum(liveUserRow?.passes ?? liveUserRow?.tickets ?? liveUserRow?.active_tickets, 0)
+          );
+          playerSnapshot = {
+            ...(playerSnapshot || {}),
+            role: liveUserRow?.role || playerSnapshot?.role || currentUser?.role,
+            passes: resolvedPasses,
+            points: safeNum(playerSnapshot?.points ?? liveUserRow?.points, safeNum(currentUser?.points, 0)),
+            earnings: safeNum(liveUserRow?.earnings ?? liveUserRow?.rupees ?? liveUserRow?.wallet_balance, 0),
+            organizer_earnings: safeNum(liveUserRow?.organizer_earnings ?? liveUserRow?.host_earnings ?? liveUserRow?.earnings ?? liveUserRow?.rupees, 0)
+          };
+
           registeredAlerts = Array.isArray(strictRegAlerts) ? strictRegAlerts : [];
 
           try { localStorage.setItem(CONFIG.CACHE_KEY, JSON.stringify({ ts: Date.now(), events: allEvents.slice(0, 12) })); } catch (e) {}
