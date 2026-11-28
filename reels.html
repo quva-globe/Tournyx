@@ -184,58 +184,64 @@
     body.power-save .reels-ambient-bg { background: #000000 !important; }
 
     /* =========================================================================
-       360° INWARD-ABSORBING LOADER (WEBSITE + ASYNC REELS LOADS)
+       CURATED MULTI-COLOR ACCENT BUTTONS (EMERALD, GOLD, ROSE + LIQUID GLASS)
        ========================================================================= */
-    #txWebAbsorbLoader {
-      position: fixed;
+    .btn-emerald {
+      background: linear-gradient(135deg, #10B981 0%, #059669 55%, #0EA5E9 100%);
+      color: #FFFFFF;
+      font-weight: 800;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 10px 24px -8px rgba(16, 185, 129, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.32);
+      transition: transform 0.14s ease, filter 0.18s ease;
+    }
+    .btn-emerald:hover:not(:disabled) { filter: brightness(1.07); }
+    .btn-emerald:active:not(:disabled) { transform: scale(0.96); }
+    .btn-emerald:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .btn-gold {
+      background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 55%, #EA580C 100%);
+      color: #090600;
+      font-weight: 800;
+      border: 1px solid rgba(255, 255, 255, 0.34);
+      box-shadow: 0 10px 24px -8px rgba(245, 158, 11, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+      transition: transform 0.14s ease, filter 0.18s ease;
+    }
+    .btn-gold:hover:not(:disabled) { filter: brightness(1.06); }
+    .btn-gold:active:not(:disabled) { transform: scale(0.96); }
+
+    .btn-rose {
+      background: linear-gradient(135deg, #FB7185 0%, #F43F5E 55%, #E11D48 100%);
+      color: #FFFFFF;
+      font-weight: 800;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 10px 24px -8px rgba(244, 63, 94, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.30);
+      transition: transform 0.14s ease, filter 0.18s ease;
+    }
+    .btn-rose:active:not(:disabled) { transform: scale(0.96); }
+
+    /* =========================================================================
+       PRO 9:16 REELS SKELETON LOADER (REPLACES BLOCKING FULLSCREEN LOADER)
+       ========================================================================= */
+    .reel-skel-stage {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 50% 40%, #11152A 0%, #050508 72%);
+      overflow: hidden;
+    }
+    .reel-skel-stage::after {
+      content: "";
+      position: absolute;
       inset: 0;
-      z-index: 9500;
-      background: rgba(5, 5, 8, 0.92);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 18px;
-      opacity: 0;
-      transition: opacity 0.22s ease;
+      background: linear-gradient(108deg, transparent 30%, rgba(255, 255, 255, 0.045) 50%, transparent 70%);
+      transform: translate3d(-100%, 0, 0);
+      animation: reelSkelSweep 1.5s ease-in-out infinite;
+      pointer-events: none;
     }
-    #txWebAbsorbLoader.is-active { display: flex; opacity: 1; }
-    .txw-absorb-stage { position: relative; width: 204px; height: 204px; display: flex; align-items: center; justify-content: center; }
-    .txw-absorb-glow {
-      position: absolute; width: 108px; height: 108px; border-radius: 9999px;
-      background: radial-gradient(circle, rgba(139, 92, 246, 0.56) 0%, rgba(56, 189, 248, 0.24) 50%, transparent 76%);
-      filter: blur(16px); animation: txwCoreBeat 1.25s ease-in-out infinite;
+    @keyframes reelSkelSweep {
+      to { transform: translate3d(120%, 0, 0); }
     }
-    .txw-absorb-ring {
-      position: absolute; width: 182px; height: 182px; border-radius: 9999px;
-      border: 1.5px solid rgba(139, 92, 246, 0.48); animation: txwRingPull 1.35s cubic-bezier(0.32, 0.08, 0.24, 1) infinite;
-    }
-    .txw-absorb-ring.is-2 { border-color: rgba(56, 189, 248, 0.42); animation-delay: -0.68s; }
-    .txw-absorb-streams { position: absolute; inset: 0; pointer-events: none; }
-    .txw-absorb-ray {
-      position: absolute; top: 50%; left: 50%; width: 2.5px; height: 24px; margin-left: -1.25px; margin-top: -12px;
-      border-radius: 9999px; background: linear-gradient(180deg, rgba(139, 92, 246, 0) 0%, #8B5CF6 48%, #E2E8F0 100%);
-      opacity: 0; animation: txwStreamPullIn 1.12s cubic-bezier(0.55, 0.05, 0.75, 0.25) infinite; animation-delay: calc(var(--i) * -0.14s);
-    }
-    .txw-absorb-ray:nth-child(even) {
-      width: 2px; height: 18px; background: linear-gradient(180deg, rgba(56, 189, 248, 0) 0%, #38BDF8 55%, #FFFFFF 100%); animation-duration: 0.96s;
-    }
-    .txw-absorb-logo {
-      position: relative; z-index: 4; width: 82px; height: 82px; object-fit: contain; background: transparent !important;
-      filter: drop-shadow(0 0 18px rgba(139, 92, 246, 0.65)); animation: txwLogoCharge 1.25s ease-in-out infinite;
-    }
-    @keyframes txwStreamPullIn {
-      0%   { opacity: 0; transform: rotate(calc(var(--i) * 15deg)) translate3d(0, -98px, 0) scaleY(1.3); }
-      28%  { opacity: 0.95; }
-      82%  { opacity: 1; transform: rotate(calc(var(--i) * 15deg)) translate3d(0, -32px, 0) scaleY(0.95); }
-      100% { opacity: 0; transform: rotate(calc(var(--i) * 15deg)) translate3d(0, -10px, 0) scaleY(0.25); }
-    }
-    @keyframes txwRingPull { 0% { opacity: 0; transform: scale(1.16); } 28% { opacity: 0.55; } 100% { opacity: 0; transform: scale(0.32); } }
-    @keyframes txwCoreBeat { 0%, 100% { transform: scale(0.88); opacity: 0.68; } 50% { transform: scale(1.15); opacity: 1; } }
-    @keyframes txwLogoCharge { 0%, 100% { transform: scale(0.96); } 50% { transform: scale(1.05); } }
-    html[data-perf-tier="lite"] .txw-absorb-ring, html[data-perf-tier="lite"] .txw-absorb-ray:nth-child(even) { display: none; }
+    html[data-perf-tier="lite"] .reel-skel-stage::after { animation: none; }
 
     /* =========================================================================
        3-COLOR LIQUID GLASS SURFACES & BUTTONS
@@ -632,30 +638,7 @@
 <body class="selection:bg-[#8B5CF6] selection:text-white">
   <div class="reels-ambient-bg" aria-hidden="true"></div>
 
-  <!-- 360° INWARD-ABSORBING WEBSITE LOADER -->
-  <div id="txWebAbsorbLoader" role="status" aria-live="polite">
-    <div class="txw-absorb-stage">
-      <div class="txw-absorb-glow" aria-hidden="true"></div>
-      <div class="txw-absorb-ring" aria-hidden="true"></div>
-      <div class="txw-absorb-ring is-2" aria-hidden="true"></div>
-      <div class="txw-absorb-streams" aria-hidden="true">
-        <span class="txw-absorb-ray" style="--i:0"></span><span class="txw-absorb-ray" style="--i:1"></span>
-        <span class="txw-absorb-ray" style="--i:2"></span><span class="txw-absorb-ray" style="--i:3"></span>
-        <span class="txw-absorb-ray" style="--i:4"></span><span class="txw-absorb-ray" style="--i:5"></span>
-        <span class="txw-absorb-ray" style="--i:6"></span><span class="txw-absorb-ray" style="--i:7"></span>
-        <span class="txw-absorb-ray" style="--i:8"></span><span class="txw-absorb-ray" style="--i:9"></span>
-        <span class="txw-absorb-ray" style="--i:10"></span><span class="txw-absorb-ray" style="--i:11"></span>
-        <span class="txw-absorb-ray" style="--i:12"></span><span class="txw-absorb-ray" style="--i:13"></span>
-        <span class="txw-absorb-ray" style="--i:14"></span><span class="txw-absorb-ray" style="--i:15"></span>
-        <span class="txw-absorb-ray" style="--i:16"></span><span class="txw-absorb-ray" style="--i:17"></span>
-        <span class="txw-absorb-ray" style="--i:18"></span><span class="txw-absorb-ray" style="--i:19"></span>
-        <span class="txw-absorb-ray" style="--i:20"></span><span class="txw-absorb-ray" style="--i:21"></span>
-        <span class="txw-absorb-ray" style="--i:22"></span><span class="txw-absorb-ray" style="--i:23"></span>
-      </div>
-      <img class="txw-absorb-logo" src="logo-transparent.png" onerror="this.onerror=null;this.src='favicon.png'" alt="Tournyx Esports">
-    </div>
-    <div id="txWebLoaderLabel" class="font-mono text-[11px] font-bold tracking-[0.18em] text-[#E2E8F0] uppercase">Loading Clutch Reels</div>
-  </div>
+  
 
   <!-- =========================================================
        1. DESKTOP PERSISTENT LEFT SIDEBAR (>= 1024px — MATCHED TO index.html)
@@ -740,13 +723,13 @@
       </div>
 
       <div class="flex items-center gap-2 flex-shrink-0">
-        <button onclick="openSavedVaultModal()" type="button" class="btn-ghost h-10 px-3.5 rounded-xl font-display text-xs inline-flex items-center gap-1.5">
-          <i class="fa-solid fa-bookmark text-[#38BDF8]"></i> Saved
+       <button onclick="openSavedVaultModal()" type="button" class="liquid-pill h-10 px-3.5 rounded-full font-display text-xs font-bold text-[#FBBF24] inline-flex items-center gap-1.5">
+          <i class="fa-solid fa-bookmark"></i> Saved
         </button>
-        <button onclick="openCreatorDashboardModal()" type="button" class="btn-ghost h-10 px-3.5 rounded-xl font-display text-xs inline-flex items-center gap-1.5">
+        <button onclick="openCreatorDashboardModal()" type="button" class="liquid-pill h-10 px-3.5 rounded-full font-display text-xs font-bold text-[#C4B5FD] inline-flex items-center gap-1.5">
           <i class="fa-solid fa-chart-line text-[#A855F7]"></i> Studio
         </button>
-        <button onclick="openUploadReelModal()" type="button" class="btn-primary h-10 px-4 rounded-xl font-display text-xs inline-flex items-center gap-1.5">
+        <button onclick="openUploadReelModal()" type="button" class="btn-emerald h-10 px-4 rounded-full font-display text-xs inline-flex items-center gap-1.5">
           <i class="fa-solid fa-cloud-arrow-up"></i> Upload HD
         </button>
       </div>
@@ -846,15 +829,27 @@
           <i class="fa-solid fa-volume-high text-[#38BDF8]"></i> Tap anywhere for sound
         </button>
 
-        <!-- VERTICAL SNAP-SCROLL FEED CONTAINER -->
         <div id="reelsSnapContainer" class="reels-snap-scroller no-scrollbar">
-          <div class="reel-slide flex flex-col justify-end p-5 space-y-4">
-            <div class="w-44 h-4 skel"></div>
-            <div class="w-3/4 h-6 skel"></div>
-            <div class="w-1/2 h-4 skel"></div>
+          <div class="reel-slide reel-skel-stage">
+            <div class="absolute right-3 bottom-16 pb-safe flex flex-col items-center gap-3.5 z-10">
+              <div class="w-11 h-11 rounded-full skel"></div>
+              <div class="w-11 h-11 rounded-full skel"></div>
+              <div class="w-11 h-11 rounded-full skel"></div>
+              <div class="w-11 h-11 rounded-full skel"></div>
+              <div class="w-11 h-11 rounded-full skel"></div>
+            </div>
+            <div class="absolute left-4 right-20 bottom-10 pb-safe space-y-3 z-10">
+              <div class="flex items-center gap-2"><div class="h-5 w-20 rounded-full skel"></div><div class="h-5 w-14 rounded-full skel"></div></div>
+              <div class="flex items-center gap-2.5">
+                <div class="w-10 h-10 rounded-full skel flex-shrink-0"></div>
+                <div class="space-y-1.5 flex-1"><div class="h-3.5 w-32 skel"></div><div class="h-2.5 w-24 skel"></div></div>
+              </div>
+              <div class="h-4 w-56 skel"></div>
+              <div class="h-3 w-40 skel"></div>
+            </div>
+            <div class="absolute left-3 right-3 bottom-2 h-1 rounded-full skel"></div>
           </div>
         </div>
-      </div>
 
       <!-- DESKTOP FLOATING PREV / NEXT + CLEAN VIEW + SHORTCUT GUIDE -->
       <div class="hidden lg:flex flex-col items-center gap-3 ml-6">
@@ -1651,21 +1646,32 @@
         return `${CONFIG.SITE_ORIGIN}/reels?id=${encodeURIComponent(reelId)}`;
       }
 
-      function showPageLoader(label = "Loading Clutch Reels") {
-        if (isNativeApp() && window.TournyxLoader?.show) { window.TournyxLoader.show(label); return; }
-        const el = document.getElementById("txWebAbsorbLoader");
-        const lbl = document.getElementById("txWebLoaderLabel");
-        if (lbl) lbl.textContent = String(label || "Loading Clutch Reels");
-        if (el) el.classList.add("is-active");
-        clearTimeout(webLoaderFailsafe);
-        webLoaderFailsafe = setTimeout(hidePageLoader, 4500);
+      function buildReelsSkeletonSlideHtml() {
+        return `
+          <div class="reel-slide reel-skel-stage" aria-busy="true" aria-label="Loading Clutch Reels">
+            <div class="absolute right-3 bottom-16 pb-safe flex flex-col items-center gap-3.5 z-10">
+              <div class="w-11 h-11 rounded-full skel"></div>
+              <div class="w-11 h-11 rounded-full skel"></div>
+              <div class="w-11 h-11 rounded-full skel"></div>
+              <div class="w-11 h-11 rounded-full skel"></div>
+              <div class="w-11 h-11 rounded-full skel"></div>
+            </div>
+            <div class="absolute left-4 right-20 bottom-10 pb-safe space-y-3 z-10">
+              <div class="flex items-center gap-2"><div class="h-5 w-20 rounded-full skel"></div><div class="h-5 w-14 rounded-full skel"></div></div>
+              <div class="flex items-center gap-2.5">
+                <div class="w-10 h-10 rounded-full skel flex-shrink-0"></div>
+                <div class="space-y-1.5 flex-1"><div class="h-3.5 w-32 skel"></div><div class="h-2.5 w-24 skel"></div></div>
+              </div>
+              <div class="h-4 w-56 skel"></div>
+              <div class="h-3 w-40 skel"></div>
+            </div>
+            <div class="absolute left-3 right-3 bottom-2 h-1 rounded-full skel"></div>
+          </div>
+        `;
       }
 
-      function hidePageLoader() {
-        clearTimeout(webLoaderFailsafe);
-        if (isNativeApp() && window.TournyxLoader?.hide) window.TournyxLoader.hide();
-        document.getElementById("txWebAbsorbLoader")?.classList.remove("is-active");
-      }
+      function showPageLoader() {}
+      function hidePageLoader() {}
 
       function detectHardwarePerfTier() {
         const saved = localStorage.getItem("tournyx_perf_tier");
@@ -1938,9 +1944,7 @@
           unlockAdScroll();
           cleanupAllMediaDecoders();
           const box = document.getElementById("reelsSnapContainer");
-          if (box) {
-            box.innerHTML = `<div class="reel-slide flex flex-col justify-end p-5 space-y-4"><div class="w-44 h-4 skel"></div><div class="w-3/4 h-6 skel"></div><div class="w-1/2 h-4 skel"></div></div>`;
-          }
+          if (box) box.innerHTML = buildReelsSkeletonSlideHtml();
         }
 
         const rpcFilter = filterMode === "ORGANIZERS" ? "ORGANIZERS" : filterMode === "FOLLOWING" ? "FOLLOWING" : "REELS";
