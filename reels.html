@@ -35,7 +35,7 @@
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" href="/favicon.png" type="image/png" sizes="512x512">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  <link rel="preload" as="image" href="logo-transparent.png">
+  <link rel="preload" as="image" href="logo-full.png">
 
   <script>
     if ("serviceWorker" in navigator) {
@@ -302,6 +302,42 @@
     .btn-ghost:hover:not(:disabled) { background: rgba(139, 92, 246, 0.18); border-color: rgba(139, 92, 246, 0.45); color: #FFFFFF; }
     .btn-ghost:active:not(:disabled) { transform: scale(0.96); }
 
+    /* Full-Color TX Logo Squircle Frame */
+    .tx-brand-crest {
+      border-radius: 12px;
+      overflow: hidden;
+      background: #100822;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      box-shadow: 0 6px 18px rgba(139, 92, 246, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.30);
+      flex-shrink: 0;
+    }
+
+    /* Subtle Page-Switching Progress Line & Corner Circle Spinner */
+    #txPageSwitchLine {
+      position: fixed; top: env(safe-area-inset-top, 0px); left: 0; right: 0; height: 3px;
+      z-index: 9800; pointer-events: none; opacity: 0; transition: opacity 0.18s ease;
+    }
+    #txPageSwitchLine.is-active { opacity: 1; }
+    #txPageSwitchFill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, #8B5CF6 0%, #38BDF8 55%, #F59E0B 100%);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.72);
+      transition: width 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    #txPageSwitchPill {
+      position: fixed; top: calc(env(safe-area-inset-top, 0px) + 74px); right: 16px; z-index: 9790;
+      padding: 7px 12px; border-radius: 9999px; background: rgba(14, 17, 30, 0.92);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.18); box-shadow: 0 10px 26px rgba(0, 0, 0, 0.72);
+      display: none; align-items: center; gap: 8px; font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px; font-weight: 700; color: #E2E8F0; pointer-events: none;
+    }
+    #txPageSwitchPill.is-active { display: inline-flex; }
+    .tx-mini-ring {
+      width: 14px; height: 14px; border-radius: 9999px; border: 2px solid rgba(255, 255, 255, 0.16);
+      border-top-color: #38BDF8; border-right-color: #8B5CF6; animation: txSpin 0.65s linear infinite;
+    }
+    @keyframes txSpin { to { transform: rotate(360deg); } }
     /* =========================================================================
        DESKTOP PERSISTENT LEFT SIDEBAR (>= 1024px)
        ========================================================================= */
@@ -637,7 +673,12 @@
 
 <body class="selection:bg-[#8B5CF6] selection:text-white">
   <div class="reels-ambient-bg" aria-hidden="true"></div>
-
+ <!-- SUBTLE PAGE-SWITCHING LINE & CORNER SPINNER -->
+  <div id="txPageSwitchLine" aria-hidden="true"><div id="txPageSwitchFill"></div></div>
+  <div id="txPageSwitchPill" role="status" aria-live="polite">
+    <span class="tx-mini-ring" aria-hidden="true"></span>
+    <span id="txPageSwitchLabel">Loading</span>
+  </div>
   
 
   <!-- =========================================================
@@ -646,7 +687,7 @@
   <aside id="desktopSidebar" class="desktop-sidebar" aria-label="Primary Sidebar Navigation">
     <div class="h-[72px] px-4 border-b border-white/[0.08] flex items-center justify-between gap-2 flex-shrink-0">
       <a href="index.html" class="flex items-center gap-2.5 min-w-0">
-        <img src="logo-transparent.png" onerror="this.onerror=null;this.src='favicon.png'" alt="Tournyx Esports"
+        <img src="logo-full.png" onerror="this.onerror=null;this.src='favicon.png'" alt="Tournyx Esports"
           class="w-9 h-9 object-contain flex-shrink-0 drop-shadow-[0_0_12px_rgba(139,92,246,0.5)]">
         <div class="sidebar-brand-text flex flex-col min-w-0">
           <span class="font-orbitron text-sm font-black tracking-wider text-white leading-none truncate">TOURNYX<span class="text-[#38BDF8]">.</span></span>
@@ -755,7 +796,7 @@
                 <i class="fa-solid fa-arrow-left text-sm"></i>
               </a>
               <div class="flex items-center gap-1.5 min-w-0">
-                <img src="logo-transparent.png" onerror="this.onerror=null;this.src='favicon.png'" alt="" class="w-6 h-6 object-contain flex-shrink-0">
+                <img src="logo-full.png" onerror="this.onerror=null;this.src='favicon.png'" alt="" class="w-6 h-6 object-contain flex-shrink-0">
                 <span class="font-display text-base font-extrabold text-white drop-shadow truncate">Reels</span>
               </div>
             </div>
@@ -1057,7 +1098,7 @@
           <div id="spPreviewMedia" class="w-16 h-28 rounded-xl overflow-hidden bg-[#070812] border border-white/15 flex-shrink-0"></div>
           <div class="min-w-0 flex-1 space-y-1.5">
             <div class="flex items-center gap-1.5">
-              <img src="logo-transparent.png" onerror="this.onerror=null;this.src='favicon.png'" alt="" class="w-4 h-4 object-contain">
+              <img src="logo-full.png" onerror="this.onerror=null;this.src='favicon.png'" alt="" class="w-4 h-4 object-contain">
               <span class="font-orbitron text-[10px] font-black text-[#38BDF8] tracking-wider">TOURNYX REELS</span>
             </div>
             <h4 id="spTitle" class="font-display text-sm font-bold text-white line-clamp-2 leading-snug">--</h4>
@@ -1331,18 +1372,33 @@
     <div class="sheet-card wide" style="height: min(86dvh, 680px);">
       <div class="px-5 py-3.5 border-b border-white/[0.08] flex items-center justify-between gap-3 flex-shrink-0">
         <div class="flex items-center gap-2.5 min-w-0">
-          <button id="dmBackToListBtn" onclick="exitActiveDmThread()" type="button" class="hidden w-9 h-9 rounded-xl bg-white/[0.06] text-white flex items-center justify-center">
+          <button id="dmBackToListBtn" onclick="exitActiveDmThread()" type="button" class="hidden liquid-pill w-9 h-9 rounded-xl text-white flex items-center justify-center">
             <i class="fa-solid fa-arrow-left text-xs"></i>
           </button>
           <div class="min-w-0">
             <h3 id="dmModalHeading" class="font-display text-base font-extrabold text-white truncate">Messages</h3>
-            <p id="dmModalSub" class="font-mono text-[10.5px] text-[#38BDF8] truncate">Connect &amp; Chat After Request Acceptance</p>
+            <p id="dmModalSub" class="font-mono text-[10.5px] text-[#38BDF8] truncate">Search Players &amp; Send First-Time Chat Requests</p>
           </div>
         </div>
-        <button onclick="closeModal('dmInboxModal')" type="button" aria-label="Close Messages"
-          class="w-9 h-9 rounded-full bg-white/[0.06] text-[#94A3B8] hover:text-white flex items-center justify-center">
-          <i class="fa-solid fa-xmark text-sm"></i>
-        </button>
+        <div class="flex items-center gap-2 flex-shrink-0">
+          <button id="dmAllowToggleBtn" onclick="toggleMyDmPreference()" type="button"
+            class="liquid-pill min-h-[34px] px-3 rounded-full font-mono text-[10px] font-bold text-[#10B981]">
+            Requests: ON
+          </button>
+          <button onclick="closeModal('dmInboxModal')" type="button" aria-label="Close Messages"
+            class="liquid-pill w-9 h-9 rounded-full text-[#94A3B8] hover:text-white flex items-center justify-center">
+            <i class="fa-solid fa-xmark text-sm"></i>
+          </button>
+        </div>
+      </div>
+
+      <div id="dmSearchWrap" class="px-5 pt-3 pb-1 flex-shrink-0 space-y-2">
+        <div class="relative">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-[#64748B] text-xs"></i>
+          <input id="dmPlayerSearchInput" type="search" oninput="onDmPlayerSearch(this.value)" placeholder="Search player or creator by name / #ID..."
+            class="w-full min-h-[40px] pl-10 pr-4 rounded-xl bg-[#0B0D18] border border-white/14 focus:border-[#38BDF8] text-xs sm:text-sm text-white placeholder-[#64748B] outline-none">
+        </div>
+        <div id="dmPlayerSearchResults" class="hidden max-h-[180px] overflow-y-auto space-y-1.5 p-2 rounded-2xl glass-inset border border-[#38BDF8]/30"></div>
       </div>
 
       <div id="dmTabBar" class="px-5 py-2.5 border-b border-white/[0.07] grid grid-cols-2 gap-2 flex-shrink-0">
@@ -1625,6 +1681,81 @@
         const m = Math.floor(total / 60);
         const s = total % 60;
         return `${m}:${String(s).padStart(2, "0")}`;
+      }
+      let dmSearchTimer = null;
+      let pageSwitchTimer = null;
+      let myAllowDms = localStorage.getItem("tournyx_allow_dms") !== "false";
+
+      function formatClanDisplay(rawClan, maxNames = 2) {
+        if (!rawClan) return "";
+        try {
+          const parsed = typeof rawClan === "string" && rawClan.trim().startsWith("[") ? JSON.parse(rawClan) : rawClan;
+          if (Array.isArray(parsed)) {
+            const names = parsed
+              .map((c) => (typeof c === "string" ? c : (c?.name || c?.clan_name || "")))
+              .map((s) => String(s).trim())
+              .filter(Boolean);
+            if (!names.length) return "";
+            const shown = names.slice(0, maxNames).join(", ");
+            return names.length > maxNames ? `${shown} +${names.length - maxNames}` : shown;
+          }
+          if (parsed && typeof parsed === "object") return String(parsed.name || parsed.clan_name || "").trim();
+        } catch (e) {}
+        return String(rawClan).trim().startsWith("[") ? "" : String(rawClan).trim();
+      }
+
+      function showPageSwitchLoader(label = "Opening") {
+        const line = document.getElementById("txPageSwitchLine");
+        const fill = document.getElementById("txPageSwitchFill");
+        const pill = document.getElementById("txPageSwitchPill");
+        const lbl = document.getElementById("txPageSwitchLabel");
+        if (lbl) lbl.textContent = String(label || "Opening");
+        line?.classList.add("is-active");
+        pill?.classList.add("is-active");
+        if (fill) fill.style.width = "72%";
+        clearTimeout(pageSwitchTimer);
+        pageSwitchTimer = setTimeout(hidePageSwitchLoader, 3800);
+      }
+
+      function hidePageSwitchLoader() {
+        clearTimeout(pageSwitchTimer);
+        const line = document.getElementById("txPageSwitchLine");
+        const fill = document.getElementById("txPageSwitchFill");
+        const pill = document.getElementById("txPageSwitchPill");
+        if (fill) fill.style.width = "100%";
+        setTimeout(() => {
+          line?.classList.remove("is-active");
+          pill?.classList.remove("is-active");
+          if (fill) fill.style.width = "0%";
+        }, 180);
+      }
+
+      function syncDmToggleBtn() {
+        const b = document.getElementById("dmAllowToggleBtn");
+        if (!b) return;
+        b.textContent = myAllowDms ? "Requests: ON" : "Requests: OFF";
+        b.style.color = myAllowDms ? "#10B981" : "#FDA4AF";
+      }
+
+      async function toggleMyDmPreference() {
+        if (!requireAuthOrOpen() || inFlight.has("dmPref")) return;
+        inFlight.add("dmPref");
+        const nextVal = !myAllowDms;
+        try {
+          const { data: res, error: err } = await dbClient.rpc("set_my_dm_preference", {
+            p_user_email: normStr(currentUser.email),
+            p_allow_dms: nextVal
+          });
+          if (err || !res?.ok) throw new Error(res?.error || "Could not update preference");
+          myAllowDms = nextVal;
+          localStorage.setItem("tournyx_allow_dms", myAllowDms ? "true" : "false");
+          syncDmToggleBtn();
+          showToast(myAllowDms ? "Chat Requests turned ON" : "Chat Requests paused (existing chats stay active)");
+        } catch (e) {
+          showToast(e?.message || "Update failed", true);
+        } finally {
+          inFlight.delete("dmPref");
+        }
       }
 
       function formatRelativeTime(isoStr) {
@@ -2117,7 +2248,7 @@
                       ${buildIdentityBadgeHtml(r)}
                     </div>
                     <div class="font-mono text-[10px] text-[#CBD5E1] truncate">
-                      ${r.author_clan ? `${escapeHtml(r.author_clan)} • ` : ""}${formatCompactNum(r.author_followers)} Followers
+                      ${formatClanDisplay(r.author_clan, 1) ? `${escapeHtml(formatClanDisplay(r.author_clan, 1))} • ` : ""}${formatCompactNum(r.author_followers)} Followers
                     </div>
                   </div>
                 </button>
@@ -3797,9 +3928,6 @@
         finally { inFlight.delete("csClaim"); }
       }
 
-      // ============================================================================
-      // 9. PUBLIC UPLOADER PROFILE + INSTAGRAM-STYLE CONNECTION / DM REQUESTS
-      // ============================================================================
       async function openCreatorProfileByReel(postId) {
         const r = reelsList.find((x) => x.id === postId);
         if (!r) return;
@@ -3808,10 +3936,10 @@
         body.innerHTML = `<div class="py-10 text-center font-mono text-xs text-[#38BDF8]"><i class="fa-solid fa-spinner fa-spin mr-1.5"></i>Loading public profile...</div>`;
 
         const { data: res } = await safeQuery(() => dbClient.rpc("get_public_creator_profile", {
-          p_creator_uid: String(p.creator_uid || p.author_email || ""),
+          p_creator_uid: String(r.creator_uid || r.author_email || ""),
           p_viewer_email: isLoggedIn() ? normStr(currentUser.email) : null,
-          p_post_id: p.id || null,
-          p_author_name: p.author_name || null
+          p_post_id: r.id ? String(r.id) : null,
+          p_author_name: r.author_name || null
         }), null);
 
         const prof = res?.ok && res.profile ? res.profile : {
@@ -3822,27 +3950,28 @@
           avatar: r.author_avatar || "",
           clan_name: r.author_clan || "",
           bio: "Competitive Tournyx Esports athlete & clutch creator.",
+          allow_dms: true,
           uploads_count: 1,
           total_views: safeNum(r.views_count, 0),
           followers_count: safeNum(r.author_followers, 0),
-          is_me: Boolean(r.is_mine),
-          recent_posts: reelsList.filter((x) => x.creator_uid === r.creator_uid).slice(0, 4)
+          is_me: Boolean(r.is_mine)
         };
 
         const av = safeExternalUrl(prof.avatar) || `https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(prof.username || "TX")}`;
         const roleLabel = ["admin", "superadmin"].includes(normStr(prof.role)) ? "OFFICIAL" : normStr(prof.role) === "organizer" ? "VERIFIED ORG" : "PRO PLAYER";
+        const clanLabel = formatClanDisplay(prof.clan_name, 2);
 
         body.innerHTML = `
-          <div class="flex items-center gap-4">
+          <div class="flex items-start gap-4">
             <img src="${escapeHtml(av)}" alt="" class="w-16 h-16 rounded-2xl object-cover border-2 border-[#8B5CF6]/65 flex-shrink-0">
             <div class="min-w-0 flex-1 space-y-1">
               <div class="flex items-center gap-2 flex-wrap">
                 <h3 class="font-display text-lg font-extrabold text-white truncate">${escapeHtml(prof.username)}</h3>
-                <span class="px-2 py-0.5 rounded-md bg-[#8B5CF6]/25 font-mono text-[9.5px] font-bold text-[#38BDF8]">${roleLabel}</span>
+                <span class="px-2 py-0.5 rounded-md bg-[#38BDF8]/20 font-mono text-[9.5px] font-bold text-[#38BDF8]">${roleLabel}</span>
               </div>
-              <div class="font-mono text-[11px] text-[#94A3B8]">
+              <div class="font-mono text-[11px] text-[#94A3B8] leading-snug">
                 ID: <strong class="text-[#E2E8F0]">#${escapeHtml(String(prof.public_uid || "").slice(0, 12) || "TOURNYX")}</strong>
-                ${prof.clan_name ? ` • Clan: <strong class="text-[#38BDF8]">${escapeHtml(prof.clan_name)}</strong>` : ""}
+                ${clanLabel ? ` • Clan: <strong class="text-[#FBBF24]">${escapeHtml(clanLabel)}</strong>` : ""}
               </div>
               <p class="font-body text-xs text-[#CBD5E1] leading-relaxed">${escapeHtml(prof.bio || "Competitive Tournyx Esports player.")}</p>
             </div>
@@ -3851,43 +3980,111 @@
           <div class="grid grid-cols-3 gap-2.5 text-center">
             <div class="p-3 rounded-2xl glass-inset"><span class="font-mono text-[10px] text-[#94A3B8] uppercase block">Uploads</span><strong class="font-orbitron text-base text-white">${formatCompactNum(prof.uploads_count)}</strong></div>
             <div class="p-3 rounded-2xl glass-inset"><span class="font-mono text-[10px] text-[#94A3B8] uppercase block">Views</span><strong class="font-orbitron text-base text-[#38BDF8]">${formatCompactNum(prof.total_views)}</strong></div>
-            <div class="p-3 rounded-2xl glass-inset"><span class="font-mono text-[10px] text-[#94A3B8] uppercase block">Followers</span><strong class="font-orbitron text-base text-[#A855F7]">${formatCompactNum(prof.followers_count)}</strong></div>
+            <div class="p-3 rounded-2xl glass-inset"><span class="font-mono text-[10px] text-[#94A3B8] uppercase block">Followers</span><strong class="font-orbitron text-base text-[#FBBF24]">${formatCompactNum(prof.followers_count)}</strong></div>
           </div>
 
           ${!prof.is_me ? `
             <div class="grid grid-cols-2 gap-2.5">
-              <button id="cpFollowBtn" type="button" class="btn-ghost min-h-[44px] rounded-xl font-display text-xs font-bold inline-flex items-center justify-center gap-2">
-                <i class="fa-solid fa-user-plus text-[#38BDF8]"></i> <span>${r.following_author ? "Following" : "Follow"}</span>
+              <button id="cpFollowBtn" type="button" class="liquid-pill min-h-[44px] rounded-xl font-display text-xs font-bold inline-flex items-center justify-center gap-2">
+                <i class="fa-solid fa-user-plus text-[#10B981]"></i><span>${r.following_author ? "Following" : "Follow"}</span>
               </button>
               <button id="cpMsgBtn" type="button" class="btn-primary min-h-[44px] rounded-xl font-display text-xs font-bold inline-flex items-center justify-center gap-2">
-                <i class="fa-regular fa-paper-plane"></i> <span>Connect / Chat</span>
+                <i class="fa-regular fa-paper-plane"></i><span>Send Chat Request</span>
               </button>
             </div>
           ` : `
-            <button id="cpOpenStudioBtn" type="button" class="btn-primary w-full min-h-[44px] rounded-xl font-display text-xs font-bold">Open My Creator Studio</button>
+            <div class="grid grid-cols-2 gap-2.5">
+              <button id="cpOpenStudioBtn" type="button" class="btn-primary min-h-[44px] rounded-xl font-display text-xs font-bold">Creator Studio</button>
+              <button id="cpOpenInboxSelfBtn" type="button" class="liquid-pill min-h-[44px] rounded-xl font-display text-xs font-bold">Find &amp; Chat</button>
+            </div>
           `}
         `;
 
         body.querySelector("#cpFollowBtn")?.addEventListener("click", () => toggleReelFollow(r.id));
         body.querySelector("#cpMsgBtn")?.addEventListener("click", () => {
+          if (prof.allow_dms === false) {
+            showToast("This user has paused new chat requests.", true);
+            return;
+          }
           closeModal("creatorProfileModal");
           startDirectChatWithUser({
-            peer_email: prof.target_email,
-            peer_name: prof.username,
-            peer_uid: prof.public_uid,
-            peer_avatar: av
+            peer_email: prof.target_email || "",
+            peer_name: prof.username || r.author_name || "Creator",
+            peer_uid: prof.public_uid || r.creator_uid || "",
+            peer_avatar: av,
+            post_id: r.id || ""
           });
         });
         body.querySelector("#cpOpenStudioBtn")?.addEventListener("click", () => {
           closeModal("creatorProfileModal");
           openCreatorDashboardModal();
         });
+        body.querySelector("#cpOpenInboxSelfBtn")?.addEventListener("click", () => {
+          closeModal("creatorProfileModal");
+          openMessagesDrawer();
+        });
+      }
+
+      function onDmPlayerSearch(rawVal) {
+        const q = String(rawVal || "").trim();
+        const box = document.getElementById("dmPlayerSearchResults");
+        if (!box) return;
+        clearTimeout(dmSearchTimer);
+        if (q.length < 2) { box.classList.add("hidden"); box.innerHTML = ""; return; }
+        box.classList.remove("hidden");
+        box.innerHTML = `<div class="py-3 text-center font-mono text-[11px] text-[#38BDF8]"><i class="fa-solid fa-spinner fa-spin mr-1.5"></i>Searching players...</div>`;
+
+        dmSearchTimer = setTimeout(async () => {
+          const me = isLoggedIn() ? normStr(currentUser.email) : "";
+          const { data: res } = await safeQuery(() => dbClient.rpc("search_public_players", {
+            p_query: q,
+            p_viewer_email: me || null
+          }), null);
+          const players = res?.ok && Array.isArray(res.players) ? res.players : [];
+          if (!players.length) {
+            box.innerHTML = `<div class="py-3 text-center font-body text-xs text-[#94A3B8]">No players matched "${escapeHtml(q)}".</div>`;
+            return;
+          }
+          box.innerHTML = players.map((pl, idx) => {
+            const av = safeExternalUrl(pl.peer_avatar) || `https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(pl.peer_name || "P")}`;
+            const clanTxt = formatClanDisplay(pl.clan_name, 1);
+            return `
+              <div class="p-2 rounded-xl hover:bg-white/[0.06] flex items-center justify-between gap-2.5">
+                <div class="flex items-center gap-2.5 min-w-0">
+                  <img src="${escapeHtml(av)}" alt="" class="w-8 h-8 rounded-full object-cover border border-white/15 flex-shrink-0">
+                  <div class="min-w-0">
+                    <div class="font-display text-xs font-bold text-white truncate">${escapeHtml(pl.peer_name)}</div>
+                    <div class="font-mono text-[9.5px] text-[#38BDF8] truncate">#${escapeHtml(String(pl.peer_uid || "").slice(0, 10))}${clanTxt ? ` • ${escapeHtml(clanTxt)}` : ""}</div>
+                  </div>
+                </div>
+                <button type="button" data-pick-dm-player="${idx}" class="btn-primary min-h-[32px] px-3 rounded-full font-display text-[10.5px] flex-shrink-0">Chat Request</button>
+              </div>
+            `;
+          }).join("");
+
+          box.querySelectorAll("[data-pick-dm-player]").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              const picked = players[Number(btn.dataset.pickDmPlayer)];
+              if (!picked) return;
+              document.getElementById("dmPlayerSearchInput").value = "";
+              box.classList.add("hidden");
+              startDirectChatWithUser(picked);
+            });
+          });
+        }, 260);
       }
 
       async function fetchDmInbox() {
         if (!isLoggedIn()) return;
         const { data: res } = await safeQuery(() => dbClient.rpc("get_user_dm_inbox", { p_user_email: normStr(currentUser.email) }), null);
-        if (res?.ok && Array.isArray(res.conversations)) dmConversations = res.conversations;
+        if (res?.ok) {
+          if (Array.isArray(res.conversations)) dmConversations = res.conversations;
+          if (typeof res.allow_dms === "boolean") {
+            myAllowDms = res.allow_dms;
+            localStorage.setItem("tournyx_allow_dms", myAllowDms ? "true" : "false");
+            syncDmToggleBtn();
+          }
+        }
         const reqCnt = dmConversations.filter((c) => c.status === "pending" && normStr(c.initiator_email) !== normStr(currentUser?.email)).length;
         const pill = document.getElementById("dmRequestsCountPill");
         if (pill) { pill.textContent = String(reqCnt); pill.classList.toggle("hidden", reqCnt <= 0); }
@@ -3895,13 +4092,15 @@
 
       async function openMessagesDrawer() {
         if (!requireAuthOrOpen()) return;
+        syncDmToggleBtn();
         activeDmPeer = null;
         document.getElementById("dmBackToListBtn")?.classList.add("hidden");
+        document.getElementById("dmSearchWrap")?.classList.remove("hidden");
         document.getElementById("dmTabBar")?.classList.remove("hidden");
         document.getElementById("dmListView")?.classList.remove("hidden");
         document.getElementById("dmThreadView")?.classList.add("hidden");
         document.getElementById("dmModalHeading").textContent = "Messages";
-        document.getElementById("dmModalSub").textContent = "Connect & Chat After Request Acceptance";
+        document.getElementById("dmModalSub").textContent = "Search Players & Send First-Time Chat Requests";
         openModal("dmInboxModal");
         await fetchDmInbox();
         renderDmInboxList();
@@ -3928,7 +4127,7 @@
           return activeDmTab === "requests" ? isIncoming : !isIncoming;
         });
         if (!filtered.length) {
-          listEl.innerHTML = `<div class="py-12 text-center font-body text-xs text-[#94A3B8]">${activeDmTab === "requests" ? "No pending chat requests." : "No active chats yet — tap any creator to connect!"}</div>`;
+          listEl.innerHTML = `<div class="py-12 text-center font-body text-xs text-[#94A3B8]">${activeDmTab === "requests" ? "No pending chat requests." : "No active chats yet — search any player above or tap a creator!"}</div>`;
           return;
         }
         listEl.innerHTML = filtered.map((c) => {
@@ -3956,19 +4155,27 @@
 
       async function startDirectChatWithUser(peer) {
         if (!requireAuthOrOpen()) return;
-        if (!peer?.peer_email) { showToast("This creator hasn't enabled direct messages yet.", true); return; }
+        if (!peer?.peer_email && !peer?.peer_uid && !peer?.post_id && !peer?.peer_name) {
+          showToast("Could not identify this creator.", true);
+          return;
+        }
         await fetchDmInbox();
-        const existing = dmConversations.find((c) => normStr(c.peer_email) === normStr(peer.peer_email));
+        const existing = dmConversations.find((c) =>
+          (peer.peer_email && normStr(c.peer_email) === normStr(peer.peer_email)) ||
+          (peer.peer_uid && String(c.peer_uid || "") === String(peer.peer_uid))
+        );
         openModal("dmInboxModal");
         openDmThread(existing || {
           id: null, status: "new", initiator_email: normStr(currentUser.email),
-          peer_email: peer.peer_email, peer_name: peer.peer_name || "Creator", peer_uid: peer.peer_uid || "", peer_avatar: peer.peer_avatar || ""
+          peer_email: peer.peer_email || "", peer_name: peer.peer_name || "Creator",
+          peer_uid: peer.peer_uid || "", peer_avatar: peer.peer_avatar || "", post_id: peer.post_id || ""
         });
       }
 
       async function openDmThread(conv) {
         activeDmPeer = conv;
         document.getElementById("dmBackToListBtn")?.classList.remove("hidden");
+        document.getElementById("dmSearchWrap")?.classList.add("hidden");
         document.getElementById("dmTabBar")?.classList.add("hidden");
         document.getElementById("dmListView")?.classList.add("hidden");
         document.getElementById("dmThreadView")?.classList.remove("hidden");
@@ -3980,7 +4187,7 @@
 
         const scrollBox = document.getElementById("dmMessagesScroll");
         if (!conv.id) {
-          scrollBox.innerHTML = `<div class="py-10 text-center font-body text-xs text-[#94A3B8] max-w-xs mx-auto">Send your first message to notify ${escapeHtml(conv.peer_name)} as a connection request.</div>`;
+          scrollBox.innerHTML = `<div class="py-10 text-center font-body text-xs text-[#94A3B8] max-w-xs mx-auto">Send your first message to alert ${escapeHtml(conv.peer_name)} as a Chat Request.</div>`;
           return;
         }
         const { data: res } = await safeQuery(() => dbClient.rpc("get_conversation_messages", {
@@ -3998,9 +4205,12 @@
       function exitActiveDmThread() {
         activeDmPeer = null;
         document.getElementById("dmBackToListBtn")?.classList.add("hidden");
+        document.getElementById("dmSearchWrap")?.classList.remove("hidden");
         document.getElementById("dmTabBar")?.classList.remove("hidden");
         document.getElementById("dmListView")?.classList.remove("hidden");
         document.getElementById("dmThreadView")?.classList.add("hidden");
+        document.getElementById("dmModalHeading").textContent = "Messages";
+        document.getElementById("dmModalSub").textContent = "Search Players & Send First-Time Chat Requests";
         renderDmInboxList();
       }
 
@@ -4022,7 +4232,7 @@
       }
 
       async function sendActiveDmMessage() {
-        if (!requireAuthOrOpen() || !activeDmPeer?.peer_email || inFlight.has("sendDm")) return;
+        if (!requireAuthOrOpen() || !activeDmPeer || inFlight.has("sendDm")) return;
         const inp = document.getElementById("dmMessageInput");
         const body = inp.value.trim();
         if (!body) return;
@@ -4031,13 +4241,21 @@
         btn.disabled = true;
         try {
           const { data: res, error: err } = await dbClient.rpc("send_direct_message", {
-            p_sender_email: normStr(currentUser.email), p_recipient_email: normStr(activeDmPeer.peer_email), p_body: body
+            p_sender_email: normStr(currentUser.email),
+            p_recipient_email: normStr(activeDmPeer.peer_email || ""),
+            p_body: body,
+            p_post_id: activeDmPeer.post_id ? String(activeDmPeer.post_id) : null,
+            p_recipient_uid: activeDmPeer.peer_uid ? String(activeDmPeer.peer_uid) : null,
+            p_recipient_name: activeDmPeer.peer_name || null
           });
-          if (err || !res?.ok) throw new Error(res?.error || "Run tournyx_dm_notifications.sql in Supabase first.");
+          if (err) throw new Error(err.message || "Database RPC error");
+          if (!res?.ok) throw new Error(res?.error || "Could not send message.");
           inp.value = "";
           activeDmPeer.id = res.conversation_id;
+          activeDmPeer.peer_email = res.recipient_email || activeDmPeer.peer_email;
           activeDmPeer.status = res.status;
-          if (res.is_first_request) showToast(`Connection request sent to ${activeDmPeer.peer_name}!`);
+          document.getElementById("dmRequestDecisionBar")?.classList.add("hidden");
+          if (res.is_first_request) showToast(`Chat request sent to ${activeDmPeer.peer_name}!`);
           await openDmThread(activeDmPeer);
         } catch (e) { showToast(e?.message || "Send failed", true); }
         finally { inFlight.delete("sendDm"); btn.disabled = false; }
@@ -4188,9 +4406,19 @@
         copyActiveSensiCode, executeShareAction, submitReelReport,
         openSavedVaultModal, openCreatorDashboardModal, switchCreatorStudioTab, claimCreatorMilestoneFromStudio,
         openUploadReelModal, switchReelUploadSrc, onReelFilePicked, onReelThumbPicked, submitNewOrEditedReel,
-        openMessagesDrawer, switchDmTab, exitActiveDmThread, respondActiveChatRequest, sendActiveDmMessage
+        openMessagesDrawer, onDmPlayerSearch, toggleMyDmPreference, switchDmTab, exitActiveDmThread, respondActiveChatRequest, sendActiveDmMessage
       });
 
+      window.addEventListener("pageshow", () => hidePageSwitchLoader());
+      document.addEventListener("click", (e) => {
+        const a = e.target.closest("a[href]");
+        if (!a || e.defaultPrevented || a.target === "_blank") return;
+        const href = (a.getAttribute("href") || "").trim();
+        if (!href || href.startsWith("#") || href.startsWith("javascript:")) return;
+        if (/^https?:\/\//i.test(href) && !href.includes("tournyx.in")) return;
+        showPageSwitchLoader("Opening");
+      });
+      
       window.addEventListener("DOMContentLoaded", async () => {
         if (!isNativeApp()) showPageLoader("Loading Clutch Reels");
         initDatabase();
