@@ -3570,6 +3570,12 @@
             syncDmToggleBtn();
           }
         }
+        if (nRes.data?.ok && Array.isArray(nRes.data.notifications)) userNotifications = nRes.data.notifications;
+        updateSocialUnreadBadges();
+      }
+
+      async function openMessagesDrawer() {
+        syncDmToggleBtn();
 
       async function openMessagesDrawer() {
         if (!requireAuthOrOpen()) return;
@@ -4576,9 +4582,8 @@
         openUploadComposerModal, selectUploadType, switchUploadSource, onUploadFileSelected, onUploadThumbSelected, submitSocialPost,
         openCreatorVaultModal, claimCreatorMilestoneAction,
         openCreatorProfileByPost, openMessagesDrawer, onDmPlayerSearch, switchDmTab, exitActiveDmThread, respondActiveChatRequest, sendActiveDmMessage,
-        openNotificationsDrawer, markAllNotificationsRead
+        toggleMyDmPreference, openNotificationsDrawer, markAllNotificationsRead
       });
-
       // Skeleton-First Instant Boot (Zero Blocking Overlay)
       window.addEventListener("DOMContentLoaded", async () => {
         initDatabase();
